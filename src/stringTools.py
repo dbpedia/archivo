@@ -65,20 +65,21 @@ def getContentLengthFromResponse(response):
     return ""
 
 def getFileEnding(response):
-  print("Response-Url:", response.url)
+  fileEnding=""
   if "Content-Type" in response.headers.keys():
     contentType = response.headers["content-type"]
     match = contentTypeRegex.search(contentType)
-    fileEnding = ""
-    if match == None:
-      fileEnding = ""
-    else:
+    if match != None:
       fileEnding = fileTypeDict.get(match.group(1), "")
-    if fileEnding == "":
-      fileEnding = getFileExtensionFromUri(response.url)
-    return fileEnding
-  else:
-    return getFileExtensionFromUri(response.url)
+  
+  if fileEnding == "":
+    fileEnding = getFileExtensionFromUri(response.url)
+  
+  if fileEnding == "":
+    fileEnding = ".unk"
+  return fileEnding
+    
+  
 
 def deleteAllFilesInDir(directory):
   if not os.path.isdir(directory):

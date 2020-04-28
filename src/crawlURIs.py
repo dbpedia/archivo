@@ -295,9 +295,3 @@ def getLovUrls():
   req = requests.get(lovOntologiesURL)
   json_data=req.json()
   return [dataObj["uri"] for dataObj in json_data]
-
-#parsedRdf=ontoFiles.getParsedRdf("scd_testdir/rdf.muninn-project.org/ontologies--appearances/2020.04.28-164737/ontologies--appearances_type=orig", silent=True)
-#parsedRdf="<?xml version=\"1.0\"?>\r\n<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\r\n  xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\r\n  <rdf:Description rdf:about=\"http://www.w3.org/\">\r\n    <dc:title>World Wide Web Consortium</dc:title> \r\n  </rdf:Description>\r\n</rdf:RDF>\r\n  "
-#print(parsedRdf)
-#print(getOOPSReport(parsedRdf))
-downloadSource("https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/WeatherOntology.owl", ".", "testload", "application/rdf+xml")
