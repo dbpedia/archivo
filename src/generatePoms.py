@@ -8,8 +8,8 @@ default_repo="https://databus.dbpedia.org/repo"
 default_version="0.0.0-notRelevant"
 
 # edit for your dataset
-downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timed-lov-crawl/${project.groupId}/${project.artifactId}/${project.version}/"
-packDir="/home/dstreitmatter/www/timed-lov-crawl/${project.groupId}/${project.artifactId}/"
+downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/${project.groupId}/${project.artifactId}/${project.version}/"
+packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${project.artifactId}/"
 pub="https://yum-yab.github.io/webid.ttl#onto"
 
 def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=default_license, deployRepoURL=default_repo, version=default_version, artifactId=default_parentArtifact):
