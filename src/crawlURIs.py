@@ -73,9 +73,11 @@ def getOOPSReport(parsedRdfString):
 
 
 def determineBestAccHeader(vocab_uri):
+  localTestDir = "./.tmpTestTriples"
+  if not os.path.isdir(localTestDir):
+    os.mkdir(localTestDir)
   print("Determining the best header for this vocabulary...")
   headerDict = {}
-  localTestDir = "./.tmpTestTriples"
   os.makedirs(localTestDir, exist_ok=True)
   for header in rdfHeaders:
     success, filePath = downloadSource(vocab_uri, localTestDir, "testTriples", header)[:2]
@@ -266,6 +268,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
     print("No header, probably server down")
     #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "not reachable server"))
+    stringTools.deleteAllFilesInDir(localDir)
     return
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
@@ -273,12 +276,14 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
     print("No available Source")
     #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "not reachable server"))
+    stringTools.deleteAllFilesInDir(localDir)
     return
   ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
     print("Unparseable ontology")
     #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "Unparseable source"))
+    stringTools.deleteAllFilesInDir(localDir)
     return
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   real_ont_uri=inspectVocabs.getNIRUri(graph)
@@ -288,11 +293,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
       #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
       fallout_index.append((vocab_uri, False, "No ontology"))
       print("Neither ontology nor class")
+      stringTools.deleteAllFilesInDir(localDir)
       return
     if not real_ont_uri in index:
       bestHeader = determineBestAccHeader(real_ont_uri)
       #prevent infinite loop if smthing is defined by itself but is no ontology
       if not vocab_uri == real_ont_uri:
+        stringTools.deleteAllFilesInDir(localDir)
         handleNewUri(real_ont_uri, index, dataPath, fallout_index)
       return
 
@@ -306,6 +313,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
   if groupId == None or artifact == None:
     print("Malformed non-information Uri", real_ont_uri)
+    fallout_index.append((real_ont_uri, False, "Malformed non-information uri"))
     return
   index.append(real_ont_uri)
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
@@ -331,6 +339,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate)
   ontoFiles.writeFalloutIndex(fallout_index)
   ontoFiles.writeSimpleIndex(index)
+  stringTools.deleteAllFilesInDir(localDir)
 
 
 def getLovUrls():

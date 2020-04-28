@@ -43,7 +43,10 @@ def generateGroupAndArtifactFromUri(vocab_uri):
 
 def getLastModifiedFromResponse(response):
   if "last-modified" in response.headers.keys():
-    return response.headers["last-modified"]
+    lastMod = response.headers["last-modified"]
+    if not "GMT" in lastMod:
+      print("WARNING: No GMT time", response.url)
+    return lastMod
   else:
     return ""
 
@@ -74,3 +77,10 @@ def getFileEnding(response):
     return fileEnding
   else:
     return ""
+
+def deleteAllFilesInDir(directory):
+  if not os.path.isdir(directory):
+    return
+  for filename in os.listdir(directory):
+    if os.path.isfile(os.path.join(directory, filename)):
+      os.remove(os.path.join(directory, filename))
