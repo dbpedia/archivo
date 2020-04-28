@@ -41,7 +41,7 @@ def deleteEmptyDirsRecursive(startpath):
   else:
     print(f"Not a directory: {startpath}")
 
-def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, shaclValidated, accessed, headerString, nirHeader):
+def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, shaclValidated, accessed, headerString, nirHeader, contentLenght):
   vocabInformation={}
   vocabInformation["ontology-resource"] = definedByUri
   vocabInformation["accessed"] = accessed
@@ -54,14 +54,30 @@ def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, 
   vocabInformation["SHACL-validated"] = shaclValidated
   vocabInformation["resource-header"] = headerString
   vocabInformation["NIR-header"] = nirHeader
+  vocabInformation["content-length"] = contentLenght
 
   with open(pathToFile, "w+") as outfile:
     json.dump(vocabInformation, outfile, indent=4, sort_keys=True)
 
-def parseRDFSource(sourcefile, filepath, outputType, deleteEmpty=True, silent=False):
-  print("Parsing the vocabulary as N-Triples...")
+def getParsedRdf(sourcefile, sourceUri=None, silent=True):
+  if sourceUri == None:
+    process = subprocess.Popen(["rapper", "-g", sourcefile, "-o", "rdfxml"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  else:
+    process = subprocess.Popen(["rapper", "-I", sourceUri, "-g", sourcefile, "-o", "rdfxml"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  
+  stdout, stderr=process.communicate()
+  if not silent:
+    print(stderr.decode("utf-8"))
+  
+  return stdout.decode("utf-8")
+
+def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=True, silent=False):
   with open(filepath, "w+") as ontfile:
-    process = subprocess.Popen(["rapper", "-g", sourcefile, "-o", outputType], stdout=ontfile, stderr=subprocess.PIPE)
+    if sourceUri == None:
+      process = subprocess.Popen(["rapper", "-g", sourcefile, "-o", outputType], stdout=ontfile, stderr=subprocess.PIPE)
+    else:
+      process = subprocess.Popen(["rapper", "-I", sourceUri,"-g", sourcefile, "-o", outputType], stdout=ontfile, stderr=subprocess.PIPE)
+    
     stderr=process.communicate()[1].decode("utf-8")
     if not silent:
       print(stderr)
@@ -83,16 +99,6 @@ def getParsedTriples(filepath):
     print("There was a decoding error at parsing " + filepath)
     return None
   return getTripleNumberFromRapperLog(stderr)
-
-# for efficiency the tsv reads in as a dict, with the vocab_uri as the key and (bestHeader, lastMod, etag) as value 
-def loadIndex():
-  resultDict = {}
-  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.tsv"), "r") as indexfile:
-    reader = csv.reader(indexfile, delimiter="\t")
-    for row in reader:
-      print(row)
-      vocabUri = row[0]
-  return resultDict
 
 def loadIndexJson():
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "r") as indexfile:
@@ -123,3 +129,14 @@ def checkIfUriInIndex(uri, index):
 def writeIndexJson(index):
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "w+") as indexfile:
     json.dump(index, indexfile, indent=4, sort_keys=True)
+
+def loadFalloutIndex():
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "r") as csvfile:
+    reader = csv.reader(csvfile)
+  return [row for row in reader]
+
+def writeFalloutIndex(index):
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "w+") as csvfile: 
+    writer = csv.writer(csvfile, delimiter=",")
+    for row in index:
+      writer.writerow(row)

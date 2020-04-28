@@ -14,11 +14,13 @@ index = ontoFiles.loadSimpleIndex()
 
 new_uris = []
 
+fallout = []
+
 for uri in crawlURIs.getLovUrls():
     if not uri in index:
         new_uris.append(uri)
 
 for uri in new_uris:
-    crawlURIs.handleNewUri(uri, index, rootdir)
+    crawlURIs.handleNewUri(uri, index, rootdir, fallout)
 
 ontoFiles.writeSimpleIndex(index)

@@ -31,12 +31,11 @@ def generateGroupAndArtifactFromUri(vocab_uri):
     groupId=matcher.group(1)
     artifact=matcher.group(2)
   else:
-    groupId = "default-group"
-    artifact = "default-artifact"
+    return None, None
   if artifact != "":
-    if artifact[-1] == "#" or artifact[-1] == os.sep:
+    if artifact[-1] == "#" or artifact[-1] == "/":
       artifact=artifact[:-1]
-    artifact=artifact.replace(os.sep, "--").replace("_", "--").replace(".", "--")
+    artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
   else:
     artifact="vocabulary"
   return groupId, artifact
@@ -52,6 +51,12 @@ def getLastModifiedFromResponse(response):
 def getEtagFromResponse(response):
   if "ETag" in response.headers.keys():
     return response.headers["ETag"]
+  else:
+    return ""
+
+def getContentLengthFromResponse(response):
+  if "content-length" in response.headers.keys():
+    return response.headers["content-length"]
   else:
     return ""
 

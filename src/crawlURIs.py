@@ -24,6 +24,9 @@ lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
 # url for the lodo docu service
 lodeServiceUrl="https://w3id.org/lode/"
 
+# url for the oops rest service
+oopsServiceUrl=" http://oops.linkeddata.es/rest"
+
 # possible headers for rdf-data
 rdfHeaders=["application/rdf+xml", "application/ntriples", "text/turtle", "text/rdf+n3", "application/html"]
 
@@ -48,7 +51,25 @@ def getLodeDocuFile(vocab_uri):
         print("Connection timed out for URI ", vocab_uri)
         return None
 
-
+def getOOPSReport(parsedRdfString):
+  print("Generating OOPS report...")
+  oopsXml=(
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+          "   <OOPSRequest>\n"
+	        "   <OntologyURI></OntologyURI>\n"
+	        f"    <OntologyContent><![CDATA[\n{parsedRdfString}]]></OntologyContent>\n"
+	        "   <Pitfalls></Pitfalls>\n"
+	        "   <OutputFormat>RDF/XML</OutputFormat>\n"
+          "</OOPSRequest>"
+          )
+  headers = {'Content-Type': 'application/xml'}
+  print(oopsXml)
+  try:
+    response = requests.post(oopsServiceUrl, data=oopsXml, headers=headers)
+    return response.text
+  except:
+    print("Something went wrong generating the OOPS-report")
+    return None
 
 
 def determineBestAccHeader(vocab_uri):
@@ -110,8 +131,8 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   else:
     nirHeader = ""
   # generate parsed variants of the ontology
-  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True)
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True)
+  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri)
+  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri)
   triples = ontoFiles.getParsedTriples(pathToOrigFile)
   if triples == None:
     triples = 0
@@ -139,7 +160,8 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   shaclValidated=conforms,
                                   accessed= accessDate,
                                   headerString=str(response.headers),
-                                  nirHeader = nirHeader
+                                  nirHeader = nirHeader,
+                                  contentLenght=stringTools.getContentLengthFromResponse(response)
                                   )
   if triples > 0:                                                                
     docustring = getLodeDocuFile(vocab_uri)
@@ -212,7 +234,8 @@ def handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version):
                                     shaclValidated=False,
                                     accessed="",
                                     headerString="",
-                                    nirHeader=""
+                                    nirHeader="",
+                                    contentLenght=""
                                     )
   # write the pom for the new unavailable artifact
   with open(os.path.join(dataPath, "unavailable-ontologies", groupId.replace(".", "--") + "--" + artifact, "pom.xml"), "w+") as childpom:
@@ -230,49 +253,61 @@ def handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version):
                                           description="This is a Ontology wich cant be accessed")
 
 
-def handleNewUri(vocab_uri, index, dataPath):
+def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   localDir = ".tmpOntTest"
+  if not os.path.isdir(localDir):
+    os.mkdir(localDir)
+
   print("Trying to validate ", vocab_uri)
   bestHeader  = determineBestAccHeader(vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
     print("No header, probably server down")
-    handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    fallout_index.append((vocab_uri, False, "not reachable server"))
     return
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
   if not success:
     print("No available Source")
-    handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    fallout_index.append((vocab_uri, False, "not reachable server"))
     return
-  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True)
+  ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
     print("Unparseable ontology")
-    handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+    fallout_index.append((vocab_uri, False, "Unparseable source"))
     return
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+      #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
+      fallout_index.append((vocab_uri, False, "No ontology"))
       print("Neither ontology nor class")
       return
     if not real_ont_uri in index:
       bestHeader = determineBestAccHeader(real_ont_uri)
       #prevent infinite loop if smthing is defined by itself but is no ontology
       if not vocab_uri == real_ont_uri:
-        handleNewUri(real_ont_uri, index, dataPath)
+        handleNewUri(real_ont_uri, index, dataPath, fallout_index)
       return
 
-      
-  if real_ont_uri == None:
-    print("Not usable file")
+  
+  if real_ont_uri in index:
+    print("Already known uri", real_ont_uri)
     return
-  index.append(real_ont_uri)
+  
+  
   print("Real Uri:", real_ont_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
+  if groupId == None or artifact == None:
+    print("Malformed non-information Uri", real_ont_uri)
+    return
+  index.append(real_ont_uri)
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
   if not os.path.isfile(os.path.join(dataPath, groupId, "pom.xml")):
@@ -294,9 +329,16 @@ def handleNewUri(vocab_uri, index, dataPath):
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate)
+  ontoFiles.writeFalloutIndex(fallout_index)
+  ontoFiles.writeSimpleIndex(index)
 
 
 def getLovUrls():
   req = requests.get(lovOntologiesURL)
   json_data=req.json()
   return [dataObj["uri"] for dataObj in json_data]
+
+#parsedRdf=ontoFiles.getParsedRdf("testdir/dataid.dbpedia.org/ns--core/2020.04.24-170017/ns--core_type=orig.rdf", silent=True)
+#parsedRdf="<?xml version=\"1.0\"?>\r\n<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\r\n  xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\r\n  <rdf:Description rdf:about=\"http://www.w3.org/\">\r\n    <dc:title>World Wide Web Consortium</dc:title> \r\n  </rdf:Description>\r\n</rdf:RDF>\r\n  "
+#print(parsedRdf)
+#print(getOOPSReport(parsedRdf))

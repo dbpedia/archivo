@@ -2,8 +2,7 @@ import os
 import sys
 import rdflib
 from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph
-from rdflib.namespace import DCTERMS
-from rdflib.namespace import DC
+from rdflib.namespace import DCTERMS, DC
 import json
 
 def getGraphOfVocabFile(filepath):
@@ -101,11 +100,12 @@ def getLicense(graph):
     queryString=(
         "SELECT DISTINCT ?license \n"
         "WHERE {\n"
+        " VALUES ?licenseProp { dcterms:license xhv:license cc:license }"
         " ?uri a owl:Ontology .\n"
-        " OPTIONAL { ?uri dcterms:license ?license }\n"   
+        " ?uri ?licenseProp ?license .\n"   
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "dcterms": DCTERMS})
+    result=graph.query(queryString, initNs={"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
@@ -225,3 +225,4 @@ def loadNQuadsFile(filepath):
     print(len([x for x in conGraph.store.contexts()]))
 
 #loadNQuadsFile("/home/denis/Downloads/lov.nq")
+

@@ -4,12 +4,27 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix cc: <http://creativecommons.org/ns#> .
 
 <#ontoIri>  
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
-    sh:property [
+    sh:or (
+        [
         sh:path dcterms:license;
         sh:minCount 1;
         sh:nodeKind sh:IRI;
-    ] .
+        ]
+        [
+        sh:path xhv:license;
+        sh:minCount 1;
+        sh:nodeKind sh:IRI;
+        ]
+        [
+        sh:path cc:license;
+        sh:minCount 1;
+        sh:nodeKind sh:IRI;
+        ]
+    ) .
+    
