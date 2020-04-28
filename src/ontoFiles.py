@@ -106,6 +106,8 @@ def loadIndexJson():
   return jsonIndex
 
 def loadSimpleIndex():
+  if not os.path.isfile(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.txt")):
+    return []
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.txt"), "r") as indexfile:
     lines = [line.rstrip() for line in indexfile]
   return lines
@@ -131,6 +133,8 @@ def writeIndexJson(index):
     json.dump(index, indexfile, indent=4, sort_keys=True)
 
 def loadFalloutIndex():
+  if not os.path.isfile(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv")):
+    return []
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "r") as csvfile:
     reader = csv.reader(csvfile)
   return [row for row in reader]

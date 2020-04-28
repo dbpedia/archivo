@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 
 # some defaults for the pom generation
 default_license="http://ontotrack.dbpedia.org/issue?license=unknown"
@@ -118,10 +119,14 @@ def generateChildPom(groupId, artifactId, packaging, version, license=None, pare
 
 def writeMarkdownDescription(path, artifact, label, explaination, description=""):
 
-  with open(path  + os.sep + artifact + ".md", "w+") as mdfile:
-    mdstring=(f"# {label}\n"
+    with open(path  + os.sep + artifact + ".md", "w+") as mdfile:
+        mdstring=(f"# {label}\n"
             f"{explaination}\n"
             "\n"
             f"{description}")
-    print(mdstring, file=mdfile)
+        print(mdstring, file=mdfile)
 
+def callMaven(pomfilePath, command):
+    process = subprocess.Popen(["mvn", "-B", "-f", pomfilePath, command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    return stdout.decode("utf-8"), stderr.decode("utf-8")

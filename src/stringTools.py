@@ -19,6 +19,7 @@ def isNoneOrEmpty(string):
     return True
 
 def getFileExtensionFromUri(uri):
+  print("FileExtUrl:",uri)
   match = uriFileExtensionRegex.match(uri)
   if match != None:
     return match.group(1)
@@ -64,6 +65,7 @@ def getContentLengthFromResponse(response):
     return ""
 
 def getFileEnding(response):
+  print("Response-Url:", response.url)
   if "Content-Type" in response.headers.keys():
     contentType = response.headers["content-type"]
     match = contentTypeRegex.search(contentType)
@@ -72,11 +74,11 @@ def getFileEnding(response):
       fileEnding = ""
     else:
       fileEnding = fileTypeDict.get(match.group(1), "")
-    if contentType == "":
+    if fileEnding == "":
       fileEnding = getFileExtensionFromUri(response.url)
     return fileEnding
   else:
-    return ""
+    return getFileExtensionFromUri(response.url)
 
 def deleteAllFilesInDir(directory):
   if not os.path.isdir(directory):

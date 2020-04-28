@@ -63,7 +63,6 @@ def getOOPSReport(parsedRdfString):
           "</OOPSRequest>"
           )
   headers = {'Content-Type': 'application/xml'}
-  print(oopsXml)
   try:
     response = requests.post(oopsServiceUrl, data=oopsXml, headers=headers)
     return response.text
@@ -167,11 +166,12 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   )
   if triples > 0:                                                                
     docustring = getLodeDocuFile(vocab_uri)
-  else:
-    docustring = None
-  if docustring != None:
     with open(filePath + os.sep + artifact + "_type=generatedDocu.html", "w+") as docufile:
       print(docustring, file=docufile)
+    oopsReport = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile))
+    if oopsReport != None:
+      with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
+        print(oopsReport, file=oopsFile)
   generatePomAndMdFile(os.path.split(filePath)[0], groupId, artifact, version, ontoGraph)
 
 def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
@@ -204,55 +204,6 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
     print(childpomString, file=childPomFile)
   generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, explaination, md_description)
     
-    
-  
-
-def handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version):
-  # when ontologies are not available, add them to a special group (are the only ones who have an empty string at the key accessed)
-  failedPath= os.path.join(dataPath, "unavailable-ontologies", groupId.replace(".", "--") + "--" + artifact, version)
-  os.makedirs(failedPath, exist_ok=True)
-  # generate parent-pom if not existent
-  if not os.path.isfile(os.path.join(dataPath, "unavailable-ontologies", "pom.xml")):
-    with open(os.path.join(dataPath, "unavailable-ontologies", "pom.xml"), "w+") as pomfile:
-      pomString=generatePoms.generateParentPom(groupId="unavailable-ontologies",
-                                            packaging="pom",
-                                            modules=[],
-                                            packageDirectory=generatePoms.packDir,
-                                            downloadUrlPath=generatePoms.downloadUrl,
-                                            publisher=generatePoms.pub,
-                                            maintainer=generatePoms.pub,
-                                            groupdocu=failedGroupDoc,
-                                            )
-      print(pomString, file=pomfile)
-  # write a vocab info file, most of it is empty. Unavailable URIs have no accessed date  
-  ontoFiles.writeVocabInformation(pathToFile=os.path.join(failedPath, groupId.replace(".", "--") + "--" + artifact + "_type=meta.json"),
-                                    definedByUri=vocab_uri,
-                                    lastModified="",
-                                    rapperErrors="",
-                                    rapperWarnings="",
-                                    etag="",
-                                    tripleSize= 0,
-                                    bestHeader="",
-                                    shaclValidated=False,
-                                    accessed="",
-                                    headerString="",
-                                    nirHeader="",
-                                    contentLenght=""
-                                    )
-  # write the pom for the new unavailable artifact
-  with open(os.path.join(dataPath, "unavailable-ontologies", groupId.replace(".", "--") + "--" + artifact, "pom.xml"), "w+") as childpom:
-    childpomString = generatePoms.generateChildPom(groupId=groupId,
-                                                  version=version,
-                                                  artifactId=groupId + "--" + artifact,
-                                                  packaging="jar",
-                                                  license=None)
-    print(childpomString, file=childpom)
-  # generate the md-Description 
-  generatePoms.writeMarkdownDescription(path=os.path.join(dataPath, "unavailable-ontologies", groupId.replace(".", "--") + "--" + artifact), 
-                                          artifact=groupId + "--" + artifact,
-                                          label=groupId + "--" + artifact + " ontology", 
-                                          explaination=explaination,
-                                          description="This is a Ontology wich cant be accessed")
 
 
 def handleNewUri(vocab_uri, index, dataPath, fallout_index):
@@ -261,12 +212,14 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
     os.mkdir(localDir)
 
   print("Trying to validate ", vocab_uri)
+  if vocab_uri in index:
+    print("Already known uri, skipping...")
+    return
   bestHeader  = determineBestAccHeader(vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
     print("No header, probably server down")
-    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "not reachable server"))
     stringTools.deleteAllFilesInDir(localDir)
     return
@@ -274,14 +227,12 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
   if not success:
     print("No available Source")
-    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "not reachable server"))
     stringTools.deleteAllFilesInDir(localDir)
     return
   ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
     print("Unparseable ontology")
-    #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
     fallout_index.append((vocab_uri, False, "Unparseable source"))
     stringTools.deleteAllFilesInDir(localDir)
     return
@@ -290,14 +241,12 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      #handleUnavailableUri(dataPath, vocab_uri, groupId, artifact, version)
       fallout_index.append((vocab_uri, False, "No ontology"))
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
     if not real_ont_uri in index:
       bestHeader = determineBestAccHeader(real_ont_uri)
-      #prevent infinite loop if smthing is defined by itself but is no ontology
       if not vocab_uri == real_ont_uri:
         stringTools.deleteAllFilesInDir(localDir)
         handleNewUri(real_ont_uri, index, dataPath, fallout_index)
@@ -347,7 +296,8 @@ def getLovUrls():
   json_data=req.json()
   return [dataObj["uri"] for dataObj in json_data]
 
-#parsedRdf=ontoFiles.getParsedRdf("testdir/dataid.dbpedia.org/ns--core/2020.04.24-170017/ns--core_type=orig.rdf", silent=True)
+#parsedRdf=ontoFiles.getParsedRdf("scd_testdir/rdf.muninn-project.org/ontologies--appearances/2020.04.28-164737/ontologies--appearances_type=orig", silent=True)
 #parsedRdf="<?xml version=\"1.0\"?>\r\n<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\r\n  xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\r\n  <rdf:Description rdf:about=\"http://www.w3.org/\">\r\n    <dc:title>World Wide Web Consortium</dc:title> \r\n  </rdf:Description>\r\n</rdf:RDF>\r\n  "
 #print(parsedRdf)
 #print(getOOPSReport(parsedRdf))
+downloadSource("https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/WeatherOntology.owl", ".", "testload", "application/rdf+xml")
