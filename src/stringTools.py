@@ -32,12 +32,12 @@ def generateGroupAndArtifactFromUri(vocab_uri):
     artifact=matcher.group(2)
   else:
     return None, None
-  if artifact != "":
-    if artifact[-1] == "#" or artifact[-1] == "/":
-      artifact=artifact[:-1]
-    artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
-  else:
-    artifact="vocabulary"
+  
+  artifact = artifact.rstrip("#/")
+  artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
+  
+  if artifact == "":
+    artifact="defaultOntology"
   return groupId, artifact
 
 

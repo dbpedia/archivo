@@ -9,7 +9,7 @@ from datetime import datetime
 import os
 import json
 import generatePoms
-
+import sys
 
 def runComm(oldFile, newFile):
     process = subprocess.Popen(["LC_ALL=C","comm", "-3", oldFile, newFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -57,41 +57,44 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
 
 
 def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir):
-  artifactDir, latestVersion = os.path.split(latestVersionDir)
-  groupDir, artifactName = os.path.split(artifactDir)
-  print("Found different headers, downloading and parsing to compare...")
-  success, sourcePath, response = crawlURIs.downloadSource(uri, localDiffDir, "tmpSource", bestHeader)
-  accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
-  if not success:
-    print("Uri not reachable")
-    fallout_index.append((uri, True, "Couldnt download file"))
-    return
-  ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=uri)
-  if not os.path.isfile(os.path.join(localDiffDir, "tmpSourceParsed.ttl")): 
-    print("File not parseable")
-    fallout_index.append((uri, True, "Unparseable new File"))
-    return
-  oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
-  newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
-  both, old, new = graphDiff(oldGraph, newGraph)
-  if len(old) == 0 and len(new) == 0:
-    print("Not different")
-    stringTools.deleteAllFilesInDir(localDiffDir)
-  else:
-    print("Different!")
-    new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-    newVersionPath = os.path.join(artifactDir, new_version)
-    os.makedirs(newVersionPath, exist_ok=True)
-    fileExt = os.path.splitext(sourcePath)[1]
-    os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
-    crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate)
-    stringTools.deleteAllFilesInDir(localDiffDir)
-    print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy"))
+  try:
+    artifactDir, latestVersion = os.path.split(latestVersionDir)
+    groupDir, artifactName = os.path.split(artifactDir)
+    print("Found different headers, downloading and parsing to compare...")
+    success, sourcePath, response = crawlURIs.downloadSource(uri, localDiffDir, "tmpSource", bestHeader)
+    accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
+    if not success:
+      print("Uri not reachable")
+      fallout_index.append((uri, True, "Couldnt download file"))
+      return
+    ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=uri)
+    if not os.path.isfile(os.path.join(localDiffDir, "tmpSourceParsed.ttl")): 
+      print("File not parseable")
+      fallout_index.append((uri, True, "Unparseable new File"))
+      return
+    oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
+    newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
+    both, old, new = graphDiff(oldGraph, newGraph)
+    if len(old) == 0 and len(new) == 0:
+      print("Not different")
+      stringTools.deleteAllFilesInDir(localDiffDir)
+    else:
+      print("Different!")
+      new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+      newVersionPath = os.path.join(artifactDir, new_version)
+      os.makedirs(newVersionPath, exist_ok=True)
+      fileExt = os.path.splitext(sourcePath)[1]
+      os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
+      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate)
+      stringTools.deleteAllFilesInDir(localDiffDir)
+      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
+  except FileNotFoundError:
+    print("Error: Couldn't find file for", uri)
 
 
 
 def handleDiffForUri(uri, rootdir, fallout_index):
-  localDiffDir = ".tmpDiffDir"
+  localDiffDir = os.path.join(rootdir, ".tmpDiffDir")
   if not os.path.isdir(localDiffDir):
     os.mkdir(localDiffDir)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
@@ -130,3 +133,40 @@ def handleDiffForUri(uri, rootdir, fallout_index):
     localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir)
   else:
     print("No different version for", uri)
+
+
+def getAxiomsOfOntology(ontologyPath):
+  displayAxiomsPath = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "DisplayAxioms.jar")
+
+  process = subprocess.Popen(["java", "-cp", displayAxiomsPath, "DisplayAxioms", ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+  stdout, stderr = process.communicate()
+
+  axiomSet = stdout.decode("utf8").split("\n")
+  print(stderr.decode("utf-8"))
+
+  return set([axiom.rstrip() for axiom in axiomSet if axiom.rstrip() != ""])
+
+
+def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet):
+  if len(oldSemanticVersion.split(".")) != 3:
+    print("No semantic Version given.")
+    return None
+  
+  major, minor, patch = [int(i) for i in oldSemanticVersion.split(".")]
+
+  both = oldAxiomSet.intersection(newAxiomSet)
+  old = oldAxiomSet - newAxiomSet
+  new = newAxiomSet - oldAxiomSet
+
+  print("Old:", old)
+  print("New:", new)
+  print("Both:", both)
+
+
+  if old == set() and new == set():
+    return f"{str(major)}.{str(minor)}.{str(patch+1)}"
+  elif new != set() and old == set():
+    return f"{str(major)}.{str(minor+1)}.{str(0)}"
+  else:
+    return f"{str(major+1)}.{str(0)}.{str(0)}"
