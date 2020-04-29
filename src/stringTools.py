@@ -75,7 +75,7 @@ def getFileEnding(response):
     fileEnding = getFileExtensionFromUri(response.url)
   
   if fileEnding == "":
-    fileEnding = ".unk"
+    fileEnding = ".file"
   return fileEnding
     
   
