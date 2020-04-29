@@ -102,7 +102,7 @@ def handleDiffForUri(uri, rootdir, fallout_index):
   if not os.path.isdir(artifactDir):
     print("No data for this uri", uri)
     return
-  versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir))]
+  versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
   versionDirs.sort(reverse=True)
   latestVersion = versionDirs[0]
   latestVersionDir = os.path.join(artifactDir, latestVersion)
@@ -111,7 +111,7 @@ def handleDiffForUri(uri, rootdir, fallout_index):
     with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
       metadata = json.load(jsonFile)
   else:
-    print("No metadata", groupId, artifactDir)
+    print("No metadata", groupId, artifact)
     return
 
   oldETag = metadata["E-Tag"]
