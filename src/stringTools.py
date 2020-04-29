@@ -19,7 +19,6 @@ def isNoneOrEmpty(string):
     return True
 
 def getFileExtensionFromUri(uri):
-  print("FileExtUrl:",uri)
   match = uriFileExtensionRegex.match(uri)
   if match != None:
     return match.group(1)

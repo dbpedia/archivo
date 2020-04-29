@@ -137,7 +137,7 @@ def loadFalloutIndex():
     return []
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "r") as csvfile:
     reader = csv.reader(csvfile)
-  return [row for row in reader]
+    return [row for row in reader]
 
 def writeFalloutIndex(index):
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "w+") as csvfile: 

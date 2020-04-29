@@ -64,8 +64,12 @@ def getOOPSReport(parsedRdfString):
           )
   headers = {'Content-Type': 'application/xml'}
   try:
-    response = requests.post(oopsServiceUrl, data=oopsXml, headers=headers)
-    return response.text
+    response = requests.post(oopsServiceUrl, data=oopsXml, headers=headers, timeout=30)
+    if response.status_code < 400:
+      return response.text
+    else:
+      print("Bad Connection: Status", response.status_code)
+      return None
   except:
     print("Something went wrong generating the OOPS-report")
     return None
