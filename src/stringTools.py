@@ -33,6 +33,10 @@ def generateGroupAndArtifactFromUri(vocab_uri):
   else:
     return None, None
   
+  # replace possible port de
+  groupId = groupId.replace(":", "--")
+
+
   artifact = artifact.rstrip("#/")
   artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
   

@@ -211,7 +211,7 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
 
 
 def handleNewUri(vocab_uri, index, dataPath, fallout_index):
-  localDir = ".tmpOntTest"
+  localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
 

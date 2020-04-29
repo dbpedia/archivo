@@ -129,4 +129,5 @@ def writeMarkdownDescription(path, artifact, label, explaination, description=""
 def callMaven(pomfilePath, command):
     process = subprocess.Popen(["mvn", "-B", "-f", pomfilePath, command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
-    return stdout.decode("utf-8"), stderr.decode("utf-8")
+    print(stderr.decode("utf-8"))
+    return stdout.decode("utf-8")
