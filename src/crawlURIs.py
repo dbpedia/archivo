@@ -146,7 +146,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   # no empty parsed files since shacl is valid on empty files.
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    conforms, reportGraph, reportText = validation.validateOntologyGraph(ontoGraph)
+    conforms, reportGraph, reportText = validation.licenseValidation(ontoGraph)
     print(reportText)
     validation.printGraphToTurtleFile(reportGraph, os.path.join(filePath, artifact+"_type=shaclReport.ttl"))
   else:

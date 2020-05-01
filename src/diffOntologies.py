@@ -10,6 +10,9 @@ import os
 import json
 import generatePoms
 import sys
+import re
+
+semanticVersionRegex=re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 
 def runComm(oldFile, newFile):
     process = subprocess.Popen(["LC_ALL=C","comm", "-3", oldFile, newFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -27,7 +30,7 @@ def graphDiff(oldGraph, newGraph):
 
 def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader):
   # when both of the old values are not compareable, always download and check
-  if stringTools.isNoneOrEmpty(oldETag) and stringTools.isNoneOrEmpty(oldLastMod):
+  if stringTools.isNoneOrEmpty(oldETag) and stringTools.isNoneOrEmpty(oldLastMod) and stringTools.isNoneOrEmpty(oldContentLength):
     return True
   acc_header = {'Accept': bestHeader}
   try:
@@ -138,22 +141,31 @@ def handleDiffForUri(uri, rootdir, fallout_index):
 def getAxiomsOfOntology(ontologyPath):
   displayAxiomsPath = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "DisplayAxioms.jar")
 
-  process = subprocess.Popen(["java", "-cp", displayAxiomsPath, "DisplayAxioms", ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+  process = subprocess.Popen(["java", "-jar", displayAxiomsPath, ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-  stdout, stderr = process.communicate()
+  stdout, stderr= process.communicate()
 
   axiomSet = stdout.decode("utf8").split("\n")
-  print(stderr.decode("utf-8"))
+  print("Returncode:", process.returncode)
+  if process.returncode == 0:
+    success = True
+  else:
+    success = False
+    print(stderr.decode("utf-8"))
+    return None
+  
+  return [axiom.strip() for axiom in axiomSet if axiom.strip() != ""]
 
-  return set([axiom.rstrip() for axiom in axiomSet if axiom.rstrip() != ""])
 
-
-def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet):
-  if len(oldSemanticVersion.split(".")) != 3:
+def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
+  match = semanticVersionRegex.match(oldSemanticVersion)
+  if match == None:
     print("No semantic Version given.")
     return None
   
-  major, minor, patch = [int(i) for i in oldSemanticVersion.split(".")]
+  major = int(match.group(1))
+  minor = int(match.group(2))
+  patch = int(match.group(3))
 
   both = oldAxiomSet.intersection(newAxiomSet)
   old = oldAxiomSet - newAxiomSet
@@ -161,7 +173,6 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet):
 
   print("Old:", old)
   print("New:", new)
-  print("Both:", both)
 
 
   if old == set() and new == set():
