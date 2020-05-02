@@ -12,9 +12,9 @@ rootdir=sys.argv[1]
 
 index = ontoFiles.loadSimpleIndex()
 
-new_uris = []
+new_uris = [] 
 
-fallout = []
+fallout = ontoFiles.loadFalloutIndex()
 
 for uri in crawlURIs.getLovUrls():
     if not uri in index:

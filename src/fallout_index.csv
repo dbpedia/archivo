@@ -1,272 +1,33 @@
-http://www.irit.fr/recherches/MELODI/ontologies/SAN,False,not reachable server
-http://www.w3.org/ns/auth/acl,False,No ontology
-http://privatealpha.com/ontology/certification/1#,False,Unparseable source
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed non-information uri
-http://promsns.org/def/agr,False,not reachable server
-http://purl.org/vocab/aiiso/schema,False,Unparseable source
-http://www.aktors.org/ontology/portal,False,Unparseable source
-http://www.aktors.org/ontology/support,False,Unparseable source
-http://purl.org/linked-data/api/vocab#,False,not reachable server
-http://purl.org/archival/vocab/arch,False,not reachable server
-http://www.bbc.co.uk/ontologies/bbc,False,Unparseable source
-http://www.bbc.co.uk/ontologies/cms,False,Unparseable source
-http://www.bbc.co.uk/ontologies/provenance,False,Unparseable source
-http://contextus.net/ontology/ontomedia/ext/common/being#,False,not reachable server
-http://purl.org/net/nknouf/ns/bibtex,False,Unparseable source
-http://purl.org/vocab/bio/0.1/,False,Unparseable source
-http://www.w3.org/2002/12/cal/ical,False,not reachable server
-http://caressesrobot.org/ontology,False,Unparseable source
-http://betalinkeddata.cbs.nl/def/cbs,False,Unparseable source
-http://creativecommons.org/ns,False,No ontology
-http://www.ebusiness-unibw.org/ontologies/consumerelectronics/v1,False,Unparseable source
-http://www.eurocris.org/ontologies/cerif/1.3,False,not reachable server
-http://linkeddata.finki.ukim.mk/lod/ontology/cfrl#,False,not reachable server
-https://privatealpha.com/ontology/content-inventory/1#,False,Unparseable source
-http://www.essepuntato.it/2013/03/cito-functions,False,not reachable server
-http://purl.org/twc/ontologies/cmo.owl,False,not reachable server
-http://data.cochrane.org/ontologies/core/,False,not reachable server
-http://www.w3.org/2000/10/swap/pim/contact,False,No ontology
-http://purl.org/coo/ns#,False,not reachable server
-http://www.daml.org/2001/09/countries/iso-3166-ont,False,not reachable server
-http://www.cidoc-crm.org/cidoc-crm/,False,Unparseable source
-http://rhizomik.net/ontologies/copyrightonto.owl,False,Unparseable source
-http://courseware.rkbexplorer.com/ontologies/courseware,False,not reachable server
-http://purl.org/vocab/changeset/schema,False,Unparseable source
-http://commontag.org/ns#,False,not reachable server
-http://purl.org/ctic/infraestructuras/organizacion,False,not reachable server
-http://purl.org/cwmo/#,False,Unparseable source
-http://www.bbc.co.uk/ontologies/creativework,False,Unparseable source
-http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1,False,not reachable server
-http://purl.org/ontology/daia,False,not reachable server
-http://contextus.net/ontology/ontomedia/misc/date#,False,not reachable server
-http://vocab.datex.org/terms#,False,Unparseable source
-http://purl.org/net/dbm/ontology#,False,not reachable server
-http://ontology.cybershare.utep.edu/dbowl,False,Unparseable source
-http://ontologi.es/doap-bugs#,False,not reachable server
-https://decision-ontology.googlecode.com/svn/trunk/decision.owl,False,not reachable server
-http://ontologi.es/doap-deps#,False,not reachable server
-https://w3id.org/dio,False,not reachable server
-http://rdf-vocabulary.ddialliance.org/discovery,False,not reachable server
-http://www.data-knowledge.org/dk/,False,not reachable server
-http://onto.dm2e.eu/schemas/dm2e,False,not reachable server
-http://www.w3.org/2000/10/swap/pim/doc,False,Unparseable source
-http://purl.org/ontology/dso,False,not reachable server
-http://reference.data.gov.au/def/ont/dataset,False,not reachable server
-http://promsns.org/def/decprov,False,not reachable server
-http://www.w3.org/ns/dqv,False,No ontology
-http://purl.org/swan/2.0/discourse-relationships/,False,not reachable server
-http://vocab.data.gov/def/drm,False,not reachable server
-http://purl.org/ctic/dcat#,False,not reachable server
-http://inference-web.org/2.0/ds.owl,False,not reachable server
-http://www.w3.org/TR/vocab-duv/,False,Unparseable source
-http://www.w3.org/TR/EARL10/,False,Unparseable source
-http://purl.org/eem,False,not reachable server
-http://purl.org/ctic/sector-publico/elecciones,False,not reachable server
-http://data.europa.eu/eli/ontology,False,not reachable server
-http://purl.org/ctic/empleo/oferta,False,not reachable server
-http://labs.mondeca.com/vocab/endpointStatus,False,Unparseable source
-http://purl.org/essglobal/vocab/,False,not reachable server
-http://vocab.data.gov/def/fea,False,not reachable server
-http://data.lirmm.fr/ontologies/food,False,not reachable server
-http://www.w3.org/TR/2003/PR-owl-guide-20031215/food,False,Unparseable source
-http://purl.org/cerif/frapo/,False,not reachable server
-http://purl.org/vocab/frbr/core,False,Unparseable source
-http://purl.org/vocab/frbr/extended,False,Unparseable source
-http://data.totl.net/game/,False,No ontology
-http://www.oegov.org/core/owl/gc,False,Unparseable source
-ub293bL7C1,False,Malformed non-information uri
-http://vocab.data.gov/gd,False,not reachable server
-http://purl.org/gen/0.1#,False,not reachable server
-http://www.w3.org/2003/01/geo/wgs84_pos,False,No ontology
-http://www.mindswap.org/2003/owl/geo/geoFeatures20040307.owl,False,Unparseable source
-http://aims.fao.org/aos/geopolitical.owl,False,not reachable server
-http://rdf.geospecies.org/ont/geospecies,False,not reachable server
-http://purl.org/linguistics/gold,False,Unparseable source
-http://www.w3.org/TR/1999/REC-xpath-19991116#root-node,False,Unparseable source
-http://www.w3.org/2006/gen/ont,False,No ontology
-http://vocab.getty.edu/ontology,False,Unparseable source
-http://www.samos.gr/ontologies/helpdeskOnto.owl,False,not reachable server
-http://purl.org/net/hifm/ontology#,False,not reachable server
-http://vocab.data.gov/hosp,False,not reachable server
-http://iserve.kmi.open.ac.uk/ns/hrests,False,not reachable server
-https://privatealpha.com/ontology/ibis/1#,False,Unparseable source
-ub359bL7C1,False,Malformed non-information uri
-http://www.identity.org/ontologies/identity.owl,False,not reachable server
-http://www.irit.fr/recherches/MELODI/ontologies/IoT-O,False,not reachable server
-ub390bL7C1,False,Malformed non-information uri
-http://reference.data.gov.au/def/ont/iso19160-1-address,False,not reachable server
-http://dati.isprambiente.it/ontology/core#,False,Unparseable source
-https://data.istex.fr/ontology/istex#,False,Unparseable source
-http://spi-fm.uca.es/spdef/models/genericTools/itm/1.0,False,not reachable server
-http://ontology.it/itsmo/v1,False,Unparseable source
-http://kdo.render-project.eu/kdo#,False,not reachable server
-http://www.disit.org/km4city/schema,False,Unparseable source
-http://purl.org/net/vocab/2004/03/label,False,not reachable server
-http://purl.org/vocab/lifecycle/schema,False,Unparseable source
-http://purl.oclc.org/NET/ldr/ns#,False,not reachable server
-http://linked.opendata.cz/ontology/ldvm/,False,Unparseable source
-http://linkedgeodata.org/ontology,False,not reachable server
-http://purl.org/library/,False,not reachable server
-http://www.irit.fr/recherches/MELODI/ontologies/IoT-Lifecycle,False,not reachable server
-http://purl.org/limo-ontology/limo/,False,not reachable server
-http://purl.org/LiMo/0.1#,False,not reachable server
-http://www.lingvoj.org/ontology,False,Unparseable source
-http://purl.org/ctic/infraestructuras/localizacion,False,not reachable server
-http://linkedevents.org/ontology/,False,not reachable server
-http://loted.eu/ontology,False,Unparseable source
-ub466bL768C1,False,Malformed non-information uri
-http://def.seegrid.csiro.au/isotc211/iso19115/2003/metadata,False,Unparseable source
-http://rdf.myexperiment.org/ontologies/base/,False,not reachable server
-http://purl.org/media,False,Unparseable source
-http://moat-project.org/ns#,False,not reachable server
-https://w3id.org/skgo/modsci#,False,Unparseable source
-http://id.loc.gov/vocabulary/relators,False,No ontology
-http://www.telegraphis.net/ontology/measurement/measurement#,False,not reachable server
-http://data.doremus.org/ontology#,False,Unparseable source
-http://purl.org/muto/core,False,not reachable server
-http://www.semanticdesktop.org/ontologies/2007/08/15/nao,False,Unparseable source
-http://www.semanticdesktop.org/ontologies/2007/04/02/ncal,False,Unparseable source
-http://www.semanticdesktop.org/ontologies/2007/03/22/nco,False,Unparseable source
-http://www.semanticdesktop.org/ontologies/2007/03/22/nfo,False,Unparseable source
-http://www.semanticdesktop.org/ontologies/2007/01/19/nie,False,Unparseable source
-http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#,False,not reachable server
-http://lod.nl.go.kr/ontology/,False,not reachable server
-http://www.semanticdesktop.org/ontologies/2007/08/15/nrl,False,Unparseable source
-http://purl.org/ontology/storyline,False,Unparseable source
-http://culturalis.org/oad#,False,Unparseable source
-http://data.lirmm.fr/ontologies/oan,False,not reachable server
-http://rdf.geospecies.org/methods/observationMethod.rdf,False,not reachable server
-http://contextus.net/ontology/ontomedia/core/expression#,False,not reachable server
-http://dati.camera.it/ocd/,False,Unparseable source
-http://purl.org/onto-ocds/ocds,False,not reachable server
-http://schema.theodi.org/odrs,False,Unparseable source
-http://reference.data.gov.uk/def/organogram,False,not reachable server
-http://www.oegov.org/core/owl/cc,False,Unparseable source
-http://owlrep.eu01.aws.af.cm/fridge,False,Unparseable source
-http://ogp.me/ns,False,not reachable server
-http://www.lingvoj.org/olca,False,Unparseable source
-http://open-multinet.info/ontology/omn,False,Unparseable source
-http://open-multinet.info/ontology/omn-federation,False,Unparseable source
-http://open-multinet.info/ontology/omn-lifecycle,False,Unparseable source
-http://www.semanticweb.org/ontologies/2008/11/OntologySecurity.owl,False,not reachable server
-http://purl.org/openorg/,False,not reachable server
-ub550bL7C1,False,Malformed non-information uri
-http://openprovenance.org/model/opmo,False,not reachable server
-http://online-presence.net/opo/ns#,False,not reachable server
-http://lsdis.cs.uga.edu/projects/semdis/opus#,False,not reachable server
-http://datos.gob.es/def/sector-publico/organizacion#,False,not reachable server
-http://open-services.net/ns/core#,False,not reachable server
-http://purl.org/oslo/ns/localgov,False,Unparseable source
-http://data.lirmm.fr/ontologies/osp,False,not reachable server
-http://contextus.net/ontology/ontomedia/core/space#,False,not reachable server
-http://www.ordnancesurvey.co.uk/ontology/Topography/v0.1/Topography.owl,False,not reachable server
-http://open.vocab.org/terms,False,Unparseable source
-http://reference.data.gov.uk/def/parliament,False,not reachable server
-http://purl.org/vocab/participation/schema,False,Unparseable source
-http://data.lirmm.fr/ontologies/passim,False,not reachable server
-http://purl.org/hpi/patchr#,False,not reachable server
-http://www.essepuntato.it/2008/12/pattern,False,Unparseable source
-http://reference.data.gov.uk/def/payment#,False,not reachable server
-http://purl.org/procurement/public-contracts,False,Unparseable source
-http://rdf-vocabulary.ddialliance.org/phdd,False,not reachable server
-http://data.cochrane.org/ontologies/pico/,False,not reachable server
-http://purl.org/ontology/places,False,not reachable server
-http://purl.org/net/po#,False,not reachable server
-http://inference-web.org/2.0/pml-provenance.owl,False,not reachable server
-http://data.press.net/ontology/asset/,False,not reachable server
-http://data.press.net/ontology/classification/,False,not reachable server
-http://data.press.net/ontology/event/,False,not reachable server
-http://data.press.net/ontology/identifier/,False,not reachable server
-http://data.press.net/ontology/stuff/,False,not reachable server
-http://data.press.net/ontology/tag/,False,not reachable server
-http://data.lirmm.fr/ontologies/poste,False,not reachable server
-http://purl.org/prog/,False,not reachable server
-http://purl.org/net/provenance/ns#,False,Unparseable source
-https://vocab.eccenca.com/pubsub/,False,Unparseable source
-http://www.w3.org/ns/radion#,False,Unparseable source
-http://rdaregistry.info/Elements/a,False,not reachable server
-http://rdaregistry.info/Elements/c,False,not reachable server
-http://rdaregistry.info/Elements/e,False,not reachable server
-http://rdaregistry.info/Elements/i,False,not reachable server
-http://rdaregistry.info/Elements/m,False,not reachable server
-http://rdaregistry.info/Elements/u,False,not reachable server
-http://rdaregistry.info/Elements/w,False,not reachable server
-http://www.w3.org/2004/03/trix/rdfg-1/,False,Unparseable source
-http://www.w3.org/2001/02pd/rec54#,False,No ontology
-http://reegle.info/schema,False,Unparseable source
-http://purl.org/vocab/relationship/,False,Unparseable source
-http://www.purl.org/net/remetca#,False,not reachable server
-http://purl.org/stuff/rev#,False,Unparseable source
-http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#,False,not reachable server
-http://softeng.polito.it/rsctx,False,Unparseable source
-http://purl.org/rss/1.0,False,not reachable server
-https://w3id.org/saref4ee,False,Unparseable source
-http://salt.semanticauthoring.org/ontologies/sao,False,not reachable server
-http://purl.org/saws/ontology,False,not reachable server
-http://schema.org/,False,Unparseable source
-http://purl.org/spar/scoro/,False,not reachable server
-http://www.w3.org/ns/sparql-service-description,False,No ontology
-http://purl.org/linked-data/sdmx/2009/code,False,No ontology
-https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,False,not reachable server
-http://salt.semanticauthoring.org/ontologies/sdo,False,not reachable server
-http://www.ontologyportal.org/translations/SUMO.owl.txt#,False,Unparseable source
-http://www.lingvoj.org/semio.rdf,False,No ontology
-http://purl.org/SemSur/,False,Unparseable source
-http://purl.org/ontology/service,False,Unparseable source
-http://dati.cdec.it/lod/shoah/,False,not reachable server
-http://purl.org/ontology/similarity/,False,not reachable server
-http://ns.cerise-project.nl/energy/def/cim-smartgrid,False,not reachable server
-http://rdf.myexperiment.org/ontologies/snarm/,False,not reachable server
-http://purl.org/net/soron,False,not reachable server
-http://spinrdf.org/sp,False,Unparseable source
-http://spi-fm.uca.es/spdef/models/deployment/spcm/1.0,False,not reachable server
-http://spinrdf.org/spin,False,Unparseable source
-http://www.bbc.co.uk/ontologies/sport,False,Unparseable source
-http://spitfire-project.eu/ontology/ns,False,Unparseable source
-https://bmake.th-brandenburg.de/spv,False,not reachable server
-http://salt.semanticauthoring.org/ontologies/sro,False,not reachable server
-http://purl.org/ontology/ssso,False,not reachable server
-http://securitytoolbox.appspot.com/stac,False,Unparseable source
-http://purl.org/net/step,False,No ontology
-http://purl.org/ontology/stories/,False,not reachable server
-http://purl.org/voc/summa/,False,not reachable server
-https://w3id.org/squap/,False,not reachable server
-http://data.semanticweb.org/ns/swc/ontology,False,not reachable server
-http://www.w3.org/2004/03/trix/swp-1,False,Unparseable source
-http://spi-fm.uca.es/spdef/models/deployment/swpm/1.0,False,not reachable server
-http://sw-portal.deri.org/ontologies/swportal,False,not reachable server
-http://swrc.ontoware.org/ontology-07,False,Unparseable source
-http://www.w3.org/2003/11/swrl,False,not reachable server
-http://www.holygoat.co.uk/owl/redwood/0.1/tags/,False,not reachable server
-http://purl.org/biodiversity/taxon/,False,Unparseable source
-http://www.w3.org/2006/time-entry,False,Unparseable source
-http://linkedscience.org/teach/ns#,False,No ontology
-http://www.w3.org/2006/03/test-description,False,No ontology
-http://www.w3.org/2001/sw/hcls/ns/transmed/,False,not reachable server
-http://purl.org/toco/,False,Unparseable source
-ub802bL7C1,False,Malformed non-information uri
-http://contextus.net/ontology/ontomedia/ext/common/trait#,False,not reachable server
-http://vocab.org/transit/terms/,False,not reachable server
-http://linkeddata.finki.ukim.mk/lod/ontology/tao#,False,not reachable server
-http://idi.fundacionctic.org/cruzar/turismo,False,not reachable server
-http://www.essepuntato.it/2012/04/tvc,False,Unparseable source
-http://www.w3.org/2006/timezone,False,Unparseable source
-http://purl.oclc.org/NET/muo/ucum/,False,not reachable server
-http://www.w3.org/ns/ui,False,Unparseable source
-http://umbel.org/umbel,False,not reachable server
-http://code-research.eu/ontology/visual-analytics,False,Unparseable source
-http://www.essepuntato.it/2013/10/vagueness,False,not reachable server
-http://purl.org/vocab/vann/,False,Unparseable source
-http://data.lirmm.fr/ontologies/vdpp,False,not reachable server
-http://linkeddata.finki.ukim.mk/lod/ontology/veo#,False,not reachable server
-http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine,False,Unparseable source
-http://spi-fm.uca.es/spdef/models/genericTools/vmm/1.0,False,not reachable server
-http://voag.linkedmodel.org/schema/voag,False,not reachable server
-http://simile.mit.edu/2003/10/ontologies/vraCore3#,False,not reachable server
-http://vocab.sti2.at/vrank,False,not reachable server
-http://purl.org/vsearch/,False,not reachable server
-http://purl.org/vvo/ns#,False,not reachable server
-http://www.w3.org/2007/05/powder-s,False,Unparseable source
-http://vocab.org/whisky/terms,False,Unparseable source
-http://spi-fm.uca.es/spdef/models/genericTools/wikim/1.0,False,not reachable server
-http://xmlns.com/wot/0.1/,False,Unparseable source
+http://dati.beniculturali.it/cis/,False,Unparseable source
+http://theme-e.adaptcentre.ie/dave#,False,Unparseable source
+http://opendata.aragon.es/def/ei2a,False,Unparseable source
+http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,not reachable server
+http://njh.me/,False,No ontology
+http://nr.inria.fr/ludo/v1,False,not reachable server
+http://purl.org/spar/pro/,False,not reachable server
+http://iais.fraunhofer.de/vocabs/rami#,False,not reachable server
+https://w3id.org/i40/sto/iot/concerns/,False,not reachable server
+http://purl.uniprot.org/core/,False,not reachable server
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+http://purl.org/acco/ns#,True,Unreachable ontology
+http://www.bl.uk/schemas/bibliographic/blterms,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+https://w3id.org/i40/aml#,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://www.opengis.net/ont/gml,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+http://www.ontotext.com/proton/protontop,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
+https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
+http://www.opengis.net/ont/gml,True,Unreachable ontology
+http://lexvo.org/ontology,True,Unreachable ontology
