@@ -41,7 +41,7 @@ def generateGroupAndArtifactFromUri(vocab_uri):
   artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
   
   if artifact == "":
-    artifact="defaultOntology"
+    artifact="defaultArtifact"
   return groupId, artifact
 
 
