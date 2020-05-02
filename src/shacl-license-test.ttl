@@ -7,7 +7,7 @@
 @prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix cc: <http://creativecommons.org/ns#> .
 
-<#ontoIri>  
+<#licenseTest>  
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
     sh:or (

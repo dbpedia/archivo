@@ -3,19 +3,26 @@ from rdflib import Graph
 import inspectVocabs
 import os
 import sys
+from owlready2 import get_ontology, sync_reasoner_pellet
 
-def loadShaclGraph():
+def loadShaclGraph(filename, pubId=None):
     shaclgraph = Graph()
-    shaclgraph.parse(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + "onto_shacl.ttl", format="turtle")
+    with open(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + filename, "r") as shaclFile:
+        shaclgraph.parse(shaclFile, format="turtle", publicID=pubId)
     return shaclgraph
 
-shaclGraph = loadShaclGraph()
+licenseShaclGraph = loadShaclGraph("shacl-license-test.ttl", pubId="https://github.com/dbpedia/Archivo/blob/master/src/shacl-license-test.ttl")
 
 # returns triple with (conforms : bool, result_graph : rdflib.Graph, result_text: string)
-def validateOntologyGraph(ontograph):
-    r = validate(ontograph, shacl_graph=shaclGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False)
+def licenseValidation(ontograph):
+    r = validate(ontograph, shacl_graph=licenseShaclGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False)
     return r
 
 
-def printGraphToTurtleFile(graph, filepath):    
-    graph.serialize(format='turtle', destination=filepath)
+def getTurtleGraph(graph, base=None):    
+    return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
+
+def consistencyCheck(ontofile):
+    onto = get_ontology(ontofile).load()
+    with onto:sync_reasoner_pellet()
+    onto.save("consistencyResult.owl")

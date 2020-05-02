@@ -127,7 +127,7 @@ def downloadSource(uri, path, name, accHeader):
 
   
 
-def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate):
+def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, semVersion="0.0.1"):
   artifactPath, version = os.path.split(filePath)
   groupPath = os.path.split(artifactPath)[0]
   groupId = os.path.split(groupPath)[1]
@@ -146,9 +146,10 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   # no empty parsed files since shacl is valid on empty files.
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    conforms, reportGraph, reportText = validation.validateOntologyGraph(ontoGraph)
+    conforms, reportGraph, reportText = validation.licenseValidation(ontoGraph)
     print(reportText)
-    validation.printGraphToTurtleFile(reportGraph, os.path.join(filePath, artifact+"_type=shaclReport.ttl"))
+    with open(os.path.join(filePath, artifact+"_type=licenseShacl.ttl"), "w+") as liceseRepFile:
+      print(validation.getTurtleGraph(reportGraph), file=liceseRepFile)
   else:
     print("No valid syntax, no shacl report")
     conforms = False
@@ -166,7 +167,8 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   accessed= accessDate,
                                   headerString=str(response.headers),
                                   nirHeader = nirHeader,
-                                  contentLenght=stringTools.getContentLengthFromResponse(response)
+                                  contentLenght=stringTools.getContentLengthFromResponse(response),
+                                  semVersion=semVersion,
                                   )
   if triples > 0:                                                                
     docustring = getLodeDocuFile(vocab_uri)
@@ -249,15 +251,14 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
-    if not real_ont_uri in index:
-      bestHeader = determineBestAccHeader(real_ont_uri)
-      if not vocab_uri == real_ont_uri:
-        stringTools.deleteAllFilesInDir(localDir)
-        handleNewUri(real_ont_uri, index, dataPath, fallout_index)
+    if not real_ont_uri in index and not vocab_uri == real_ont_uri:
+      print("Found isDefinedByUri", real_ont_uri)
+      stringTools.deleteAllFilesInDir(localDir)
+      handleNewUri(real_ont_uri, index, dataPath, fallout_index)
       return
 
   
-  if real_ont_uri in index:
+  if str(real_ont_uri) in index:
     print("Already known uri", real_ont_uri)
     return
   
