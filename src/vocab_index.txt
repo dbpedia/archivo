@@ -53,7 +53,6 @@ http://purl.oclc.org/NET/ssnx/cf/cf-feature
 http://purl.oclc.org/NET/ssnx/cf/cf-property
 http://reference.data.gov.uk/def/central-government
 http://purl.org/ontology/chord/
-http://dati.beniculturali.it/cis/
 http://purl.org/spar/cito
 http://advene.org/ns/cinelab/ld
 http://www.w3.org/2011/content
@@ -76,7 +75,6 @@ http://sparql.cwrc.ca/ontologies/cwrc
 http://vocab.deri.ie/dady
 http://purl.org/eis/vocab/daq#
 http://dataid.dbpedia.org/ns/core#
-http://theme-e.adaptcentre.ie/dave#
 http://dbpedia.org/ontology/
 http://www.w3.org/ns/dcat
 http://purl.org/spar/datacite
@@ -109,9 +107,8 @@ http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-edac.owl
 http://www.europeana.eu/schemas/edm/
 http://ns.inria.fr/semed/eduprogression/v1
 https://w3id.org/eepsa#
-http://opendata.aragon.es/def/ei2a
 http://ns.inria.fr/emoca#
-http://rdfs.org/ns/void#
+http://vocab.deri.ie/void
 https://w3id.org/ep-plan
 https://data.nasa.gov/ontologies/atmonto/equipment#
 http://data.europa.eu/esco/model
@@ -128,7 +125,6 @@ http://xmlns.com/foaf/0.1/
 https://w3id.org/fog
 https://w3id.org/seas/FeatureOfInterestOntology
 http://streamreasoning.org/ontologies/frappe#
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf
 http://www.w3.org/2004/09/fresnel
 http://data.ordnancesurvey.co.uk/ontology/50kGazetteer/
 https://w3id.org/GConsent
@@ -165,7 +161,6 @@ http://www.w3.org/ns/hydra/core
 http://rdf.insee.fr/def/demo
 http://rdf.insee.fr/def/geo
 http://data.ign.fr/def/ignf
-http://njh.me/
 http://vocab.resc.info/incident
 http://www.ontologydesignpatterns.org/cp/owl/informationrealization.owl
 http://purl.org/innovation/ns
@@ -199,11 +194,10 @@ http://lsq.aksw.org/vocab
 http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-data.owl
 http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-modelling.owl
 http://www.w3.org/ns/prov-o#
-http://nr.inria.fr/ludo/v1
 http://ns.inria.fr/ludo/v1/gamemodel#
 http://ns.inria.fr/ludo/v1/gamepresentation#
 http://ns.inria.fr/ludo/v1/virtualcontext#
-http://ns.inria.fr/ludo/v1/xapi
+http://ns.inria.fr/ludo/v1/xapi#
 http://purl.org/lobid/lv
 http://lexvo.org/ontology
 http://purl.org/linkingyou/
@@ -259,7 +253,7 @@ http://www.w3.org/ns/org#
 http://data.ordnancesurvey.co.uk/ontology/admingeo/
 http://data.ordnancesurvey.co.uk/ontology/geometry/
 http://data.ordnancesurvey.co.uk/ontology/spatialrelations/
-https://w3id.org/opentrafficlights#Ontology
+https://w3id.org/opentrafficlights#Ontology#Ontology
 http://www.w3.org/2002/07/owl
 http://purl.org/net/p-plan#
 http://purl.org/pav/
@@ -281,7 +275,6 @@ http://contsem.unizar.es/def/sector-publico/pproc#
 http://purl.org/ontology/prv/core#
 http://www.loc.gov/premis/rdf/v3/
 http://ns.inria.fr/prissma/v2#
-http://purl.org/spar/pro/
 http://www.w3.org/ns/prov-aq#
 http://ns.inria.fr/provoc
 http://purl.org/net/provenance/types#
@@ -294,7 +287,6 @@ http://purl.oclc.org/NET/ssnx/qu/qu
 http://qudt.org/schema/qudt
 https://w3id.org/arco/ontology/arco
 http://guava.iis.sinica.edu.tw/r4r
-http://iais.fraunhofer.de/vocabs/rami#
 http://vocab.deri.ie/raul
 http://www.w3.org/1999/02/22-rdf-syntax-ns#
 http://www.w3.org/ns/rdfa#
@@ -349,8 +341,7 @@ http://kmi.open.ac.uk/projects/smartproducts/ontologies/food.owl
 http://ns.inria.fr/ast/sql#
 http://purl.oclc.org/NET/ssnx/ssn
 http://www.w3.org/ns/ssn/
-http://semweb.mmlab.be/ns/stoptimes#Ontology#Ontology
-https://w3id.org/i40/sto/iot/concerns/
+http://semweb.mmlab.be/ns/stoptimes#Ontology#Ontology#Ontology
 http://ns.bergnet.org/tac/0.1/triple-access-control#
 http://vocab.deri.ie/tao
 https://w3id.org/timebank
@@ -372,7 +363,6 @@ http://lod.taxonconcept.org/ontology/txn.owl
 http://purl.org/olia/ubyCat.owl
 http://purl.org/uco/ns#
 http://purl.org/umu/uneskos
-http://purl.uniprot.org/core/
 http://uri4uri.net/vocab#
 https://w3id.org/usability
 http://www.linkedmodel.org/schema/vaem
@@ -382,7 +372,6 @@ http://w3id.org/vir#
 http://vivoweb.org/ontology/core
 http://purl.org/vocommons/voaf
 http://w3id.org/rsp/vocals#
-http://vocab.deri.ie/void
 http://purl.org/query/voidext
 http://www.ics.forth.gr/isl/VoIDWarehouse/VoID_Extension_Schema.owl
 http://www.w3.org/2003/06/sw-vocab-status/ns
