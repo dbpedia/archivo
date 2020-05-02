@@ -198,8 +198,12 @@ def getOntologyReport(rootdir):
 def changeMetadata(rootdir):
     for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
         for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
-            versionDir = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir)) and dir != "target"][0]
-            print("Generating metadata for", groupdir, artifactDir, versionDir)
+            print("Generating metadata for", groupdir, artifactDir)
+            versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir)) and dir != "target"]
+            if versionDirs == []:
+                print("Couldnt find version for", groupdir, artifactDir)
+                continue
+            versionDir = versionDirs[0]  
             #filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
             jsonPath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=meta.json")
             if not os.path.isfile(jsonPath):
