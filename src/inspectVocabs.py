@@ -195,28 +195,21 @@ def getOntologyReport(rootdir):
                         print("RapperErrors: ", data["rapperErrorLog"])
 
 
-def checkNIRuris(rootdir):
+def changeMetadata(rootdir):
     for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
         for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
             versionDir = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir))][0]
+            print("Generating metadata for", groupdir, artifactDir, versionDir)
             filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
             jsonPath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=meta.json")
-
-            with open(jsonPath, "r") as jsonFile:
-                jsonData = json.load(jsonFile)
-            if os.path.isfile(filepath):
-                graph = getGraphOfVocabFile(filepath)
-            else:
-                print("Not parseable")
+            if not os.path.isfile(jsonPath):
                 continue
-            vocabUri_json_ref = URIRef(jsonData["ontology-resource"])
-            vocabUri_graph = getNIRUri(graph)
-            if vocabUri_graph == None:
-                print("No Ontology", groupdir, artifactDir)
-            elif vocabUri_graph == vocabUri_json_ref:
-                print("Equal")
-            else:
-                print("Differs", vocabUri_json_ref, vocabUri_graph)
+            with open(jsonPath, "r") as jsonFile:
+                metadata = json.load(jsonFile)
+
+            with open(jsonPath, "w") as jsonFile:
+                metadata["semantic-version"] = "0.1.0"
+                json.dump(metadata, jsonFile, indent=4, sort_keys=True)
 
 def loadNQuadsFile(filepath):
     conGraph = ConjunctiveGraph()
