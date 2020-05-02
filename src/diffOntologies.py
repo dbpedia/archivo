@@ -1,4 +1,3 @@
-import ontoFiles
 import subprocess
 from rdflib import compare
 import inspectVocabs
@@ -11,17 +10,9 @@ import json
 import generatePoms
 import sys
 import re
+import ontoFiles
 
 semanticVersionRegex=re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
-
-def runComm(oldFile, newFile):
-    process = subprocess.Popen(["LC_ALL=C","comm", "-3", oldFile, newFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stout, stderr = process.communicate()
-
-def sortFile(sourcePath, targetpath):
-    with open(targetpath, "w+") as targetfile:
-        process = subprocess.Popen(["LC_ALL=C", "sort", "-u"], stdout=targetfile, stderr=subprocess.PIPE)
-        stderr = process.communicate()[1]
 
 def graphDiff(oldGraph, newGraph):
     oldIsoGraph = compare.to_isomorphic(oldGraph)
@@ -59,7 +50,7 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None
 
 
-def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir):
+def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, lastSemVersion):
   try:
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
@@ -83,12 +74,20 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       stringTools.deleteAllFilesInDir(localDiffDir)
     else:
       print("Different!")
+      # generating new semantic version
+      oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(latestVersionDir, artifactName + "_type=parsed.nt"))
+      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
+      if oldSuccess and newSuccess:
+        newSemVersion = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
+      else:
+        print("Couldn't generate a new Semantic Version, keeping the old...")
+        newSemVersion = lastSemVersion
       new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
       newVersionPath = os.path.join(artifactDir, new_version)
       os.makedirs(newVersionPath, exist_ok=True)
       fileExt = os.path.splitext(sourcePath)[1]
       os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
-      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate)
+      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion)
       stringTools.deleteAllFilesInDir(localDiffDir)
       print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
   except FileNotFoundError:
@@ -121,6 +120,7 @@ def handleDiffForUri(uri, rootdir, fallout_index):
   oldLastMod = metadata["lastModified"]
   bestHeader = metadata["best-header"]
   contentLength = metadata["content-length"]
+  semVersion = metadata["semantic-version"]
 
   if bestHeader == "":
     return
@@ -133,7 +133,7 @@ def handleDiffForUri(uri, rootdir, fallout_index):
     return
   if isDiff:
     print("Fond potential different version for", uri)
-    localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir)
+    localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, semVersion)
   else:
     print("No different version for", uri)
 
@@ -152,16 +152,15 @@ def getAxiomsOfOntology(ontologyPath):
   else:
     success = False
     print(stderr.decode("utf-8"))
-    return None
   
-  return [axiom.strip() for axiom in axiomSet if axiom.strip() != ""]
+  return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
   match = semanticVersionRegex.match(oldSemanticVersion)
   if match == None:
-    print("No semantic Version given.")
-    return None
+    print("Bad format of semantic version", oldSemanticVersion)
+    return oldSemanticVersion
   
   major = int(match.group(1))
   minor = int(match.group(2))

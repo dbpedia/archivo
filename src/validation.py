@@ -5,12 +5,13 @@ import os
 import sys
 from owlready2 import get_ontology, sync_reasoner_pellet
 
-def loadShaclGraph(filename):
+def loadShaclGraph(filename, pubId=None):
     shaclgraph = Graph()
-    shaclgraph.parse(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + filename, format="turtle")
+    with open(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + filename, "r") as shaclFile:
+        shaclgraph.parse(shaclFile, format="turtle", publicID=pubId)
     return shaclgraph
 
-licenseShaclGraph = loadShaclGraph("shacl-license-test.ttl")
+licenseShaclGraph = loadShaclGraph("shacl-license-test.ttl", pubId="https://github.com/dbpedia/Archivo/blob/master/src/shacl-license-test.ttl")
 
 # returns triple with (conforms : bool, result_graph : rdflib.Graph, result_text: string)
 def licenseValidation(ontograph):
@@ -19,7 +20,7 @@ def licenseValidation(ontograph):
 
 
 def getTurtleGraph(graph, base=None):    
-    graph.serialize(format='turtle', encoding="utf-8", base=base)
+    return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
 
 def consistencyCheck(ontofile):
     onto = get_ontology(ontofile).load()
