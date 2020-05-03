@@ -10,8 +10,8 @@
 <#license-I>  
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
-    # The default severity here is sh:Violation
-    sh:message "No license found at all (neither dct:license, xhv:license nor cc:license)"@en
+    sh:severity sh:Violation ;
+    sh:message "No license found at all (neither dct:license, xhv:license nor cc:license)"@en ;
     sh:or (
         [
         sh:path dct:license;

@@ -23,7 +23,7 @@
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
     sh:severity sh:Violation ;
-    sh:message "dct:license statement is not an IRI"@en
+    sh:message "dct:license statement is not an IRI"@en ;
     sh:or (
         [
         sh:path dct:license;
