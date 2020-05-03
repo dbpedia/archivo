@@ -22,7 +22,7 @@ explaination="This ontology is part of the Databus Archivo - A Web-Scale Ontolog
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
 
 # url for the lodo docu service
-lodeServiceUrl="https://w3id.org/lode/"
+lodeServiceUrl="https://w3id.org/lode/owlapi/"
 
 # url for the oops rest service
 oopsServiceUrl=" http://oops.linkeddata.es/rest"
@@ -247,18 +247,18 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      fallout_index.append((vocab_uri, False, "No ontology"))
+      fallout_index.append((vocab_uri, False, "No ontology or Class"))
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
-    if not real_ont_uri in index and not vocab_uri == real_ont_uri:
+    if not str(real_ont_uri) in index and not vocab_uri == str(real_ont_uri):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
-      handleNewUri(real_ont_uri, index, dataPath, fallout_index)
+      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index)
       return
 
-  
-  if str(real_ont_uri) in index:
+  real_ont_uri = str(real_ont_uri)
+  if real_ont_uri in index:
     print("Already known uri", real_ont_uri)
     return
   
