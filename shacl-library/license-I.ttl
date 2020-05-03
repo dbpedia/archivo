@@ -3,28 +3,27 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dct: <http://purl.org/dc/terms/> .
 @prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix cc: <http://creativecommons.org/ns#> .
 
-<#licenseTest>  
+<#license-I>  
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
+    # The default severity here is sh:Violation
+    sh:message "No license found at all (neither dct:license, xhv:license nor cc:license)"@en
     sh:or (
         [
-        sh:path dcterms:license;
+        sh:path dct:license;
         sh:minCount 1;
-        sh:nodeKind sh:IRI;
         ]
         [
         sh:path xhv:license;
         sh:minCount 1;
-        sh:nodeKind sh:IRI;
         ]
         [
         sh:path cc:license;
         sh:minCount 1;
-        sh:nodeKind sh:IRI;
         ]
     ) .
     

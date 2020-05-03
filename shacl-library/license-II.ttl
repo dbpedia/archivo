@@ -1,0 +1,33 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+
+<#license-IIa>  
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology ;
+    sh:severity sh:Violation ;
+    sh:message "No dct:license statement found"@en ;
+    sh:or (
+        [
+        sh:path dct:license;
+        sh:minCount 1;
+        ]
+    ) .
+    
+<#license-IIb>  
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology;
+    sh:severity sh:Violation ;
+    sh:message "dct:license statement is not an IRI"@en
+    sh:or (
+        [
+        sh:path dct:license;
+        sh:nodeKind sh:IRI;
+        ]
+    ) .
+    
