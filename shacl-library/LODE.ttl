@@ -1,0 +1,115 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+# Source: https://essepuntato.it/lode/ 
+# The annotation properties handled by LODE are:
+########################
+# 	 Ontology level
+########################
+# VIOLATION:
+#    dc:title
+# 	 rdfs:comment
+#
+# WARNING:
+#    dc:creator
+#    dc:date
+#    dc:description, used with a literal as object, if you want to add a textual description to the ontology, or with a resource as object, if you want to trasclude that resource (e.g., a picture) as description of an entity.
+#    dc:publisher
+#    owl:versionInfo
+#
+# INFO (Optional) 
+#    dc:contributor 
+#    dc:rights
+#    owl:backwardCompatibleWith
+#    owl:incompatibleWith
+#    owl:versionIRI
+#######################
+# 	Class/Property level
+#######################
+#    rdfs:label -> Violation
+#    rdfs:comment -> Violation 
+#    rdfs:isDefinedBy -> Warning
+
+
+<#LODE-ontology-violation>
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology;
+    sh:severity sh:Violation;
+    sh:message "dc:title and rdfs:comment missing for Ontology. Header will not display correctly."@en;
+    sh:property [
+        sh:path dc:title;
+        sh:nodeKind sh:Literal;
+        sh:minCount 1;
+    ] ;
+    sh:property [
+        sh:path rdfs:comment;
+        sh:nodeKind sh:Literal;
+        sh:minCount 1;
+    ] .
+    
+<#LODE-class-property-violation>
+    a sh:NodeShape ;
+    # TODO check whether this works and whether stuff is missing
+    sh:targetClass owl:Class, owl:ObjectProperty, owl:DatatypeProperty;
+    sh:severity sh:Violation;
+    sh:message "label/comment missing for class or property."@en;
+    sh:property [
+        sh:path rdfs:label;
+        sh:nodeKind sh:Literal;
+        sh:minCount 1;
+    ] ;
+    sh:property [
+        sh:path rdfs:comment;
+        sh:nodeKind sh:Literal;
+        sh:minCount 1;
+    ] .
+    
+<#LODE-class-property-warning>
+    a sh:NodeShape ;
+    # TODO check whether this works and whether stuff is missing
+    sh:targetClass owl:Class, owl:ObjectProperty, owl:DatatypeProperty;
+    sh:severity sh:Warning;
+    sh:message "rdfs:isDefinedBy is missing and will not be displayed."@en ;
+    sh:property [
+        sh:path rdfs:isDefinedBy;
+        sh:nodeKind sh:Literal;
+        sh:minCount 1;
+    ] .
+  
+    
+# TODO complete
+<#LODE-ontology-warning>
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology;
+    sh:severity sh:Warning;
+    sh:property [
+        sh:path owl:versionInfo;
+    ];
+    sh:property [
+        sh:path dc:creator;
+    ];
+    sh:property [
+        sh:path dc:contributor;
+    ] ;
+    sh:property [
+        sh:path owl:imports;
+    ] ;
+    sh:property [
+        sh:path dc:decription;
+    ] ;
+    sh:property [
+        sh:path rdfs:comment;
+    ] ;
+    sh:property [
+        sh:path dc:rigths;
+    ] ;
+    sh:property [
+        sh:path owl:backwardCompatibleWith;
+    ] .
