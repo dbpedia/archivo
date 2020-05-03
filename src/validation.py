@@ -7,11 +7,12 @@ from owlready2 import get_ontology, sync_reasoner_pellet
 
 def loadShaclGraph(filename, pubId=None):
     shaclgraph = Graph()
-    with open(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + filename, "r") as shaclFile:
+    with open(os.path.abspath(os.path.dirname(sys.argv[0])) + os.sep + "shacl" + os.sep + filename, "r") as shaclFile:
         shaclgraph.parse(shaclFile, format="turtle", publicID=pubId)
     return shaclgraph
 
-licenseShaclGraph = loadShaclGraph("shacl-license-test.ttl", pubId="https://github.com/dbpedia/Archivo/blob/master/src/shacl-license-test.ttl")
+licenseShaclGraph = loadShaclGraph("license-test.ttl", pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/src/shacl/license-test.ttl")
+#metadataTestGraph = loadShaclGraph("metadata-test.ttl", pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/src/shacl/metadata-test.ttl")
 
 # returns triple with (conforms : bool, result_graph : rdflib.Graph, result_text: string)
 def licenseValidation(ontograph):
