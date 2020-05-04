@@ -39,12 +39,16 @@ def getTurtleGraph(graph, base=None):
     return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
 
 def runPelletCommand(ontofile, command, ignoreImports=False):
-    if ignoreImports:
-        process = subprocess.Popen([pelletPath, command, "--ignore-imports", "-v", ontofile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    else:
-        process = subprocess.Popen([pelletPath, command, "-v", ontofile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    return stdout.decode("utf-8"), stderr.decode("utf-8"), process.returncode
+    try:
+        if ignoreImports:
+            process = subprocess.run([pelletPath, command, "--ignore-imports", "-v", ontofile], timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            process = subprocess.run([pelletPath, command, "-v", ontofile], timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        return process.stdout.decode("utf-8"), process.stderr.decode("utf-8"), process.returncode
+    except:
+        print("Timeout in consistency check")
+        return "", "Timeout in pellet", 1
 
 def getConsistency(ontofile, ignoreImports=False):
     stdout, stderr, returncode = runPelletCommand(ontofile, "consistency", ignoreImports=ignoreImports)
