@@ -102,7 +102,7 @@
         sh:path owl:imports;
     ] ;
     sh:property [
-        sh:path dc:decription;
+        sh:path dc:description;
     ] ;
     sh:property [
         sh:path rdfs:comment;

@@ -41,9 +41,9 @@ def deleteEmptyDirsRecursive(startpath):
   else:
     print(f"Not a directory: {startpath}")
 
-def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, shaclValidated, accessed, headerString, nirHeader, contentLenght, semVersion=None):
+def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion=None):
   vocabInformation={}
-  vocabInformation["ontology-resource"] = definedByUri
+  vocabInformation["non-information-uri"] = definedByUri
   vocabInformation["accessed"] = accessed
   vocabInformation["lastModified"] = lastModified
   vocabInformation["rapperErrors"] = rapperErrors
@@ -51,10 +51,14 @@ def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, 
   vocabInformation["E-Tag"] = etag
   vocabInformation["triples"] = tripleSize
   vocabInformation["best-header"] = bestHeader
-  vocabInformation["SHACL-validated"] = shaclValidated
+  vocabInformation["License-I"] = licenseViolationsBool
+  vocabInformation["License-II"] = licenseWarningsBool
+  vocabInformation["consistent"] = consistentWithImports
+  vocabInformation["consistent-without-imports"] = consistentWithoutImports
   vocabInformation["resource-header"] = headerString
   vocabInformation["NIR-header"] = nirHeader
   vocabInformation["content-length"] = contentLenght
+  vocabInformation["lode-conform"] = lodeConform
   if semVersion != None:
     vocabInformation["semantic-version"] = semVersion
 

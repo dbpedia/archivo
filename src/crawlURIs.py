@@ -124,7 +124,6 @@ def downloadSource(uri, path, name, accHeader):
     print("Connection timed out for URI ", uri)
     return False, "", None
 
-
   
 
 def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, semVersion="0.0.1"):
@@ -146,14 +145,43 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   # no empty parsed files since shacl is valid on empty files.
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    conforms, reportGraph, reportText = validation.licenseValidation(ontoGraph)
-    print(reportText)
-    with open(os.path.join(filePath, artifact+"_type=licenseShacl.ttl"), "w+") as liceseRepFile:
-      print(validation.getTurtleGraph(reportGraph), file=liceseRepFile)
+    print("Run SHACL Tests...")
+    conformsLicense, reportGraphLicense, reportTextLicense = validation.licenseViolationValidation(ontoGraph)
+    #print(reportTextLicense)
+    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
+      print(validation.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
+    conformsLode, reportGraphLode, reportTextLode = validation.lodeReadyValidation(ontoGraph)
+    #print(reportTextLode)
+    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
+      print(validation.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
+    conformsLicense2, reportGraphLicense2, reportTextLicense2 = validation.licenseWarningValidation(ontoGraph)
+    #print(reportTextLicense2)
+    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
+      print(validation.getTurtleGraph(reportGraphLicense2), file=advLicenseFile)
+    # checks consistency with and without imports
+    print("Check consistency...")
+    isConsistent, output = validation.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
+    isConsistentNoImports, outputNoImports = validation.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
+    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
+      print(output, file=consistencyReport)
+    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
+      print(outputNoImports, file=consistencyReportNoImports)
+    # print pellet info files
+    print("Generate Pellet info for vocabulary...")
+    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
+      print(validation.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
+    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
+      print(validation.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
+    # profile check for ontology
+    print("Get profile check...")
+    stdout, stderr = validation.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
+    with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
+      print(stderr + "\n" + stdout, file=profileCheckFile)
   else:
     print("No valid syntax, no shacl report")
     conforms = False
     ontoGraph = None
+
   # write the metadata json file
   ontoFiles.writeVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
                                   definedByUri=vocab_uri,
@@ -163,7 +191,11 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   etag=stringTools.getEtagFromResponse(response),
                                   tripleSize=triples,
                                   bestHeader=bestHeader,
-                                  shaclValidated=conforms,
+                                  licenseViolationsBool=conformsLicense,
+                                  licenseWarningsBool=conformsLicense2,
+                                  consistentWithImports=isConsistent,
+                                  consistentWithoutImports=isConsistentNoImports,
+                                  lodeConform=conformsLode,
                                   accessed= accessDate,
                                   headerString=str(response.headers),
                                   nirHeader = nirHeader,
@@ -300,3 +332,13 @@ def getLovUrls():
   req = requests.get(lovOntologiesURL)
   json_data=req.json()
   return [dataObj["uri"] for dataObj in json_data]
+
+def testLOVInfo():
+  req = requests.get("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=schema")
+  json_data = req.json()
+  for versionObj in json_data["versions"]:
+    resourceUrl = versionObj["fileURL"]
+    verison = versionObj["name"]
+    print("Download source:", resourceUrl)
+    success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
+    print(success)
