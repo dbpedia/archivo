@@ -255,16 +255,17 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     os.mkdir(localDir)
 
   print("Trying to validate ", vocab_uri)
-  if vocab_uri in index.keys():
-    print("Already known uri, skipping...")
-    return
-  bestHeader  = determineBestAccHeader(vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
   if groupId == None or artifact == None:
     print("Malformed Uri", vocab_uri)
     if isNIR:
       fallout_index.append((vocab_uri, False, "Malformed Uri"))
     return
+  if vocab_uri in index.keys():
+    print("Already known uri, skipping...")
+    return
+  bestHeader  = determineBestAccHeader(vocab_uri)
+ 
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
     print("No header, probably server down")
