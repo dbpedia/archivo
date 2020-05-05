@@ -6,21 +6,30 @@ import crawlURIs
 from datetime import datetime
 from dateutil.parser import parse as parsedate
 import ontoFiles
-
+import random
 
 rootdir=sys.argv[1]
 
-index = ontoFiles.loadSimpleIndex()
-
+index = ontoFiles.loadIndexJson()
 new_uris = [] 
 
 fallout = ontoFiles.loadFalloutIndex()
 
+hashUris = ontoFiles.loadListFile("all_hash_uris.lst")
+
+
 for uri in crawlURIs.getLovUrls():
     if not uri in index:
-        new_uris.append(uri)
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False)
 
-for uri in new_uris:
-    crawlURIs.handleNewUri(uri, index, rootdir, fallout)
+#for i in range(20):
+    #uri = random.choice(potentialUris)
+    #while uri in new_uris:
+        #uri = random.choice(potentialUris)
+    #new_uris.append(uri)
+
+for uri in hashUris:
+    if not uri in index.keys():
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
 
 ontoFiles.writeSimpleIndex(index)
