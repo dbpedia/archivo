@@ -249,35 +249,43 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
   generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, explaination, md_description)
     
 
-
-def handleNewUri(vocab_uri, index, dataPath, fallout_index):
+def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
 
   print("Trying to validate ", vocab_uri)
-  if vocab_uri in index:
+  if vocab_uri in index.keys():
     print("Already known uri, skipping...")
     return
   bestHeader  = determineBestAccHeader(vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
+  if groupId == None or artifact == None:
+    print("Malformed Uri", vocab_uri)
+    if isNIR:
+      fallout_index.append((vocab_uri, False, "Malformed Uri"))
+    return
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
     print("No header, probably server down")
-    fallout_index.append((vocab_uri, False, "not reachable server"))
+    if isNIR:
+      fallout_index.append((vocab_uri, False, "Unreachable server"))
     stringTools.deleteAllFilesInDir(localDir)
     return
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
   if not success:
     print("No available Source")
-    fallout_index.append((vocab_uri, False, "not reachable server"))
+    if isNIR:
+      fallout_index.append((vocab_uri, False, "not reachable server"))
     stringTools.deleteAllFilesInDir(localDir)
     return
+  
   ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
     print("Unparseable ontology")
-    fallout_index.append((vocab_uri, False, "Unparseable source"))
+    if isNIR:
+      fallout_index.append((vocab_uri, False, "Unparseable file"))
     stringTools.deleteAllFilesInDir(localDir)
     return
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
@@ -285,21 +293,29 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      fallout_index.append((vocab_uri, False, "No ontology or Class"))
+      if isNIR:
+        fallout_index.append((vocab_uri, False, "No ontology or Class"))
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
     if not str(real_ont_uri) in index and not vocab_uri == str(real_ont_uri):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
-      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index)
+      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=True)
       return
+  elif not isNIR and not str(real_ont_uri) in index:
+    print("Found non information uri", real_ont_uri)
+    stringTools.deleteAllFilesInDir(localDir)
+    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True)
+    return
 
+  #it goes in here if the uri is NIR and  its resolveable
   real_ont_uri = str(real_ont_uri)
-  if real_ont_uri in index:
+  if isNIR and vocab_uri != real_ont_uri:
+    print("WARINING: unexpected value for real uri:", real_ont_uri)
+  if real_ont_uri in index.keys():
     print("Already known uri", real_ont_uri)
     return
-  
   
   print("Real Uri:", real_ont_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
@@ -307,9 +323,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
     print("Malformed non-information Uri", real_ont_uri)
     fallout_index.append((real_ont_uri, False, "Malformed non-information uri"))
     return
-  index.append(real_ont_uri)
+  index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
+  # generate parent pom
   if not os.path.isfile(os.path.join(dataPath, groupId, "pom.xml")):
     groupDoc=(f"#This group is for all vocabularies hosted on {groupId}\n\n"
             "All the artifacts in this group refer to one vocabulary, deployed in different formats.\n"
@@ -326,11 +343,14 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index):
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
       print(pomString, file=parentPomFile)
+  # prepare new release
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
+  # new release
   generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate)
+  # index writing
   ontoFiles.writeFalloutIndex(fallout_index)
-  ontoFiles.writeSimpleIndex(index)
+  ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDir(localDir)
 
 

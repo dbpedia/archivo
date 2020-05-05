@@ -150,3 +150,48 @@ def writeFalloutIndex(index):
     writer = csv.writer(csvfile, delimiter=",")
     for row in index:
       writer.writerow(row)
+
+def readCsvFile(pathToFile):
+  with open(pathToFile, "r") as spoFile:
+    reader = csv.reader(spoFile)
+    return set([row[0] for row in reader])
+
+def loadListFile(pathToFile):
+  with open(pathToFile, "r") as listFile:
+    lines = [line.strip() for line in listFile]
+  return lines
+
+
+def inspectMetadata(rootdir):
+
+  resultData = {"filenumber": 0}
+
+  exptKeys = set(["triples", "E-Tag", "rapperErrors", "rapperWarnings", "lastModified", "content-length", "semantic-version", "NIR-header", "resource-header", "accessed"])
+
+  for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
+    for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
+      print("Generating metadata for", groupdir, artifactDir)
+      versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir)) and dir != "target"]
+      if versionDirs == []:
+        print("Couldnt find version for", groupdir, artifactDir)
+        continue
+      versionDir = versionDirs[0]  
+      #filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
+      jsonPath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=meta.json")
+      if not os.path.isfile(jsonPath):
+        print("Couldnt find metadata")
+        continue
+      resultData["filenumber"] += 1 
+      with open(jsonPath, "r") as jsonFile:
+        metadata = json.load(jsonFile)
+
+      for key in set(metadata.keys()) - exptKeys:
+        if key in resultData.keys():
+          if str(metadata[key]) in resultData[key].keys():
+            oldNumber = resultData[key][str(metadata[key])]
+            resultData[key][str(metadata[key])] = oldNumber + 1
+          else:
+            resultData[key][str(metadata[key])] = 1
+        else:
+          resultData[key] = {str(metadata[key]) : 1}
+  print(json.dumps(resultData, indent=1))

@@ -38,37 +38,42 @@ def licenseWarningValidation(ontograph):
 def getTurtleGraph(graph, base=None):    
     return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
 
-def runPelletCommand(ontofile, command, ignoreImports=False):
-    try:
-        if ignoreImports:
-            process = subprocess.run([pelletPath, command, "--ignore-imports", "-v", ontofile], timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        else:
-            process = subprocess.run([pelletPath, command, "-v", ontofile], timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+def runPelletCommand(ontofile, command, parameters=[]):
+    pelletCommand = [pelletPath, command]
+    for parameter in parameters:
+        pelletCommand.append(parameter)
+    pelletCommand.append(ontofile)
 
+    try:
+        process = subprocess.run(pelletCommand, timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.stdout.decode("utf-8"), process.stderr.decode("utf-8"), process.returncode
     except:
         print("Timeout in consistency check")
-        return "", "Timeout in pellet", 1
+        return "", "Timeout in pellet", 999
 
 def getConsistency(ontofile, ignoreImports=False):
-    stdout, stderr, returncode = runPelletCommand(ontofile, "consistency", ignoreImports=ignoreImports)
+    params = ["-v", "--loader", "Jena"]
+    if ignoreImports:
+        params.append("--ignore-imports")
+    stdout, stderr, returncode = runPelletCommand(ontofile, "consistency", parameters=params)
     if returncode == 0:
         match = consistencyRegex.search(stdout)
         if match != None:
-            if match.group(1) == "Yes":
-                return True, stderr + "\n\n" + stdout
-            else:
-                return False, stderr + "\n\n" + stdout
+                return match.group(1), stderr + "\n\n" + stdout
         else:
-            return False, stderr + "\n\n" + stdout
+            return "Error - couldn't find consistency string", stderr + "\n\n" + stdout
+    elif returncode == 999:
+        return "Error - pellet timed out", stderr + "\n\n" + stdout
     else:
-        return False, stderr + "\n\n" + stdout
+        return "Error - Exit " + str(returncode), stderr + "\n\n" + stdout
 
 def getPelletInfo(ontofile, ignoreImports=False):
-    stdout, stderr, returncode = runPelletCommand(ontofile, "info", ignoreImports=ignoreImports)
+    params=["-v"]
+    if ignoreImports:
+        params.append("--ignore-imports")
+    stdout, stderr, returncode = runPelletCommand(ontofile, "info", parameters=params)
     return stderr + "\n\n" + stdout
 
 def getProfileCheck(ontofile):
-    process = subprocess.Popen(["java", "-jar", profileCheckerJar, ontofile, "--all"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    return stdout.decode("utf-8"), stderr.decode("utf-8")
+    process = subprocess.run(["java", "-jar", profileCheckerJar, ontofile, "--all"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return process.stdout.decode("utf-8"), process.stderr.decode("utf-8")
