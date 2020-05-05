@@ -261,7 +261,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     if isNIR:
       fallout_index.append((vocab_uri, False, "Malformed Uri"))
     return
-  if vocab_uri in index.keys():
+  if vocab_uri in index:
     print("Already known uri, skipping...")
     return
   bestHeader  = determineBestAccHeader(vocab_uri)
@@ -304,17 +304,17 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
       stringTools.deleteAllFilesInDir(localDir)
       handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=True)
       return
-  elif not isNIR and not str(real_ont_uri) in index:
+  elif not isNIR and not str(real_ont_uri) in index and str(real_ont_uri) != vocab_uri:
     print("Found non information uri", real_ont_uri)
     stringTools.deleteAllFilesInDir(localDir)
-    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True)
+    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, False)
     return
 
   #it goes in here if the uri is NIR and  its resolveable
   real_ont_uri = str(real_ont_uri)
   if isNIR and vocab_uri != real_ont_uri:
     print("WARINING: unexpected value for real uri:", real_ont_uri)
-  if real_ont_uri in index.keys():
+  if real_ont_uri in index:
     print("Already known uri", real_ont_uri)
     return
   
