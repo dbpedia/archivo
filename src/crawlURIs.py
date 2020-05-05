@@ -348,5 +348,3 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
     print(success)
-
-handleNewUri("http://purl.org/biotop/biotop.owl", [], "scd-testdir", [])
