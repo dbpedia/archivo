@@ -144,6 +144,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
   # no empty parsed files since shacl is valid on empty files.
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
+    parseable = True
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
     print("Run SHACL Tests...")
     conformsLicense, reportGraphLicense, reportTextLicense = validation.licenseViolationValidation(ontoGraph)
@@ -179,8 +180,13 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
       print(stderr + "\n" + stdout, file=profileCheckFile)
   else:
     print("No valid syntax, no shacl report")
-    conforms = False
+    conformsLicense = False
+    conformsLicense2 = False
+    conformsLode = False
     ontoGraph = None
+    parseable = False
+    isConsistent = False
+    isConsistentNoImports = False
 
   # write the metadata json file
   ontoFiles.writeVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
@@ -342,3 +348,5 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
     print(success)
+
+handleNewUri("http://purl.org/biotop/biotop.owl", [], "scd-testdir", [])
