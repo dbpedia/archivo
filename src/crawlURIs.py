@@ -260,6 +260,7 @@ def checkUriEquality(uri1, uri2):
     return False
 
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
+  vocab_uri = vocab_uri.rstrip("/#")
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)

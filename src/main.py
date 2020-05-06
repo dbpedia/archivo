@@ -15,8 +15,9 @@ new_uris = []
 
 fallout = ontoFiles.loadFalloutIndex()
 
-hashUris = ontoFiles.loadListFile("all_hash_uris.lst")
+hashUris = ontoFiles.loadListFile("src/all_hash_uris.lst")
 
+prefixUris = ontoFiles.readTsvFile("src/prefixCC-uris.tsv")
 
 for uri in crawlURIs.getLovUrls():
     if not uri in index:
@@ -32,4 +33,6 @@ for uri in hashUris:
     if not uri in index.keys():
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
 
-ontoFiles.writeSimpleIndex(index)
+for uri in prefixUris:
+    if not uri in index:
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False)

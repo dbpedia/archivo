@@ -224,3 +224,25 @@ def loadNQuadsFile(filepath):
     conGraph.parse(filepath)
 
     print(len([x for x in conGraph.store.contexts()]))
+
+def checkShaclReport(shaclReportGraph):
+    if shaclReportGraph == None:
+        print("No report graph available")
+        return "Error, no graph available"
+    violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
+    warningRef = URIRef('http://www.w3.org/ns/shacl#Violation')
+    queryString=(
+        "SELECT DISTINCT ?severity \n"
+        "WHERE {\n"
+        " ?s sh:resultSeverity ?severity . \n"   
+        "}"
+        )
+    result=shaclReportGraph.query(queryString, initNs={"sh":URIRef("http://www.w3.org/ns/shacl#")})
+
+    resultValues = [row[0] for row in result if row != None]
+    if violationRef in resultValues:
+        return "Violation"
+    elif warningRef in resultValues:
+        return "Warning"
+    else:
+        return "OK"

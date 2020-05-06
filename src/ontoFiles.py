@@ -4,6 +4,8 @@ import json
 import subprocess
 import re
 import csv
+import stringTools
+import inspectVocabs
 
 rapperErrorsRegex=re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex=re.compile(r"^rapper: Warning.*$")
@@ -200,3 +202,58 @@ def inspectMetadata(rootdir):
         else:
           resultData[key] = {str(metadata[key]) : 1}
   print(json.dumps(resultData, indent=1))
+
+
+def genStats(rootdir):
+  index = loadIndexJson()
+  
+  exptKeys = set(["triples", "E-Tag", "rapperErrors", "rapperWarnings", "lastModified", "content-length", "semantic-version", "NIR-header", "resource-header", "accessed", "non-information-uri"])
+
+  resultData = {}
+
+  for indexUri in index.keys():
+    groupId, artifact =  stringTools.generateGroupAndArtifactFromUri(indexUri)
+
+    if not os.path.isdir(os.path.join(rootdir, groupId, artifact)):
+      print("Couldnt find data for", indexUri, file=sys.stderr)
+      continue
+    versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupId, artifact)) if os.path.isdir(os.path.join(rootdir, groupId, artifact, dir)) and dir != "target"]
+    if versionDirs == []:
+        print("Couldnt find version for", groupId, artifact, file=sys.stderr)
+        continue
+    versionDir = versionDirs[0] 
+    jsonPath = os.path.join(rootdir, groupId, artifact, versionDir, artifact + "_type=meta.json")
+    if not os.path.isfile(jsonPath):
+      print("Couldnt find metadata", file=sys.stderr)
+      continue
+    lodeShaclReport = os.path.join(rootdir, groupId, artifact, versionDir, artifact + "_type=shaclReport_validates=lodeMetadata.ttl")
+    if not os.path.isfile(lodeShaclReport):
+      print("Couldnt find shacl report", file=sys.stderr)
+      continue
+    lodeShaclGraph = inspectVocabs.getGraphOfVocabFile(lodeShaclReport)
+    with open(jsonPath, "r") as jsonFile:
+      metadata = json.load(jsonFile)
+
+    for key in set(metadata.keys()) - exptKeys:
+      if key in resultData.keys():
+        if str(metadata[key]) in resultData[key].keys():
+          oldNumber = resultData[key][str(metadata[key])]
+          resultData[key][str(metadata[key])] = oldNumber + 1
+        else:
+          resultData[key][str(metadata[key])] = 1
+      else:
+        resultData[key] = {str(metadata[key]) : 1}
+    
+    lodeValue = inspectVocabs.checkShaclReport(lodeShaclGraph)
+    if "lodeShaclValue" in resultData:
+      if lodeValue in resultData["lodeShaclValue"]:
+        oldNumber = resultData["lodeShaclValue"][lodeValue]
+        resultData["lodeShaclValue"][lodeValue] = oldNumber +1
+      else:
+        resultData["lodeShaclValue"][lodeValue] = 1
+    else:
+      resultData["lodeShaclValue"] = {lodeValue : 1}
+
+  print(json.dumps(resultData, indent=1))
+     
+    

@@ -57,7 +57,7 @@
 <#LODE-class-property-violation>
     a sh:NodeShape ;
     # TODO check whether this works and whether stuff is missing
-    sh:targetClass owl:Class, owl:ObjectProperty, owl:DatatypeProperty;
+    sh:targetClass owl:Class;
     sh:severity sh:Violation;
     sh:message "label/comment missing for class or property."@en;
     sh:property [
@@ -75,12 +75,12 @@
     a sh:NodeShape ;
     # TODO check whether this works and whether stuff is missing
     sh:targetClass owl:Class, owl:ObjectProperty, owl:DatatypeProperty;
-    sh:severity sh:Warning;
     sh:message "rdfs:isDefinedBy is missing and will not be displayed."@en ;
     sh:property [
         sh:path rdfs:isDefinedBy;
         sh:nodeKind sh:Literal;
         sh:minCount 1;
+        sh:severity sh:Warning;
     ] .
   
     
@@ -91,25 +91,33 @@
     sh:severity sh:Warning;
     sh:property [
         sh:path owl:versionInfo;
+        sh:severity sh:Warning;
     ];
     sh:property [
         sh:path dc:creator;
+        sh:severity sh:Warning;
     ];
     sh:property [
         sh:path dc:contributor;
+        sh:severity sh:Warning;
     ] ;
     sh:property [
         sh:path owl:imports;
+        sh:severity sh:Warning;
     ] ;
     sh:property [
         sh:path dc:description;
+        sh:severity sh:Warning;
     ] ;
     sh:property [
         sh:path rdfs:comment;
+        sh:severity sh:Warning;
     ] ;
     sh:property [
         sh:path dc:rigths;
+        sh:severity sh:Warning;
     ] ;
     sh:property [
         sh:path owl:backwardCompatibleWith;
+        sh:severity sh:Warning;
     ] .
