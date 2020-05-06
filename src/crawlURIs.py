@@ -315,7 +315,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
-    if not str(real_ont_uri) in index and not vocab_uri == str(real_ont_uri):
+    if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
       handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=False)
