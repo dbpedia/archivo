@@ -170,16 +170,16 @@ def inspectMetadata(rootdir):
 
   for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
     for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
-      print("Generating metadata for", groupdir, artifactDir)
+      print("Generating metadata for", groupdir, artifactDir, file=sys.stderr)
       versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir)) and dir != "target"]
       if versionDirs == []:
-        print("Couldnt find version for", groupdir, artifactDir)
+        print("Couldnt find version for", groupdir, artifactDir, file=sys.stderr)
         continue
       versionDir = versionDirs[0]  
       #filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
       jsonPath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=meta.json")
       if not os.path.isfile(jsonPath):
-        print("Couldnt find metadata")
+        print("Couldnt find metadata", file=sys.stderr)
         continue
       resultData["filenumber"] += 1 
       with open(jsonPath, "r") as jsonFile:
