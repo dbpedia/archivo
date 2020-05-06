@@ -152,9 +152,14 @@ def writeFalloutIndex(index):
       writer.writerow(row)
 
 def readCsvFile(pathToFile):
-  with open(pathToFile, "r") as spoFile:
-    reader = csv.reader(spoFile)
+  with open(pathToFile, "r") as csvfile:
+    reader = csv.reader(csvfile)
     return set([row[0] for row in reader])
+
+def readTsvFile(pathToFile):
+  with open(pathToFile, "r") as csvfile:
+    reader = csv.reader(csvfile, delimiter="\t")
+    return set([row[1] for row in reader])
 
 def loadListFile(pathToFile):
   with open(pathToFile, "r") as listFile:

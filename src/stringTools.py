@@ -38,7 +38,7 @@ def generateGroupAndArtifactFromUri(vocab_uri):
 
 
   artifact = artifact.rstrip("#/")
-  artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--")
+  artifact=artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--")
   
   if artifact == "":
     artifact="defaultArtifact"

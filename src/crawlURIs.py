@@ -180,13 +180,13 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
       print(stderr + "\n" + stdout, file=profileCheckFile)
   else:
     print("No valid syntax, no shacl report")
-    conformsLicense = False
-    conformsLicense2 = False
-    conformsLode = False
+    conformsLicense = "Error - No turtle file available"
+    conformsLicense2 = "Error - No turtle file available"
+    conformsLode = "Error - No turtle file available"
     ontoGraph = None
     parseable = False
-    isConsistent = False
-    isConsistentNoImports = False
+    isConsistent = "Error - No turtle file available"
+    isConsistentNoImports = "Error - No turtle file available"
 
   # write the metadata json file
   ontoFiles.writeVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
@@ -318,7 +318,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   #it goes in here if the uri is NIR and  its resolveable
   real_ont_uri = str(real_ont_uri)
   if isNIR and vocab_uri != real_ont_uri:
-    print("WARINING: unexpected value for real uri:", real_ont_uri)
+    print("WARNING: unexpected value for real uri:", real_ont_uri)
   if real_ont_uri in index:
     print("Already known uri", real_ont_uri)
     return

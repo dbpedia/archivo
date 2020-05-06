@@ -224,6 +224,3 @@ def loadNQuadsFile(filepath):
     conGraph.parse(filepath)
 
     print(len([x for x in conGraph.store.contexts()]))
-
-#loadNQuadsFile("/home/denis/Downloads/lov.nq")
-
