@@ -249,6 +249,16 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
   generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, explaination, md_description)
     
 
+def checkUriEquality(uri1, uri2):
+  if "#" in uri1:
+    uri1 = uri1[:uri1.rfind("#")]
+  if "#" in uri2:
+    uri2 = uri2[:uri2.rfind("#")]
+  if uri1 == uri2:
+    return True
+  else:
+    return False
+
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
@@ -307,16 +317,18 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     if not str(real_ont_uri) in index and not vocab_uri == str(real_ont_uri):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
-      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=True)
+      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=False)
       return
-  elif not isNIR and str(real_ont_uri) != vocab_uri:
-    print("Found non information uri", real_ont_uri)
+
+  if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
+    print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDir(localDir)
     handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, False)
     return
 
   #it goes in here if the uri is NIR and  its resolveable
   real_ont_uri = str(real_ont_uri)
+
   if isNIR and vocab_uri != real_ont_uri:
     print("WARNING: unexpected value for real uri:", real_ont_uri)
   if real_ont_uri in index:
@@ -374,3 +386,5 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
     print(success)
+
+handleNewUri("https://w3id.org/tree", {}, "scd-testdir", [], "test", False)
