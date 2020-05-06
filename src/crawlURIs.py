@@ -323,7 +323,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDir(localDir)
-    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, False)
+    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True)
     return
 
   #it goes in here if the uri is NIR and  its resolveable
@@ -386,5 +386,3 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
     print(success)
-
-handleNewUri("https://w3id.org/tree", {}, "scd-testdir", [], "test", False)
