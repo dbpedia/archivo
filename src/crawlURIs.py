@@ -387,5 +387,3 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
     print(success)
-
-handleNewUri("http://www.agls.gov.au/agls/terms/", {}, "scd-testdir", [], "test", False)
