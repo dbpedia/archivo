@@ -6,10 +6,14 @@ from rdflib.namespace import DCTERMS, DC
 import json
 
 def getGraphOfVocabFile(filepath):
-  rdfFormat=rdflib.util.guess_format(filepath)
-  graph = rdflib.Graph()
-  graph.parse(filepath, format=rdfFormat)
-  return graph
+    try:  
+        rdfFormat=rdflib.util.guess_format(filepath)
+        graph = rdflib.Graph()
+        graph.parse(filepath, format=rdfFormat)
+        return graph
+    except Exception as e:
+        print("Error in parsing:", str(e))
+        return None
 
 #Relevant properties:
 # rdfs:label

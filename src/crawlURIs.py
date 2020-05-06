@@ -290,6 +290,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     stringTools.deleteAllFilesInDir(localDir)
     return
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
+  if graph == None:
+    print("Error in rdflib parsing")
+    if isNIR:
+      fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
@@ -304,7 +308,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
       stringTools.deleteAllFilesInDir(localDir)
       handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=True)
       return
-  elif not isNIR and not str(real_ont_uri) in index and str(real_ont_uri) != vocab_uri:
+  elif not isNIR and str(real_ont_uri) != vocab_uri:
     print("Found non information uri", real_ont_uri)
     stringTools.deleteAllFilesInDir(localDir)
     handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, False)
