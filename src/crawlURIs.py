@@ -110,19 +110,19 @@ def downloadSource(uri, path, name, accHeader):
         print(response.text, file=ontfile)
       return True, filePath, response
     else:
-      return False, filePath, response
+      return False, filePath, "Error - Status " + str(response.status_code)
   except requests.exceptions.TooManyRedirects:
     print("Too many redirects, cancel parsing...")
-    return False, "", None
+    return False, "", "Error - too many redirects"
   except TimeoutError:
     print("Timed out during parsing: "+uri)
-    return False, "", None
+    return False, "", "Error - Timeout error"
   except requests.exceptions.ConnectionError:
     print("Bad Connection "+ uri)
-    return False, "", None
+    return False, "", "Error - ConnectionError"
   except requests.exceptions.ReadTimeout:
     print("Connection timed out for URI ", uri)
-    return False, "", None
+    return False, "", "Error - ReadTimeout"
 
   
 
@@ -260,7 +260,7 @@ def checkUriEquality(uri1, uri2):
     return False
 
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
-  vocab_uri = vocab_uri.rstrip("/#")
+  vocab_uri = vocab_uri.rstrip("#")
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
@@ -289,7 +289,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   if not success:
     print("No available Source")
     if isNIR:
-      fallout_index.append((vocab_uri, False, "not reachable server"))
+      fallout_index.append((vocab_uri, False, str(response)))
     stringTools.deleteAllFilesInDir(localDir)
     return
   
@@ -315,13 +315,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
       return
-    if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri).rstrip("/")):
+    if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
       handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=False)
       return
 
-  if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri).rstrip("/")):
+  if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDir(localDir)
     handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True)
