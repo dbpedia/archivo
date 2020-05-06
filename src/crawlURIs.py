@@ -294,6 +294,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     print("Error in rdflib parsing")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
+    return
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   if real_ont_uri == None:
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
