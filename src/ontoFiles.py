@@ -207,15 +207,14 @@ def inspectMetadata(rootdir):
 
 def measureStars(metadata):
   stars = 0
-  if metadata["triples"] > 0 and metadata["license-I"] == True:
+  if metadata["triples"] > 0 and metadata["License-I"] == True:
     stars = 2
   else:
-    print("Couldn't fulfill baseline")
     return 0
 
-  if metadata["isConsistent"] == "Yes" or metadata["isConsistentWithoutErrors"] == "Yes":
+  if metadata["consistent"] == "Yes" or metadata["consistent-without-imports"] == "Yes":
     stars = stars + 1
-  if metadata["license-II"] == True:
+  if metadata["License-II"] == True:
     stars = stars + 1
   return stars
 
@@ -257,6 +256,7 @@ def genStats(rootdir):
   resultData["found-files"] = 0
   resultData["triples"] = {"Zero": 0, "<100" : 0, "<1000" : 0, "<10000" : 0, "<100000" : 0, ">100000" : 0 }
   resultData["profiles"] = {}
+  resultData["stars"] = {"0 Stars":0, "1 Star" : 0, "2 Stars":0, "3 Stars":0, "4 Stars":0}
 
   for indexUri in index.keys():
     groupId, artifact =  stringTools.generateGroupAndArtifactFromUri(indexUri)
@@ -292,6 +292,10 @@ def genStats(rootdir):
           resultData[key][str(metadata[key])] = 1
       else:
         resultData[key] = {str(metadata[key]) : 1}
+    
+    stars = measureStars(metadata)
+
+    resultData["stars"][str(stars)+ " Stars"] = resultData["stars"][str(stars)+ " Stars"] + 1
     
     tripleNumber = metadata["triples"]
     if tripleNumber == 0:
