@@ -223,12 +223,13 @@ def measureStars(metadata):
 def checkIndexValidity():
   index = loadIndexJson()
   for uri in index:
-    simCounter = 0
+    similarUris = []
     for otherUri in index:
       if uri in otherUri:
-        simCounter = simCounter + 1
-    if simCounter > 1:
-      print("Multiple occasions:", uri)
+        similarUris.append(otherUri)
+    similarUris.remove(uri)
+    if similarUris != []:
+      print("Multiple occasions:", uri, ";".join(similarUris))
 
 def getProfile(pelletInfoPath, pelletInfoPathNoImports, profilePath):
   profiles = []
