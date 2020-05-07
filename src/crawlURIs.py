@@ -123,6 +123,9 @@ def downloadSource(uri, path, name, accHeader):
   except requests.exceptions.ReadTimeout:
     print("Connection timed out for URI ", uri)
     return False, "", "Error - ReadTimeout"
+  except:
+    print("Unknown error during download")
+    return False, "", "Error - UnknownError"
 
   
 
@@ -383,7 +386,7 @@ def testLOVInfo():
   json_data = req.json()
   for versionObj in json_data["versions"]:
     resourceUrl = versionObj["fileURL"]
-    verison = versionObj["name"]
+    version = versionObj["name"]
     print("Download source:", resourceUrl)
-    success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+verison, "text/rdf+n3")
+    success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+version, "text/rdf+n3")
     print(success)
