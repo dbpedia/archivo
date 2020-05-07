@@ -253,6 +253,7 @@ def genStats(rootdir):
   exptKeys = set(["triples", "E-Tag", "rapperErrors", "rapperWarnings", "lastModified", "content-length", "semantic-version", "NIR-header", "resource-header", "accessed", "non-information-uri"])
 
   resultData = {}
+  resultData["found-files"] = 0
   resultData["triples"] = {"Zero": 0, "<100" : 0, "<1000" : 0, "<10000" : 0, "<100000" : 0, ">100000" : 0 }
   resultData["profiles"] = {}
 
@@ -276,6 +277,7 @@ def genStats(rootdir):
     if not os.path.isfile(lodeShaclReport):
       print("Couldnt find shacl report", file=sys.stderr)
       continue
+    resultData["found-files"] = resultData["found-files"] + 1
     lodeShaclGraph = inspectVocabs.getGraphOfVocabFile(lodeShaclReport)
     with open(jsonPath, "r") as jsonFile:
       metadata = json.load(jsonFile)
