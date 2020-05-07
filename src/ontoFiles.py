@@ -237,7 +237,6 @@ def getProfile(pelletInfoPath, pelletInfoPathNoImports, profilePath):
       with open(pelletInfo, "r") as pelletInfoFile:
         content = pelletInfoFile.read()
         match = pelletInfoProfileRegex.search(content)
-        print(match)
         if match != None:
           profiles.append(match.group(1).strip().replace(" ", ""))
   if os.path.isfile(profilePath):
@@ -317,19 +316,20 @@ def genStats(rootdir):
     else:
       resultData["lodeShaclValue"] = {lodeValue : 1}
 
-  profiles = getProfile(os.path.join(filesPath, artifact + "_type=pelletInfo_imports=FULL.txt"), os.path.join(filesPath, artifact + "_type=pelletInfo_imports=NONE.txt"), os.path.join(filesPath, artifact + "_type=profile.txt"))  
-  profiles = list(set(profiles))
-  profiles.sort()
-  if profiles == []:
-    profiles = "Error - couldnt determine profile"
-  else:
-    profiles = ";".join(profiles)
+    profiles = getProfile(os.path.join(filesPath, artifact + "_type=pelletInfo_imports=FULL.txt"), os.path.join(filesPath, artifact + "_type=pelletInfo_imports=NONE.txt"), os.path.join(filesPath, artifact + "_type=profile.txt"))  
+    profiles = list(set(profiles))
+    profiles.sort()
+    if profiles == []:
+      profiles = "Error - couldnt determine profile"
+    else:
+      profiles = ";".join(profiles)
 
-  if profiles in resultData["profiles"]:
-    oldNumber = resultData["profiles"][profiles]
-    resultData["profiles"][profiles] = oldNumber +1
-  else:
-    resultData["profiles"][profiles] = 1
+    if profiles in resultData["profiles"]:
+      oldNumber = resultData["profiles"][profiles]
+      resultData["profiles"][profiles] = oldNumber +1
+    else:
+      resultData["profiles"][profiles] = 1
+
   print(json.dumps(resultData, indent=1, sort_keys=True))
      
     
