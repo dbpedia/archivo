@@ -11,6 +11,8 @@ rapperErrorsRegex=re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex=re.compile(r"^rapper: Warning.*$")
 rapperTriplesRegex=re.compile(r"rapper: Parsing returned (\d+) triples")
 
+profileCheckerRegex=re.compile(r"(OWL2_DL|OWL2_QL|OWL2_EL|OWL2_RL|OWL2_FULL): OK")
+pelletInfoProfileRegex = re.compile(r"OWL Profile = (.*)\n")
 
 def returnRapperErrors(rapperLog):
   errorMatches = []
@@ -203,6 +205,48 @@ def inspectMetadata(rootdir):
           resultData[key] = {str(metadata[key]) : 1}
   print(json.dumps(resultData, indent=1))
 
+def measureStars(metadata):
+  stars = 0
+  if metadata["triples"] > 0 and metadata["license-I"] == True:
+    stars = 2
+  else:
+    print("Couldn't fulfill baseline")
+    return 0
+
+  if metadata["isConsistent"] == "Yes" or metadata["isConsistentWithoutErrors"] == "Yes":
+    stars = stars + 1
+  if metadata["license-II"] == True:
+    stars = stars + 1
+  return stars
+
+
+def checkIndexValidity():
+  index = loadIndexJson()
+  for uri in index:
+    simCounter = 0
+    for otherUri in index:
+      if uri in otherUri:
+        simCounter = simCounter + 1
+    if simCounter > 1:
+      print("Multiple occasions:", uri)
+
+def getProfile(pelletInfoPath, pelletInfoPathNoImports, profilePath):
+  profiles = []
+  for pelletInfo in (pelletInfoPath, pelletInfoPathNoImports):
+    if os.path.isfile(pelletInfo):
+      with open(pelletInfo, "r") as pelletInfoFile:
+        content = pelletInfoFile.read()
+        match = pelletInfoProfileRegex.search(content)
+        print(match)
+        if match != None:
+          profiles.append(match.group(1).strip().replace(" ", ""))
+  if os.path.isfile(profilePath):
+    with open(profilePath, "r") as profileFile:
+      content = profileFile.read()
+      for match in profileCheckerRegex.finditer(content):
+        profiles.append(match.group(1).replace("_", ""))
+  return profiles
+  
 
 def genStats(rootdir):
   index = loadIndexJson()
@@ -210,6 +254,8 @@ def genStats(rootdir):
   exptKeys = set(["triples", "E-Tag", "rapperErrors", "rapperWarnings", "lastModified", "content-length", "semantic-version", "NIR-header", "resource-header", "accessed", "non-information-uri"])
 
   resultData = {}
+  resultData["triples"] = {"Zero": 0, "<100" : 0, "<1000" : 0, "<10000" : 0, "<100000" : 0, ">100000" : 0 }
+  resultData["profiles"] = {}
 
   for indexUri in index.keys():
     groupId, artifact =  stringTools.generateGroupAndArtifactFromUri(indexUri)
@@ -222,11 +268,12 @@ def genStats(rootdir):
         print("Couldnt find version for", groupId, artifact, file=sys.stderr)
         continue
     versionDir = versionDirs[0] 
-    jsonPath = os.path.join(rootdir, groupId, artifact, versionDir, artifact + "_type=meta.json")
+    filesPath = os.path.join(rootdir, groupId, artifact, versionDir)
+    jsonPath = os.path.join(filesPath, artifact + "_type=meta.json")
     if not os.path.isfile(jsonPath):
       print("Couldnt find metadata", file=sys.stderr)
       continue
-    lodeShaclReport = os.path.join(rootdir, groupId, artifact, versionDir, artifact + "_type=shaclReport_validates=lodeMetadata.ttl")
+    lodeShaclReport = os.path.join(filesPath, artifact + "_type=shaclReport_validates=lodeMetadata.ttl")
     if not os.path.isfile(lodeShaclReport):
       print("Couldnt find shacl report", file=sys.stderr)
       continue
@@ -244,6 +291,22 @@ def genStats(rootdir):
       else:
         resultData[key] = {str(metadata[key]) : 1}
     
+    tripleNumber = metadata["triples"]
+    if tripleNumber == 0:
+      triplesString = "Zero"
+    elif tripleNumber < 100:
+      triplesString = "<100"
+    elif tripleNumber < 1000:
+      triplesString = "<1000"
+    elif tripleNumber < 10000:
+      triplesString = "<10000"
+    elif tripleNumber < 100000:
+      triplesString = "<100000"
+    else:
+      triplesString = ">100000"
+    
+    resultData["triples"][triplesString] = resultData["triples"][triplesString] + 1
+
     lodeValue = inspectVocabs.checkShaclReport(lodeShaclGraph)
     if "lodeShaclValue" in resultData:
       if lodeValue in resultData["lodeShaclValue"]:
@@ -254,6 +317,19 @@ def genStats(rootdir):
     else:
       resultData["lodeShaclValue"] = {lodeValue : 1}
 
-  print(json.dumps(resultData, indent=1))
+  profiles = getProfile(os.path.join(filesPath, artifact + "_type=pelletInfo_imports=FULL.txt"), os.path.join(filesPath, artifact + "_type=pelletInfo_imports=NONE.txt"), os.path.join(filesPath, artifact + "_type=profile.txt"))  
+  profiles = list(set(profiles))
+  profiles.sort()
+  if profiles == []:
+    profiles = "Error - couldnt determine profile"
+  else:
+    profiles = ";".join(profiles)
+
+  if profiles in resultData["profiles"]:
+    oldNumber = resultData["profiles"][profiles]
+    resultData["profiles"][profiles] = oldNumber +1
+  else:
+    resultData["profiles"][profiles] = 1
+  print(json.dumps(resultData, indent=1, sort_keys=True))
      
     

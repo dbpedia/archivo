@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import stringTools
 
 # some defaults for the pom generation
 default_license="http://ontotrack.dbpedia.org/issue?license=unknown"
@@ -20,7 +21,7 @@ def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrl
     if modules == []:
         moduleString = ""
     else:
-        moduleString = "   <modules>"+"\n".join(modlueStrings)+"\n   </modules>\n "
+        moduleString = "   <modules>\n"+"\n".join(modlueStrings)+"\n   </modules>\n "
 
     return ('<?xml version="1.0" encoding="UTF-8"?>  \n'  
     '<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  \n'  
@@ -131,3 +132,36 @@ def callMaven(pomfilePath, command):
     stdout, stderr = process.communicate()
     print(stderr.decode("utf-8"))
     return stdout.decode("utf-8")
+
+
+def updateParentPoms(rootdir, index):
+    
+    for uri in index:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        groupDoc=(f"#This group is for all vocabularies hosted on {group}\n\n"
+            "All the artifacts in this group refer to one vocabulary, deployed in different formats.\n"
+            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
+
+        parentPomPath = os.path.join(rootdir, group, "pom.xml")
+        if not os.path.exists(parentPomPath):
+            print("Couldnt find parent pom for", uri, file=sys.stderr)
+            continue
+        artifactDirs = [dir for dir in os.listdir(os.path.join(rootdir, group)) if os.path.isdir(os.path.join(rootdir, group, dir)) and os.path.isfile(os.path.join(rootdir, group, dir, "pom.xml"))]
+
+        if artifactDirs == []:
+            print("No artifacts for", uri, file=sys.stderr)
+            continue
+
+        with open(parentPomPath, "w+") as parentPomFile:
+            pomstring = generateParentPom(
+                                groupId=group,
+                                packaging="pom",
+                                modules=artifactDirs,
+                                packageDirectory=packDir,
+                                downloadUrlPath=downloadUrl,
+                                publisher=pub,
+                                maintainer=pub,
+                                groupdocu=groupDoc,
+                                )
+            print(pomstring, file=parentPomFile)    
+
