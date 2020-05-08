@@ -227,10 +227,10 @@ def loadNQuadsFile(filepath):
 
 def checkShaclReport(shaclReportGraph):
     if shaclReportGraph == None:
-        print("No report graph available")
+        print("No report graph available", file=sys.stderr)
         return "Error, no graph available"
     violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
-    warningRef = URIRef('http://www.w3.org/ns/shacl#Violation')
+    warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
     queryString=(
         "SELECT DISTINCT ?severity \n"
         "WHERE {\n"
