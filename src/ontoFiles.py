@@ -207,10 +207,13 @@ def inspectMetadata(rootdir):
 
 def measureStars(metadata):
   stars = 0
-  if metadata["triples"] > 0 and metadata["License-I"] == True:
-    stars = 2
-  else:
-    return 0
+  if metadata["triples"] > 0:
+    stars = stars + 1
+  if metadata["License-I"] == True:
+    stars = stars + 1
+
+  if not stars == 2:
+    return stars
 
   if metadata["consistent"] == "Yes" or metadata["consistent-without-imports"] == "Yes":
     stars = stars + 1
@@ -256,7 +259,7 @@ def genStats(rootdir):
   resultData["found-files"] = 0
   resultData["triples"] = {"Zero": 0, "<100" : 0, "<1000" : 0, "<10000" : 0, "<100000" : 0, ">100000" : 0 }
   resultData["profiles"] = {}
-  resultData["stars"] = {"0 Stars":0, "1 Star" : 0, "2 Stars":0, "3 Stars":0, "4 Stars":0}
+  resultData["stars"] = {"0 Stars":0, "1 Stars" : 0, "2 Stars":0, "3 Stars":0, "4 Stars":0}
 
   for indexUri in index.keys():
     groupId, artifact =  stringTools.generateGroupAndArtifactFromUri(indexUri)
