@@ -60,11 +60,13 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
     if not success:
       print("Uri not reachable")
       fallout_index.append((uri, True, "Couldnt download file"))
+      stringTools.deleteAllFilesInDir(localDiffDir)
       return
     ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=uri)
     if not os.path.isfile(os.path.join(localDiffDir, "tmpSourceParsed.ttl")): 
       print("File not parseable")
       fallout_index.append((uri, True, "Unparseable new File"))
+      stringTools.deleteAllFilesInDir(localDiffDir)
       return
     oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
     newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))

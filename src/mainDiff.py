@@ -9,7 +9,7 @@ localDiffDir = ".tmpDiffDir"
 
 fallout_index = ontoFiles.loadFalloutIndex()
 
-index = ontoFiles.loadSimpleIndex()
+index = ontoFiles.loadIndexJson()
 
 print("Started diff at", datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
 
