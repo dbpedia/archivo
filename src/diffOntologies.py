@@ -95,7 +95,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
       crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion)
       stringTools.deleteAllFilesInDir(localDiffDir)
-      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
+      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy"))
   except FileNotFoundError:
     print("Error: Couldn't find file for", uri)
 
