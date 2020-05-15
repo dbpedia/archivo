@@ -72,6 +72,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       fallout_index.append((uri, True, "Unparseable new File"))
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
+    print("Loading the graphs of old and new version...")
     oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
     newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
     both, old, new = graphDiff(oldGraph, newGraph)
