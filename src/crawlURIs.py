@@ -311,6 +311,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     return
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   if real_ont_uri == None:
+    print("Couldn't find ontology uri, trying isDefinedBy...")
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
       if isNIR:
@@ -322,6 +323,11 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
       handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=False)
+      return
+    else:
+      print("Uri already in index or self-defining non-ontology")
+      if isNIR:
+        fallout_index.append((str(real_ont_uri), False, "Self defining non-ontology"))
       return
 
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
@@ -390,3 +396,5 @@ def testLOVInfo():
     print("Download source:", resourceUrl)
     success, pathToFile, response = downloadSource(resourceUrl, ".", "tempOnt"+version, "text/rdf+n3")
     print(success)
+
+handleNewUri("http://www.w3.org/2000/10/swap/list", {},"./scd-testdir", [], "testing", False)
