@@ -20,6 +20,7 @@ def graphDiff(oldGraph, newGraph):
     return compare.graph_diff(oldIsoGraph, newIsoGraph)
 
 def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader):
+  print("Checking the header for ", vocab_uri)
   # when both of the old values are not compareable, always download and check
   if stringTools.isNoneOrEmpty(oldETag) and stringTools.isNoneOrEmpty(oldLastMod) and stringTools.isNoneOrEmpty(oldContentLength):
     return True
@@ -47,6 +48,9 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None
   except requests.exceptions.ReadTimeout:
         print("Connection timed out for URI ", vocab_uri)
+        return None
+  except:
+        print("Unkown Error occurred for URI", vocab_uri)
         return None
 
 
