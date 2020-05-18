@@ -112,7 +112,7 @@ def getLicense(graph):
     result=graph.query(queryString, initNs={"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
     if result != None and len(result) > 0:
         for row in result:
-            return row[0]
+            return str(row[0])
     else:
         return None
 # returns the relevant dcterms values (uri, dcterms:license, dcterms:title, dcterms:abstract, dcterms:description)
