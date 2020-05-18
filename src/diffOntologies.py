@@ -19,6 +19,41 @@ def graphDiff(oldGraph, newGraph):
     newIsoGraph = compare.to_isomorphic(newGraph)
     return compare.graph_diff(oldIsoGraph, newIsoGraph)
 
+def sortFile(filepath, targetPath):
+  command = ["sort", "-u", filepath]
+  try:
+    with open(targetPath, "w+") as sortedFile:
+      process = subprocess.run(command, stdout=sortedFile)
+  except Exception as e:
+    print("Error in sorting file:")
+    print(e)
+
+def getSortedNtriples(sourceFile, targetPath, vocab_uri):
+  try:
+    rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE)
+    with open(targetPath, "w+") as sortedNtriples:
+      subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples)
+    if os.stat(targetPath).st_size == 0:
+      print("Error in parsing file, no triples returned")
+      os.remove(targetPath)
+  except Exception as e:
+    print("Error in sorting file:")
+    print(e)
+
+
+def commDiff(oldFile, newFile):
+  command = ["comm", "-3", oldFile, newFile]
+  try:
+    process = subprocess.run(command, stdout=subprocess.PIPE)
+    commOutput = process.stdout.decode("utf-8")
+    if commOutput == "":
+      return True
+    else:
+      return False
+  except Exception as e:
+    print("Error in diffing file:")
+    print(e)
+
 def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader):
   print("Checking the header for ", vocab_uri)
   # when both of the old values are not compareable, always download and check
@@ -66,24 +101,29 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       fallout_index.append((uri, True, "Couldnt download file"))
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
-    ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=uri)
-    if not os.path.isfile(os.path.join(localDiffDir, "tmpSourceParsed.ttl")): 
+    #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
+    getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri)
+    if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")): 
       print("File not parseable")
       fallout_index.append((uri, True, "Unparseable new File"))
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
     print("Loading the graphs of old and new version...")
-    oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
-    newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
-    both, old, new = graphDiff(oldGraph, newGraph)
-    if len(old) == 0 and len(new) == 0:
+    oldOriginal = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
+    getSortedNtriples(os.path.join(latestVersionDir, oldOriginal), os.path.join(localDiffDir, "oldVersionSorted.nt"), uri)
+    #oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
+    #newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
+    #both, old, new = graphDiff(oldGraph, newGraph)
+    isEqual = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
+    #if len(old) == 0 and len(new) == 0:
+    if isEqual:
       print("Not different")
       stringTools.deleteAllFilesInDir(localDiffDir)
     else:
       print("Different!")
       # generating new semantic version
       oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(latestVersionDir, artifactName + "_type=parsed.nt"))
-      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
+      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "oldVersionSorted.nt"))
       if oldSuccess and newSuccess:
         newSemVersion = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
@@ -99,6 +139,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
   except FileNotFoundError:
     print("Error: Couldn't find file for", uri)
+    stringTools.deleteAllFilesInDir(localDiffDir)
 
 
 
@@ -133,6 +174,7 @@ def handleDiffForUri(uri, rootdir, fallout_index):
     return
 
   isDiff = checkForNewVersion(uri, oldETag, oldLastMod, contentLength, bestHeader)
+  #isDiff = True
 
   if isDiff == None:
     fallout_index.append((uri, True, "Unreachable ontology"))
