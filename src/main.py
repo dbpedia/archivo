@@ -8,6 +8,14 @@ from dateutil.parser import parse as parsedate
 import ontoFiles
 import random
 
+
+def checkIndexForUri(uri, index):
+    for indexUri in index:
+        if crawlURIs.checkUriEquality(uri, index):
+            return True
+    return False
+
+
 rootdir=sys.argv[1]
 
 index = ontoFiles.loadIndexJson()
@@ -20,7 +28,7 @@ hashUris = ontoFiles.loadListFile("src/all_hash_uris.lst")
 prefixUris = ontoFiles.readTsvFile("src/prefixCC-uris.tsv")
 
 for uri in crawlURIs.getLovUrls():
-    if not uri in index:
+    if not checkIndexForUri(uri, index):
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False)
 
 #for i in range(20):
@@ -30,9 +38,9 @@ for uri in crawlURIs.getLovUrls():
     #new_uris.append(uri)
 
 for uri in hashUris:
-    if not uri in index.keys():
+    if not checkIndexForUri(uri, index):
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
 
 for uri in prefixUris:
-    if not uri in index:
+    if not checkIndexForUri(uri, index):
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False)

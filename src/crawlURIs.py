@@ -75,8 +75,8 @@ def getOOPSReport(parsedRdfString):
     return None
 
 
-def determineBestAccHeader(vocab_uri):
-  localTestDir = "./.tmpTestTriples"
+def determineBestAccHeader(vocab_uri, localDir):
+  localTestDir = os.path.join(localDir,".tmpTestTriples")
   if not os.path.isdir(localTestDir):
     os.mkdir(localTestDir)
   print("Determining the best header for this vocabulary...")
@@ -279,7 +279,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   if vocab_uri in index:
     print("Already known uri, skipping...")
     return
-  bestHeader  = determineBestAccHeader(vocab_uri)
+  bestHeader  = determineBestAccHeader(vocab_uri, dataPath)
  
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
