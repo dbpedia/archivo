@@ -28,9 +28,11 @@ def sortFile(filepath, targetPath):
     print("Error in sorting file:")
     print(e)
 
-def getSortedNtriples(sourceFile, targetPath, vocab_uri):
+def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True):
   try:
-    rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE)
+    rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if not silent:
+      print(rapperProcess.stderr.decode("utf-8"))
     with open(targetPath, "w+") as sortedNtriples:
       subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples)
     if os.stat(targetPath).st_size == 0:
@@ -123,7 +125,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       print("Different!")
       # generating new semantic version
       oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(latestVersionDir, artifactName + "_type=parsed.nt"))
-      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "oldVersionSorted.nt"))
+      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "newVersionSorted.nt"))
       if oldSuccess and newSuccess:
         newSemVersion = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
