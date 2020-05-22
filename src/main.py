@@ -11,7 +11,7 @@ import random
 
 def checkIndexForUri(uri, index):
     for indexUri in index:
-        if crawlURIs.checkUriEquality(uri, index):
+        if crawlURIs.checkUriEquality(uri, indexUri):
             return True
     return False
 
@@ -27,9 +27,9 @@ hashUris = ontoFiles.loadListFile("/home/dstreitmatter/all_hash_uris.lst")
 
 prefixUris = ontoFiles.readTsvFile("/home/dstreitmatter/prefix-cc-uris.tsv")
 
-for uri in crawlURIs.getLovUrls():
-    if not checkIndexForUri(uri, index):
-        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False)
+#for uri in crawlURIs.getLovUrls():
+    #if not checkIndexForUri(uri, index):
+        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False)
 
 #for i in range(20):
     #uri = random.choice(potentialUris)
@@ -37,10 +37,11 @@ for uri in crawlURIs.getLovUrls():
         #uri = random.choice(potentialUris)
     #new_uris.append(uri)
 
-for uri in hashUris:
-    if not checkIndexForUri(uri, index):
-        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
+#for uri in hashUris:
+    #if not checkIndexForUri(uri, index):
+        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
 
-for uri in prefixUris:
-    if not checkIndexForUri(uri, index):
-        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False)
+#for uri in prefixUris:
+    #if not checkIndexForUri(uri, index):
+        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False)
+generatePoms.updateParentPoms(rootdir, index)
