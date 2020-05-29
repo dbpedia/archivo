@@ -56,8 +56,6 @@ https://purl.org/heals/sco/,False,Unreachable server
 ub669bL768C1,False,Malformed Uri
 http://babelnet.org/rdf/,False,Unparseable file
 http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-<<<<<<< Updated upstream
-=======
 http://data.finlex.fi/schema/sfl,True,Unparseable new File
 http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
 http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
@@ -205,4 +203,3 @@ https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
 https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
 https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
 https://id.parliament.uk/schema,True,Unreachable ontology
->>>>>>> Stashed changes
