@@ -132,10 +132,10 @@ def getPossibleComments(graph):
         "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription ?rdfsComment \n"
         "WHERE {\n"
         " ?uri a owl:Ontology .\n"
-        " OPTIONAL { ?uri dcterms:description ?dctDescription FILTER langMatches(lang(?label), \"en\")}\n"
-        " OPTIONAL { ?uri dc:description ?dcDescription FILTER langMatches(lang(?label), \"en\")}\n"    
-        " OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER langMatches(lang(?label), \"en\")}\n"
-        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER langMatches(lang(?label), \"en\")}\n"
+        " OPTIONAL { ?uri dcterms:description ?dctDescription}\n"
+        " OPTIONAL { ?uri dc:description ?dcDescription}\n"    
+        " OPTIONAL { ?uri rdfs:comment ?rdfsComment }\n"
+        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract }\n"
         "} LIMIT 1"
         )
     result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
