@@ -12,6 +12,20 @@ fileTypeDict = {"turtle": ".ttl", "rdf+xml": ".rdf", "ntriples": ".nt", "rdf+n3"
 # regex to get the content type
 contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
 
+# sentenceRegex
+sentenceRegex = re.compile(r".*\.")
+
+
+def getFirstLine(text):
+  return text.split("\n")[0]
+
+def getFirstSentence(text):
+  matches = sentenceRegex.findall(text)
+  if matches != None and len(matches) > 0:
+    return matches[0].replace("\n", " ")
+  else:
+    return text.replace("\n", " ")
+
 def isNoneOrEmpty(string):
   if string != None and string != "":
     return False

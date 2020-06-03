@@ -99,6 +99,10 @@
         "accessed": "2020.05.07; 15:34:15",
         "source": "prefix.cc"
     },
+    "http://data.finlex.fi/schema/sfl/": {
+        "accessed": "2020.05.21; 03:03:11",
+        "source": "prefix.cc"
+    },
     "http://data.globalchange.gov/gcis.owl": {
         "accessed": "2020.05.07; 09:54:32",
         "source": "prefix.cc"
@@ -174,6 +178,10 @@
     "http://datashapes.org/dash": {
         "accessed": "2020.05.07; 16:16:48",
         "source": "prefix.cc"
+    },
+    "http://dati.cdec.it/lod/shoah/": {
+        "accessed": "2020.05.20; 17:36:37",
+        "source": "LOV"
     },
     "http://dati.san.beniculturali.it/SAN/": {
         "accessed": "2020.05.07; 01:43:29",
@@ -317,6 +325,10 @@
     },
     "http://environment.data.gov.au/def/op": {
         "accessed": "2020.05.07; 00:28:13",
+        "source": "LOV"
+    },
+    "http://eprints.org/ontology/": {
+        "accessed": "2020.05.20; 17:00:32",
         "source": "LOV"
     },
     "http://erlangen-crm.org/current/": {
@@ -527,6 +539,10 @@
         "accessed": "2020.05.07; 10:19:15",
         "source": "prefix.cc"
     },
+    "http://linked.data.gov.au/def/geofabric": {
+        "accessed": "2020.05.21; 02:24:40",
+        "source": "prefix.cc"
+    },
     "http://linked.data.gov.au/def/gnaf": {
         "accessed": "2020.05.07; 11:37:15",
         "source": "prefix.cc"
@@ -541,6 +557,18 @@
     },
     "http://linkeddata.center/kees/v1": {
         "accessed": "2020.05.06; 21:48:08",
+        "source": "LOV"
+    },
+    "http://linkeddata.finki.ukim.mk/lod/ontology/cfrl#": {
+        "accessed": "2020.05.20; 16:53:27",
+        "source": "LOV"
+    },
+    "http://linkeddata.finki.ukim.mk/lod/ontology/tao#": {
+        "accessed": "2020.05.20; 17:50:32",
+        "source": "LOV"
+    },
+    "http://linkeddata.finki.ukim.mk/lod/ontology/veo#": {
+        "accessed": "2020.05.20; 17:58:25",
         "source": "LOV"
     },
     "http://linkedscience.org/lsc/ns#": {
@@ -763,6 +791,14 @@
         "accessed": "2020.05.07; 12:20:48",
         "source": "prefix.cc"
     },
+    "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#": {
+        "accessed": "2020.05.20; 17:18:52",
+        "source": "LOV"
+    },
+    "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#": {
+        "accessed": "2020.05.20; 17:35:33",
+        "source": "LOV"
+    },
     "http://philosurfical.open.ac.uk/ontology/philosurfical.owl": {
         "accessed": "2020.05.07; 09:57:05",
         "source": "prefix.cc"
@@ -787,12 +823,20 @@
         "accessed": "2020.05.07; 00:58:52",
         "source": "LOV"
     },
+    "http://protege.stanford.edu/plugins/owl/dc/protege-dc.owl": {
+        "accessed": "2020.05.21; 04:45:28",
+        "source": "prefix.cc"
+    },
     "http://protege.stanford.edu/plugins/owl/protege": {
         "accessed": "2020.05.07; 04:15:37",
         "source": "spoHashUris"
     },
     "http://purl.allotrope.org/voc/afo/REC/2019/09/aft": {
         "accessed": "2020.05.07; 13:21:11",
+        "source": "prefix.cc"
+    },
+    "http://purl.allotrope.org/voc/afo/domain/WD/2018/04/x-ray-diffraction": {
+        "accessed": "2020.05.21; 04:34:59",
         "source": "prefix.cc"
     },
     "http://purl.bdrc.io/ontology/core/": {
@@ -897,6 +941,10 @@
     },
     "http://purl.org/NET/uri#": {
         "accessed": "2020.05.07; 15:03:14",
+        "source": "prefix.cc"
+    },
+    "http://purl.org/a-proc": {
+        "accessed": "2020.05.20; 20:35:59",
         "source": "prefix.cc"
     },
     "http://purl.org/acco/ns#": {
@@ -1091,6 +1139,14 @@
         "accessed": "2020.05.06; 19:20:13",
         "source": "LOV"
     },
+    "http://purl.org/net/dbm/ontology#": {
+        "accessed": "2020.05.20; 16:54:58",
+        "source": "LOV"
+    },
+    "http://purl.org/net/hifm/ontology#": {
+        "accessed": "2020.05.20; 17:04:39",
+        "source": "LOV"
+    },
     "http://purl.org/net/ns/ex": {
         "accessed": "2020.05.06; 20:50:15",
         "source": "LOV"
@@ -1113,6 +1169,10 @@
     },
     "http://purl.org/net/p-plan#": {
         "accessed": "2020.05.07; 00:45:07",
+        "source": "LOV"
+    },
+    "http://purl.org/net/po#": {
+        "accessed": "2020.05.20; 17:31:24",
         "source": "LOV"
     },
     "http://purl.org/net/provenance/files#": {
@@ -1145,6 +1205,10 @@
     },
     "http://purl.org/nxp/schema/v1": {
         "accessed": "2020.05.07; 10:05:19",
+        "source": "prefix.cc"
+    },
+    "http://purl.org/olia/olia.owl": {
+        "accessed": "2020.05.21; 04:18:43",
         "source": "prefix.cc"
     },
     "http://purl.org/olia/penn.owl": {
@@ -1907,6 +1971,10 @@
         "accessed": "2020.05.07; 17:01:24",
         "source": "prefix.cc"
     },
+    "http://vocabularies.wikipathways.org/wp#": {
+        "accessed": "2020.05.21; 01:00:19",
+        "source": "prefix.cc"
+    },
     "http://vocabularies.wikipathways.org/wpTypes#": {
         "accessed": "2020.05.07; 11:35:55",
         "source": "prefix.cc"
@@ -2059,6 +2127,10 @@
         "accessed": "2020.05.06; 20:04:19",
         "source": "LOV"
     },
+    "http://www.ebi.ac.uk/efo/efo.owl": {
+        "accessed": "2020.05.20; 23:21:49",
+        "source": "prefix.cc"
+    },
     "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore": {
         "accessed": "2020.05.06; 20:29:02",
         "source": "LOV"
@@ -2110,6 +2182,10 @@
     "http://www.ics.forth.gr/isl/oncm/core": {
         "accessed": "2020.05.07; 00:22:50",
         "source": "LOV"
+    },
+    "http://www.influenceTracker.com/ontology": {
+        "accessed": "2020.05.21; 03:11:33",
+        "source": "prefix.cc"
     },
     "http://www.isibang.ac.in/ns/mod": {
         "accessed": "2020.05.06; 22:31:29",
@@ -2619,12 +2695,20 @@
         "accessed": "2020.05.07; 12:21:52",
         "source": "prefix.cc"
     },
+    "https://purl.org/heals/sco/": {
+        "accessed": "2020.05.21; 03:56:24",
+        "source": "prefix.cc"
+    },
     "https://raw.githubusercontent.com/airs-linked-data/lov/latest/src/airs_vocabulary.ttl#": {
         "accessed": "2020.05.06; 18:35:50",
         "source": "LOV"
     },
     "https://saref.etsi.org/saref4syst#": {
         "accessed": "2020.05.07; 14:10:29",
+        "source": "prefix.cc"
+    },
+    "https://sireneld.io/vocab/sirene#": {
+        "accessed": "2020.05.21; 01:31:32",
         "source": "prefix.cc"
     },
     "https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#": {

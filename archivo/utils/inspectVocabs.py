@@ -15,6 +15,32 @@ def getGraphOfVocabFile(filepath):
         print("Error in parsing:", str(e))
         return None
 
+def getTurtleGraph(graph, base=None):    
+    return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
+
+def getAllClassUris(graph):
+    queryString=(
+        "SELECT DISTINCT ?classUri \n"
+        "WHERE {\n"
+        " VALUES ?prop { void:property void:class }\n"
+        " ?s ?prop ?classUri .\n"
+        "}"
+    )
+    result = graph.query(queryString, initNs={"void":URIRef("http://rdfs.org/ns/void#")})
+    if result == None:
+        return []
+    else:
+        return [str(line[0]) for line in result if len(line) > 0]
+
+def getAllPropsAndClasses(graph):
+    resultSet = set()
+    voidProp = URIRef("http://rdfs.org/ns/void#property")
+    voidClass = URIRef("http://rdfs.org/ns/void#class")
+    for subj, pred, obj in graph:
+        if pred == voidClass or pred == voidProp:
+            resultSet.add(str(obj))
+    return resultSet
+
 #Relevant properties:
 # rdfs:label
 # rdfs:comment
@@ -33,7 +59,7 @@ def getRelevantRDFSVocabInfo(graph):
         "WHERE {\n"
         " ?uri a owl:Ontology .\n"
         " OPTIONAL { ?uri rdfs:label ?label FILTER langMatches(lang(?label), \"en\")}\n"    
-        " OPTIONAL { ?uri rdfs:comment ?comment }\n"
+        " OPTIONAL { ?uri rdfs:comment ?comment }\n"    
         " OPTIONAL { ?uri rdfs:description ?description }\n"
         "} LIMIT 1"
         )
@@ -90,6 +116,26 @@ def getPossibleDescriptions(graph):
         " OPTIONAL { ?uri dc:description ?dcDescription }\n"    
         " OPTIONAL { ?uri rdfs:comment ?rdfsComment }\n"
         " OPTIONAL { ?uri dcterms:abstract ?dctAbstract }\n"
+        "} LIMIT 1"
+        )
+    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    if result != None and len(result) > 0:
+        for row in result:
+            return row
+    else:
+        return None
+
+# possible rdfs:comments for the databus
+
+def getPossibleComments(graph):
+    queryString=(
+        "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription ?rdfsComment \n"
+        "WHERE {\n"
+        " ?uri a owl:Ontology .\n"
+        " OPTIONAL { ?uri dcterms:description ?dctDescription FILTER langMatches(lang(?label), \"en\")}\n"
+        " OPTIONAL { ?uri dc:description ?dcDescription FILTER langMatches(lang(?label), \"en\")}\n"    
+        " OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER langMatches(lang(?label), \"en\")}\n"
+        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER langMatches(lang(?label), \"en\")}\n"
         "} LIMIT 1"
         )
     result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})

@@ -4,8 +4,7 @@ import json
 import subprocess
 import re
 import csv
-import stringTools
-import inspectVocabs
+from utils import stringTools, inspectVocabs
 
 rapperErrorsRegex=re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex=re.compile(r"^rapper: Warning.*$")
@@ -111,7 +110,12 @@ def getParsedTriples(filepath):
   return getTripleNumberFromRapperLog(stderr)
 
 def loadIndexJson():
-  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "r") as indexfile:
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "indices", "vocab_index.json"), "r") as indexfile:
+    jsonIndex = json.load(indexfile)
+  return jsonIndex
+
+def loadIndexJsonFromFile(filepath):
+  with open(filepath, "r") as indexfile:
     jsonIndex = json.load(indexfile)
   return jsonIndex
 
@@ -139,7 +143,11 @@ def checkIfUriInIndex(uri, index):
   return None
 
 def writeIndexJson(index):
-  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "w+") as indexfile:
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "indices","vocab_index.json"), "w+") as indexfile:
+    json.dump(index, indexfile, indent=4, sort_keys=True)
+
+def writeIndexJsonToFile(index, filepath):
+  with open(filepath, "w+") as indexfile:
     json.dump(index, indexfile, indent=4, sort_keys=True)
 
 def loadFalloutIndex():
@@ -149,8 +157,19 @@ def loadFalloutIndex():
     reader = csv.reader(csvfile)
     return [row for row in reader]
 
+def loadFalloutIndexFromFile(filepath):
+  with open(filepath, "r") as csvfile:
+    reader = csv.reader(csvfile)
+    return [row for row in reader]
+
 def writeFalloutIndex(index):
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "w+") as csvfile: 
+    writer = csv.writer(csvfile, delimiter=",")
+    for row in index:
+      writer.writerow(row)
+
+def writeFalloutIndexToFile(filepath, index):
+  with open(filepath, "w+") as csvfile: 
     writer = csv.writer(csvfile, delimiter=",")
     for row in index:
       writer.writerow(row)

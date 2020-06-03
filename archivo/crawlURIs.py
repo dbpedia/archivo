@@ -4,19 +4,14 @@ import os
 import sys
 from datetime import datetime
 from dateutil.parser import parse as parsedate
-import ontoFiles
-import validation
-import inspectVocabs
-import generatePoms
-import stringTools
+from utils import stringTools, generatePoms, ontoFiles, inspectVocabs
+from utils.validation import TestSuite
+import archivoConfig
 
 # docu for failed ontologies
 failedGroupDoc = (f"#This group is for all unavailable ontologies\n\n"
                 "All the artifacts in this group refer to one vocabulary.\n"
                 "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
-
-# explaination for the md-File
-explaination="This ontology is part of the Databus Archivo - A Web-Scale OntologyInterface for Time-Based and SemanticArchiving and Developing Good Ontologies"
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -123,13 +118,16 @@ def downloadSource(uri, path, name, accHeader):
   except requests.exceptions.ReadTimeout:
     print("Connection timed out for URI ", uri)
     return False, "", "Error - ReadTimeout"
+  except KeyboardInterrupt:
+    print("Keyboard interruption")
+    sys.exit(19)
   except:
     print("Unknown error during download")
     return False, "", "Error - UnknownError"
 
   
 
-def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, semVersion="0.0.1"):
+def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, testSuite, semVersion="0.0.1"):
   artifactPath, version = os.path.split(filePath)
   groupPath = os.path.split(artifactPath)[0]
   groupId = os.path.split(groupPath)[1]
@@ -151,22 +149,22 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     parseable = True
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
     print("Run SHACL Tests...")
-    conformsLicense, reportGraphLicense, reportTextLicense = validation.licenseViolationValidation(ontoGraph)
+    conformsLicense, reportGraphLicense, reportTextLicense = testSuite.licenseViolationValidation(ontoGraph)
     #print(reportTextLicense)
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
-      print(validation.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
-    conformsLode, reportGraphLode, reportTextLode = validation.lodeReadyValidation(ontoGraph)
+      print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
+    conformsLode, reportGraphLode, reportTextLode = testSuite.lodeReadyValidation(ontoGraph)
     #print(reportTextLode)
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
-      print(validation.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
-    conformsLicense2, reportGraphLicense2, reportTextLicense2 = validation.licenseWarningValidation(ontoGraph)
+      print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
+    conformsLicense2, reportGraphLicense2, reportTextLicense2 = testSuite.licenseWarningValidation(ontoGraph)
     #print(reportTextLicense2)
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
-      print(validation.getTurtleGraph(reportGraphLicense2), file=advLicenseFile)
+      print(inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile)
     # checks consistency with and without imports
     print("Check consistency...")
-    isConsistent, output = validation.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
-    isConsistentNoImports, outputNoImports = validation.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
+    isConsistent, output = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
+    isConsistentNoImports, outputNoImports = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
     with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
       print(output, file=consistencyReport)
     with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
@@ -174,12 +172,12 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     # print pellet info files
     print("Generate Pellet info for vocabulary...")
     with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
-      print(validation.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
+      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
     with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
-      print(validation.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
+      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
     # profile check for ontology
     print("Get profile check...")
-    stdout, stderr = validation.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
+    stdout, stderr = testSuite.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
     with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
       print(stderr + "\n" + stdout, file=profileCheckFile)
   else:
@@ -225,15 +223,22 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
 def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
   md_label=artifact + " ontology"
   md_description=""
+  md_comment=archivoConfig.default_explaination
   license=None
   if ontograph != None:
     labelList = inspectVocabs.getPossibleLabels(ontograph)
     descriptionList = inspectVocabs.getPossibleDescriptions(ontograph)
+    commentList = inspectVocabs.getPossibleComments(ontograph)
     if labelList != None:
-      possibleLabels = [label for label in labelList if label != None]
+      possibleLabels = [stringTools.getFirstLine(label) for label in labelList if label != None]
     else:
       possibleLabels = []
 
+    if commentList != None:
+      possibleComments = [stringTools.getFirstSentence(comment) for comment in commentList if comment != None]
+    else:
+      possibleComments = []
+    
     if descriptionList != None:
       possibleDescriptions = [desc for desc in descriptionList if desc != None]
     else:
@@ -242,7 +247,9 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
     if possibleLabels != [] and len(possibleLabels) > 0:
       md_label = possibleLabels[0]
     if possibleDescriptions != [] and len(possibleDescriptions) > 0:
-      md_description = possibleDescriptions[0]  
+      md_description = possibleDescriptions[0]
+    if possibleComments != [] and len(possibleComments) > 0:
+      md_comment = possibleComments[0]  
   childpomString = generatePoms.generateChildPom(groupId=groupId,
                                                   version=version,
                                                   artifactId=artifact,
@@ -250,7 +257,7 @@ def generatePomAndMdFile(artifactPath, groupId, artifact, version, ontograph):
                                                   license=license)
   with open(os.path.join(artifactPath, "pom.xml"), "w+") as childPomFile:
     print(childpomString, file=childPomFile)
-  generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, explaination, md_description)
+  generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, md_comment, md_description)
     
 
 def checkUriEquality(uri1, uri2):
@@ -263,7 +270,7 @@ def checkUriEquality(uri1, uri2):
   else:
     return False
 
-def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
+def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testSuite):
   vocab_uri = vocab_uri.rstrip("#")
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
@@ -275,10 +282,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     print("Malformed Uri", vocab_uri)
     if isNIR:
       fallout_index.append((vocab_uri, False, "Malformed Uri"))
-    return
+    return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
   if vocab_uri in index:
     print("Already known uri, skipping...")
-    return
+    return True, isNIR,"This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
   bestHeader  = determineBestAccHeader(vocab_uri, dataPath)
  
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
@@ -287,7 +294,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     if isNIR:
       fallout_index.append((vocab_uri, False, "Unreachable server"))
     stringTools.deleteAllFilesInDir(localDir)
-    return
+    return False, isNIR,"Couldn't access RDF content. Probably Server down or no parseable RDF available"
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
   if not success:
@@ -295,7 +302,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     if isNIR:
       fallout_index.append((vocab_uri, False, str(response)))
     stringTools.deleteAllFilesInDir(localDir)
-    return
+    return False, isNIR,"Couldn't access the suggested URI: " + str(response)
   
   ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
@@ -303,13 +310,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     if isNIR:
       fallout_index.append((vocab_uri, False, "Unparseable file"))
     stringTools.deleteAllFilesInDir(localDir)
-    return
+    return False, isNIR, "Unparseable RDF"
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     print("Error in rdflib parsing")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
-    return
+    return False, isNIR, "RDFLIB parsing error"
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   if real_ont_uri == None:
     print("Couldn't find ontology uri, trying isDefinedBy...")
@@ -319,23 +326,22 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
         fallout_index.append((vocab_uri, False, "No ontology or Class"))
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDir(localDir)
-      return
+      return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology or rdfs:isDefinedBy triple"
     if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDir(localDir)
-      handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source=source, isNIR=False)
-      return
+      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=False) 
     else:
       print("Uri already in index or self-defining non-ontology")
       if isNIR:
         fallout_index.append((str(real_ont_uri), False, "Self defining non-ontology"))
-      return
+      return False, isNIR, "Self defining non-ontology"
 
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDir(localDir)
-    handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True)
-    return
+    return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True, testSuite=testSuite)
+ 
 
   #it goes in here if the uri is NIR and  its resolveable
   real_ont_uri = str(real_ont_uri)
@@ -344,23 +350,19 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
     print("WARNING: unexpected value for real uri:", real_ont_uri)
   if real_ont_uri in index:
     print("Already known uri", real_ont_uri)
-    return
+    return True, isNIR, "Archivo already contains this URI"
   
   print("Real Uri:", real_ont_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
   if groupId == None or artifact == None:
     print("Malformed non-information Uri", real_ont_uri)
     fallout_index.append((real_ont_uri, False, "Malformed non-information uri"))
-    return
+    return False, isNIR, "Malformed non-information uri " + real_ont_uri
   index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
   # generate parent pom
   if not os.path.isfile(os.path.join(dataPath, groupId, "pom.xml")):
-    groupDoc=(f"#This group is for all vocabularies hosted on {groupId}\n\n"
-            "All the artifacts in this group refer to one vocabulary, deployed in different formats.\n"
-            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
- 
     pomString=generatePoms.generateParentPom(groupId=groupId,
                                             packaging="pom",
                                             modules=[],
@@ -368,7 +370,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
                                             downloadUrlPath=generatePoms.downloadUrl,
                                             publisher=generatePoms.pub,
                                             maintainer=generatePoms.pub,
-                                            groupdocu=groupDoc,
+                                            groupdocu=archivoConfig.groupDoc.format(groupId),
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
       print(pomString, file=parentPomFile)
@@ -376,11 +378,12 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR):
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # new release
-  generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate)
+  generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
   # index writing
-  ontoFiles.writeFalloutIndex(fallout_index)
-  ontoFiles.writeIndexJson(index)
+  #ontoFiles.writeFalloutIndex(fallout_index)
+  #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDir(localDir)
+  return True, isNIR, f"Added the Ontology to Archivo, should be accessable at https://databus.dbpedia.org/ontologies/{groupId}/{artifact} soon"
 
 
 def getLovUrls():

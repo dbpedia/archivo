@@ -1,6 +1,6 @@
 import sys
-import ontoFiles
-import diffOntologies
+from archivo.functions import diffOntologies
+from archivo.utils import ontoFiles
 from datetime import datetime
 
 rootdir = sys.argv[1]

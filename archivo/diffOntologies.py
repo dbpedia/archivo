@@ -1,16 +1,14 @@
 import subprocess
 from rdflib import compare
 import inspectVocabs
-import stringTools
 import requests
 import crawlURIs
 from datetime import datetime
 import os
 import json
-import generatePoms
 import sys
 import re
-import ontoFiles
+from utils import ontoFiles, generatePoms, stringTools
 
 semanticVersionRegex=re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 
