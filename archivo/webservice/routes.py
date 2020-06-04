@@ -29,7 +29,7 @@ class SuggestionForm(FlaskForm):
 def index():
     form = SuggestionForm()
     if form.validate_on_submit():
-        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data, ontoIndex, localPath, fallout, "user-suggestion", False, testSuite=testingSuite)
+        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, localPath, fallout, "user-suggestion", False, testSuite=testingSuite)
         if success:
             ontoFiles.writeIndexJsonToFile(ontoIndex, archivoConfig.ontoIndexPath)
         elif not success and isNir:

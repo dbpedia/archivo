@@ -285,7 +285,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
   if vocab_uri in index:
     print("Already known uri, skipping...")
-    return True, isNIR,"This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
+    return True, isNIR, f"This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
   bestHeader  = determineBestAccHeader(vocab_uri, dataPath)
  
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
@@ -383,6 +383,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDir(localDir)
+  
+  print(generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"))
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at https://databus.dbpedia.org/ontologies/{groupId}/{artifact} soon"
 
 

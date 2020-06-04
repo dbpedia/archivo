@@ -1,5 +1,6 @@
 import re
 import os
+from urllib.parse import urlparse
 
 urlRegex=r"https?://(?:www\.)?(.+?)/(.*)"
 
@@ -13,8 +14,25 @@ fileTypeDict = {"turtle": ".ttl", "rdf+xml": ".rdf", "ntriples": ".nt", "rdf+n3"
 contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
 
 # sentenceRegex
-sentenceRegex = re.compile(r".*\.")
+sentenceRegex = re.compile(r".*?\.")
 
+
+def alternativeGroupArtifactGeneration(url):
+  parsedObj = urlparse(url)
+  # replacing the port with --
+  group = parsedObj.netloc.replace(":", "--")
+  artifact = parsedObj.path.strip("#/")
+  artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--")
+  if artifact == "":
+    artifact = "defaultArtifact"
+
+  if group.startswith("www."):
+    group = group.replace("www.", "", 1)
+  # none of them can be the empty string or all breaks
+  if group == "" or artifact == "":
+    return None, None
+
+  return group, artifact
 
 def getFirstLine(text):
   return text.split("\n")[0]
