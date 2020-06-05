@@ -44,6 +44,17 @@ def deleteEmptyDirsRecursive(startpath):
   else:
     print(f"Not a directory: {startpath}")
 
+def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion):
+  vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
+  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
+  vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-impots":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
+  vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
+  vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
+  
+  with open(pathToFile, "w+") as outfile:
+    json.dump(vocabinfo, outfile, indent=4, sort_keys=True)
+
+
 def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion=None):
   vocabInformation={}
   vocabInformation["non-information-uri"] = definedByUri
@@ -189,6 +200,21 @@ def loadListFile(pathToFile):
     lines = [line.strip() for line in listFile]
   return lines
 
+def measureStars(triples, licenseI, consistent, consistentWithoutImports, licenseII):
+  stars = 0
+  if triples > 0:
+    stars = stars + 1
+  if licenseI == True:
+    stars = stars + 1
+
+  if not stars == 2:
+    return stars
+
+  if consistent == "Yes" or consistentWithoutImports == "Yes":
+    stars = stars + 1
+  if licenseII == True:
+    stars = stars + 1
+  return stars
 
 def inspectMetadata(rootdir):
 
@@ -223,23 +249,6 @@ def inspectMetadata(rootdir):
         else:
           resultData[key] = {str(metadata[key]) : 1}
   print(json.dumps(resultData, indent=1))
-
-def measureStars(metadata):
-  stars = 0
-  if metadata["triples"] > 0:
-    stars = stars + 1
-  if metadata["License-I"] == True:
-    stars = stars + 1
-
-  if not stars == 2:
-    return stars
-
-  if metadata["consistent"] == "Yes" or metadata["consistent-without-imports"] == "Yes":
-    stars = stars + 1
-  if metadata["License-II"] == True:
-    stars = stars + 1
-  return stars
-
 
 def checkIndexValidity():
   index = loadIndexJson()

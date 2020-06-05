@@ -366,10 +366,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     pomString=generatePoms.generateParentPom(groupId=groupId,
                                             packaging="pom",
                                             modules=[],
-                                            packageDirectory=generatePoms.packDir,
-                                            downloadUrlPath=generatePoms.downloadUrl,
-                                            publisher=generatePoms.pub,
-                                            maintainer=generatePoms.pub,
+                                            packageDirectory=archivoConfig.packDir,
+                                            downloadUrlPath=archivoConfig.downloadUrl,
+                                            publisher=archivoConfig.pub,
+                                            maintainer=archivoConfig.pub,
                                             groupdocu=archivoConfig.groupDoc.format(groupId),
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
