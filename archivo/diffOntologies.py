@@ -146,7 +146,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
         print("\n".join(oldTriples), file=oldTriplesFile)
       with open(os.path.join(newVersionPath, artifactName + "_type=diff_triples=newTriples.nt"), "w+") as newTriplesFile:
         print("\n".join(newTriples), file=newTriplesFile) 
-      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite)
+      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite)
       stringTools.deleteAllFilesInDir(localDiffDir)
       print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
   except FileNotFoundError:
@@ -176,11 +176,11 @@ def handleDiffForUri(uri, rootdir, fallout_index, testSuite):
     print("No metadata", groupId, artifact)
     return
 
-  oldETag = metadata["E-Tag"]
-  oldLastMod = metadata["lastModified"]
-  bestHeader = metadata["best-header"]
-  contentLength = metadata["content-length"]
-  semVersion = metadata["semantic-version"]
+  oldETag = metadata["http-data"]["e-tag"]
+  oldLastMod = metadata["http-data"]["lastModified"]
+  bestHeader = metadata["http-data"]["best-header"]
+  contentLength = metadata["http-data"]["content-length"]
+  semVersion = metadata["ontology-info"]["semantic-version"]
 
   if bestHeader == "":
     return

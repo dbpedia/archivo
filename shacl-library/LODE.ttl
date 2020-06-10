@@ -91,7 +91,7 @@
     sh:minCount 1;
     sh:severity sh:Warning;
     sh:name "isDefinedBy not correctly specified"@en ;
-    sh:message "isDefinedBy not given or is no IRI" .
+    sh:message "isDefinedBy is missing or is no IRI" .
 
 # TODO this does nothing right now, we should add some constraints
 <#LODE-ontology-warning>
