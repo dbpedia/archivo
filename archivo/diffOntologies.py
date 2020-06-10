@@ -148,7 +148,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
         print("\n".join(newTriples), file=newTriplesFile) 
       crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite)
       stringTools.deleteAllFilesInDir(localDiffDir)
-      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
+      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy"))
   except FileNotFoundError:
     print("Error: Couldn't find file for", uri)
     stringTools.deleteAllFilesInDir(localDiffDir)
