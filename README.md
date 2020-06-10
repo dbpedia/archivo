@@ -34,10 +34,10 @@ There are a few minimum requirements for ontologies listed in Archivo:
 ### Metadata
 Archivo tries to use the metadata given in the ontology source as the databus-metadata to make it compatible with databus-features such as search etc. (hierarchy given by order):
 
-`dct:title`: Chosen from `rdfs:label, dct:title or dc:title`of the non-information URI
-`rdfs:comment`: TODO (right now: fixed string)
-`dataid:groupdocu`: TODO (right now: fixed string)
-`dct:description`: Chosen from `rdfs:description, dct:description, dc:description, rdfs:comment, dct:abstract` of the non-inforation URI
++ `dct:title`: Chosen from `rdfs:label, dct:title or dc:title`of the Ontology
++ `rdfs:comment`: First sentence of `dct:abstract dct:description or dc:description` of Ontology
++ `dataid:groupdocu`: TODO (right now: fixed string)
++ `dct:description`: Chosen from `rdfs:description, dct:description, dc:description, rdfs:comment, dct:abstract` of Ontology
 
 Another part of a good metadata coverage are the metadata requirements of the [LODE](https://essepuntato.it/lode) service tested by a [SHACL-Test](https://github.com/dbpedia/Archivo/blob/master/shacl-library/LODE.ttl)
 Properties used by LODE are:
