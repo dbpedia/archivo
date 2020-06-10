@@ -1,20 +1,10 @@
 import os
 import sys
 import subprocess
-import stringTools
+from utils import stringTools
+from utils import archivoConfig
 
-# some defaults for the pom generation
-default_license="http://ontotrack.dbpedia.org/issue?license=unknown"
-default_parentArtifact="common-metadata"
-default_repo="https://databus.dbpedia.org/repo"
-default_version="0.0.0-notRelevant"
-
-# edit for your dataset
-downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/${project.groupId}/${project.artifactId}/${project.version}/"
-packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${project.artifactId}/"
-pub="https://yum-yab.github.io/webid.ttl#onto"
-
-def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=default_license, deployRepoURL=default_repo, version=default_version, artifactId=default_parentArtifact):
+def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=archivoConfig.default_license, deployRepoURL=archivoConfig.default_repo, version=archivoConfig.default_version, artifactId=archivoConfig.default_parentArtifact):
 
     modlueStrings = [f"    <module>{module}</module>" for module in modules]
     
@@ -77,7 +67,7 @@ def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrl
     '     \n'  
     '</project>  \n')  
 
-def generateChildPom(groupId, artifactId, packaging, version, license=None, parentArtifactId=default_parentArtifact, parentVersion=default_version):
+def generateChildPom(groupId, artifactId, packaging, version, license=None, parentArtifactId=archivoConfig.default_parentArtifact, parentVersion=archivoConfig.default_version):
     if version == None or version == "":
         versionString = ""
     else:
@@ -138,9 +128,6 @@ def updateParentPoms(rootdir, index):
     
     for uri in index:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        groupDoc=(f"#This group is for all vocabularies hosted on {group}\n\n"
-            "All the artifacts in this group refer to one vocabulary, deployed in different formats.\n"
-            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
 
         parentPomPath = os.path.join(rootdir, group, "pom.xml")
         if not os.path.exists(parentPomPath):
@@ -157,11 +144,11 @@ def updateParentPoms(rootdir, index):
                                 groupId=group,
                                 packaging="pom",
                                 modules=artifactDirs,
-                                packageDirectory=packDir,
-                                downloadUrlPath=downloadUrl,
-                                publisher=pub,
-                                maintainer=pub,
-                                groupdocu=groupDoc,
+                                packageDirectory=archivoConfig.packDir,
+                                downloadUrlPath=archivoConfig.downloadUrl,
+                                publisher=archivoConfig.pub,
+                                maintainer=archivoConfig.pub,
+                                groupdocu=archivoConfig.groupDoc.format(group),
                                 )
             print(pomstring, file=parentPomFile)    
 

@@ -7,6 +7,8 @@
 @prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix cc: <http://creativecommons.org/ns#> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
 
 # Source: https://essepuntato.it/lode/ 
 # The annotation properties handled by LODE are:
@@ -38,53 +40,60 @@
 #    rdfs:isDefinedBy -> Warning
 
 
-<#LODE-ontology-violation>
-    a sh:NodeShape ;
+<#LODE-ontology-title-violation>
+    a sh:Shape ;
     sh:targetClass owl:Ontology;
     sh:severity sh:Violation;
-    sh:message "dc:title and rdfs:comment missing for Ontology. Header will not display correctly."@en;
-    sh:property [
-        sh:path dc:title;
-        sh:nodeKind sh:Literal;
-        sh:minCount 1;
-    ] ;
-    sh:property [
-        sh:path rdfs:comment;
-        sh:nodeKind sh:Literal;
-        sh:minCount 1;
-    ] .
+    sh:path dc:title;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1;
+    sh:message "dc:title is missing or no Literal"@en;
+    sh:name "title not correctly specified"@en .
     
-<#LODE-class-property-violation>
-    a sh:NodeShape ;
+<#LODE-ontology-comment-violation>
+    a sh:Shape ;
+    sh:targetClass owl:Ontology;
+    sh:severity sh:Violation;
+    sh:path rdfs:comment;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1;
+    sh:name "comment not correctly specified"@en;
+    sh:message "rdfs:comment is missing or is no Literal"@en .
+
+<#LODE-class-label-violation>
+    a sh:Shape ;
     # TODO check whether this works and whether stuff is missing
     sh:targetClass owl:Class;
     sh:severity sh:Violation;
-    sh:message "label/comment missing for class or property."@en;
-    sh:property [
-        sh:path rdfs:label;
-        sh:nodeKind sh:Literal;
-        sh:minCount 1;
-    ] ;
-    sh:property [
-        sh:path rdfs:comment;
-        sh:nodeKind sh:Literal;
-        sh:minCount 1;
-    ] .
-    
-<#LODE-class-property-warning>
-    a sh:NodeShape ;
+    sh:path rdfs:label;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1;
+    sh:name "label not correctly specified"@en;
+    sh:message "rdfs:label is missing or no Literal"@en .
+
+<#LODE-class-comment-violation>
+    a sh:Shape ;
+    # TODO check whether this works and whether stuff is missing
+    sh:targetClass owl:Class;
+    sh:severity sh:Violation;
+    sh:path rdfs:comment;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1;
+    sh:name "comment not correctly specified"@en;
+    sh:message "rdfs:comment is missing or is no Literal"@en .
+
+<#LODE-class-isDefinedBy-warning>
+    a sh:Shape ;
     # TODO check whether this works and whether stuff is missing
     sh:targetClass owl:Class, owl:ObjectProperty, owl:DatatypeProperty;
-    sh:message "rdfs:isDefinedBy is missing and will not be displayed."@en ;
-    sh:property [
-        sh:path rdfs:isDefinedBy;
-        sh:nodeKind sh:Literal;
-        sh:minCount 1;
-        sh:severity sh:Warning;
-    ] .
-  
-    
-# TODO complete
+    sh:path rdfs:isDefinedBy ;
+    sh:nodeKind sh:IRI;
+    sh:minCount 1;
+    sh:severity sh:Warning;
+    sh:name "isDefinedBy not correctly specified"@en ;
+    sh:message "isDefinedBy is missing or is no IRI" .
+
+# TODO this does nothing right now, we should add some constraints
 <#LODE-ontology-warning>
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
@@ -92,32 +101,35 @@
     sh:property [
         sh:path owl:versionInfo;
         sh:severity sh:Warning;
+        sh:message "version info is missing and will not be displayed"@en;
     ];
     sh:property [
         sh:path dc:creator;
         sh:severity sh:Warning;
+        sh:message "info about the creator is missing and will not be displayed"@en;
     ];
     sh:property [
         sh:path dc:contributor;
         sh:severity sh:Warning;
+        sh:message "no contributors listed"@en;
     ] ;
     sh:property [
         sh:path owl:imports;
         sh:severity sh:Warning;
+        sh:message "no info given about the imports of the ontology"@en;
     ] ;
     sh:property [
         sh:path dc:description;
         sh:severity sh:Warning;
-    ] ;
-    sh:property [
-        sh:path rdfs:comment;
-        sh:severity sh:Warning;
+        sh:message "no dct:description given and will not be displayed"@en;
     ] ;
     sh:property [
         sh:path dc:rigths;
         sh:severity sh:Warning;
+        sh:message "no info about rigths given and will not be displayed"@en;
     ] ;
     sh:property [
         sh:path owl:backwardCompatibleWith;
         sh:severity sh:Warning;
+        sh:message "no information about backwards compatibility given, will not be displayed"@en;
     ] .

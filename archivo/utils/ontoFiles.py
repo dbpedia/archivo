@@ -4,8 +4,7 @@ import json
 import subprocess
 import re
 import csv
-import stringTools
-import inspectVocabs
+from utils import stringTools, inspectVocabs
 
 rapperErrorsRegex=re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex=re.compile(r"^rapper: Warning.*$")
@@ -31,6 +30,22 @@ def getTripleNumberFromRapperLog(rapperlog):
   else:
     return None
 
+def getLatestVersionFromArtifactDir(artifactDir):
+  try:
+    versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
+    versionDirs.sort(reverse=True)
+    latestVersion = versionDirs[0]
+    latestVersionDir = os.path.join(artifactDir, latestVersion)
+    return latestVersionDir
+  except IndexError:
+    print(f"No versions for {artifactDir}")
+    return None
+  except FileNotFoundError:
+    print(f"Couldn't find artifact {artifactDir}")
+    return None
+  
+
+
 #removes recursively all dirs that are empty or just contain empty files or directories
 def deleteEmptyDirsRecursive(startpath):
   if os.path.isdir(startpath):
@@ -44,6 +59,17 @@ def deleteEmptyDirsRecursive(startpath):
       os.rmdir(startpath)
   else:
     print(f"Not a directory: {startpath}")
+
+def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion):
+  vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
+  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
+  vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-imports":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
+  vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
+  vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
+  
+  with open(pathToFile, "w+") as outfile:
+    json.dump(vocabinfo, outfile, indent=4, sort_keys=True)
+
 
 def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion=None):
   vocabInformation={}
@@ -111,7 +137,12 @@ def getParsedTriples(filepath):
   return getTripleNumberFromRapperLog(stderr)
 
 def loadIndexJson():
-  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "r") as indexfile:
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "indices", "vocab_index.json"), "r") as indexfile:
+    jsonIndex = json.load(indexfile)
+  return jsonIndex
+
+def loadIndexJsonFromFile(filepath):
+  with open(filepath, "r") as indexfile:
     jsonIndex = json.load(indexfile)
   return jsonIndex
 
@@ -139,7 +170,11 @@ def checkIfUriInIndex(uri, index):
   return None
 
 def writeIndexJson(index):
-  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "vocab_index.json"), "w+") as indexfile:
+  with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "indices","vocab_index.json"), "w+") as indexfile:
+    json.dump(index, indexfile, indent=4, sort_keys=True)
+
+def writeIndexJsonToFile(index, filepath):
+  with open(filepath, "w+") as indexfile:
     json.dump(index, indexfile, indent=4, sort_keys=True)
 
 def loadFalloutIndex():
@@ -149,8 +184,19 @@ def loadFalloutIndex():
     reader = csv.reader(csvfile)
     return [row for row in reader]
 
+def loadFalloutIndexFromFile(filepath):
+  with open(filepath, "r") as csvfile:
+    reader = csv.reader(csvfile)
+    return [row for row in reader]
+
 def writeFalloutIndex(index):
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "fallout_index.csv"), "w+") as csvfile: 
+    writer = csv.writer(csvfile, delimiter=",")
+    for row in index:
+      writer.writerow(row)
+
+def writeFalloutIndexToFile(filepath, index):
+  with open(filepath, "w+") as csvfile: 
     writer = csv.writer(csvfile, delimiter=",")
     for row in index:
       writer.writerow(row)
@@ -170,6 +216,21 @@ def loadListFile(pathToFile):
     lines = [line.strip() for line in listFile]
   return lines
 
+def measureStars(triples, licenseI, consistent, consistentWithoutImports, licenseII):
+  stars = 0
+  if triples > 0:
+    stars = stars + 1
+  if licenseI == True:
+    stars = stars + 1
+
+  if not stars == 2:
+    return stars
+
+  if consistent == "Yes" or consistentWithoutImports == "Yes":
+    stars = stars + 1
+  if licenseII == True:
+    stars = stars + 1
+  return stars
 
 def inspectMetadata(rootdir):
 
@@ -204,23 +265,6 @@ def inspectMetadata(rootdir):
         else:
           resultData[key] = {str(metadata[key]) : 1}
   print(json.dumps(resultData, indent=1))
-
-def measureStars(metadata):
-  stars = 0
-  if metadata["triples"] > 0:
-    stars = stars + 1
-  if metadata["License-I"] == True:
-    stars = stars + 1
-
-  if not stars == 2:
-    return stars
-
-  if metadata["consistent"] == "Yes" or metadata["consistent-without-imports"] == "Yes":
-    stars = stars + 1
-  if metadata["License-II"] == True:
-    stars = stars + 1
-  return stars
-
 
 def checkIndexValidity():
   index = loadIndexJson()

@@ -1,5 +1,6 @@
 import re
 import os
+from urllib.parse import urlparse
 
 urlRegex=r"https?://(?:www\.)?(.+?)/(.*)"
 
@@ -11,6 +12,38 @@ fileTypeDict = {"turtle": ".ttl", "rdf+xml": ".rdf", "ntriples": ".nt", "rdf+n3"
 
 # regex to get the content type
 contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
+
+# sentenceRegex
+sentenceRegex = re.compile(r"(.*?\.) [A-Z]")
+
+
+def generateGroupAndArtifactFromUri(url):
+  parsedObj = urlparse(url)
+  # replacing the port with --
+  group = parsedObj.netloc.replace(":", "--")
+  artifact = parsedObj.path + parsedObj.fragment
+  artifact = artifact.strip("#/")
+  artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--")
+  if artifact == "":
+    artifact = "defaultArtifact"
+
+  if group.startswith("www."):
+    group = group.replace("www.", "", 1)
+  # none of them can be the empty string or all breaks
+  if group == "" or artifact == "":
+    return None, None
+
+  return group, artifact
+
+def getFirstLine(text):
+  return text.split("\n")[0]
+
+def getFirstSentence(text):
+  matches = sentenceRegex.findall(text)
+  if matches != None and len(matches) > 0:
+    return matches[0].replace("\n", " ")
+  else:
+    return text.replace("\n", " ")
 
 def isNoneOrEmpty(string):
   if string != None and string != "":
@@ -25,7 +58,7 @@ def getFileExtensionFromUri(uri):
   else:
     return ""
 
-def generateGroupAndArtifactFromUri(vocab_uri):
+def deprecatedGenerateGroupAndArtifactFromUri(vocab_uri):
   matcher=re.search(urlRegex, vocab_uri)
   if matcher != None:
     groupId=matcher.group(1)
