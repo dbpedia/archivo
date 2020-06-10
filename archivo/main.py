@@ -56,7 +56,10 @@ def updateIndex(index, dataPath, testSuite):
         latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(artifactDir)
         originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
         with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
-            metadata = json.load(jsonFile) 
+            metadata = json.load(jsonFile)
+        if "http-data" in metadata.keys():
+            print("Already done this version")
+            continue
         version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
         updatedVersionDir = os.path.join(artifactDir, version)
         os.mkdir(updatedVersionDir)

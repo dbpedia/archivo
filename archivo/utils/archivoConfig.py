@@ -12,8 +12,10 @@ pub="https://yum-yab.github.io/webid.ttl#onto"
 
 # groupDoc for archivo, %s is the domain
 groupDoc=("# All vocabularies hosted on {}\n\n"
-            "Each artifact in this group refer to one ontology, deployed in different formats.\n"
-            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
+            "Each artifact in this group refers to one ontology, deployed in different formats.\n"
+            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.\n"
+            "More at <http://dev.dbpedia.org/DBpedia_Archvio> and <http://archivo.dbpedia.org/>."
+            )
 
 # explaination for the md-File
 default_explaination="This ontology is part of the Databus Archivo - A Web-Scale OntologyInterface for Time-Based and SemanticArchiving and Developing Good Ontologies"
