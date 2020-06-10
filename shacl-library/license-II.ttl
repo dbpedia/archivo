@@ -8,26 +8,17 @@
 @prefix cc: <http://creativecommons.org/ns#> .
 
 <#license-IIa>  
-    a sh:NodeShape ;
+    a sh:Shape ;
     sh:targetClass owl:Ontology ;
     sh:severity sh:Violation ;
     sh:message "No dct:license statement found"@en ;
-    sh:or (
-        [
-        sh:path dct:license;
-        sh:minCount 1;
-        ]
-    ) .
+    sh:path dct:license;
+    sh:minCount 1.
     
 <#license-IIb>  
-    a sh:NodeShape ;
+    a sh:Shape ;
     sh:targetClass owl:Ontology;
     sh:severity sh:Violation ;
     sh:message "dct:license statement is not an IRI"@en ;
-    sh:or (
-        [
-        sh:path dct:license;
-        sh:nodeKind sh:IRI;
-        ]
-    ) .
-    
+    sh:path dct:license;
+    sh:nodeKind sh:IRI.
