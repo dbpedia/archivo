@@ -1,11 +1,10 @@
 from pyshacl import validate
 from rdflib import Graph
-from utils import inspectVocabs
+from utils import inspectVocabs, archivoConfig
 import os
 import sys
 import subprocess
 import re
-import archivoConfig
 #from owlready2 import get_ontology, sync_reasoner_pellet
 
 

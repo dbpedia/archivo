@@ -4,6 +4,8 @@ import rdflib
 from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph
 from rdflib.namespace import DCTERMS, DC
 import json
+import traceback
+from utils import stringTools
 
 def getGraphOfVocabFile(filepath):
     try:  
@@ -11,8 +13,9 @@ def getGraphOfVocabFile(filepath):
         graph = rdflib.Graph()
         graph.parse(filepath, format=rdfFormat)
         return graph
-    except Exception as e:
-        print("Error in parsing:", str(e))
+    except Exception:
+        print("Error in parsing:")
+        traceback.print_exc(file=sys.stdout)
         return None
 
 def getTurtleGraph(graph, base=None):    
@@ -88,20 +91,22 @@ def getNIRUri(graph):
 
 
 # Returns the possible labels for a ontology
-def getPossibleLabels(graph):
+def getLabel(graph):
     queryString=(
         "SELECT DISTINCT ?label ?dctTitle ?dcTitle \n"
         "WHERE {\n"
         " ?uri a owl:Ontology .\n"
-        " OPTIONAL { ?uri rdfs:label ?label FILTER langMatches(lang(?label), \"en\")}\n"    
-        " OPTIONAL { ?uri dcterms:title ?dctTitle }\n"
-        " OPTIONAL { ?uri dc:title ?dcTitle }\n"
+        " OPTIONAL { ?uri rdfs:label ?label FILTER (lang(?label) = \"\" || langMatches(lang(?label), \"en\"))}\n"    
+        " OPTIONAL { ?uri dcterms:title ?dctTitle FILTER (lang(?dctTitle) = \"\" || langMatches(lang(?dctTitle), \"en\"))}\n"
+        " OPTIONAL { ?uri dc:title ?dcTitle FILTER (lang(?dcTitle) = \"\" || langMatches(lang(?dcTitle), \"en\"))}\n"
         "} LIMIT 1"
         )
     result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
     if result != None and len(result) > 0:
         for row in result:
-            return row
+            for value in row:
+                if value != None:
+                    return stringTools.getFirstLine(value)
     else:
         return None
 
@@ -125,23 +130,49 @@ def getPossibleDescriptions(graph):
     else:
         return None
 
+def getDescription(graph):
+    resultStrings = []
+    queryString=(
+        "SELECT DISTINCT ?descProp ?description\n"
+        "WHERE {\n"
+        " VALUES ?descProp { rdfs:description dcterms:description dc:description rdfs:comment dcterms:abstract }"
+        " ?uri a owl:Ontology .\n"
+        " ?uri ?descProp ?description .\n"
+        " FILTER (lang(?description) = \"\" || langMatches(lang(?description), \"en\"))"
+        "}"
+        )
+    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    if result != None and len(result) > 0:
+        for row in result:
+            descString = (
+                f"# {row[0].n3(graph.namespace_manager)}\n"
+                f"{row[1]}"
+            )
+            resultStrings.append(descString)
+        return "\n\n".join(resultStrings)
+    else:
+        return None
+
+
 # possible rdfs:comments for the databus
 
-def getPossibleComments(graph):
+def getComment(graph):
     queryString=(
-        "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription ?rdfsComment \n"
+        "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription \n"
         "WHERE {\n"
         " ?uri a owl:Ontology .\n"
-        " OPTIONAL { ?uri dcterms:description ?dctDescription}\n"
-        " OPTIONAL { ?uri dc:description ?dcDescription}\n"    
-        " OPTIONAL { ?uri rdfs:comment ?rdfsComment }\n"
-        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract }\n"
+        " OPTIONAL { ?uri dcterms:description ?dctDescription FILTER (lang(?dctDescription) = \"\" || langMatches(lang(?dctDescription), \"en\")) }\n"
+        " OPTIONAL { ?uri dc:description ?dcDescription FILTER (lang(?dcDescription) = \"\" || langMatches(lang(?dcDescription), \"en\")) }\n"    
+        " OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER (lang(?rdfsComment) = \"\" || langMatches(lang(?rdfsComment), \"en\")) }\n"
+        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER (lang(?dctAbstract) = \"\" || langMatches(lang(?dctAbstract), \"en\")) }\n"
         "} LIMIT 1"
         )
     result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
     if result != None and len(result) > 0:
         for row in result:
-            return row
+            for value in row:
+                if value != None:
+                    return stringTools.getFirstSentence(value)
     else:
         return None
 

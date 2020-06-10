@@ -8,7 +8,7 @@ import os
 from utils.validation import TestSuite
 import crawlURIs
 from utils import ontoFiles
-import archivoConfig
+from utils import archivoConfig
 #from utils import ontoFiles
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)

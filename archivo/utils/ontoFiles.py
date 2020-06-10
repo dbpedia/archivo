@@ -30,6 +30,22 @@ def getTripleNumberFromRapperLog(rapperlog):
   else:
     return None
 
+def getLatestVersionFromArtifactDir(artifactDir):
+  try:
+    versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
+    versionDirs.sort(reverse=True)
+    latestVersion = versionDirs[0]
+    latestVersionDir = os.path.join(artifactDir, latestVersion)
+    return latestVersionDir
+  except IndexError:
+    print(f"No versions for {artifactDir}")
+    return None
+  except FileNotFoundError:
+    print(f"Couldn't find artifact {artifactDir}")
+    return None
+  
+
+
 #removes recursively all dirs that are empty or just contain empty files or directories
 def deleteEmptyDirsRecursive(startpath):
   if os.path.isdir(startpath):
@@ -47,7 +63,7 @@ def deleteEmptyDirsRecursive(startpath):
 def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion):
   vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
   vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
-  vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-impots":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
+  vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-imports":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
   vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
   vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
   

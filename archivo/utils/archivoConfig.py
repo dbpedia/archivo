@@ -11,8 +11,8 @@ packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${proje
 pub="https://yum-yab.github.io/webid.ttl#onto"
 
 # groupDoc for archivo, %s is the domain
-groupDoc=("# This group is for all vocabularies hosted on {}\n\n"
-            "All the artifacts in this group refer to one vocabulary, deployed in different formats.\n"
+groupDoc=("# All vocabularies hosted on {}\n\n"
+            "Each artifact in this group refer to one ontology, deployed in different formats.\n"
             "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.")
 
 # explaination for the md-File

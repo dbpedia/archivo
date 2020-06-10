@@ -1,6 +1,6 @@
 import subprocess
 from rdflib import compare
-import inspectVocabs
+from utils import inspectVocabs
 import requests
 import crawlURIs
 from datetime import datetime
@@ -44,12 +44,20 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True):
 def commDiff(oldFile, newFile):
   command = ["comm", "-3", oldFile, newFile]
   try:
+    oldTriples = []
+    newTriples = []
     process = subprocess.run(command, stdout=subprocess.PIPE)
     commOutput = process.stdout.decode("utf-8")
+    print(commOutput)
+    for line in commOutput.split("\n"):
+      if line.startswith("\t"):
+        newTriples.append(line)
+      else:
+        oldTriples.append(line)
     if commOutput == "":
-      return True
+      return True, oldTriples, newTriples
     else:
-      return False
+      return False, oldTriples, newTriples
   except Exception as e:
     print("Error in diffing file:")
     print(e)
@@ -89,7 +97,7 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None
 
 
-def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, lastSemVersion):
+def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, lastSemVersion, testSuite):
   try:
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
@@ -114,7 +122,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
     #oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
     #newGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDiffDir, "tmpSourceParsed.ttl"))
     #both, old, new = graphDiff(oldGraph, newGraph)
-    isEqual = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
+    isEqual, oldTriples, newTriples = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
     #if len(old) == 0 and len(new) == 0:
     if isEqual:
       print("Not different")
@@ -134,7 +142,11 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       os.makedirs(newVersionPath, exist_ok=True)
       fileExt = os.path.splitext(sourcePath)[1]
       os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
-      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion)
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_triples=oldTriples.nt"), "w+") as oldTriplesFile:
+        print("\n".join(oldTriples), file=oldTriplesFile)
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_triples=newTriples.nt"), "w+") as newTriplesFile:
+        print("\n".join(newTriples), file=newTriplesFile) 
+      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite)
       stringTools.deleteAllFilesInDir(localDiffDir)
       print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "validate"))
   except FileNotFoundError:
@@ -143,7 +155,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
 
 
 
-def handleDiffForUri(uri, rootdir, fallout_index):
+def handleDiffForUri(uri, rootdir, fallout_index, testSuite):
   localDiffDir = os.path.join(rootdir, ".tmpDiffDir")
   if not os.path.isdir(localDiffDir):
     os.mkdir(localDiffDir)
@@ -182,13 +194,13 @@ def handleDiffForUri(uri, rootdir, fallout_index):
     return
   if isDiff:
     print("Fond potential different version for", uri)
-    localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, semVersion)
+    localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, semVersion, testSuite)
   else:
     print("No different version for", uri)
 
 
 def getAxiomsOfOntology(ontologyPath):
-  displayAxiomsPath = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "DisplayAxioms.jar")
+  displayAxiomsPath = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "helpingBinaries", "DisplayAxioms.jar")
 
   process = subprocess.Popen(["java", "-jar", displayAxiomsPath, ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

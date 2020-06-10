@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 from utils import stringTools
-import archivoConfig
+from utils import archivoConfig
 
 def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=archivoConfig.default_license, deployRepoURL=archivoConfig.default_repo, version=archivoConfig.default_version, artifactId=archivoConfig.default_parentArtifact):
 

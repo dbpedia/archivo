@@ -14,14 +14,15 @@ fileTypeDict = {"turtle": ".ttl", "rdf+xml": ".rdf", "ntriples": ".nt", "rdf+n3"
 contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
 
 # sentenceRegex
-sentenceRegex = re.compile(r".*?\.")
+sentenceRegex = re.compile(r"(.*?\.) [A-Z]")
 
 
-def alternativeGroupArtifactGeneration(url):
+def generateGroupAndArtifactFromUri(url):
   parsedObj = urlparse(url)
   # replacing the port with --
   group = parsedObj.netloc.replace(":", "--")
-  artifact = parsedObj.path.strip("#/")
+  artifact = parsedObj.path + parsedObj.fragment
+  artifact = artifact.strip("#/")
   artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--")
   if artifact == "":
     artifact = "defaultArtifact"
@@ -57,7 +58,7 @@ def getFileExtensionFromUri(uri):
   else:
     return ""
 
-def generateGroupAndArtifactFromUri(vocab_uri):
+def deprecatedGenerateGroupAndArtifactFromUri(vocab_uri):
   matcher=re.search(urlRegex, vocab_uri)
   if matcher != None:
     groupId=matcher.group(1)

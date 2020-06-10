@@ -5,10 +5,10 @@ from dateutil.parser import parse as parsedate
 import random
 import rdflib
 import crawlURIs
-from utils import ontoFiles, generatePoms, inspectVocabs
-import archivoConfig
-from utils import TestSuite
-
+from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools
+from utils.validation import TestSuite
+import json
+import shutil
 
 def checkIndexForUri(uri, index):
     for indexUri in index:
@@ -16,6 +16,20 @@ def checkIndexForUri(uri, index):
             return True
     return False
 
+
+def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite):
+    for uri in crawlURIs.getLovUrls():
+        if not checkIndexForUri(uri, index):
+            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False, testSuite=testSuite)
+    for uri in hashUris:
+        if not checkIndexForUri(uri, index):
+            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False, testSuite=testSuite)
+    for uri in prefixUris:
+        if not checkIndexForUri(uri, index):
+            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
+    for uri in getVoidUris(voidPath):
+        if not checkIndexForUri(uri, index):
+            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
 
 def getVoidUris(datapath):
 
@@ -31,7 +45,29 @@ def getVoidUris(datapath):
                 for uri in classUris:
                     resultSet.add(uri)
     return resultSet
- 
+
+def updateIndex(index, dataPath, testSuite):
+    for uri in index:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        artifactDir = os.path.join(dataPath, group, artifact)
+        if not os.path.isdir(artifactDir):
+            print(f"No data for {uri}")
+            continue
+        latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(artifactDir)
+        originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
+        with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
+            metadata = json.load(jsonFile) 
+        version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+        updatedVersionDir = os.path.join(artifactDir, version)
+        os.mkdir(updatedVersionDir)
+        fileExt = os.path.splitext(originalFile)[1]
+        shutil.copyfile(os.path.join(latestVersionDir, originalFile), os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt))
+        if not os.path.isfile(os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt)):
+            print("Copy doesnt work")
+            sys.exit(1)
+        crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["best-header"], metadata, metadata["accessed"], testSuite, metadata["semantic-version"])
+
+
 rootdir=sys.argv[1]
 
 index = ontoFiles.loadIndexJson()
@@ -39,24 +75,11 @@ new_uris = []
 
 fallout = ontoFiles.loadFalloutIndex()
 
-#hashUris = ontoFiles.loadListFile("src/all_hash_uris.lst")
-
-#prefixUris = ontoFiles.readTsvFile("src/prefixCC-uris.tsv")
-
-voidClasses = getVoidUris(archivoConfig.voidResults)
+#voidClasses = getVoidUris(archivoConfig.voidResults)
 
 testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "shacl"))
 
-with open("./void-classes.txt", "w+") as classesFile:
-    print("\n".join(voidClasses), file=classesFile)
-
-print(len(voidClasses))
-
-sys.exit(0)
-
-for uri in crawlURIs.getLovUrls():
-    if not checkIndexForUri(uri, index):
-        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False, testSuite=testSuite)
+#updateIndex(index, rootdir, testSuite)
 
 #for i in range(20):
     #uri = random.choice(potentialUris)
@@ -64,12 +87,6 @@ for uri in crawlURIs.getLovUrls():
         #uri = random.choice(potentialUris)
     #new_uris.append(uri)
 
-#for uri in hashUris:
-    #if not checkIndexForUri(uri, index):
-        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False)
 
-#for uri in prefixUris:
-    #if not checkIndexForUri(uri, index):
-        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False)
 
 generatePoms.updateParentPoms(rootdir, index)
