@@ -31,3 +31,7 @@ voidResults = "/home/denis/Downloads/voidResults"
 # indices
 ontoIndexPath = "/home/denis/Workspace/Job/Archivo/archivo/indices/vocab_index.json"
 falloutIndexPath = "/home/denis/Workspace/Job/Archivo/archivo/indices/fallout_index.csv"
+
+
+# local path for data
+localPath = "/home/denis/Workspace/Job/Archivo/testdir"
