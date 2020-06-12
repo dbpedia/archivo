@@ -1,5 +1,4 @@
 from webservice import app
-from webservice import localPath
 from flask import render_template, flash, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
@@ -30,7 +29,7 @@ class InfoForm(FlaskForm):
 def index():
     form = SuggestionForm()
     if form.validate_on_submit():
-        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, localPath, fallout, "user-suggestion", False, testSuite=testingSuite)
+        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, archivoConfig.localPath, fallout, "user-suggestion", False, testSuite=testingSuite)
         if success:
             ontoFiles.writeIndexJsonToFile(ontoIndex, archivoConfig.ontoIndexPath)
         elif not success and isNir:
