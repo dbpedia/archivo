@@ -35,10 +35,6 @@
         "accessed": "2020.05.07; 10:29:33",
         "source": "prefix.cc"
     },
-    "http://onto.eva.mpg.de/ontologies/gfo-bio.owl": {
-        "accessed": "2020.06.10; 20:03:11",
-        "source": "user-suggestion"
-    },
     "http://catalogus-professorum.org/cpm/2/": {
         "accessed": "2020.05.07; 16:44:39",
         "source": "prefix.cc"
@@ -623,6 +619,10 @@
         "accessed": "2020.05.07; 05:44:06",
         "source": "prefix.cc"
     },
+    "http://mmoon.org/core/": {
+        "accessed": "2020.06.12; 12:48:29",
+        "source": "user-suggestion"
+    },
     "http://models.okkam.org/ENS-core-vocabulary.owl": {
         "accessed": "2020.05.07; 15:09:45",
         "source": "prefix.cc"
@@ -722,6 +722,10 @@
     "http://ns.taverna.org.uk/2012/tavernaprov/": {
         "accessed": "2020.05.07; 15:38:37",
         "source": "prefix.cc"
+    },
+    "http://onto.eva.mpg.de/ontologies/gfo-bio.owl": {
+        "accessed": "2020.06.10; 20:03:11",
+        "source": "user-suggestion"
     },
     "http://ontologi.es/days#": {
         "accessed": "2020.05.07; 10:43:46",
