@@ -24,8 +24,8 @@ def generateGroupAndArtifactFromUri(url):
   group = parsedObj.netloc.replace(":", "--")
   print(parsedObj.fragment)
   artifact = parsedObj.path + "#" + parsedObj.fragment
-  artifact = artifact.strip("#/")
-  artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--")
+  artifact = artifact.strip("#/~")
+  artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--").replace("~", "--")
   if artifact == "":
     artifact = "defaultArtifact"
 

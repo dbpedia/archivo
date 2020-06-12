@@ -6,6 +6,7 @@ databusRepoUrl = "https://databus.dbpedia.org/repo/sparql"
 
 
 def getLatestMetaFile(group, artifact):
+    databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     latestMetaFileQuery = (
         "PREFIX dcat: <http://www.w3.org/ns/dcat#>\n"
         "PREFIX dct: <http://purl.org/dc/terms/>\n"
@@ -15,7 +16,7 @@ def getLatestMetaFile(group, artifact):
         "SELECT DISTINCT ?file WHERE\n"
         "{\n" 
             "?dataset dataid:account databus:ontologies .\n"
-            f"?dataset dataid:artifact <https://databus.dbpedia.org/ontologies/{group}/{artifact}>.\n"
+            f"?dataset dataid:artifact <{databusLink}>.\n"
             "?dataset dcat:distribution ?distribution .\n"
             "?distribution <http://dataid.dbpedia.org/ns/cv#type> \'meta\'^^<http://www.w3.org/2001/XMLSchema#string> .\n" 
             "?distribution dcat:downloadURL ?file .\n"
@@ -35,8 +36,11 @@ def getLatestMetaFile(group, artifact):
     sparql.setQuery(latestMetaFileQuery)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-    metaFileUri = results["results"]["bindings"][0]["file"]["value"]
-    req = requests.get(metaFileUri)
-    return req.json()
+    try:
+        metaFileUri = results["results"]["bindings"][0]["file"]["value"]
+        req = requests.get(metaFileUri)
+        return True, databusLink, req.json()
+    except KeyError:
+        return False, databusLink, ""
 
 #print(getLatestMetaFile("w3id.org", "gom"))
