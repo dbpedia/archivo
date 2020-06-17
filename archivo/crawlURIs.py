@@ -78,7 +78,7 @@ def checkRobot(uri):
   rp = RobotFileParser()
   rp.set_url(robotsUrl)
   rp.read()
-  if rp.can_fetch("*",uri):
+  if rp.can_fetch(archivoConfig.archivo_agent, uri):
     return True
   else:
     return False
@@ -397,6 +397,15 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     stringTools.deleteAllFilesInDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
+
+  # check robots.txt access
+  allowed = checkRobot(vocab_uri)
+  if not allowed:
+    if isNIR:
+      fallout_index.append((vocab_uri, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
+    return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"
+
+  # downloading and parsing
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
   if not success:
     print("No available Source")
