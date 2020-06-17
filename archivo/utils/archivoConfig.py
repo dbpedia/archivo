@@ -21,17 +21,17 @@ groupDoc=("# All vocabularies hosted on {}\n\n"
 default_explaination="This ontology is part of the Databus Archivo - A Web-Scale OntologyInterface for Time-Based and SemanticArchiving and Developing Good Ontologies"
 
 # paths for external services
-pelletPath = "/home/denis/Workspace/Job/pellet/cli/target/pelletcli/bin/pellet"
-profileCheckerJar="/home/denis/Downloads/profilechecker-1.1.0.jar"
+pelletPath = "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
+profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.1.0.jar"
 
 # iri sources
 voidResults = "/home/denis/Downloads/voidResults"
 
 
 # indices
-ontoIndexPath = "/home/denis/Workspace/Job/Archivo/archivo/indices/vocab_index.json"
-falloutIndexPath = "/home/denis/Workspace/Job/Archivo/archivo/indices/fallout_index.csv"
+ontoIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/vocab_index.json"
+falloutIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/fallout_index.csv"
 
+# local paths
+localPath = "/data/home/dstreitmatter/data/archivo-ontologies"
 
-# local path for data
-localPath = "/home/denis/Workspace/Job/Archivo/testdir"
