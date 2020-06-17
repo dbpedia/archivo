@@ -8,7 +8,7 @@ from dateutil.parser import parse as parsedate
 from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig
 from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urldefrag
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -362,8 +362,14 @@ def checkUriEquality(uri1, uri2):
   else:
     return False
 
+def checkIndexForUri(uri, index):
+    for indexUri in index:
+        if urldefrag(uri)[0] == urldefrag(indexUri)[0]:
+            return True
+    return False
+
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testSuite):
-  vocab_uri = vocab_uri.rstrip("#")
+  vocab_uri = urldefrag(vocab_uri)[0]
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
@@ -375,7 +381,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     if isNIR:
       fallout_index.append((vocab_uri, False, "Malformed Uri"))
     return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
-  if vocab_uri in index:
+  if checkIndexForUri(vocab_uri, index):
     print("Already known uri, skipping...")
     return True, isNIR, f"This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
   bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath)
@@ -410,6 +416,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
     return False, isNIR, "RDFLIB parsing error"
   real_ont_uri=inspectVocabs.getNIRUri(graph)
+  print(real_ont_uri)
   if real_ont_uri == None:
     print("Couldn't find ontology uri, trying isDefinedBy...")
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
@@ -449,7 +456,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR, "Malformed non-information uri " + real_ont_uri
 
 
-  if real_ont_uri in index:
+  if checkIndexForUri(real_ont_uri, index):
     print("Already known uri", real_ont_uri)
     return True, isNIR, "This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
   
