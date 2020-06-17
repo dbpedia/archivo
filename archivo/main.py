@@ -10,26 +10,31 @@ from utils.validation import TestSuite
 import json
 import shutil
 
-def checkIndexForUri(uri, index):
-    for indexUri in index:
-        if crawlURIs.checkUriEquality(uri, indexUri):
-            return True
-    return False
 
 
-def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite):
+
+def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite, indexFilePath, falloutFilePath):
+    index = ontoFiles.loadIndexJsonFromFile(indexFilePath)
+    fallout = ontoFiles.loadFalloutIndexFromFile(falloutFilePath)
     for uri in crawlURIs.getLovUrls():
-        if not checkIndexForUri(uri, index):
-            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False, testSuite=testSuite)
+        ontoFiles.writeIndexJsonToFile(index, indexFilePath)
+        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+
     for uri in hashUris:
-        if not checkIndexForUri(uri, index):
-            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False, testSuite=testSuite)
+        ontoFiles.writeIndexJsonToFile(index, indexFilePath)
+        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+
     for uri in prefixUris:
-        if not checkIndexForUri(uri, index):
-            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
+        ontoFiles.writeIndexJsonToFile(index, indexFilePath)
+        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+
     for uri in getVoidUris(voidPath):
-        if not checkIndexForUri(uri, index):
-            crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
+        ontoFiles.writeIndexJsonToFile(index, indexFilePath)
+        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
 
 def getVoidUris(datapath):
 
@@ -70,7 +75,6 @@ def updateIndex(index, dataPath, testSuite):
             sys.exit(1)
         crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["best-header"], metadata, metadata["accessed"], testSuite, metadata["semantic-version"])
 
-
 rootdir=sys.argv[1]
 
 index = ontoFiles.loadIndexJson()
@@ -92,4 +96,4 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 
-generatePoms.updateParentPoms(rootdir, index)
+#generatePoms.updateParentPoms(rootdir, index)

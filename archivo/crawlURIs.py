@@ -8,7 +8,8 @@ from dateutil.parser import parse as parsedate
 from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig
 from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
-from urllib.parse import urlparse, urldefrag
+from urllib.parse import urlparse, urldefrag, quote
+from rdflib.term import Literal, URIRef
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -341,6 +342,11 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
     if description != None:
       md_description = description
     license =inspectVocabs.getLicense(ontograph)
+    if isinstance(license, URIRef):
+      license = str(license).strip("<>")
+    else:
+      # in every other case: URL % encoding of the text
+      license = "http://archivo.dbpedia.org/sys/licenses/string?value=" + quote(license, safe="")
 
   childpomString = generatePoms.generateChildPom(groupId=groupId,
                                                   version=version,
@@ -350,17 +356,6 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
   with open(os.path.join(artifactPath, "pom.xml"), "w+") as childPomFile:
     print(childpomString, file=childPomFile)
   generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, md_comment, md_description)
-    
-
-def checkUriEquality(uri1, uri2):
-  if "#" in uri1:
-    uri1 = uri1[:uri1.rfind("#")]
-  if "#" in uri2:
-    uri2 = uri2[:uri2.rfind("#")]
-  if uri1 == uri2:
-    return True
-  else:
-    return False
 
 def checkIndexForUri(uri, index):
     for indexUri in index:
@@ -368,12 +363,20 @@ def checkIndexForUri(uri, index):
             return True
     return False
 
+def checkUriEquality(uri1, uri2):
+  if urldefrag(uri1)[0] == urldefrag(uri2)[0]:
+    return True
+  else:
+    return False
+
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testSuite):
+  # remove fragment
   vocab_uri = urldefrag(vocab_uri)[0]
   localDir = os.path.join(dataPath, ".tmpOntTest")
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
 
+  # testing uri validity
   print("Trying to validate ", vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
   if groupId == None or artifact == None:
@@ -487,7 +490,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDir(localDir)
   
-  #print(generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"))
+  returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
+  print(deployLog)
+  if returncode > 0:
+    return False, isNIR, "There was an error deploying the Ontology to the databus:\n\n"+ deployLog
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at https://databus.dbpedia.org/ontologies/{groupId}/{artifact} soon"
 
 

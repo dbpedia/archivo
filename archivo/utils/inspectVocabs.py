@@ -6,6 +6,7 @@ from rdflib.namespace import DCTERMS, DC
 import json
 import traceback
 from utils import stringTools
+from urllib.parse import quote as urlQuote
 
 def getGraphOfVocabFile(filepath):
     try:  
@@ -189,7 +190,7 @@ def getLicense(graph):
     result=graph.query(queryString, initNs={"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
     if result != None and len(result) > 0:
         for row in result:
-            return str(row[0])
+            return row[0]
     else:
         return None
 # returns the relevant dcterms values (uri, dcterms:license, dcterms:title, dcterms:abstract, dcterms:description)
