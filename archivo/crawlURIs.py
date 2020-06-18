@@ -344,9 +344,9 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
     license =inspectVocabs.getLicense(ontograph)
     if isinstance(license, URIRef):
       license = str(license).strip("<>")
-    elif license != None:
-      # in every other case: URL % encoding of the text
-      license = "http://archivo.dbpedia.org/sys/licenses/string?value=" + quote(license, safe="")
+    elif isinstance(license, Literal):
+      # if license is literal: error uri
+      license = archivoConfig.license_literal_uri
 
   childpomString = generatePoms.generateChildPom(groupId=groupId,
                                                   version=version,
