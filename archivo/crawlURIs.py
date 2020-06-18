@@ -400,6 +400,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
 
   # check robots.txt access
   allowed = checkRobot(vocab_uri)
+  print("Robot allowed:", allowed)
   if not allowed:
     if isNIR:
       fallout_index.append((vocab_uri, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
@@ -426,7 +427,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("Error in rdflib parsing")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
-    return False, isNIR, "RDFLIB parsing error"
+    return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at https://github.com/dbpedia/Archivo/issues"
   real_ont_uri=inspectVocabs.getNIRUri(graph)
   print(real_ont_uri)
   if real_ont_uri == None:
