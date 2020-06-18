@@ -38,7 +38,12 @@ def generateGroupAndArtifactFromUri(url):
   return group, artifact
 
 def getFirstLine(text):
-  return text.split("\n")[0]
+  label = None
+  for line in text.split("\n"):
+    if line.strip() != "":
+      label = line.strip()
+      break
+  return label
 
 def getFirstSentence(text):
   matches = sentenceRegex.findall(text)

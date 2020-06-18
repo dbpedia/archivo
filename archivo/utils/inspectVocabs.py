@@ -172,7 +172,7 @@ def getComment(graph):
     if result != None and len(result) > 0:
         for row in result:
             for value in row:
-                if value != None:
+                if value != None and str(value).strip() != "":
                     return stringTools.getFirstSentence(value)
     else:
         return None
@@ -324,3 +324,9 @@ def checkShaclReport(shaclReportGraph):
         return "Warning"
     else:
         return "OK"
+
+graph = getGraphOfVocabFile("/home/denis/Workspace/Job/Archivo/testdir/purl.org/NET--biol--ns/2020.06.18-153052/NET--biol--ns_type=parsed.ttl")
+
+label = getLabel(graph)
+
+print(label)

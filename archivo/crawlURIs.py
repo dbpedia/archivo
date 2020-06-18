@@ -344,7 +344,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
     license =inspectVocabs.getLicense(ontograph)
     if isinstance(license, URIRef):
       license = str(license).strip("<>")
-    else:
+    elif license != None:
       # in every other case: URL % encoding of the text
       license = "http://archivo.dbpedia.org/sys/licenses/string?value=" + quote(license, safe="")
 
@@ -386,7 +386,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
   if checkIndexForUri(vocab_uri, index):
     print("Already known uri, skipping...")
-    return True, isNIR, f"This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
+    return True, isNIR, f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>"
   bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath)
  
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
@@ -404,7 +404,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not allowed:
     if isNIR:
       fallout_index.append((vocab_uri, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
-    return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"
+    return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"
 
   # downloading and parsing
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
@@ -421,15 +421,17 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     if isNIR:
       fallout_index.append((vocab_uri, False, "Unparseable file"))
     stringTools.deleteAllFilesInDir(localDir)
-    return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "\n")
+    return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "<br>")
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     print("Error in rdflib parsing")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
-    return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at https://github.com/dbpedia/Archivo/issues"
+    return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at our <a href=https://github.com/dbpedia/Archivo/issues>github page</a>"
+  
   real_ont_uri=inspectVocabs.getNIRUri(graph)
-  print(real_ont_uri)
+
+
   if real_ont_uri == None:
     print("Couldn't find ontology uri, trying isDefinedBy...")
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
@@ -471,7 +473,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
 
   if checkIndexForUri(real_ont_uri, index):
     print("Already known uri", real_ont_uri)
-    return True, isNIR, "This Ontology is already in the Archivo index and can be found at https://databus.dbpedia.org/ontologies/{groupId}/{artifact}"
+    return True, isNIR, f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>"
   
   
   index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
@@ -503,8 +505,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
   print(deployLog)
   if returncode > 0:
-    return False, isNIR, "There was an error deploying the Ontology to the databus:\n\n"+ deployLog
-  return True, isNIR, f"Added the Ontology to Archivo, should be accessable at https://databus.dbpedia.org/ontologies/{groupId}/{artifact} soon"
+    return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
+  return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"
 
 
 def getLovUrls():

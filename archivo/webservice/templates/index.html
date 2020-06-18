@@ -19,5 +19,5 @@ paste the URL of an OWL ontology here, Archivo will download and parse it and if
     <p>{{ form.submit() }}</p>
 </form>
 <br><br>
-{{ responseText }} 
+{{ responseText|safe }} 
 {% endblock %}
