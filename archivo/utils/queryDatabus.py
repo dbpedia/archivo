@@ -42,5 +42,3 @@ def getLatestMetaFile(group, artifact):
         return True, databusLink, req.json()
     except KeyError:
         return False, databusLink, ""
-
-#print(getLatestMetaFile("w3id.org", "gom"))

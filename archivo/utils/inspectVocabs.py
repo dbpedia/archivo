@@ -1,12 +1,17 @@
 import os
 import sys
 import rdflib
-from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph
+from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
 from rdflib.namespace import DCTERMS, DC
 import json
 import traceback
 from utils import stringTools
 from urllib.parse import quote as urlQuote
+
+descriptionNamespaceGraph = Graph()
+descriptionNamespaceGraph.bind("dcterms", DCTERMS)
+descriptionNamespaceGraph.bind("dc", DC)
+descriptionNamespaceGraph.bind("rdfs", RDFS)
 
 def getGraphOfVocabFile(filepath):
     try:  
@@ -146,7 +151,7 @@ def getDescription(graph):
     if result != None and len(result) > 0:
         for row in result:
             descString = (
-                f"# {row[0].n3(graph.namespace_manager)}\n"
+                f"# {row[0].n3(descriptionNamespaceGraph.namespace_manager)}\n"
                 f"{row[1]}"
             )
             resultStrings.append(descString)

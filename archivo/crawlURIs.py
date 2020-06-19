@@ -74,10 +74,13 @@ def checkRobot(uri):
   if parsedUrl.scheme == "" or parsedUrl.netloc == "":
     return None
   robotsUrl =parsedUrl.scheme + "://" + parsedUrl.netloc + "/robots.txt"
-
+  req = requests.get(url=robotsUrl)
+  if req.status_code > 400:
+    # if robots.txt is not accessible, we are allowed
+    return True
   rp = RobotFileParser()
   rp.set_url(robotsUrl)
-  rp.read()
+  rp.parse(req.text.split("\n"))
   if rp.can_fetch(archivoConfig.archivo_agent, uri):
     return True
   else:
@@ -387,6 +390,15 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if checkIndexForUri(vocab_uri, index):
     print("Already known uri, skipping...")
     return True, isNIR, f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>"
+  
+  # check robots.txt access
+  allowed = checkRobot(vocab_uri)
+  print("Robot allowed:", allowed)
+  if not allowed:
+    if isNIR:
+      fallout_index.append((vocab_uri, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
+    return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"
+  
   bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath)
  
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
@@ -398,13 +410,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
 
-  # check robots.txt access
-  allowed = checkRobot(vocab_uri)
-  print("Robot allowed:", allowed)
-  if not allowed:
-    if isNIR:
-      fallout_index.append((vocab_uri, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
-    return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"
+
 
   # downloading and parsing
   success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
