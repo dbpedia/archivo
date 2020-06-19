@@ -124,6 +124,15 @@ def getFileEnding(response):
     
   
 
+def deleteAllFilesInDirAndDir(directory):
+  if not os.path.isdir(directory):
+    return
+  for filename in os.listdir(directory):
+    if os.path.isfile(os.path.join(directory, filename)):
+      os.remove(os.path.join(directory, filename))
+  os.rmdir(directory)
+
+
 def deleteAllFilesInDir(directory):
   if not os.path.isdir(directory):
     return

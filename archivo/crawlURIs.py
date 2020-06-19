@@ -10,6 +10,7 @@ from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
+import uuid
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -375,9 +376,10 @@ def checkUriEquality(uri1, uri2):
 def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testSuite):
   # remove fragment
   vocab_uri = urldefrag(vocab_uri)[0]
-  localDir = os.path.join(dataPath, ".tmpOntTest")
+  localDir = os.path.join(dataPath, "." + uuid.uuid4().hex)
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
+
 
   # testing uri validity
   print("Trying to validate ", vocab_uri)
@@ -406,19 +408,19 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("No header, probably server down"+ "\n".join(headerErrors))
     if isNIR:
       fallout_index.append((vocab_uri, False, "Unreachable server"))
-    stringTools.deleteAllFilesInDir(localDir)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
 
 
 
   # downloading and parsing
-  success, pathToFile, response = downloadSource(vocab_uri, localDir, "tempOnt", bestHeader)
+  success, pathToFile, response = downloadSource(vocab_uri, localDir, "tmpOnt", bestHeader)
   if not success:
     print("No available Source")
     if isNIR:
       fallout_index.append((vocab_uri, False, str(response)))
-    stringTools.deleteAllFilesInDir(localDir)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"Couldn't access the suggested URI: " + str(response)
   
   rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
@@ -426,7 +428,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("Unparseable ontology")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Unparseable file"))
-    stringTools.deleteAllFilesInDir(localDir)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "<br>")
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
@@ -445,11 +447,11 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       if isNIR:
         fallout_index.append((vocab_uri, False, "No ontology or Class"))
       print("Neither ontology nor class")
-      stringTools.deleteAllFilesInDir(localDir)
+      stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology or rdfs:isDefinedBy triple"
     if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedByUri", real_ont_uri)
-      stringTools.deleteAllFilesInDir(localDir)
+      stringTools.deleteAllFilesInDirAndDir(localDir)
       return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=False) 
     else:
       print("Uri already in index or self-defining non-ontology")
@@ -459,7 +461,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
 
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
-    stringTools.deleteAllFilesInDir(localDir)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True, testSuite=testSuite)
  
 
@@ -506,7 +508,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   # index writing
   #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
-  stringTools.deleteAllFilesInDir(localDir)
+  stringTools.deleteAllFilesInDirAndDir(localDir)
   
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
   print(deployLog)
