@@ -1,18 +1,32 @@
-{% extends "base.html" %}
+<html>
+    <head>
+      {% if title %}
+      <title>Archivo {{ title }}</title>
+      {% else %}
+      <title>DBpedia Archivo</title>
+      {% endif %}
+      <meta charset="UTF-8">
+      <title>Archivo Ontology Info Service</title>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+    </head>
+    <body>
+        <div>
+            Archivo: 
+            <a href="/index">Ontology Suggestion</a>
+            <a href="/vocab-info">Ontology Info</a>
+        </div>
+        <hr>
+        <h1>DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects</h1>
+        Archivo (backronym for Ontology Archive) is an online ontology interface and augmented archive that discovers, crawls, versions and archives ontologies on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a>. Based on daily crawls, different features, quality measures and, if possible, fixes are deployed to handle and stabilize the changes in the found ontologies at web-scale.
+Find out more in <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf</a>
 
-{% block content %}
 
-<h2>Suggest a new ontology:</h2>
-paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its index for daily crawling.
-
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.suggestUrl.label }}<br>
-        {{ form.suggestUrl(size=100) }}
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
-<br><br>
-{{ responseText|safe }} 
-{% endblock %}
+<br><br><br><br>
+        {% block content %}{% endblock %}
+    </body>
+</html>

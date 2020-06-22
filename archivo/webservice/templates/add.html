@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<h2>Suggest a new ontology:</h2>
+paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its index for daily crawling.
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.suggestUrl.label }}<br>
+        {{ form.suggestUrl(size=100) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+<br><br>
+{{ responseText|safe }} 
+{% endblock %}
