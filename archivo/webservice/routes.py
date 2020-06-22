@@ -24,8 +24,7 @@ class InfoForm(FlaskForm):
     submit = SubmitField(label="Get Info")
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/add', methods=['GET', 'POST'])
 def index():
     form = SuggestionForm()
     if form.validate_on_submit():
@@ -38,9 +37,22 @@ def index():
         return render_template("add.html", responseText=message, form=form)
     return render_template('add.html', responseText="Suggest Url",form=form)
 
+@app.route("/info/<path:ontoUri>", methods=["GET", "POST"])
 @app.route("/info", methods=["GET", "POST"])
-def vocabInfo():
+def vocabInfo(ontoUri=None):
     form = InfoForm()
+    if ontoUri != None:
+        try:
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+            source = ontoIndex[ontoUri]["source"]
+            success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
+            if success:
+                info = generateInfoDict(metadata, source, databusLink)
+            else:
+                info = {"message":metadata}
+            return render_template("info.html", info=info, form=form)
+        except KeyError:
+            return render_template("info.html", info={"message":f"ERROR: {ontoUri} is not in the Archivo Index."}, form=form)
     if form.validate_on_submit():
         try:
             uri = form.uris.data.strip()
@@ -55,6 +67,15 @@ def vocabInfo():
             info = {"message":f"There was an error retrieving the metadata from {databusLink}."}
         return render_template("info.html", info=info, form=form)
     return render_template("info.html", info={"message":"Enter an ontology URI!"}, form=form)
+
+@app.route("/list", methods=["GET"])
+@app.route("/", methods=["GET"])
+def ontoList():
+    ontos = []
+    for uri in ontoIndex:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        ontos.append((uri, f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"))
+    return render_template("list.html", len=len(ontos), Ontologies=ontos)
         
 def generateInfoDict(metadata, source, databusLink):
     info = {}

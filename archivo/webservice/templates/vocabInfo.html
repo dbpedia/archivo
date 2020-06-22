@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@ Select a Ontology and get Info about its latest version:
     <p>
         {{ form.uris.label }}<br>
         <div style="width: 400px">
-            {{ form.uris(size=200) }}
+            {{ form.uris(size=200   ) }}
         </div>
     </p>
     <p>{{ form.submit() }}</p>
@@ -33,7 +33,7 @@ $(document).ready(function() {
     $('#uris').select2({  // init Select2 on form's uris field
         placeholder: "{{ form.uris.label.text }}",
         allowClear: true,
-        "width": 500
+        "width": "style"
     });
 });
 </script>

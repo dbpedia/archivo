@@ -1,40 +1,30 @@
 {% extends "index.html" %}
 
 {% block content %}
-
-<h2>Archivo Ontology Info Service</h2>
+<h2>Archivo Ontologies</h2>
 <br>
-Select a Ontology and get Info about its latest version:
-<form action="" method="POST" novalidate>
-    {{ form.hidden_tag() }}
-    {{ form.csrf_token }}
-    <p>
-        {{ form.uris.label }}<br>
-        <div style="width: 400px">
-            {{ form.uris(size=200) }}
-        </div>
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
+This is the complete list of the ontologies in the Archivo index and their databus-link.
 
-{% if info.databusLink %}
-Release: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
-Source: {{ info.source }}<br><br>
-Accessed: {{ info.accessed }}<br><br>
-Semantic Version: {{ info.semVersion }}<br><br>
-Stars: {{ info.stars }}<br><br>
-Triples: {{ info.triples }}
-{% else %}
-{{ info.message }}<br><br>
-{% endif %}
+<table
+ data-toggle="table"
+ data-search="true">
+<thead>
+<tr>
+ <th data-sortable="true" data-field="non-onformation-uri">URI</th>
+ <th data-sortable="true" data-field="databus-uri">Databus-Link</th>
+</tr>
+</thead>
+<tbody>
+{% for i in range(0, len) %}
+<tr>
+    <td><a href={{Ontologies[i][0]}}>{{Ontologies[i][0]}}</a></td>
+    <td><a href={{Ontologies[i][1]}}>{{Ontologies[i][1]}}</a></td>
 
-<script>
-$(document).ready(function() {
-    $('#uris').select2({  // init Select2 on form's uris field
-        placeholder: "{{ form.uris.label.text }}",
-        allowClear: true,
-        "width": "style"
-    });
-});
-</script>
+</tr>
+{%endfor%}
+
+</tbody>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<style> .float-right { float: left !important; } </style>
 {% endblock %}
