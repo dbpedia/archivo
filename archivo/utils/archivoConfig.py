@@ -29,9 +29,9 @@ voidResults = "/home/denis/Downloads/voidResults"
 
 
 # indices
-ontoIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/vocab_index.json"
-falloutIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/fallout_index.csv"
+ontoIndexPath = "./indices/vocab_index.json"
+falloutIndexPath = "./indices/fallout_index.csv"
 
 # local paths
-localPath = "/data/home/dstreitmatter/data/archivo-ontologies"
+localPath = "./data/archivo-ontologies"
 
