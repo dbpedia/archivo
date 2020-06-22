@@ -1,9 +1,13 @@
 
 # some defaults for the pom generation
-default_license="http://ontotrack.dbpedia.org/issue?license=unknown"
+default_license="http://archivo.dbpedia.org/sys/licenses#notSpecified"
+license_literal_uri="http://archivo.dbpedia.org/sys/licenses#notAnIRI"
 default_parentArtifact="common-metadata"
 default_repo="https://databus.dbpedia.org/repo"
 default_version="0.0.0-notRelevant"
+
+# agent name for crawling
+archivo_agent = "dbpedia-archivo-robot"
 
 # edit for your dataset
 downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/${project.groupId}/${project.artifactId}/${project.version}/"
