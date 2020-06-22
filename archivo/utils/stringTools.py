@@ -22,7 +22,6 @@ def generateGroupAndArtifactFromUri(url):
   parsedObj = urlparse(url)
   # replacing the port with --
   group = parsedObj.netloc.replace(":", "--")
-  print(parsedObj.fragment)
   artifact = parsedObj.path + "#" + parsedObj.fragment
   artifact = artifact.strip("#/~")
   artifact = artifact.replace("/", "--").replace("_", "--").replace(".", "--").replace("#", "--").replace("~", "--")

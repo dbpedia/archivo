@@ -14,7 +14,7 @@ downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-on
 packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${project.artifactId}/"
 pub="https://yum-yab.github.io/webid.ttl#onto"
 
-# groupDoc for archivo, %s is the domain
+# groupDoc for archivo, {} is the domain
 groupDoc=("# All vocabularies hosted on {}\n\n"
             "Each artifact in this group refers to one ontology, deployed in different formats.\n"
             "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.\n"
@@ -30,6 +30,7 @@ profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.1.0.jar"
 
 # iri sources
 voidResults = "/home/denis/Downloads/voidResults"
+
 
 
 # indices
