@@ -735,6 +735,10 @@
         "accessed": "2020.05.07; 11:03:11",
         "source": "prefix.cc"
     },
+    "http://ontologies.geohive.ie/osi": {
+        "accessed": "2020.06.19; 19:04:11",
+        "source": "user-suggestion"
+    },
     "http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-data.owl": {
         "accessed": "2020.05.06; 22:10:31",
         "source": "LOV"
@@ -774,6 +778,10 @@
     "http://opendata.caceres.es/def/ontomunicipio": {
         "accessed": "2020.05.07; 17:06:27",
         "source": "prefix.cc"
+    },
+    "http://openenergy-platform.org/ontology/oeo/": {
+        "accessed": "2020.06.15; 10:52:08",
+        "source": "user-suggestion"
     },
     "http://paul.staroch.name/thesis/SmartHomeWeather.owl#": {
         "accessed": "2020.05.07; 02:07:11",
@@ -2814,6 +2822,10 @@
     "https://w3id.org/def/saref4envi": {
         "accessed": "2020.05.07; 13:37:26",
         "source": "prefix.cc"
+    },
+    "https://w3id.org/digitalconstruction/EnergySystems": {
+        "accessed": "2020.06.17; 17:53:47",
+        "source": "user-suggestion"
     },
     "https://w3id.org/dot#": {
         "accessed": "2020.05.07; 17:38:42",
