@@ -5,7 +5,7 @@ from dateutil.parser import parse as parsedate
 import random
 import rdflib
 import crawlURIs
-from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools
+from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools, queryDatabus
 from utils.validation import TestSuite
 import json
 import shutil
@@ -51,6 +51,21 @@ def getVoidUris(datapath):
                     resultSet.add(uri)
     return resultSet
 
+def checkDatabusIndexReleases(index):
+    for uri in index:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
+        if success:
+            try:
+                print("Found latest release:")
+                print(databusLink)
+                print(metadata["http-data"]["accessed"])
+            except KeyError:
+                print("No current data for:", uri)
+        else:
+            print("No data found for:", uri)
+
+
 def updateIndex(index, dataPath, testSuite):
     for uri in index:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
@@ -75,12 +90,19 @@ def updateIndex(index, dataPath, testSuite):
             sys.exit(1)
         crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["best-header"], metadata, metadata["accessed"], testSuite, metadata["semantic-version"])
 
-rootdir=sys.argv[1]
+
+
+
+
+
+rootdir=archivoConfig.localPath
 
 index = ontoFiles.loadIndexJson()
 new_uris = [] 
 
 fallout = ontoFiles.loadFalloutIndex()
+
+checkDatabusIndexReleases(index)
 
 #voidClasses = getVoidUris(archivoConfig.voidResults)
 

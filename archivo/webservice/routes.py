@@ -35,10 +35,10 @@ def index():
         elif not success and isNir:
             ontoFiles.writeFalloutIndexToFile(archivoConfig.falloutIndexPath, fallout)
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        return render_template("index.html", responseText=message, form=form)
-    return render_template('index.html', responseText="Suggest Url",form=form)
+        return render_template("add.html", responseText=message, form=form)
+    return render_template('add.html', responseText="Suggest Url",form=form)
 
-@app.route("/vocab-info", methods=["GET", "POST"])
+@app.route("/info", methods=["GET", "POST"])
 def vocabInfo():
     form = InfoForm()
     if form.validate_on_submit():
@@ -53,8 +53,8 @@ def vocabInfo():
                 info = {"message":metadata}
         except KeyError:
             info = {"message":f"There was an error retrieving the metadata from {databusLink}."}
-        return render_template("vocabInfo.html", info=info, form=form)
-    return render_template("vocabInfo.html", info={"message":"Enter an ontology URI!"}, form=form)
+        return render_template("info.html", info=info, form=form)
+    return render_template("info.html", info={"message":"Enter an ontology URI!"}, form=form)
         
 def generateInfoDict(metadata, source, databusLink):
     info = {}
