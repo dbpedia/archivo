@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<h2>Archivo Ontology Info Service</h2>
+<br>
+Select a Ontology and get Info about its latest version:
+<form action="" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <p>
+        {{ form.uris.label }}<br>
+        <div style="width: 400px">
+            {{ form.uris(size=200) }}
+        </div>
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+{% if info.databusLink %}
+Release: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
+Source: {{ info.source }}<br><br>
+Accessed: {{ info.accessed }}<br><br>
+Semantic Version: {{ info.semVersion }}<br><br>
+Stars: {{ info.stars }}<br><br>
+Triples: {{ info.triples }}
+{% else %}
+{{ info.message }}<br><br>
+{% endif %}
+
+<script>
+$(document).ready(function() {
+    $('#uris').select2({  // init Select2 on form's uris field
+        placeholder: "{{ form.uris.label.text }}",
+        allowClear: true,
+        "width": "style"
+    });
+});
+</script>
+{% endblock %}
