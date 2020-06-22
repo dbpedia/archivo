@@ -1,0 +1,5 @@
+webservice
+flask
+flask_wtf
+wtforms
+pyshacl
