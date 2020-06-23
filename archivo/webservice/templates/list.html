@@ -3,23 +3,19 @@
 {% block content %}
 <h2>Archivo Ontologies</h2>
 <br>
-This is the complete list of the ontologies in the Archivo index and their databus-link.
 
 <table
  data-toggle="table"
  data-search="true">
 <thead>
 <tr>
- <th data-sortable="true" data-field="non-onformation-uri">URI</th>
- <th data-sortable="true" data-field="databus-uri">Databus-Link</th>
+ <th data-sortable="true" data-field="non-information-uri">URI</th>
 </tr>
 </thead>
 <tbody>
 {% for i in range(0, len) %}
 <tr>
-    <td><a href={{Ontologies[i][0]}}>{{Ontologies[i][0]}}</a></td>
-    <td><a href={{Ontologies[i][1]}}>{{Ontologies[i][1]}}</a></td>
-
+    <td><a href=/info/{{Ontologies[i]}}>{{Ontologies[i]}}</a></td>
 </tr>
 {%endfor%}
 
