@@ -51,7 +51,7 @@ def vocabInfo(ontoUri=None):
         try:
             indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
             if indexUri == None:
-                return  render_template("info.html", info={"message":f"ERROR: {ontoUri} is not in the Archivo Index."}, form=form)
+                return  render_template("info.html", info={"message":f"ERROR: Couln't find {ontoUri} in the Archivo Index."}, form=form)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
             source = ontoIndex[indexUri]["source"]
             success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
