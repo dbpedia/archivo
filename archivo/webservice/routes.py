@@ -1,5 +1,5 @@
 from webservice import app
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
@@ -39,15 +39,15 @@ def index():
         return render_template("add.html", responseText=message, form=form)
     return render_template('add.html', responseText="Suggest Url",form=form)
 
-@app.route("/info/<path:ontoUri>", methods=["GET", "POST"])
+@app.route("/info/", methods=["GET", "POST"])
 @app.route("/info", methods=["GET", "POST"])
-def vocabInfo(ontoUri=None):
+def vocabInfo():
+    ontoUri = request.query_string.decode("utf-8")
     form = InfoForm()
     if form.validate_on_submit():
         uri = form.uris.data.strip()
-        print(uri)
-        return redirect(f"/info/{uri}")
-    if ontoUri != None:
+        return redirect(f"/info?{uri}")
+    if ontoUri != "":
         try:
             indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
             if indexUri == None:
