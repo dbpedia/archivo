@@ -7,6 +7,8 @@ import os
 from utils.validation import TestSuite
 import crawlURIs
 from utils import ontoFiles, archivoConfig, queryDatabus, stringTools
+import traceback
+import sys
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
 fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
@@ -41,10 +43,17 @@ def index():
 @app.route("/info", methods=["GET", "POST"])
 def vocabInfo(ontoUri=None):
     form = InfoForm()
+    if form.validate_on_submit():
+        uri = form.uris.data.strip()
+        print(uri)
+        return redirect(f"/info/{uri}")
     if ontoUri != None:
         try:
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
-            source = ontoIndex[ontoUri]["source"]
+            indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
+            if indexUri == None:
+                return  render_template("info.html", info={"message":f"ERROR: {ontoUri} is not in the Archivo Index."}, form=form)
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
+            source = ontoIndex[indexUri]["source"]
             success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
             if success:
                 info = generateInfoDict(metadata, source, databusLink)
@@ -52,29 +61,14 @@ def vocabInfo(ontoUri=None):
                 info = {"message":metadata}
             return render_template("info.html", info=info, form=form)
         except KeyError:
+            traceback.print_exc(file=sys.stdout)
             return render_template("info.html", info={"message":f"ERROR: {ontoUri} is not in the Archivo Index."}, form=form)
-    if form.validate_on_submit():
-        try:
-            uri = form.uris.data.strip()
-            source = ontoIndex[uri]["source"]
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-            success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
-            if success:
-                info = generateInfoDict(metadata, source, databusLink)
-            else:
-                info = {"message":metadata}
-        except KeyError:
-            info = {"message":f"There was an error retrieving the metadata from {databusLink}."}
-        return render_template("info.html", info=info, form=form)
     return render_template("info.html", info={"message":"Enter an ontology URI!"}, form=form)
 
 @app.route("/list", methods=["GET"])
 @app.route("/", methods=["GET"])
 def ontoList():
-    ontos = []
-    for uri in ontoIndex:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        ontos.append((uri, f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"))
+    ontos = [uri for uri in ontoIndex]
     return render_template("list.html", len=len(ontos), Ontologies=ontos)
         
 def generateInfoDict(metadata, source, databusLink):

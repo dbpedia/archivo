@@ -364,8 +364,8 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
 def checkIndexForUri(uri, index):
     for indexUri in index:
         if urldefrag(uri)[0] == urldefrag(indexUri)[0]:
-            return True
-    return False
+            return indexUri
+    return None
 
 def checkUriEquality(uri1, uri2):
   if urldefrag(uri1)[0] == urldefrag(uri2)[0]:
@@ -389,7 +389,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     if isNIR:
       fallout_index.append((vocab_uri, False, "Malformed Uri"))
     return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
-  if checkIndexForUri(vocab_uri, index):
+  if checkIndexForUri(vocab_uri, index) != None:
     print("Already known uri, skipping...")
     return True, isNIR, f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>"
   
@@ -479,7 +479,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR, "Malformed non-information uri " + real_ont_uri
 
 
-  if checkIndexForUri(real_ont_uri, index):
+  if checkIndexForUri(real_ont_uri, index) != None:
     print("Already known uri", real_ont_uri)
     return True, isNIR, f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>"
   
