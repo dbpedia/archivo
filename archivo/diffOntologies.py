@@ -57,7 +57,7 @@ def commDiff(oldFile, newFile):
     if commOutput == "":
       return True, oldTriples, newTriples
     else:
-      return False, [line for line in oldTriples if line != ""], [line for line in newTriples if line != ""]
+      return False, [line.strip() for line in oldTriples if line != ""], [line.strip() for line in newTriples if line != ""]
   except Exception as e:
     print("Error in diffing file:")
     print(e)

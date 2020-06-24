@@ -37,7 +37,7 @@ def index():
             ontoFiles.writeFalloutIndexToFile(archivoConfig.falloutIndexPath, fallout)
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         return render_template("add.html", responseText=message, form=form)
-    return render_template('add.html', responseText="Suggest Url",form=form)
+    return render_template('add.html', responseText="",form=form)
 
 @app.route("/info/", methods=["GET", "POST"])
 @app.route("/info", methods=["GET", "POST"])

@@ -457,7 +457,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       print("Uri already in index or self-defining non-ontology")
       if isNIR:
         fallout_index.append((str(real_ont_uri), False, "Self defining non-ontology"))
-      return False, isNIR, "Self defining non-ontology"
+      return False, isNIR, "No owl:Ontology defined"
 
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
