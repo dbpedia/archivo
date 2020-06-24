@@ -56,14 +56,14 @@ This query retrieves the URL of a parsed ontology, with the parameters:
 
 ### Files
 
-Archivo provides for each version different files:
-- type=orig: The original snapshot of the ontology, unparsed
-- type=parsed: The parsed (by [rapper](http://librdf.org/raptor/rapper.html)) ontology in the formats Turtle, RDF-XML and N-Triples
-- type=shaclReport: Files containing the SHACL-reports of the [Archivo-SHACL-Tests](https://github.com/dbpedia/Archivo/tree/master/shacl-library), testing the license and the metadata of the ontology
-- type=OOPS: A RDF-XML file with a [OOPS-Report](http://oops.linkeddata.es/) of the ontology
-- type=generatedDocu: A human-readable documentation of the ontology by the [LODE](https://essepuntato.it/lode/) service
-- type=meta: Some meta information about the ontology, e.g access-date, last-modiefied date, a semantic version, errors during parsing etc
-- type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).
+Archivo provides for each version different files:  
+- type=orig: The original snapshot of the ontology, unparsed  
+- type=parsed: The parsed (by [rapper](http://librdf.org/raptor/rapper.html)) ontology in the formats Turtle, RDF-XML and N-Triples  
+- type=shaclReport: Files containing the SHACL-reports of the [Archivo-SHACL-Tests](https://github.com/dbpedia/Archivo/tree/master/shacl-library), testing the license and the metadata of the ontology  
+- type=OOPS: A RDF-XML file with a [OOPS-Report](http://oops.linkeddata.es/) of the ontology  
+- type=generatedDocu: A human-readable documentation of the ontology by the [LODE](https://essepuntato.it/lode/) service  
+- type=meta: Some meta information about the ontology, e.g access-date, last-modiefied date, a semantic version, errors during parsing etc  
+- type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).  
 
 ### Stars
 
