@@ -76,6 +76,8 @@ Archivo provides for each version different files:
 
 * type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).
 
+* type=diff: N-Triple files containing the deleted/added triples from the last version.
+
 ### Stars
 
 Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).
