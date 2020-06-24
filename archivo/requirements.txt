@@ -3,3 +3,6 @@ flask
 flask_wtf
 wtforms
 pyshacl
+rdflib
+markdown
+SPARQLWrapper

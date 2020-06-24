@@ -9,6 +9,8 @@ import crawlURIs
 from utils import ontoFiles, archivoConfig, queryDatabus, stringTools
 import traceback
 import sys
+import requests
+import markdown
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
 fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
@@ -80,3 +82,13 @@ def generateInfoDict(metadata, source, databusLink):
     info["triples"] = str(metadata["ontology-info"]["triples"])
     info["accessed"] = metadata["http-data"]["accessed"]
     return info
+
+
+@app.route("/doc", methods=["GET"])
+def docPage():
+    readme_file = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md").text
+    md_template_string = markdown.markdown(
+        readme_file, extensions=["fenced_code", "sane_lists"]
+    )
+
+    return render_template("doc.html", markdownDoc=md_template_string)
