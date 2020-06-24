@@ -67,9 +67,9 @@ Archivo provides for each version different files:
 
 ### Stars
 
-Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).
+Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).  
 
-Baseline:
+Baseline:  
 - ★: The Ontology parses (Errors and warnings are ok, but rapper must be able to retrieve at least some triples)  
 - ★★: The Ontology contains some form of license, given by the most popular properties: dct:license, cc:license or xhv:license  
 
@@ -89,7 +89,7 @@ Archivo uses four different sources of potential ontologies:
 
 
 **Prefixes**
-The prefixes used in this description:
+The prefixes used in this description:  
 `PREFIX dct: <http://purl.org/dc/terms/>`  
 `PREFIX dc: <http://purl.org/dc/elements/1.1/>`  
 `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`  
