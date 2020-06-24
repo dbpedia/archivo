@@ -9,7 +9,9 @@ Archivo is an online ontology interface and augmented archive, that discovers, c
 ### Finding a ontology on Databus Archivo
 
 There are a few options to find a ontology:
+
 * If you know the URI of the ontology you can enter it at <http://archivo.dbpedia.org/info> and you get the databus artifact of the ontology, for example for [foaf](http://xmlns.com/foaf/0.1/) its <https://databus.dbpedia.org/ontologies/xmlns.com/foaf--0--1>
+
 * If you don't know the URI you can try searching feature of the databus at <https://databus.dbpedia.org/ontologies/>
 
 ### Accessing a Archivo Ontology
@@ -46,7 +48,9 @@ Generally Ontologies on Archivo can be accessed by querying the Databus SPARQL e
     }
 
 This query retrieves the URL of a parsed ontology, with the parameters:
+
 * ONTOLOGY-ARTIFACT as the artifact of your choosen ontology, e.g https://databus.dbpedia.org/ontologies/xmlns.com/foaf--0--1
+
 * FORMAT as the desired format. Archivo provides the ontologies as Turtle (**ttl**), XML-RDF (**owl**) and N-Triples (**nt**).
 
 
@@ -57,12 +61,19 @@ This query retrieves the URL of a parsed ontology, with the parameters:
 ### Files
 
 Archivo provides for each version different files:
+
 * type=orig: The original snapshot of the ontology, unparsed
+
 * type=parsed: The parsed (by [rapper](http://librdf.org/raptor/rapper.html)) ontology in the formats Turtle, RDF-XML and N-Triples
+
 * type=shaclReport: Files containing the SHACL-reports of the [Archivo-SHACL-Tests](https://github.com/dbpedia/Archivo/tree/master/shacl-library), testing the license and the metadata of the ontology
+
 * type=OOPS: A RDF-XML file with a [OOPS-Report](http://oops.linkeddata.es/) of the ontology
+
 * type=generatedDocu: A human-readable documentation of the ontology by the [LODE](https://essepuntato.it/lode/) service
+
 * type=meta: Some meta information about the ontology, e.g access-date, last-modiefied date, a semantic version, errors during parsing etc
+
 * type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).
 
 ### Stars
@@ -70,11 +81,15 @@ Archivo provides for each version different files:
 Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).
 
 Baseline:
+
 * ★: The Ontology parses (Errors and warnings are ok, but rapper must be able to retrieve at least some triples)
+
 * ★★: The Ontology contains some form of license, given by the most popular properties: dct:license, cc:license or xhv:license
 
 If the ontology fulfills the baseline, it can earn two further stars by using good practises:
+
 * ★★★: The license is given by dct:license and is an IRI.
+
 * ★★★★: The ontology is consistent (tested by pellet, with or without imports).
 
 
@@ -90,10 +105,15 @@ Archivo uses four different sources of potential ontologies:
 
 **Prefixes**
 The prefixes used in this description:
+
 * `PREFIX dct: <http://purl.org/dc/terms/>`  
-* `PREFIX dc: <http://purl.org/dc/elements/1.1/>`  
+
+* `PREFIX dc: <http://purl.org/dc/elements/1.1/>`
+
 * `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`  
-* `PREFIX cc: <http://creativecommons.org/ns#>`  
+
+* `PREFIX cc: <http://creativecommons.org/ns#>`
+
 * `PREFIX xhv: <http://www.w3.org/1999/xhtml/vocab#>`  
 
 
