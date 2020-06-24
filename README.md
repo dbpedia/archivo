@@ -70,12 +70,12 @@ Archivo provides for each version different files:
 Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).
 
 Baseline:
-- ★: The Ontology parses (Errors and warnings are ok, but rapper must be able to retrieve at least some triples)
-- ★★: The Ontology contains some form of license, given by the most popular properties: dct:license, cc:license or xhv:license
+- ★: The Ontology parses (Errors and warnings are ok, but rapper must be able to retrieve at least some triples)  
+- ★★: The Ontology contains some form of license, given by the most popular properties: dct:license, cc:license or xhv:license  
 
-If the ontology fulfills the baseline, it can earn two further stars by using good practises:
-- ★★★: The license is given by dct:license and is an IRI.
-- ★★★★: The ontology is consistent (tested by pellet, with or without imports).
+If the ontology fulfills the baseline, it can earn two further stars by using good practises:  
+- ★★★: The license is given by dct:license and is an IRI.  
+- ★★★★: The ontology is consistent (tested by pellet, with or without imports).  
 
 
 ### Ontology Sources
