@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<h2>Archivo Ontology Info Service</h2>
+<h2>Ontology Info Service</h2>
 <br>
-Select a Ontology and get Info about its latest version:
+Select an ontology to get info on its latest version: (TODO The button can go right to it. Also there is a js function that submits it, onchange: https://www.w3schools.com/jsref/event_onchange.asp)
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
     {{ form.csrf_token }}
@@ -17,12 +17,15 @@ Select a Ontology and get Info about its latest version:
 </form>
 
 {% if info.databusLink %}
-Release: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
+Ontology URL: 
+Archivo URL on Databus: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
+Latest release URL (TODO, if possible)
 Source: {{ info.source }}<br><br>
-Accessed: {{ info.accessed }}<br><br>
-Semantic Version: {{ info.semVersion }}<br><br>
-Archivo-Stars: {{ info.stars }}<br><br>
+Latest retrieval time: {{ info.accessed }}<br><br>
+Archivo-Stars: {{ info.stars }} TODO this needs much more info, e.g. you can separate by stars<br><br>
 Triples: {{ info.triples }}
+Semantic Version: {{ info.semVersion }} TODO this is not helpful unless you post the link<br><br>
+
 {% else %}
 {{ info.message }}<br><br>
 {% endif %}
