@@ -783,6 +783,10 @@
         "accessed": "2020.06.15; 10:52:08",
         "source": "user-suggestion"
     },
+    "http://openenergy-platform.org/ontology/oeo/imports/iao-module.owl": {
+        "accessed": "2020.06.26; 11:29:24",
+        "source": "user-suggestion"
+    },
     "http://paul.staroch.name/thesis/SmartHomeWeather.owl#": {
         "accessed": "2020.05.07; 02:07:11",
         "source": "LOV"
