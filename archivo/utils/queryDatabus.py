@@ -17,11 +17,12 @@ def getLatestMetaFile(group, artifact):
         "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>\n"
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n"
         "PREFIX databus: <https://databus.dbpedia.org/>\n"
-        "SELECT DISTINCT ?file WHERE\n"
+        "SELECT DISTINCT ?versionURL ?file WHERE\n"
         "{\n" 
             "?dataset dataid:account databus:ontologies .\n"
             f"?dataset dataid:artifact <{databusLink}>.\n"
             "?dataset dcat:distribution ?distribution .\n"
+            "?dataset dataid:version ?versionURL .\n"
             "?distribution <http://dataid.dbpedia.org/ns/cv#type> \'meta\'^^<http://www.w3.org/2001/XMLSchema#string> .\n" 
             "?distribution dcat:downloadURL ?file .\n"
             "?dataset dct:hasVersion ?latestVersion .\n"
@@ -42,10 +43,11 @@ def getLatestMetaFile(group, artifact):
     results = sparql.query().convert()
     try:
         metaFileUri = results["results"]["bindings"][0]["file"]["value"]
+        databusVersionUri = results["results"]["bindings"][0]["versionURL"]["value"]
         req = requests.get(metaFileUri)
-        return True, databusLink, req.json()
+        return True, databusLink, databusVersionUri, req.json()
     except KeyError:
-        return False, databusLink, ""
+        return False, databusLink, "", {}
 
 
 def getLatestParsedOntology(group, artifact):

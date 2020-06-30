@@ -10,13 +10,14 @@ TODO: if possible include how many stars there are and oter critical info in the
 <thead>
 <tr>
  <th data-sortable="true" data-field="non-information-uri">Ontology URI</th>
- <th data-sortable="true" data-field="xxx">Archivo URI</th>
+ <th data-sortable="true" data-field="databus-link">Archivo URI</th>
 </tr>
 </thead>
 <tbody>
 {% for i in range(0, len) %}
 <tr>
-    <td><a href=/info?{{Ontologies[i]}}>{{Ontologies[i]}}</a></td>
+    <td><a href=/info?o={{Ontologies[i][0]}}>{{Ontologies[i][0]}}</a></td>
+    <td><a href="{{Ontologies[i][1]}}">{{Ontologies[i][1]}}</a></td>
 </tr>
 {%endfor%}
 

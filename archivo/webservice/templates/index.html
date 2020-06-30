@@ -11,7 +11,45 @@
 			src="https://code.jquery.com/jquery-3.4.1.min.js"
 			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 			crossorigin="anonymous"></script>
-		  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+      <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+
+        .active, .collapsible:hover {
+          background-color: rgb(185, 185, 185);
+        }
+        .collapsible:after {
+          content: '\02795'; /* Unicode character for "plus" sign (+) */
+          font-size: 13px;
+          color: white;
+          float: left;
+          margin-left: 5px;
+        }
+
+        .active:after {
+          content: "\2796"; /* Unicode character for "minus" sign (-) */
+        }
+        .content {
+          padding: 0 18px;
+          display: none;
+          overflow: hidden;
+          background-color: #f1f1f1;
+        }
+        </style>
     </head>
     
     
