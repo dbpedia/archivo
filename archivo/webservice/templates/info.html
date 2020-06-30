@@ -2,27 +2,47 @@
 
 {% block content %}
 
-<h2>Archivo Ontology Info Service</h2>
+<h2>Ontology Info Service</h2>
 <br>
-Select a Ontology and get Info about its latest version:
+Select an ontology to get info on its latest version:
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
     {{ form.csrf_token }}
     <p>
         <div style="width: 400px">
-            {{ form.uris(size=200) }}
+            {{ form.uris(**{"onchange":"this.form.submit()"}) }}
         </div>
     </p>
-    <p>{{ form.submit() }}</p>
 </form>
 
 {% if info.databusLink %}
-Release: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
+Archivo URL on Databus: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
+Latest release URL: <a title="Databus Release" href={{ info.latestRelease }} target="_blank">{{ info.latestRelease }}</a> <br><br>
 Source: {{ info.source }}<br><br>
-Accessed: {{ info.accessed }}<br><br>
+Latest retrieval time: {{ info.accessed }}<br><br>
+Triples: {{ info.triples }} <br><br>
 Semantic Version: {{ info.semVersion }}<br><br>
-Archivo-Stars: {{ info.stars }}<br><br>
-Triples: {{ info.triples }}
+<!--button type="button" class="collapsible">Archivo Stars</button--><span title="Click for more info" class="collapsible">Archivo-Stars</span> : {{ info.stars }}
+<div class="content">
+    <p>
+        <table>
+            <tr>
+                <td><span title="The Ontology is accessible at the IRI and parses with neglegible errors & warnings">First Star: Retrieval & Parsing</span></td>
+                <td><span title="The ontology contains at least some license information">Second Star: License I</span></td>
+                <td><span title="The ontology contains the URI of the license given by dct:license">Third Star: License II</span></td>
+                <td><span title="The ontology is consistent (tested by pellet)">Fourth Star: Consistency</span></td>
+            </tr>
+            <tr>
+                <td>{{info.parseable}}</td>
+                <td>{{info.licenseI}}</td>
+                <td>{{info.licenseII}}</td>
+                <td>{{info.consistent}}</td>
+            </tr>
+        </table>
+    </p>
+</div>
+
+
 {% else %}
 {{ info.message }}<br><br>
 {% endif %}
@@ -35,5 +55,22 @@ $(document).ready(function() {
         "width": 500
     });
 });
+</script>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    }
 </script>
 {% endblock %}

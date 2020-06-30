@@ -14,6 +14,9 @@ There are a few options to find a ontology:
 
 * If you don't know the URI you can try searching feature of the databus at <https://databus.dbpedia.org/ontologies/>
 
+* A GET request to http://archivo.dbpedia.org/info?o=ONTOLOGY-URL with Accept-Headers application/rdf+xml, application/-n-triples or text/turtle redirects to RDF information about the release on the databus.   
+Example: `curl -L -H "Accept: text/turtle"  "http://archivo.dbpedia.org/info?o=http://mmoon.org/core/"`
+
 ### Accessing a Archivo Ontology
 
 Generally Ontologies on Archivo can be accessed by querying the Databus SPARQL endpoint at <https://databus.dbpedia.org/repo/sparql>. You can test your query at <https://databus.dbpedia.org/yasgui/>.
@@ -75,6 +78,8 @@ Archivo provides for each version different files:
 * type=meta: Some meta information about the ontology, e.g access-date, last-modiefied date, a semantic version, errors during parsing etc
 
 * type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).
+
+* type=diff: N-Triple files containing the deleted/added triples from the last version.
 
 ### Stars
 

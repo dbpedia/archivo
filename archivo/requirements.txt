@@ -6,3 +6,4 @@ pyshacl
 rdflib
 markdown
 SPARQLWrapper
+flask_accept
