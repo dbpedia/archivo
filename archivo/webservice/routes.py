@@ -54,7 +54,7 @@ def vocabInfo():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        if not ontoUri in ontoIndex:
+        if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
             abort(status=404) 
         try:
             indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
