@@ -71,6 +71,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
         uri = urldefrag(uri)[0]
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         oldArtifactDir = os.path.join(dataPath, group, artifact)
+        newGroupDir = os.path.join(newPath, group)
         newArtifactDir = os.path.join(newPath, group, artifact)
         if not os.path.isdir(oldArtifactDir):
             print(f"No data for {uri}")
@@ -87,6 +88,20 @@ def updateIndex(index, dataPath, newPath,testSuite):
         if not os.path.isfile(os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt)):
             print("Copy doesnt work")
             sys.exit(1)
+
+        print(os.path.join(newGroupDir, "pom.xml"))
+        if not os.path.isfile(os.path.join(newGroupDir, "pom.xml")):
+            pomString=generatePoms.generateParentPom(groupId=group,
+                                            packaging="pom",
+                                            modules=[],
+                                            packageDirectory=archivoConfig.packDir,
+                                            downloadUrlPath=archivoConfig.downloadUrl,
+                                            publisher=archivoConfig.pub,
+                                            maintainer=archivoConfig.pub,
+                                            groupdocu=archivoConfig.groupDoc.format(group),
+                                            )
+            with open(os.path.join(newGroupDir, "pom.xml"), "w+") as parentPomFile:
+                print(pomString, file=parentPomFile)
         crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
 
 
