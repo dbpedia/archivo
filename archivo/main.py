@@ -79,7 +79,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
         originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
         with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
             metadata = json.load(jsonFile)
-        version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+        version = os.path.split(latestVersionDir)[1]
         updatedVersionDir = os.path.join(newArtifactDir, version)
         os.makedirs(updatedVersionDir, exist_ok=True)
         fileExt = os.path.splitext(originalFile)[1]
@@ -94,12 +94,12 @@ def updateIndex(index, dataPath, newPath,testSuite):
 
 
 
-rootdir=archivoConfig.localPath
+rootdir=sys.argv[1]
 
 index = ontoFiles.loadIndexJson()
 new_uris = [] 
 
-newDir = "/home/denis/Workspace/Job/Archivo/scd-testdir"
+newDir = sys.argv[2]
 
 fallout = ontoFiles.loadFalloutIndex()
 
