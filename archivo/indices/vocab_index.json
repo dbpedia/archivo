@@ -83,10 +83,6 @@
         "accessed": "2020.05.07; 09:02:32",
         "source": "prefix.cc"
     },
-    "http://data.archiveshub.ac.uk/def/": {
-        "accessed": "2020.05.06; 22:02:05",
-        "source": "LOV"
-    },
     "http://data.europa.eu/esco/flow": {
         "accessed": "2020.05.07; 03:36:43",
         "source": "spoHashUris"
@@ -399,10 +395,6 @@
         "accessed": "2020.05.07; 11:33:52",
         "source": "prefix.cc"
     },
-    "http://fedora.info/definitions/v4/webac#": {
-        "accessed": "2020.05.07; 16:48:15",
-        "source": "prefix.cc"
-    },
     "http://gadm.geovocab.org/ontology": {
         "accessed": "2020.05.07; 17:00:30",
         "source": "prefix.cc"
@@ -437,26 +429,6 @@
     },
     "http://id.nlm.nih.gov/mesh/vocab#": {
         "accessed": "2020.05.07; 10:22:47",
-        "source": "prefix.cc"
-    },
-    "http://iflastandards.info/ns/fr/frad/": {
-        "accessed": "2020.05.06; 21:00:14",
-        "source": "LOV"
-    },
-    "http://iflastandards.info/ns/fr/frbr/frbroo/": {
-        "accessed": "2020.05.07; 09:55:40",
-        "source": "prefix.cc"
-    },
-    "http://iflastandards.info/ns/fr/frsad/": {
-        "accessed": "2020.05.07; 16:57:34",
-        "source": "prefix.cc"
-    },
-    "http://iflastandards.info/ns/isbd/elements/": {
-        "accessed": "2020.05.06; 21:42:49",
-        "source": "LOV"
-    },
-    "http://iflastandards.info/ns/isbd/unc/elements/": {
-        "accessed": "2020.05.07; 09:39:09",
         "source": "prefix.cc"
     },
     "http://iiif.io/api/image/2#": {
@@ -595,14 +567,6 @@
         "accessed": "2020.05.06; 22:09:46",
         "source": "LOV"
     },
-    "http://mementoweb.org/ns": {
-        "accessed": "2020.05.07; 09:38:07",
-        "source": "prefix.cc"
-    },
-    "http://metadataregistry.org/uri/schema/RDARelationshipsGR2": {
-        "accessed": "2020.05.07; 01:26:19",
-        "source": "LOV"
-    },
     "http://mex.aksw.org/mex-algo": {
         "accessed": "2020.05.06; 22:26:34",
         "source": "LOV"
@@ -626,10 +590,6 @@
     "http://models.okkam.org/ENS-core-vocabulary.owl": {
         "accessed": "2020.05.07; 15:09:45",
         "source": "prefix.cc"
-    },
-    "http://ndl.go.jp/dcndl/terms/": {
-        "accessed": "2020.05.06; 20:01:27",
-        "source": "LOV"
     },
     "http://nl.ijs.si/ME/owl/multext-east.owl": {
         "accessed": "2020.05.07; 17:39:16",
@@ -791,10 +751,6 @@
         "accessed": "2020.05.07; 02:07:11",
         "source": "LOV"
     },
-    "http://pcdm.org/models#": {
-        "accessed": "2020.05.07; 14:04:11",
-        "source": "prefix.cc"
-    },
     "http://pcdm.org/use#": {
         "accessed": "2020.05.07; 09:34:41",
         "source": "prefix.cc"
@@ -899,10 +855,6 @@
         "accessed": "2020.05.07; 08:57:10",
         "source": "prefix.cc"
     },
-    "http://purl.org/ASN/schema/core/": {
-        "accessed": "2020.05.07; 09:47:44",
-        "source": "prefix.cc"
-    },
     "http://purl.org/NET/acc": {
         "accessed": "2020.05.07; 11:29:21",
         "source": "prefix.cc"
@@ -983,14 +935,6 @@
         "accessed": "2020.05.07; 14:59:47",
         "source": "prefix.cc"
     },
-    "http://purl.org/cld/cdtype/": {
-        "accessed": "2020.05.06; 23:03:23",
-        "source": "LOV"
-    },
-    "http://purl.org/cld/terms/": {
-        "accessed": "2020.05.06; 19:37:58",
-        "source": "LOV"
-    },
     "http://purl.org/co": {
         "accessed": "2020.05.06; 19:43:16",
         "source": "LOV"
@@ -1018,22 +962,6 @@
     "http://purl.org/datanode/ns/": {
         "accessed": "2020.05.07; 15:10:29",
         "source": "prefix.cc"
-    },
-    "http://purl.org/dc/dcam/": {
-        "accessed": "2020.05.06; 19:57:14",
-        "source": "LOV"
-    },
-    "http://purl.org/dc/dcmitype/": {
-        "accessed": "2020.05.06; 20:03:03",
-        "source": "LOV"
-    },
-    "http://purl.org/dc/elements/1.1/": {
-        "accessed": "2020.05.06; 19:59:31",
-        "source": "LOV"
-    },
-    "http://purl.org/dc/terms/": {
-        "accessed": "2020.05.06; 20:01:53",
-        "source": "LOV"
     },
     "http://purl.org/dita/ns#": {
         "accessed": "2020.05.06; 20:11:24",
@@ -1163,10 +1091,6 @@
         "accessed": "2020.05.06; 20:50:15",
         "source": "LOV"
     },
-    "http://purl.org/net/ns/ontology-annot": {
-        "accessed": "2020.05.07; 00:23:43",
-        "source": "LOV"
-    },
     "http://purl.org/net/ns/wordmap": {
         "accessed": "2020.05.07; 12:50:02",
         "source": "prefix.cc"
@@ -1279,18 +1203,6 @@
         "accessed": "2020.05.06; 21:40:54",
         "source": "LOV"
     },
-    "http://purl.org/ontology/is/inst/": {
-        "accessed": "2020.05.07; 12:02:08",
-        "source": "prefix.cc"
-    },
-    "http://purl.org/ontology/is/quality/": {
-        "accessed": "2020.05.07; 14:58:31",
-        "source": "prefix.cc"
-    },
-    "http://purl.org/ontology/is/types/": {
-        "accessed": "2020.05.07; 12:01:48",
-        "source": "prefix.cc"
-    },
     "http://purl.org/ontology/mo/": {
         "accessed": "2020.05.06; 23:45:05",
         "source": "LOV"
@@ -1362,10 +1274,6 @@
     "http://purl.org/procurement/public-contracts-czech#": {
         "accessed": "2020.05.07; 09:56:22",
         "source": "prefix.cc"
-    },
-    "http://purl.org/procurement/public-contracts-datatypes#": {
-        "accessed": "2020.05.07; 04:45:47",
-        "source": "spoHashUris"
     },
     "http://purl.org/qb4olap/cubes": {
         "accessed": "2020.05.07; 01:17:45",
@@ -1583,10 +1491,6 @@
         "accessed": "2020.05.07; 04:52:49",
         "source": "spoHashUris"
     },
-    "http://rdfns.org/d2d/": {
-        "accessed": "2020.05.07; 15:35:14",
-        "source": "prefix.cc"
-    },
     "http://rdfs.co/bevon/0.8": {
         "accessed": "2020.05.06; 19:08:40",
         "source": "LOV"
@@ -1626,30 +1530,6 @@
     "http://rdfvizler.dyreriket.xyz/vocabulary/core": {
         "accessed": "2020.05.07; 16:35:38",
         "source": "prefix.cc"
-    },
-    "http://rdvocab.info/Elements": {
-        "accessed": "2020.05.07; 01:24:14",
-        "source": "LOV"
-    },
-    "http://rdvocab.info/ElementsGr2": {
-        "accessed": "2020.05.07; 01:24:33",
-        "source": "LOV"
-    },
-    "http://rdvocab.info/ElementsGr3": {
-        "accessed": "2020.05.07; 01:24:45",
-        "source": "LOV"
-    },
-    "http://rdvocab.info/RDARelationshipsWEMI": {
-        "accessed": "2020.05.07; 01:25:30",
-        "source": "LOV"
-    },
-    "http://rdvocab.info/roles": {
-        "accessed": "2020.05.07; 01:27:02",
-        "source": "LOV"
-    },
-    "http://rdvocab.info/uri/schema/FRBRentitiesRDA": {
-        "accessed": "2020.05.07; 01:23:32",
-        "source": "LOV"
     },
     "http://reference.data.gov.uk/def/central-government": {
         "accessed": "2020.05.06; 19:35:49",
@@ -1995,10 +1875,6 @@
         "accessed": "2020.05.06; 21:46:35",
         "source": "LOV"
     },
-    "http://w3id.org/lindt/custom_datatypes": {
-        "accessed": "2020.05.07; 09:07:00",
-        "source": "prefix.cc"
-    },
     "http://w3id.org/lindt/voc#": {
         "accessed": "2020.05.07; 10:15:24",
         "source": "prefix.cc"
@@ -2086,10 +1962,6 @@
     "http://www.agfa.com/w3c/2009/malignantNeoplasm#": {
         "accessed": "2020.05.07; 12:20:34",
         "source": "prefix.cc"
-    },
-    "http://www.agls.gov.au/agls/terms/": {
-        "accessed": "2020.05.06; 18:35:05",
-        "source": "LOV"
     },
     "http://www.arpenteur.org/ontology/Arpenteur.owl": {
         "accessed": "2020.05.06; 18:43:55",
@@ -2367,10 +2239,6 @@
         "accessed": "2020.05.07; 01:15:15",
         "source": "LOV"
     },
-    "http://www.openarchives.org/ore/terms/": {
-        "accessed": "2020.05.07; 00:35:37",
-        "source": "LOV"
-    },
     "http://www.opengis.net/ont/geosparql": {
         "accessed": "2020.05.06; 21:18:59",
         "source": "LOV"
@@ -2418,22 +2286,6 @@
     "http://www.w3.org/2000/01/rdf-schema#": {
         "accessed": "2020.05.07; 01:29:34",
         "source": "LOV"
-    },
-    "http://www.w3.org/2000/10/annotation-ns#": {
-        "accessed": "2020.05.07; 05:38:53",
-        "source": "spoHashUris"
-    },
-    "http://www.w3.org/2000/10/swap/list": {
-        "accessed": "2020.05.07; 14:26:25",
-        "source": "prefix.cc"
-    },
-    "http://www.w3.org/2000/10/swap/log": {
-        "accessed": "2020.05.06; 22:03:01",
-        "source": "LOV"
-    },
-    "http://www.w3.org/2000/10/swap/os": {
-        "accessed": "2020.05.07; 13:11:07",
-        "source": "prefix.cc"
     },
     "http://www.w3.org/2002/07/owl": {
         "accessed": "2020.05.07; 00:44:17",
@@ -2619,10 +2471,6 @@
         "accessed": "2020.05.06; 20:55:29",
         "source": "LOV"
     },
-    "http://zbw.eu/namespaces/zbw-extensions/zbw-extensions.rdf": {
-        "accessed": "2020.05.07; 03:34:36",
-        "source": "LOV"
-    },
     "https://d-nb.info/standards/elementset/agrelon#": {
         "accessed": "2020.05.06; 18:35:31",
         "source": "LOV"
@@ -2671,21 +2519,9 @@
         "accessed": "2020.05.06; 18:59:12",
         "source": "LOV"
     },
-    "https://data.omgeving.vlaanderen.be/ns/dossier": {
-        "accessed": "2020.05.07; 09:04:57",
-        "source": "prefix.cc"
-    },
-    "https://data.vlaanderen.be/ns/logies": {
-        "accessed": "2020.05.07; 12:00:14",
-        "source": "prefix.cc"
-    },
     "https://data.vlaanderen.be/ns/persoon": {
         "accessed": "2020.05.06; 19:15:11",
         "source": "LOV"
-    },
-    "https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne": {
-        "accessed": "2020.05.07; 08:40:28",
-        "source": "prefix.cc"
     },
     "https://id.kb.se/vocab/": {
         "accessed": "2020.05.07; 10:08:40",
@@ -2722,10 +2558,6 @@
     "https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#": {
         "accessed": "2020.05.07; 12:37:03",
         "source": "prefix.cc"
-    },
-    "https://sws.geonames.org/9884116/about.rdf": {
-        "accessed": "2020.05.07; 04:59:59",
-        "source": "spoHashUris"
     },
     "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology": {
         "accessed": "2020.05.07; 08:38:32",
@@ -2905,10 +2737,6 @@
     },
     "https://w3id.org/ln#": {
         "accessed": "2020.05.07; 11:39:28",
-        "source": "prefix.cc"
-    },
-    "https://w3id.org/lodsight/rdf-path": {
-        "accessed": "2020.05.07; 14:01:51",
         "source": "prefix.cc"
     },
     "https://w3id.org/multidimensional-interface/ontology": {
