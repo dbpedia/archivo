@@ -61,6 +61,10 @@ class TestSuite:
             print("Timeout in consistency check")
             traceback.print_exc(file=sys.stdout)
             return "", "Timeout in pellet", 999
+        except subprocess.TimeoutExpired:
+            print("Timeout in consistency check")
+            traceback.print_exc(file=sys.stdout)
+            return "", "Timeout in pellet", 999
 
     def getPelletInfo(self, ontofile, ignoreImports=False):
         params=["-v"]
