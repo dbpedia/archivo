@@ -149,7 +149,7 @@ def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader,
   artifactPath, version = os.path.split(filePath)
   groupPath = os.path.split(artifactPath)[0]
   groupId = os.path.split(groupPath)[1]
-  nirHeader = oldMetadata["NIR-header"]
+  nirHeader = oldMetadata["logs"]["nir-header"]
   # generate parsed variants of the ontology
   rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri)
   ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri)
@@ -208,10 +208,10 @@ def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader,
   # write the metadata json file
   ontoFiles.altWriteVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
                                   definedByUri=vocab_uri,
-                                  lastModified=oldMetadata["lastModified"],
+                                  lastModified=oldMetadata["http-data"]["lastModified"],
                                   rapperErrors=rapperErrors,
                                   rapperWarnings=rapperWarnings,
-                                  etag=oldMetadata["E-Tag"],
+                                  etag=oldMetadata["http-data"]["e-tag"],
                                   tripleSize=triples,
                                   bestHeader=bestHeader,
                                   licenseViolationsBool=conformsLicense,
@@ -220,9 +220,9 @@ def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader,
                                   consistentWithoutImports=isConsistentNoImports,
                                   lodeConform=conformsLode,
                                   accessed= accessDate,
-                                  headerString=oldMetadata["resource-header"],
+                                  headerString=oldMetadata["logs"]["resource-header"],
                                   nirHeader = nirHeader,
-                                  contentLenght=oldMetadata["content-length"],
+                                  contentLenght=oldMetadata["http-data"]["content-length"],
                                   semVersion=semVersion,
                                   )
   if triples > 0:                                                                

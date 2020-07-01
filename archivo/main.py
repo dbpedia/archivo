@@ -9,7 +9,7 @@ from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringT
 from utils.validation import TestSuite
 import json
 import shutil
-
+from urllib.parse import urldefrag
 
 
 
@@ -54,7 +54,7 @@ def getVoidUris(datapath):
 def checkDatabusIndexReleases(index):
     for uri in index:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        success, databusLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
+        success, databusLink, databusVersionUri,  metadata = queryDatabus.getLatestMetaFile(group, artifact)
         if success:
             try:
                 print("Found latest release:")
@@ -66,29 +66,28 @@ def checkDatabusIndexReleases(index):
             print("No data found for:", uri)
 
 
-def updateIndex(index, dataPath, testSuite):
+def updateIndex(index, dataPath, newPath,testSuite):
     for uri in index:
+        uri = urldefrag(uri)[0]
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        artifactDir = os.path.join(dataPath, group, artifact)
-        if not os.path.isdir(artifactDir):
+        oldArtifactDir = os.path.join(dataPath, group, artifact)
+        newArtifactDir = os.path.join(newPath, group, artifact)
+        if not os.path.isdir(oldArtifactDir):
             print(f"No data for {uri}")
             continue
-        latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(artifactDir)
+        latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(oldArtifactDir)
         originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
         with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
             metadata = json.load(jsonFile)
-        if "http-data" in metadata.keys():
-            print("Already done this version")
-            continue
         version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-        updatedVersionDir = os.path.join(artifactDir, version)
-        os.mkdir(updatedVersionDir)
+        updatedVersionDir = os.path.join(newArtifactDir, version)
+        os.makedirs(updatedVersionDir, exist_ok=True)
         fileExt = os.path.splitext(originalFile)[1]
         shutil.copyfile(os.path.join(latestVersionDir, originalFile), os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt))
         if not os.path.isfile(os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt)):
             print("Copy doesnt work")
             sys.exit(1)
-        crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["best-header"], metadata, metadata["accessed"], testSuite, metadata["semantic-version"])
+        crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
 
 
 
@@ -100,15 +99,17 @@ rootdir=archivoConfig.localPath
 index = ontoFiles.loadIndexJson()
 new_uris = [] 
 
+newDir = "/home/denis/Workspace/Job/Archivo/scd-testdir"
+
 fallout = ontoFiles.loadFalloutIndex()
 
-checkDatabusIndexReleases(index)
+#checkDatabusIndexReleases(index)
 
 #voidClasses = getVoidUris(archivoConfig.voidResults)
 
 testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "shacl"))
 
-#updateIndex(index, rootdir, testSuite)
+updateIndex(index, rootdir, newDir,testSuite)
 
 #for i in range(20):
     #uri = random.choice(potentialUris)
@@ -118,4 +119,4 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 
 
-#generatePoms.updateParentPoms(rootdir, index)
+generatePoms.updateParentPoms(newDir, index)
