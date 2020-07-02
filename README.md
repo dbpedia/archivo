@@ -65,21 +65,18 @@ This query retrieves the URL of a parsed ontology, with the parameters:
 
 Archivo provides for each version different files:
 
-* type=orig: The original snapshot of the ontology, unparsed
-
-* type=parsed: The parsed (by [rapper](http://librdf.org/raptor/rapper.html)) ontology in the formats Turtle, RDF-XML and N-Triples
-
-* type=shaclReport: Files containing the SHACL-reports of the [Archivo-SHACL-Tests](https://github.com/dbpedia/Archivo/tree/master/shacl-library), testing the license and the metadata of the ontology
-
-* type=OOPS: A RDF-XML file with a [OOPS-Report](http://oops.linkeddata.es/) of the ontology
-
-* type=generatedDocu: A human-readable documentation of the ontology by the [LODE](https://essepuntato.it/lode/) service
-
-* type=meta: Some meta information about the ontology, e.g access-date, last-modiefied date, a semantic version, errors during parsing etc
-
-* type=pellet[Info, Consistency]: Files containing the output of the [pellet](https://github.com/stardog-union/pellet) info/consistency command (with and without ontology imports).
-
-* type=diff: N-Triple files containing the deleted/added triples from the last version.
+| type-values | sub-cvs | Explaination |
+| -------- | -------- | -------- |
+| orig     |      | Snapshot of the original ontology file |
+| parsed   |      | Files parsed by rapper, available as owl, nt and ttl |
+| OOPS     |      | OOPS-report |
+| generatedDocu | | human readable documentation by LODE |
+| profile | | a profile check done by [profilechecker](https://github.com/stain/profilechecker)|
+| shaclReport | validates={minLicense, goodLicense, lodeMetadata} | shacl-report as turtle file|
+| meta | | a JSON file containing some meta info |
+| pelletInfo | imports={FULL,NONE} | the pellet info report, with and without imports |
+| pelletConsistency | imports={FULL,NONE} | the pellet consistency report, with and without imports |
+| diff | triples={adds,deletes} | These file contain the added/deleted triples | 
 
 ### Stars
 
