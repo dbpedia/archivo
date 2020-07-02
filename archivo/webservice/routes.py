@@ -150,7 +150,7 @@ def getRDFInfoLink(ontologyUrl, mimeType):
 def docPage():
     readme_file = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md").text
     md_template_string = markdown.markdown(
-        readme_file, extensions=["fenced_code", "sane_lists"]
+        readme_file, extensions=["fenced_code", "sane_lists", "tables"]
     )
 
     return render_template("doc.html", markdownDoc=md_template_string)
