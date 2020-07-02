@@ -31,10 +31,10 @@ def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite, indexFilePath,
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
         ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
 
-    for uri in getVoidUris(voidPath):
-        crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
-        ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+    #for uri in getVoidUris(voidPath):
+        #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "voidUris", False, testSuite=testSuite)
+        #ontoFiles.writeIndexJsonToFile(index, indexFilePath)
+        #ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
 
 def getVoidUris(datapath):
 
@@ -68,7 +68,6 @@ def checkDatabusIndexReleases(index):
 
 def updateIndex(index, dataPath, newPath,testSuite):
     for uri in index:
-        uri = urldefrag(uri)[0]
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         oldArtifactDir = os.path.join(dataPath, group, artifact)
         newGroupDir = os.path.join(newPath, group)
@@ -76,6 +75,8 @@ def updateIndex(index, dataPath, newPath,testSuite):
         if not os.path.isdir(oldArtifactDir):
             print(f"No data for {uri}")
             continue
+        if os.path.isfile(os.path.join(newArtifactDir, "pom.xml")):
+            print("Already Updated:", uri)
         latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(oldArtifactDir)
         originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
         with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
