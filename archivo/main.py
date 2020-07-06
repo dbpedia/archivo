@@ -10,6 +10,8 @@ from utils.validation import TestSuite
 import json
 import shutil
 from urllib.parse import urldefrag
+from string import Template
+import pyshacl
 
 
 
@@ -19,22 +21,22 @@ def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite, indexFilePath,
     for uri in crawlURIs.getLovUrls():
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "LOV", False, testSuite=testSuite)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+        ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
     for uri in hashUris:
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "spoHashUris", False, testSuite=testSuite)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+        ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
     for uri in prefixUris:
         crawlURIs.handleNewUri(uri, index, rootdir, fallout, "prefix.cc", False, testSuite=testSuite)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+        ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
     #for uri in getVoidUris(voidPath):
         #crawlURIs.handleNewUri(uri, index, rootdir, fallout, "voidUris", False, testSuite=testSuite)
         #ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        #ontoFiles.writeFalloutIndexToFile(fallout, falloutFilePath)
+        #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 def getVoidUris(datapath):
 
@@ -77,6 +79,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
             continue
         if os.path.isfile(os.path.join(newArtifactDir, "pom.xml")):
             print("Already Updated:", uri)
+            continue
         latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(oldArtifactDir)
         originalFile = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
         with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
@@ -99,7 +102,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=archivoConfig.groupDoc.format(group),
+                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=group),
                                             )
             with open(os.path.join(newGroupDir, "pom.xml"), "w+") as parentPomFile:
                 print(pomString, file=parentPomFile)
@@ -107,7 +110,11 @@ def updateIndex(index, dataPath, newPath,testSuite):
 
 
 
-
+def checkAllRobots(index):
+    for uri in index:
+        isCrawlable, problem = crawlURIs.checkRobot(uri)
+        if not isCrawlable:
+            print("Uncrawlable uri ", uri, "Problem:", problem)
 
 
 rootdir=sys.argv[1]
@@ -127,6 +134,8 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 updateIndex(index, rootdir, newDir,testSuite)
 
+#crawlNewOntologies(hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)
+#checkAllRobots(index)
 #for i in range(20):
     #uri = random.choice(potentialUris)
     #while uri in new_uris:
