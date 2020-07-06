@@ -15,18 +15,34 @@ packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${proje
 pub="https://yum-yab.github.io/webid.ttl#onto"
 
 # groupDoc for archivo, {} is the domain
-groupDoc=("# All vocabularies hosted on {}\n\n"
-            "Each artifact in this group refers to one ontology, deployed in different formats.\n"
-            "The ontologies are part of the Databus Archivo - A Web-Scale Ontology Interface for Time-Based and Semantic Archiving and Developing Good Ontologies.\n"
-            "More at <http://dev.dbpedia.org/DBpedia_Archvio> and <http://archivo.dbpedia.org/>."
+groupDoc=("## All DBpedia Archivo ontologies from $groupid domain\n\n"
+
+            "Each artifact in this group deals as the archive for snapshots of one ontology of the [DBpedia Archivo](https://databus.dbpedia.org/ontologies) -  A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects. Find out more at [http://archivo.dbpedia.org](http://archivo.dbpedia.org). The description for the individual files in the artifact can be found [here](http://dev.dbpedia.org/DBpedia_Archvio#files)." 
             )
 
+description = (
+    "## DBpedia Archivo Ontology Snapshot\n\n"
+    "| Attribute |  Value |\n"
+    "| - | - |\n" 
+    "| Ontology URI | <$non_information_uri>\n"
+    "| Snapshot File URL | <$snapshot_url>\n"
+    "| Snapshot OWL Version IRI | <$owl_version_iri>\n"
+    "| Snapshot Time | $date\n"
+    "\n"
+    "The [DBpedia Archivo Databus agent](https://databus.dbpedia.org/ontologies) generates only basic, static documentation for the archived snapshots of the ontologies. More, augmented and dynamic information for this ontology is rendered on and retrievable via [DBpedia Archivo Frontend](http://archivo.dbpedia.org/info?o=$non_information_uri)."
+)
+
+description_intro = (
+    "## Ontology Metadata\n\n"
+    "DBpedia Archivo extracts metadata from the ontology for well known properties (e.g. dct:description). This subsection shows the content of every property individually using a separate heading."
+)
+
 # explaination for the md-File
-default_explaination="This ontology is part of the Databus Archivo - A Web-Scale OntologyInterface for Time-Based and SemanticArchiving and Developing Good Ontologies"
+default_explaination="Archvio Ontology Snapshot for $non_information_uri"
 
 # paths for external services
-pelletPath = "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
-profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.1.0.jar"
+pelletPath = "/home/denis/Workspace/Job/pellet/cli/target/pelletcli/bin/pellet"
+profileCheckerJar="/home/denis/Downloads/profilechecker-1.1.0.jar"
 
 # iri sources
 voidResults = "/home/denis/Downloads/voidResults"
@@ -34,9 +50,9 @@ voidResults = "/home/denis/Downloads/voidResults"
 
 
 # indices
-ontoIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/vocab_index.json"
-falloutIndexPath = "/data/home/dstreitmatter/workspace/repos/Archivo/archivo/indices/fallout_index.csv"
+ontoIndexPath = "./indices/vocab_index.json"
+falloutIndexPath = "./indices/fallout_index.csv"
 
 # local paths
-localPath = "/data/home/dstreitmatter/data/archivo-ontologies"
+localPath = "/home/denis/Workspace/Job/Archivo/testdir"
 

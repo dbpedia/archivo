@@ -11,6 +11,7 @@ from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
 import uuid
+from string import Template
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -73,19 +74,25 @@ def getOOPSReport(parsedRdfString):
 def checkRobot(uri):
   parsedUrl = urlparse(uri)
   if parsedUrl.scheme == "" or parsedUrl.netloc == "":
-    return None
+    return None, None
   robotsUrl =parsedUrl.scheme + "://" + parsedUrl.netloc + "/robots.txt"
-  req = requests.get(url=robotsUrl)
+  print(robotsUrl)
+  try:
+    req = requests.get(url=robotsUrl)
+  except requests.exceptions.SSLError:
+    return False, "SSL error"
+  except requests.exceptions.ConnectionError:
+    return False, "Connection Error"
   if req.status_code > 400:
     # if robots.txt is not accessible, we are allowed
-    return True
+    return True, None
   rp = RobotFileParser()
   rp.set_url(robotsUrl)
   rp.parse(req.text.split("\n"))
   if rp.can_fetch(archivoConfig.archivo_agent, uri):
-    return True
+    return True, None
   else:
-    return False
+    return False, "Not allowed"
 
 def determineBestAccHeader(vocab_uri, localDir):
   localTestDir = os.path.join(localDir,".tmpTestTriples")
@@ -329,14 +336,19 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph)
 
 def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph):
+  datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
+  baseUrl = archivoConfig.downloadUrl.split("$")[0]
+  owl_url = baseUrl + groupId + "/" + artifact +"/"+ version + "/" + artifact + "_type=parsed.owl" 
+  versionIRI = str(None) 
   md_label=uri
-  md_description=""
-  md_comment=archivoConfig.default_explaination
+  md_description=Template(archivoConfig.description)
+  md_comment=Template(archivoConfig.default_explaination).safe_substitute(non_information_uri=uri)
   license=None
   if ontograph != None:
     label = inspectVocabs.getLabel(ontograph)
     description = inspectVocabs.getDescription(ontograph)
     comment = inspectVocabs.getComment(ontograph)
+    versionIRI = inspectVocabs.getOwlVersionIRI(ontograph)
     if label != None:
       md_label = label
 
@@ -344,7 +356,9 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       md_comment = comment
     
     if description != None:
-      md_description = description
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=owl_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
+    else:
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=owl_url, owl_version_iri=versionIRI, date=str(datetime_obj))
     license =inspectVocabs.getLicense(ontograph)
     if isinstance(license, URIRef):
       license = str(license).strip("<>")
@@ -411,7 +425,6 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
-
 
 
   # downloading and parsing
