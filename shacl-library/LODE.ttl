@@ -40,12 +40,22 @@
 #    rdfs:isDefinedBy -> Warning
 
     
-<#LODE-ontology-test>
+<#LODE-ontology-tests>
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
     sh:property <#title-violation> ;
-    sh:property <#comment-violation> .
-
+    sh:property <#comment-violation> ;
+    sh:property <#versionInfo-warning> ;
+    sh:property <#date-warning> ;
+    sh:property <#description-warning> ;
+    sh:property <#creator-warning> ;
+    sh:property <#publisher-warning> ;
+    sh:property <#contributors-info> ;
+    sh:property <#versionIRI-info> ;
+    sh:property <#imports-info> ;
+    sh:property <#backward-compatible-info> ;
+    sh:property <#incompatible-info> ;
+    sh:property <#rigths-info> .
 
 <#LODE-class-tests>
     a sh:NodeShape ;
@@ -54,17 +64,30 @@
     sh:property <#label-violation> ;
     sh:property <#isDefinedBy-warning> .
 
-<#LODE-ontology-warning>
+
+# SPARQL Target for non anonymous classes, objectProperties and datatypeProperties
+
+<#non-anonymous-classes>
+    a sh:SPARQLTarget ;
+    sh:select """
+        PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+        PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT ?this WHERE {
+            VALUES ?type { owl:Class owl:ObjectProperty owl:DatatypeProperty }
+            ?this a ?type .
+            FILTER ( !isBlank(?this) )
+        }
+        """.
+
+# Property Shapes for each test
+
+<#date-warning>
     a sh:NodeShape ;
-    sh:targetClass owl:Ontology;
+    sh:path dc:date;
     sh:severity sh:Warning;
-    sh:property <#versionInfo-warning> ;
-    sh:property <#creator-warning> ;
-    sh:property <#contributors-warning> ;
-    sh:property <#imports-warning> ;
-    sh:property <#backwards-compatible-warning> ;
-    sh:property <#rigths-warning> ;
-    sh:property <#description-warning> .
+    sh:minCount 1;
+    sh:message "dc:date is missing and will not be displayed"@en.
 
 <#versionInfo-warning>
     a sh:PropertyShape;
@@ -80,31 +103,54 @@
     sh:minCount 1;
     sh:message "dc:creator of the ontology is missing and will not be displayed"@en.
 
-<#contributors-warning>
+<#publisher-warning>
+    a sh:PropertyShape ;
+    sh:path dc:publisher;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:message "dc:pulisher of the ontology is missing and will not be displayed"@en.
+
+<#contributors-info>
     a sh:PropertyShape;
     sh:path dc:contributor;
-    sh:severity sh:Warning;
+    sh:severity sh:Info;
     sh:minCount 1;
     sh:message "no dc:contributor of the ontology listed and will not be displayed"@en.
 
-<#imports-warning>
+
+<#versionIRI-info>
+    a sh:PropertyShape;
+    sh:path owl:versionIRI;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "owl:versionIRI of the ontology missing and will not be displayed"@en.
+
+
+<#imports-info>
     a sh:PropertyShape ;
     sh:path owl:imports;
-    sh:severity sh:Warning;
+    sh:severity sh:Info;
     sh:minCount 1;
     sh:message "no owl:imports of the ontology listed and will not be displayed"@en.
 
-<#backwards-compatible-warning>
+<#backward-compatible-info>
     a sh:PropertyShape;
     sh:path owl:backwardCompatibleWith;
-    sh:severity sh:Warning;
+    sh:severity sh:Info;
     sh:minCount 1;
     sh:message "no owl:backwardsCompatibleWith of the ontology given, will not be displayed"@en.
 
-<#rigths-warning>
+<#incompatible-info>
+    a sh:PropertyShape;
+    sh:path owl:incompatibleWith;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "owl:incompatibleWith statement of the ontology missing, will not be displayed"@en.
+
+<#rigths-info>
     a sh:PropertyShape;
     sh:path dc:rigths;
-    sh:severity sh:Warning;
+    sh:severity sh:Info;
     sh:minCount 1;
     sh:message "no dc:rigths of the ontology given and will not be displayed"@en.
 
@@ -113,20 +159,10 @@
     sh:path dc:description;
     sh:severity sh:Warning;
     sh:minCount 1;
-    sh:message "no dc:description given and will not be displayed"@en.
+    sh:nodeKind sh:Literal;
+    sh:message "no dc:description given or no literal, will not be displayed"@en.
 
-<#non-anonymous-classes>
-    a sh:SPARQLTarget ;
-    sh:select """
-        PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
-        PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        SELECT ?this WHERE {
-            VALUES ?type { owl:Class owl:ObjectProperty owl:DatatypeProperty }
-            ?this a ?type .
-            FILTER ( !isBlank(?this) )
-        }
-        """.
+
 
 <#isDefinedBy-warning>
     a sh:PropertyShape ;

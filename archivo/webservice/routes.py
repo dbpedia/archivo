@@ -139,9 +139,9 @@ def getRDFInfoLink(ontologyUrl, mimeType):
         "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
         "PREFIX archivo: <http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/>",
         "",
-        "CONSTRUCT {?s ?p ?o }",
+        "CONSTRUCT {?s ?p ?o . ?dist ?p2 ?o2 . }",
         "{?s dataid:artifact <%s>." % databusArtifact, 
-        "?s ?p ?o}&format=%s&timeout=0&debug=on" % mimeType,
+        "?s ?p ?o . ?s dcat:distribution ?dist . ?dist ?p2 ?o2 . }&format=%s&timeout=0&debug=on" % mimeType,
     ))
     encodedString= quote(queryString, safe="&=")
     return f"https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query={encodedString}"

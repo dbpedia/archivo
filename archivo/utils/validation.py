@@ -36,13 +36,13 @@ class TestSuite:
         self.lodeTestGraph = loadShacl(os.path.join(pathToShaclFiles, "LODE.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl")
 
     def licenseViolationValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.licenseViolationGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False)
+        r = validate(ontograph, shacl_graph=self.licenseViolationGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
         return r
     def licenseWarningValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.licenseWarningGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False)
+        r = validate(ontograph, shacl_graph=self.licenseWarningGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
         return r
     def lodeReadyValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.lodeTestGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False)
+        r = validate(ontograph, shacl_graph=self.lodeTestGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
         return r
     def getProfileCheck(self, ontofile):
         process = subprocess.run(["java", "-jar", self.profileCheckerJar, ontofile, "--all"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
