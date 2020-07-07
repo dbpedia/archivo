@@ -83,7 +83,7 @@
 # Property Shapes for each test
 
 <#date-warning>
-    a sh:NodeShape ;
+    a sh:PropertyShape ;
     sh:path dc:date;
     sh:severity sh:Warning;
     sh:minCount 1;
