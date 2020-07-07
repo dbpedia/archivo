@@ -152,7 +152,7 @@ def downloadSource(uri, path, name, accHeader):
     print("Unknown error during download")
     return False, "", "Error - UnknownError"
 
-def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, oldMetadata, accessDate, testSuite, semVersion="0.0.1"):
+def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, oldMetadata, accessDate, testSuite, semVersion):
   artifactPath, version = os.path.split(filePath)
   groupPath = os.path.split(artifactPath)[0]
   groupId = os.path.split(groupPath)[1]
@@ -232,11 +232,16 @@ def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader,
                                   contentLenght=oldMetadata["http-data"]["content-length"],
                                   semVersion=semVersion,
                                   )
-  if triples > 0:                                                                
-    docustring = getLodeDocuFile(vocab_uri)
-    with open(filePath + os.sep + artifact + "_type=generatedDocu.html", "w+") as docufile:
-      print(docustring, file=docufile)
-    oopsReport = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile))
+  if triples > 0:
+    if not os.path.isfile(filePath + os.sep + artifact + "_type=generatedDocu.html"):
+      docustring = getLodeDocuFile(vocab_uri)
+      with open(filePath + os.sep + artifact + "_type=generatedDocu.html", "w+") as docufile:
+        print(docustring, file=docufile)
+
+    if not os.path.isfile(os.path.join(filePath, artifact + "_type=OOPS.rdf")):
+      oopsReport = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile))
+    else:
+      oopsReport = None
     if oopsReport != None:
       with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
         print(oopsReport, file=oopsFile)

@@ -89,6 +89,12 @@ def updateIndex(index, dataPath, newPath,testSuite):
         os.makedirs(updatedVersionDir, exist_ok=True)
         fileExt = os.path.splitext(originalFile)[1]
         shutil.copyfile(os.path.join(latestVersionDir, originalFile), os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt))
+        if os.path.isfile(os.path.join(latestVersionDir, artifact + "_type=OOPS.rdf")):
+            print("Copy OOPS report...")
+            shutil.copyfile(os.path.join(latestVersionDir, artifact + "_type=OOPS.rdf"), os.path.join(updatedVersionDir, artifact + "_type=OOPS.rdf"))
+        if os.path.isfile(os.path.join(latestVersionDir, artifact + "_type=generatedDocu.html")):
+            print("Copy docu..")
+            shutil.copyfile(os.path.join(latestVersionDir, artifact + "_type=generatedDocu.html"), os.path.join(updatedVersionDir, artifact + "_type=generatedDocu.html"))
         if not os.path.isfile(os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt)):
             print("Copy doesnt work")
             sys.exit(1)
