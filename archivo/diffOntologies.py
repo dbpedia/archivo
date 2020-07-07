@@ -133,7 +133,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(latestVersionDir, artifactName + "_type=parsed.nt"))
       newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "newVersionSorted.nt"))
       if oldSuccess and newSuccess:
-        newSemVersion = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
+        newSemVersion, oldAxioms, newAxioms = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
         print("Couldn't generate a new Semantic Version, keeping the old...")
         newSemVersion = lastSemVersion
@@ -142,10 +142,10 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       os.makedirs(newVersionPath, exist_ok=True)
       fileExt = os.path.splitext(sourcePath)[1]
       os.rename(sourcePath, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt))
-      with open(os.path.join(newVersionPath, artifactName + "_type=diff_triples=oldTriples.nt"), "w+") as oldTriplesFile:
-        print("\n".join(oldTriples), file=oldTriplesFile)
-      with open(os.path.join(newVersionPath, artifactName + "_type=diff_triples=newTriples.nt"), "w+") as newTriplesFile:
-        print("\n".join(newTriples), file=newTriplesFile) 
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=old.nt"), "w+") as oldAxiomsFile:
+        print("\n".join(oldAxioms), file=oldAxiomsFile)
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.nt"), "w+") as newAxiomsFile:
+        print("\n".join(newAxioms), file=newAxiomsFile) 
       crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite)
       stringTools.deleteAllFilesInDir(localDiffDir)
       print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy"))
@@ -206,22 +206,22 @@ def getAxiomsOfOntology(ontologyPath):
 
   stdout, stderr= process.communicate()
 
-  axiomSet = stdout.decode("utf8").split("\n")
+  axiomSet = stdout.decode("utf-8").split("\n")
   print("Returncode:", process.returncode)
   if process.returncode == 0:
     success = True
+    return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
   else:
     success = False
     print(stderr.decode("utf-8"))
-  
-  return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
+    return success, stderr.decode("utf-8")
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
   match = semanticVersionRegex.match(oldSemanticVersion)
   if match == None:
     print("Bad format of semantic version", oldSemanticVersion)
-    return oldSemanticVersion
+    return oldSemanticVersion, None, None
   
   major = int(match.group(1))
   minor = int(match.group(2))
@@ -236,8 +236,8 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
 
 
   if old == set() and new == set():
-    return f"{str(major)}.{str(minor)}.{str(patch+1)}"
+    return f"{str(major)}.{str(minor)}.{str(patch+1)}", old, new
   elif new != set() and old == set():
-    return f"{str(major)}.{str(minor+1)}.{str(0)}"
+    return f"{str(major)}.{str(minor+1)}.{str(0)}", old, new
   else:
-    return f"{str(major+1)}.{str(0)}.{str(0)}"
+    return f"{str(major+1)}.{str(0)}.{str(0)}", old, new

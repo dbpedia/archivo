@@ -9,7 +9,7 @@ from utils import stringTools
 from urllib.parse import quote as urlQuote
 
 descriptionNamespaceGraph = Graph()
-descriptionNamespaceGraph.bind("dcterms", DCTERMS)
+descriptionNamespaceGraph.bind("dct", DCTERMS)
 descriptionNamespaceGraph.bind("dc", DC)
 descriptionNamespaceGraph.bind("rdfs", RDFS)
 

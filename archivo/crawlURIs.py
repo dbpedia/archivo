@@ -453,6 +453,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("Error in rdflib parsing")
     if isNIR:
       fallout_index.append((vocab_uri, False, "Error in rdflib parsing"))
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at our <a href=https://github.com/dbpedia/Archivo/issues>github page</a>"
   
   real_ont_uri=inspectVocabs.getNIRUri(graph)
@@ -467,10 +468,11 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology or rdfs:isDefinedBy triple"
+    
     if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedByUri", real_ont_uri)
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=False) 
+      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=True) 
     else:
       print("Uri already in index or self-defining non-ontology")
       if isNIR:
@@ -514,7 +516,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=archivoConfig.groupDoc.format(groupId),
+                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=groupId),
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
       print(pomString, file=parentPomFile)
@@ -531,7 +533,9 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
   print(deployLog)
   if returncode > 0:
+    stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
+  stringTools.deleteAllFilesInDirAndDir(localDir)
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"
 
 
