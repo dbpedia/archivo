@@ -20,9 +20,10 @@ Archivo URL on Databus: <a title="Databus Release" href={{ info.databusLink }} t
 Latest release URL: <a title="Databus Release" href={{ info.latestRelease }} target="_blank">{{ info.latestRelease }}</a> <br><br>
 Source: {{ info.source }}<br><br>
 Latest retrieval time: {{ info.accessed }}<br><br>
+Archivement Date: {{ info.addedDate }} <br><br>
 Triples: {{ info.triples }} <br><br>
 Semantic Version: {{ info.semVersion }}<br><br>
-<!--button type="button" class="collapsible">Archivo Stars</button--><span title="Click for more info" class="collapsible">Archivo-Stars</span> : {{ info.stars }}
+<!--button type="button" class="collapsible">Archivo Stars</button-->Archivo-Stars : {{ info.stars }}
 <div class="content">
     <p>
         <table>
@@ -57,20 +58,4 @@ $(document).ready(function() {
 });
 </script>
 
-<script>
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
-    
-    for (i = 0; i < coll.length; i++) {
-      coll[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
-    }
-</script>
 {% endblock %}

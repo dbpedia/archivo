@@ -67,6 +67,7 @@ def vocabInfo():
                 info = generateInfoDict(metadata, source, databusLink, versionLink)
             else:
                 info = {"message":metadata}
+            info["addedDate"] = ontoIndex[indexUri]["accessed"]
             return render_template("info.html", info=info, form=form)
         except KeyError:
             traceback.print_exc(file=sys.stdout)

@@ -24,10 +24,6 @@
           text-align: left;
           padding: 8px;
         }
-        
-        tr:nth-child(even) {
-          background-color: #dddddd;
-        }
 
         .active, .collapsible:hover {
           background-color: rgb(185, 185, 185);
@@ -43,12 +39,6 @@
         .active:after {
           content: "\2796"; /* Unicode character for "minus" sign (-) */
         }
-        .content {
-          padding: 0 18px;
-          display: none;
-          overflow: hidden;
-          background-color: #f1f1f1;
-        }
         </style>
     </head>
     
@@ -59,7 +49,7 @@
             <a class="w3-bar-item w3-button testbtn" href="/list">list</a>
             <a class="w3-bar-item w3-button testbtn" href="/info">info</a>
             <a class="w3-bar-item w3-button testbtn" href="/add">add</a>
-            <a class="w3-bar-item w3-button testbtn" href="/doc">documentation</a>
+            <a class="w3-bar-item w3-button testbtn" href="/doc">about</a>
         </div>
         <p>DBpedia Archivo (backronym for Ontology Archive) is an online ontology interface and augmented archive that discovers, crawls, versions and archives ontologies on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a>. 
         Based on daily crawls, different features, quality measures and, if possible, fixes are deployed to handle and stabilize the changes in the found ontologies at web-scale. Read the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
