@@ -330,6 +330,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   nirHeader = nirHeader,
                                   contentLenght=stringTools.getContentLengthFromResponse(response),
                                   semVersion=semVersion,
+                                  snapshot_url=location_url
                                   )
   if triples > 0:                                                                
     docustring = getLodeDocuFile(vocab_uri)

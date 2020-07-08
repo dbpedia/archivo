@@ -60,9 +60,9 @@ def deleteEmptyDirsRecursive(startpath):
   else:
     print(f"Not a directory: {startpath}")
 
-def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion):
+def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion, snapshot_url):
   vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
-  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
+  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "snapshot-url":snapshot_url,"semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
   vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-imports":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
   vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
   vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
