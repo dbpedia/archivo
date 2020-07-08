@@ -114,6 +114,31 @@ def updateIndex(index, dataPath, newPath,testSuite):
                 print(pomString, file=parentPomFile)
         crawlURIs.updateFromOldFile(urldefrag(uri)[0], updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
 
+def checkAllLicenses(dataPath, index):
+    resultDict={"None": 0, "Error":0}
+    for uri in index:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        oldArtifactDir = os.path.join(dataPath, group, artifact)
+        if not os.path.isdir(oldArtifactDir):
+            print("ERROR: Couldn't find artifact for", uri)
+            resultDict["Error"] = resultDict["Error"] + 1
+            continue
+        latestVersionDir = ontoFiles.getLatestVersionFromArtifactDir(oldArtifactDir)
+        parsedFile = os.path.join(latestVersionDir, artifact + "_type=parsed.ttl")
+        
+        graph = inspectVocabs.getGraphOfVocabFile(parsedFile)
+        license = inspectVocabs.getLicense(graph)
+        if str(license) in resultDict:
+            resultDict[str(license)] = resultDict[str(license)] + 1
+        else:
+            resultDict[str(license)] = 1
+
+    return resultDict
+
+
+
+
+
 
 
 def checkAllRobots(index):
@@ -128,7 +153,7 @@ rootdir=sys.argv[1]
 index = ontoFiles.loadIndexJson()
 new_uris = [] 
 
-newDir = sys.argv[2]
+#newDir = sys.argv[2]
 
 fallout = ontoFiles.loadFalloutIndex()
 
@@ -149,7 +174,9 @@ relativeUrls = [
 
 testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "shacl"))
 
-updateIndex(relativeUrls, rootdir, newDir,testSuite)
+#updateIndex(relativeUrls, rootdir, newDir,testSuite)
+
+print(checkAllLicenses(rootdir, index))
 
 #crawlNewOntologies(hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)
 #checkAllRobots(index)
@@ -161,4 +188,4 @@ updateIndex(relativeUrls, rootdir, newDir,testSuite)
 
 
 
-generatePoms.updateParentPoms(newDir, index)
+#generatePoms.updateParentPoms(newDir, index)
