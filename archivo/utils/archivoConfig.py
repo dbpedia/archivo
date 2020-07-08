@@ -25,11 +25,12 @@ description = (
     "| Attribute |  Value |\n"
     "| - | - |\n" 
     "| Ontology URI | <$non_information_uri>\n"
+    "| Archivo Ontology Factsheet| [Link](http://archivo.dbpedia.org/info?o=$ontology_uri)"
     "| Snapshot File URL | <$snapshot_url>\n"
     "| Snapshot OWL Version IRI | <$owl_version_iri>\n"
     "| Snapshot Time | $date\n"
     "\n"
-    "The [DBpedia Archivo Databus agent](https://databus.dbpedia.org/ontologies) generates only basic, static documentation for the archived snapshots of the ontologies. More, augmented and dynamic information for this ontology is rendered on and retrievable via [DBpedia Archivo Frontend](http://archivo.dbpedia.org/info?o=$non_information_uri)."
+    "The [DBpedia Archivo Databus agent](https://databus.dbpedia.org/ontologies) generates only basic, static documentation for the archived snapshots of the ontologies."
 )
 
 description_intro = (

@@ -255,6 +255,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     nirHeader = str(response.history[0].headers)
   else:
     nirHeader = ""
+  location_url = response.url
   # generate parsed variants of the ontology
   rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri)
   ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri)
@@ -338,12 +339,11 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     if oopsReport != None:
       with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
         print(oopsReport, file=oopsFile)
-  generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph)
+  generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url)
 
-def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph):
+def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph, location_url):
   datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
-  baseUrl = archivoConfig.downloadUrl.split("$")[0]
-  owl_url = baseUrl + groupId + "/" + artifact +"/"+ version + "/" + artifact + "_type=parsed.owl" 
+  baseUrl = archivoConfig.downloadUrl.split("$")[0] 
   versionIRI = str(None) 
   md_label=uri
   md_description=Template(archivoConfig.description)
@@ -361,9 +361,9 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       md_comment = comment
     
     if description != None:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=owl_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
     else:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=owl_url, owl_version_iri=versionIRI, date=str(datetime_obj))
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj))
     license =inspectVocabs.getLicense(ontograph)
     if isinstance(license, URIRef):
       license = str(license).strip("<>")
