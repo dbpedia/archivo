@@ -136,7 +136,12 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
         newSemVersion, oldAxioms, newAxioms = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
         print("Couldn't generate a new Semantic Version, keeping the old...")
-        newSemVersion = lastSemVersion
+        if not oldSuccess and not newSuccess:
+          newSemVersion = "ERROR: No Axioms for both versions"
+        elif not oldSuccess:
+          newSemVersion = "ERROR: No Axioms for old version"
+        else:
+          newSemVersion = "ERROR: No Axioms for new version"
       new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
       newVersionPath = os.path.join(artifactDir, new_version)
       os.makedirs(newVersionPath, exist_ok=True)
@@ -221,7 +226,7 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
   match = semanticVersionRegex.match(oldSemanticVersion)
   if match == None:
     print("Bad format of semantic version", oldSemanticVersion)
-    return oldSemanticVersion, None, None
+    return "ERROR: old semantic version corrupted", None, None
   
   major = int(match.group(1))
   minor = int(match.group(2))
