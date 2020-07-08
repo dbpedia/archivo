@@ -115,7 +115,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
         crawlURIs.updateFromOldFile(urldefrag(uri)[0], updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
 
 def checkAllLicenses(dataPath, index):
-    resultDict={"None": 0, "Error":0}
+    resultDict={"None": 0, "Error":0, "Literal":0}
     for uri in index:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         oldArtifactDir = os.path.join(dataPath, group, artifact)
@@ -128,12 +128,16 @@ def checkAllLicenses(dataPath, index):
         
         graph = inspectVocabs.getGraphOfVocabFile(parsedFile)
         license = inspectVocabs.getLicense(graph)
-        if str(license) in resultDict:
+        if license == None:
+            resultDict["None"] = resultDict["None"] + 1
+        elif type(license) == rdflib.Literal:
+            resultDict["Literal"] = resultDict["Literal"] + 1
+        elif str(license) in resultDict:
             resultDict[str(license)] = resultDict[str(license)] + 1
         else:
             resultDict[str(license)] = 1
 
-    return resultDict
+    return json.dumps(resultDict, indent=4, sort_keys=True)
 
 
 
