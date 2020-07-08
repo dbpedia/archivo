@@ -297,13 +297,14 @@ def getProfile(pelletInfoPath, pelletInfoPathNoImports, profilePath):
 def genStats(rootdir):
   index = loadIndexJson()
   
-  exptKeys = set(["triples", "E-Tag", "rapperErrors", "rapperWarnings", "lastModified", "content-length", "semantic-version", "NIR-header", "resource-header", "accessed", "non-information-uri"])
+  exptKeys = set(["triples", "e-tag", "rapper-errors", "rapper-warnings", "lastModified", "content-length", "semantic-version", "nir-header", "resource-header", "accessed", "non-information-uri"])
 
   resultData = {}
   resultData["found-files"] = 0
   resultData["triples"] = {"Zero": 0, "<100" : 0, "<1000" : 0, "<10000" : 0, "<100000" : 0, ">100000" : 0 }
   resultData["profiles"] = {}
   resultData["stars"] = {"0 Stars":0, "1 Stars" : 0, "2 Stars":0, "3 Stars":0, "4 Stars":0}
+  resultData["best-header"] = {}
 
   for indexUri in index.keys():
     groupId, artifact =  stringTools.generateGroupAndArtifactFromUri(indexUri)
@@ -330,21 +331,27 @@ def genStats(rootdir):
     with open(jsonPath, "r") as jsonFile:
       metadata = json.load(jsonFile)
 
-    for key in set(metadata.keys()) - exptKeys:
-      if key in resultData.keys():
-        if str(metadata[key]) in resultData[key].keys():
-          oldNumber = resultData[key][str(metadata[key])]
-          resultData[key][str(metadata[key])] = oldNumber + 1
-        else:
-          resultData[key][str(metadata[key])] = 1
-      else:
-        resultData[key] = {str(metadata[key]) : 1}
+    best_header = metadata["http-data"]["best-header"]
+    if best_header in resultData["best-header"]:
+      resultData["best-header"][best_header] = resultData["best-header"][best_header] + 1
+    else:
+       resultData["best-header"][best_header] = 1
     
-    stars = measureStars(metadata)
+    for key in metadata["test-results"]:
+      val = str(metadata["test-results"][key])
+      if key in resultData:
+        if val in resultData[key]:
+          resultData[key][val] = resultData[key][val] + 1
+        else:
+          resultData[key][val] = 1
+      else:
+        resultData[key] = {val : 1}
+    
+    stars = metadata["ontology-info"]["stars"]
 
     resultData["stars"][str(stars)+ " Stars"] = resultData["stars"][str(stars)+ " Stars"] + 1
     
-    tripleNumber = metadata["triples"]
+    tripleNumber = metadata["ontology-info"]["triples"]
     if tripleNumber == 0:
       triplesString = "Zero"
     elif tripleNumber < 100:
