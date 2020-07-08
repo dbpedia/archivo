@@ -524,7 +524,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # new release
-  generateNewRelease(real_ont_uri, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
+  generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
   # index writing
   #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
@@ -535,7 +535,6 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if returncode > 0:
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
-  stringTools.deleteAllFilesInDirAndDir(localDir)
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"
 
 

@@ -206,7 +206,7 @@ def readCsvFile(pathToFile):
     reader = csv.reader(csvfile)
     return set([row[0] for row in reader])
 
-def readTsvFile(pathToFile):
+def secondColumnOfTSV(pathToFile):
   with open(pathToFile, "r") as csvfile:
     reader = csv.reader(csvfile, delimiter="\t")
     return set([row[1] for row in reader])

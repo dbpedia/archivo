@@ -12,7 +12,7 @@ import shutil
 from urllib.parse import urldefrag
 from string import Template
 import pyshacl
-
+from urllib.parse import urldefrag
 
 
 def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite, indexFilePath, falloutFilePath):
@@ -112,7 +112,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
                                             )
             with open(os.path.join(newGroupDir, "pom.xml"), "w+") as parentPomFile:
                 print(pomString, file=parentPomFile)
-        crawlURIs.updateFromOldFile(uri, updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
+        crawlURIs.updateFromOldFile(urldefrag(uri)[0], updatedVersionDir, artifact, os.path.join(updatedVersionDir, artifact+"_type=orig" + fileExt), metadata["http-data"]["best-header"], metadata, metadata["http-data"]["accessed"], testSuite, "1.0.0")
 
 
 
@@ -132,13 +132,24 @@ newDir = sys.argv[2]
 
 fallout = ontoFiles.loadFalloutIndex()
 
+relativeUrls = [
+    "http://datos.bcn.cl/ontologies/bcn-geographics#GeographicOntology",
+    "http://purl.org/crmeh#CRMEH",
+    "http://semweb.mmlab.be/ns/dicera#ontology",
+    "http://semweb.mmlab.be/ns/linkedconnections#Ontology",
+    "http://semweb.mmlab.be/ns/stoptimes#Ontology",
+    "http://www.ebusiness-unibw.org/ontologies/hva/ontology#Ontology",
+    "https://w3id.org/opentrafficlights#Ontology",
+    "https://w3id.org/tree#Ontology"
+]
+
 #checkDatabusIndexReleases(index)
 
 #voidClasses = getVoidUris(archivoConfig.voidResults)
 
 testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "shacl"))
 
-updateIndex(index, rootdir, newDir,testSuite)
+updateIndex(relativeUrls, rootdir, newDir,testSuite)
 
 #crawlNewOntologies(hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)
 #checkAllRobots(index)
