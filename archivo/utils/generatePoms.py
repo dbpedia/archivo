@@ -3,6 +3,7 @@ import sys
 import subprocess
 from utils import stringTools
 from utils import archivoConfig
+from string import Template
 
 def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=archivoConfig.default_license, deployRepoURL=archivoConfig.default_repo, version=archivoConfig.default_version, artifactId=archivoConfig.default_parentArtifact):
 
@@ -140,15 +141,14 @@ def updateParentPoms(rootdir, index):
             continue
 
         with open(parentPomPath, "w+") as parentPomFile:
-            pomstring = generateParentPom(
-                                groupId=group,
-                                packaging="pom",
-                                modules=artifactDirs,
-                                packageDirectory=archivoConfig.packDir,
-                                downloadUrlPath=archivoConfig.downloadUrl,
-                                publisher=archivoConfig.pub,
-                                maintainer=archivoConfig.pub,
-                                groupdocu=archivoConfig.groupDoc.format(group),
-                                )
-            print(pomstring, file=parentPomFile)    
+            pomString=generateParentPom(groupId=group,
+                                            packaging="pom",
+                                            modules=artifactDirs,
+                                            packageDirectory=archivoConfig.packDir,
+                                            downloadUrlPath=archivoConfig.downloadUrl,
+                                            publisher=archivoConfig.pub,
+                                            maintainer=archivoConfig.pub,
+                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=group),
+                                            )
+            print(pomString, file=parentPomFile)    
 
