@@ -76,7 +76,7 @@ Archivo provides for each version different files:
 | meta | | a JSON file containing some meta info |
 | pelletInfo | imports={FULL,NONE} | the pellet info report, with and without imports |
 | pelletConsistency | imports={FULL,NONE} | the pellet consistency report, with and without imports |
-| diff | triples={adds,deletes} | These file contain the added/deleted triples | 
+| diff | axioms={old,new} | These file contain the added/deleted triples | 
 
 ### Stars
 
