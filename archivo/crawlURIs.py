@@ -5,7 +5,7 @@ import sys
 import traceback
 from datetime import datetime
 from dateutil.parser import parse as parsedate
-from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig
+from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig, docTemplates
 from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
@@ -345,8 +345,8 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
   datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
   versionIRI = str(None) 
   md_label=uri
-  md_description=Template(archivoConfig.description)
-  md_comment=Template(archivoConfig.default_explaination).safe_substitute(non_information_uri=uri)
+  md_description=Template(docTemplates.description)
+  md_comment=Template(docTemplates.default_explaination).safe_substitute(non_information_uri=uri)
   license=None
   if ontograph != None:
     label = inspectVocabs.getLabel(ontograph)
@@ -360,7 +360,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       md_comment = comment
     
     if description != None:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + docTemplates.description_intro + "\n\n" + description
     else:
       md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj))
     license =inspectVocabs.getLicense(ontograph)
@@ -368,7 +368,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       license = str(license).strip("<>")
     elif isinstance(license, Literal):
       # if license is literal: error uri
-      license = archivoConfig.license_literal_uri
+      license = docTemplates.license_literal_uri
 
   childpomString = generatePoms.generateChildPom(groupId=groupId,
                                                   version=version,
@@ -405,7 +405,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if groupId == None or artifact == None:
     print("Malformed Uri", vocab_uri)
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()),False, "Malformed Uri"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed Uri"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
   if checkIndexForUri(vocab_uri, index) != None:
@@ -418,7 +418,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   print("Robot allowed:", allowed)
   if not allowed:
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()),False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"
   
@@ -428,7 +428,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if bestHeader == None:
     print("No header, probably server down"+ "\n".join(headerErrors))
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), False, "Unreachable server: Coudnt determine best header"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Unreachable server: Coudnt determine best header"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
@@ -439,7 +439,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not success:
     print("No available Source")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), False, str(response)))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, str(response)))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"Couldn't access the suggested URI: " + str(response)
   
@@ -447,18 +447,23 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
     print("Unparseable ontology")
     if isNIR:
-      fallout_index.append((vocab_uri, False, "Unparseable file"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Unparseable file"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "<br>")
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     print("Error in rdflib parsing")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), False, "Error in rdflib parsing"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Error in rdflib parsing"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at our <a href=https://github.com/dbpedia/Archivo/issues>github page</a>"
   
-  real_ont_uri=inspectVocabs.getNIRUri(graph)
+  try:
+    real_ont_uri=inspectVocabs.getNIRUri(graph)
+  except Exception:
+    traceback.print_exc(file=sys.stderr)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, isNIR, "There was a querying error with rdflib"
 
 
   if real_ont_uri == None:
@@ -466,7 +471,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
       if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()), False, "No ontology or Class"))
+        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "No ontology or Class"))
       print("Neither ontology nor class")
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology or rdfs:isDefinedBy triple"
@@ -478,7 +483,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     else:
       print("Uri already in index or self-defining non-ontology")
       if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()),False, "Self defining non-ontology"))
+        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Self defining non-ontology"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "No owl:Ontology defined"
 
@@ -498,7 +503,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
   if groupId == None or artifact == None:
     print("Malformed non-information Uri", real_ont_uri)
-    fallout_index.append((vocab_uri, str(datetime.now()), False, "Malformed non-information uri"))
+    fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed non-information uri"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Malformed non-information uri " + real_ont_uri
 
@@ -521,7 +526,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=groupId),
+                                            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=groupId),
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
       print(pomString, file=parentPomFile)

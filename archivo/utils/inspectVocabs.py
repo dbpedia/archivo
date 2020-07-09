@@ -21,7 +21,7 @@ def getGraphOfVocabFile(filepath):
         return graph
     except Exception:
         print("Error in parsing:")
-        traceback.print_exc(file=sys.stdout)
+        traceback.print_exc(file=sys.stderr)
         return None
 
 def getTurtleGraph(graph, base=None):    
