@@ -8,15 +8,14 @@ default_version="0.0.0-notRelevant"
 archivo_agent = "dbpedia-archivo-robot"
 
 # edit for your dataset
-downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/${project.groupId}/${project.artifactId}/${project.version}/"
-packDir="/home/dstreitmatter/www/timebased-ontologies/${project.groupId}/${project.artifactId}/"
+downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
+packDir="/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
 pub="https://yum-yab.github.io/webid.ttl#onto"
 
 
-
 # paths for external services
-pelletPath = "/home/denis/Workspace/Job/pellet/cli/target/pelletcli/bin/pellet"
-profileCheckerJar="/home/denis/Downloads/profilechecker-1.1.0.jar"
+pelletPath = "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
+profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.0.0.jar"
 
 # iri sources
 voidResults = "/home/denis/Downloads/voidResults"
@@ -28,5 +27,5 @@ ontoIndexPath = "./indices/vocab_index.json"
 falloutIndexPath = "./indices/fallout_index.csv"
 
 # local paths
-localPath = "/home/denis/Workspace/Job/Archivo/testdir"
+localPath = "/data/home/dstreitmatter/data/archivo-ontologies"
 
