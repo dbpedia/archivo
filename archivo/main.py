@@ -180,7 +180,9 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 #updateIndex(relativeUrls, rootdir, newDir,testSuite)
 
-print(checkAllLicenses(rootdir, index))
+#print(checkAllLicenses(rootdir, index))
+
+ontoFiles.genStats(rootdir)
 
 #crawlNewOntologies(hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)
 #checkAllRobots(index)
