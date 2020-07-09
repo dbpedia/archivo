@@ -1,11 +1,10 @@
 import os
 import sys
 import subprocess
-from utils import stringTools
-from utils import archivoConfig
+from utils import stringTools, archivoConfig, docTemplates
 from string import Template
 
-def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=archivoConfig.default_license, deployRepoURL=archivoConfig.default_repo, version=archivoConfig.default_version, artifactId=archivoConfig.default_parentArtifact):
+def generateParentPom(groupId, packaging, modules, packageDirectory, downloadUrlPath, publisher, maintainer, groupdocu, license=docTemplates.default_license, deployRepoURL=archivoConfig.default_repo, version=archivoConfig.default_version, artifactId=archivoConfig.default_parentArtifact):
 
     modlueStrings = [f"    <module>{module}</module>" for module in modules]
     
@@ -118,6 +117,13 @@ def writeMarkdownDescription(path, artifact, label, explaination, description=""
             f"{description}")
         print(mdstring, file=mdfile)
 
+def writeMarkdownFromTemplate(destination, artifact, label, uri, snapshot_url, owl_version_iri, dateTimeObj, description=None):
+    if description != None:
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=snapshot_url, owl_version_iri=owl_version_iri, date=str(dateTimeObj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
+    else:
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=snapshot_url, owl_version_iri=owl_version_iri, date=str(dateTimeObj))
+
+
 def callMaven(pomfilePath, command):
     process = subprocess.Popen(["mvn", "-B", "-f", pomfilePath, command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -148,7 +154,7 @@ def updateParentPoms(rootdir, index):
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=group),
+                                            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=group),
                                             )
             print(pomString, file=parentPomFile)    
 

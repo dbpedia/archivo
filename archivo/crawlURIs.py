@@ -5,7 +5,7 @@ import sys
 import traceback
 from datetime import datetime
 from dateutil.parser import parse as parsedate
-from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig
+from utils import stringTools, generatePoms, ontoFiles, inspectVocabs, archivoConfig, docTemplates
 from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
@@ -345,8 +345,8 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
   datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
   versionIRI = str(None) 
   md_label=uri
-  md_description=Template(archivoConfig.description)
-  md_comment=Template(archivoConfig.default_explaination).safe_substitute(non_information_uri=uri)
+  md_description=Template(docTemplates.description)
+  md_comment=Template(docTemplates.default_explaination).safe_substitute(non_information_uri=uri)
   license=None
   if ontograph != None:
     label = inspectVocabs.getLabel(ontograph)
@@ -360,7 +360,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       md_comment = comment
     
     if description != None:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + archivoConfig.description_intro + "\n\n" + description
+      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + docTemplates.description_intro + "\n\n" + description
     else:
       md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj))
     license =inspectVocabs.getLicense(ontograph)
@@ -368,7 +368,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
       license = str(license).strip("<>")
     elif isinstance(license, Literal):
       # if license is literal: error uri
-      license = archivoConfig.license_literal_uri
+      license = docTemplates.license_literal_uri
 
   childpomString = generatePoms.generateChildPom(groupId=groupId,
                                                   version=version,
@@ -458,7 +458,12 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at our <a href=https://github.com/dbpedia/Archivo/issues>github page</a>"
   
-  real_ont_uri=inspectVocabs.getNIRUri(graph)
+  try:
+    real_ont_uri=inspectVocabs.getNIRUri(graph)
+  except Exception:
+    traceback.print_exc(file=sys.stderr)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, isNIR, "There was a querying error with rdflib"
 
 
   if real_ont_uri == None:
@@ -521,7 +526,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=groupId),
+                                            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=groupId),
                                             )
     with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
       print(pomString, file=parentPomFile)
