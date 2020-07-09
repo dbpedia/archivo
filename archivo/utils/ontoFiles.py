@@ -367,7 +367,12 @@ def genStats(rootdir):
     
     resultData["triples"][triplesString] = resultData["triples"][triplesString] + 1
 
-    lodeValue = inspectVocabs.checkShaclReport(lodeShaclGraph)
+    if not lodeShaclGraph == None:
+      lodeValue = inspectVocabs.checkShaclReport(lodeShaclGraph)
+    else:
+      print("No report graph for", indexUri)
+      lodeValue = "Error, no graph available"
+
     if "lodeShaclValue" in resultData:
       if lodeValue in resultData["lodeShaclValue"]:
         oldNumber = resultData["lodeShaclValue"][lodeValue]
