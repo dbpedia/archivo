@@ -44,6 +44,6 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 hashUris = ontoFiles.loadListFile("/home/denis/all_hash_uris.lst")
 
-prefixUris = ontoFiles.secondColumnOfTSV("home/denis/prefix-cc-uris.tsv")
+prefixUris = ontoFiles.secondColumnOfTSV("/home/denis/prefix-cc-uris.tsv")
 
 crawlNewOntologies(dataPath=rootdir, hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)

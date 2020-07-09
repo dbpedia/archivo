@@ -94,20 +94,19 @@ def getNIRUri(graph):
 
 def getScheme(graph):
     queryString=(
-        "SELECT DISTINCT ?prop ?label ?comment ?description \n"
+        "SELECT DISTINCT ?uri\n"
         "WHERE {\n"
-        " ?uri a owl:Ontology .\n"
-        " OPTIONAL { ?uri rdfs:label ?label FILTER langMatches(lang(?label), \"en\")}\n"    
-        " OPTIONAL { ?uri rdfs:comment ?comment }\n"    
-        " OPTIONAL { ?uri rdfs:description ?description }\n"
+        " {?uri a skos:ConceptScheme .}\n"
+        "UNION\n"
+        "{?s skos:inScheme ?uri . }\n"
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS})
+    result=graph.query(queryString, initNs={"skos": SKOS, "rdf":RDF})
     if result != None and len(result) > 0:
         for row in result:
-            return row
+            return row[0]
     else:
-        return (None, None, None, None)
+        return None
 
 # Returns the possible labels for a ontology
 def getLabel(graph):

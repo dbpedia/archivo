@@ -5,14 +5,13 @@ from dateutil.parser import parse as parsedate
 import random
 import rdflib
 import crawlURIs
-from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools, queryDatabus
+from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools, queryDatabus, docTemplates
 from utils.validation import TestSuite
 import json
 import shutil
 from urllib.parse import urldefrag
 from string import Template
 import pyshacl
-from urllib.parse import urldefrag
 
 
 def crawlNewOntologies(hashUris, prefixUris, voidPath, testSuite, indexFilePath, falloutFilePath):
@@ -108,7 +107,7 @@ def updateIndex(index, dataPath, newPath,testSuite):
                                             downloadUrlPath=archivoConfig.downloadUrl,
                                             publisher=archivoConfig.pub,
                                             maintainer=archivoConfig.pub,
-                                            groupdocu=Template(archivoConfig.groupDoc).safe_substitute(groupid=group),
+                                            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=group),
                                             )
             with open(os.path.join(newGroupDir, "pom.xml"), "w+") as parentPomFile:
                 print(pomString, file=parentPomFile)
@@ -140,8 +139,17 @@ def checkAllLicenses(dataPath, index):
     return json.dumps(resultDict, indent=4, sort_keys=True)
 
 
+def checkLOVOntologies(dataPath):
+    resultDict = {"No RDF available":0, "RDF available":0}
+    lov_uris = crawlURIs.getLovUrls()
+    for uri in lov_uris:
+        bestHeader, errors = crawlURIs.determineBestAccHeader(uri, dataPath)
+        if bestHeader == None:
+            resultDict["No RDF available"] = resultDict["No RDF available"] + 1
+        else:
+            resultDict["RDF available"] = resultDict["RDF available"] + 1
 
-
+    return json.dumps(resultDict, indent=4, sort_keys=True)
 
 
 
@@ -150,6 +158,16 @@ def checkAllRobots(index):
         isCrawlable, problem = crawlURIs.checkRobot(uri)
         if not isCrawlable:
             print("Uncrawlable uri ", uri, "Problem:", problem)
+
+def interpretIndex(index):
+    resultDict = {}
+    for uri in index:
+        source = index[uri]["source"]
+        if not source in resultDict.keys():
+            resultDict[source] = 1
+        else:
+            resultDict[source] = resultDict[source] + 1
+    print(json.dumps(resultDict, indent=4, sort_keys=True))
 
 
 rootdir=sys.argv[1]
@@ -180,9 +198,11 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 #updateIndex(relativeUrls, rootdir, newDir,testSuite)
 
+interpretIndex(index)
+
 #print(checkAllLicenses(rootdir, index))
 
-ontoFiles.genStats(rootdir)
+#ontoFiles.genStats(rootdir)
 
 #crawlNewOntologies(hashUris=hashUris, prefixUris=prefixUris, voidPath="", testSuite=testSuite, indexFilePath=archivoConfig.ontoIndexPath, falloutFilePath=archivoConfig.falloutIndexPath)
 #checkAllRobots(index)
