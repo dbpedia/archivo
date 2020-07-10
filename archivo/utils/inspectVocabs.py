@@ -2,7 +2,7 @@ import os
 import sys
 import rdflib
 from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
-from rdflib.namespace import DCTERMS, DC
+from rdflib.namespace import DCTERMS, DC, SKOS
 import json
 import traceback
 from utils import stringTools
@@ -82,10 +82,11 @@ def getNIRUri(graph):
     queryString=(
         "SELECT DISTINCT ?uri\n"
         "WHERE {\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }"
         " ?uri a owl:Ontology .\n"
         "} LIMIT 1"
         )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF})
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
@@ -194,13 +195,14 @@ def getLicense(graph):
 
 # returns the non information resource of an ontology, representing the entity of the ontology
 def getDefinedByUri(ontgraph):
-    result=ontgraph.query(
-        """
+    qString="""
         SELECT DISTINCT ?defbyUri
         WHERE {
-            ?s rdfs:isDefinedBy ?defbyUri .
+            VALUES ?prop { rdfs:isDefinedBy skos:inScheme }
+            ?s ?prop ?defbyUri .
         } LIMIT 1
-        """ )
+        """ 
+    result = ontgraph.query(qString, initNs={"rdfs":RDFS, "skos":SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]

@@ -470,13 +470,11 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("Couldn't find ontology uri, trying isDefinedBy...")
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      real_ont_uri = inspectVocabs.getScheme(graph)
-      if real_ont_uri == None:
-        if isNIR:
-          fallout_index.append((vocab_uri, str(datetime.now()), source, False, "No ontology or Class"))
-        print("Neither ontology nor class")
-        stringTools.deleteAllFilesInDirAndDir(localDir)
-        return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple"
+      if isNIR:
+        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "No ontology or Class"))
+      print("No Ontology discoverable")
+      stringTools.deleteAllFilesInDirAndDir(localDir)
+      return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple"
     
     if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedBy or skos uri", real_ont_uri)
