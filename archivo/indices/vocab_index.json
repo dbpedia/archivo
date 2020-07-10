@@ -731,6 +731,10 @@
         "accessed": "2020.05.06; 18:37:06",
         "source": "LOV"
     },
+    "http://open-services.net/ns/core#": {
+        "accessed": "2020.07.09; 18:12:40",
+        "source": "LOV"
+    },
     "http://opendata.aragon.es/def/ei2a/categorization": {
         "accessed": "2020.05.07; 04:12:34",
         "source": "spoHashUris"
@@ -1867,6 +1871,10 @@
         "accessed": "2020.05.07; 11:35:55",
         "source": "prefix.cc"
     },
+    "http://w3id.org/amlo/core": {
+        "accessed": "2020.07.09; 15:45:34",
+        "source": "LOV"
+    },
     "http://w3id.org/art/terms/1.0/": {
         "accessed": "2020.05.07; 10:17:54",
         "source": "prefix.cc"
@@ -2551,6 +2559,10 @@
         "accessed": "2020.05.07; 14:10:29",
         "source": "prefix.cc"
     },
+    "https://schema.edu.ee/0.1": {
+        "accessed": "2020.07.09; 17:07:12",
+        "source": "LOV"
+    },
     "https://sireneld.io/vocab/sirene#": {
         "accessed": "2020.05.21; 01:31:32",
         "source": "prefix.cc"
@@ -2651,6 +2663,10 @@
         "accessed": "2020.05.06; 19:41:40",
         "source": "LOV"
     },
+    "https://w3id.org/def/saref4agri": {
+        "accessed": "2020.07.09; 18:33:02",
+        "source": "LOV"
+    },
     "https://w3id.org/def/saref4bldg": {
         "accessed": "2020.05.07; 17:02:05",
         "source": "prefix.cc"
@@ -2730,6 +2746,10 @@
     "https://w3id.org/idsa/core": {
         "accessed": "2020.05.07; 16:56:43",
         "source": "prefix.cc"
+    },
+    "https://w3id.org/ifc/IFC4_ADD1": {
+        "accessed": "2020.07.09; 17:29:31",
+        "source": "LOV"
     },
     "https://w3id.org/lio/v1": {
         "accessed": "2020.05.06; 21:58:55",
@@ -2870,6 +2890,14 @@
     "https://w3id.org/valueflows/": {
         "accessed": "2020.05.07; 11:47:18",
         "source": "prefix.cc"
+    },
+    "https://w3id.org/vocab/lingvoj": {
+        "accessed": "2020.07.09; 17:43:42",
+        "source": "LOV"
+    },
+    "https://w3id.org/vocab/olca": {
+        "accessed": "2020.07.09; 18:03:48",
+        "source": "LOV"
     },
     "https://w3id.org/vocab/xbrll": {
         "accessed": "2020.05.07; 03:32:24",
