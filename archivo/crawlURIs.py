@@ -398,7 +398,6 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
 
-
   # testing uri validity
   print("Trying to validate ", vocab_uri)
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
@@ -423,12 +422,16 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     return False, isNIR, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"
   
   bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath)
- 
+  if headerErrors == set():
+    headerErrorsString = "Cant parse RDF from this URI"
+  else:
+    headerErrorsString = ";".join(headerErrors)
+
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
     print("No header, probably server down"+ "\n".join(headerErrors))
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Unreachable server: Coudnt determine best header"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"ERROR: {headerErrorsString}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
   accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
@@ -450,6 +453,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Unparseable file"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "<br>")
+
+  
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     print("Error in rdflib parsing")

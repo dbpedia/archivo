@@ -101,6 +101,9 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
     print("Found different headers, downloading and parsing to compare...")
+    allowed, error = crawlURIs.checkRobot(uri)
+    if not allowed:
+      return
     success, sourcePath, response = crawlURIs.downloadSource(uri, localDiffDir, "tmpSource", bestHeader)
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
