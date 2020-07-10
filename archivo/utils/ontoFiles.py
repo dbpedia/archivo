@@ -314,8 +314,8 @@ def genStats(rootdir):
       continue
     versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupId, artifact)) if os.path.isdir(os.path.join(rootdir, groupId, artifact, dir)) and dir != "target"]
     if versionDirs == []:
-        print("Couldnt find version for", groupId, artifact, file=sys.stderr)
-        continue
+      print("Couldnt find version for", groupId, artifact, file=sys.stderr)
+      continue
     versionDir = versionDirs[0] 
     filesPath = os.path.join(rootdir, groupId, artifact, versionDir)
     jsonPath = os.path.join(filesPath, artifact + "_type=meta.json")
@@ -347,7 +347,7 @@ def genStats(rootdir):
       else:
         resultData[key] = {val : 1}
     
-    stars = metadata["ontology-info"]["stars"]
+    stars = measureStars(metadata["logs"]["rapper-errors"], metadata["test-results"]["License-I"], metadata["test-results"]["consistent"], metadata["test-results"]["consistent-without-imports"], metadata["test-results"]["License-II"])
 
     resultData["stars"][str(stars)+ " Stars"] = resultData["stars"][str(stars)+ " Stars"] + 1
     
