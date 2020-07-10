@@ -468,6 +468,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   except Exception:
     traceback.print_exc(file=sys.stderr)
     stringTools.deleteAllFilesInDirAndDir(localDir)
+    fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Error at querying with rdflib"))
     return False, isNIR, "There was a querying error reading the file with rdflib"
 
 
