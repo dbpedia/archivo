@@ -171,6 +171,10 @@
         "accessed": "2020.05.07; 16:16:48",
         "source": "prefix.cc"
     },
+    "http://dati.beniculturali.it/cis/": {
+        "accessed": "2020.07.10; 17:42:13",
+        "source": "LOV"
+    },
     "http://dati.cdec.it/lod/shoah/": {
         "accessed": "2020.05.20; 17:36:37",
         "source": "LOV"
@@ -419,6 +423,10 @@
         "accessed": "2020.05.07; 01:21:50",
         "source": "LOV"
     },
+    "http://iais.fraunhofer.de/vocabs/rami#": {
+        "accessed": "2020.07.10; 20:33:43",
+        "source": "LOV"
+    },
     "http://id.loc.gov/ontologies/bflc/": {
         "accessed": "2020.05.07; 10:48:01",
         "source": "prefix.cc"
@@ -591,9 +599,17 @@
         "accessed": "2020.05.07; 15:09:45",
         "source": "prefix.cc"
     },
+    "http://njh.me/": {
+        "accessed": "2020.07.10; 19:37:30",
+        "source": "LOV"
+    },
     "http://nl.ijs.si/ME/owl/multext-east.owl": {
         "accessed": "2020.05.07; 17:39:16",
         "source": "prefix.cc"
+    },
+    "http://nr.inria.fr/ludo/v1": {
+        "accessed": "2020.07.10; 19:50:33",
+        "source": "LOV"
     },
     "http://ns.bergnet.org/tac/0.1/triple-access-control#": {
         "accessed": "2020.05.07; 02:36:41",
@@ -735,6 +751,10 @@
         "accessed": "2020.07.09; 18:12:40",
         "source": "LOV"
     },
+    "http://opendata.aragon.es/def/ei2a": {
+        "accessed": "2020.07.10; 18:59:13",
+        "source": "LOV"
+    },
     "http://opendata.aragon.es/def/ei2a/categorization": {
         "accessed": "2020.05.07; 04:12:34",
         "source": "spoHashUris"
@@ -853,6 +873,10 @@
     },
     "http://purl.oclc.org/NET/ssnx/qu/qu": {
         "accessed": "2020.05.07; 01:19:13",
+        "source": "LOV"
+    },
+    "http://purl.oclc.org/NET/ssnx/ssn": {
+        "accessed": "2020.07.10; 22:16:43",
         "source": "LOV"
     },
     "http://purl.oreilly.com/ns/meta/": {
@@ -1323,6 +1347,10 @@
         "accessed": "2020.05.06; 20:52:34",
         "source": "LOV"
     },
+    "http://purl.org/spar/pro/": {
+        "accessed": "2020.07.10; 20:30:27",
+        "source": "LOV"
+    },
     "http://purl.org/spar/pso": {
         "accessed": "2020.05.07; 01:14:31",
         "source": "LOV"
@@ -1643,6 +1671,18 @@
         "accessed": "2020.05.06; 22:06:15",
         "source": "LOV"
     },
+    "http://spinrdf.org/sp": {
+        "accessed": "2020.07.10; 22:06:58",
+        "source": "LOV"
+    },
+    "http://spinrdf.org/spin": {
+        "accessed": "2020.07.10; 22:14:04",
+        "source": "LOV"
+    },
+    "http://spinrdf.org/spl": {
+        "accessed": "2020.07.11; 04:29:42",
+        "source": "spoHashUris"
+    },
     "http://strdf.di.uoa.gr/ontology": {
         "accessed": "2020.05.07; 07:57:33",
         "source": "prefix.cc"
@@ -1670,6 +1710,10 @@
     "http://swrl.stanford.edu/ontologies/3.3/swrla.owl": {
         "accessed": "2020.05.07; 05:17:46",
         "source": "spoHashUris"
+    },
+    "http://theme-e.adaptcentre.ie/dave#": {
+        "accessed": "2020.07.10; 17:45:37",
+        "source": "LOV"
     },
     "http://timbus.teco.edu/ontologies/VPlan.owl": {
         "accessed": "2020.05.07; 06:05:26",
@@ -1922,6 +1966,10 @@
     "http://w3id.org/vir#": {
         "accessed": "2020.05.07; 03:05:02",
         "source": "LOV"
+    },
+    "http://wab.uib.no/cost-a32_rdf/wittgenstein_model.owl": {
+        "accessed": "2020.07.11; 11:55:03",
+        "source": "prefix.cc"
     },
     "http://wab.uib.no/cost-a32_rdf/wittgenstein_model_pubby.owl": {
         "accessed": "2020.05.07; 16:42:54",
@@ -2527,6 +2575,10 @@
         "accessed": "2020.05.06; 18:59:12",
         "source": "LOV"
     },
+    "https://data.vlaanderen.be/ns/logies": {
+        "accessed": "2020.07.11; 13:03:03",
+        "source": "prefix.cc"
+    },
     "https://data.vlaanderen.be/ns/persoon": {
         "accessed": "2020.05.06; 19:15:11",
         "source": "LOV"
@@ -2739,12 +2791,20 @@
         "accessed": "2020.05.06; 18:37:50",
         "source": "LOV"
     },
+    "https://w3id.org/i40/sto/iot/concerns/": {
+        "accessed": "2020.07.10; 22:20:30",
+        "source": "LOV"
+    },
     "https://w3id.org/ibp/CTRLont": {
         "accessed": "2020.05.06; 19:50:33",
         "source": "LOV"
     },
     "https://w3id.org/idsa/core": {
         "accessed": "2020.05.07; 16:56:43",
+        "source": "prefix.cc"
+    },
+    "https://w3id.org/idsa/core%20Projekte/IDS/IM/Widoco/InformationModel/codes/OfferTemplate.ttl": {
+        "accessed": "2020.07.11; 14:29:41",
         "source": "prefix.cc"
     },
     "https://w3id.org/ifc/IFC4_ADD1": {
