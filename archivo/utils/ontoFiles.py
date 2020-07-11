@@ -62,7 +62,7 @@ def deleteEmptyDirsRecursive(startpath):
 
 def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion, snapshot_url):
   vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
-  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "snapshot-url":snapshot_url,"semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(tripleSize, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
+  vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "snapshot-url":snapshot_url,"semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(rapperErrors, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
   vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-imports":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
   vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
   vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
@@ -216,9 +216,9 @@ def loadListFile(pathToFile):
     lines = [line.strip() for line in listFile]
   return lines
 
-def measureStars(triples, licenseI, consistent, consistentWithoutImports, licenseII):
+def measureStars(rapperErrors, licenseI, consistent, consistentWithoutImports, licenseII):
   stars = 0
-  if triples > 0:
+  if rapperErrors == "":
     stars = stars + 1
   if licenseI == True:
     stars = stars + 1
@@ -314,8 +314,8 @@ def genStats(rootdir):
       continue
     versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupId, artifact)) if os.path.isdir(os.path.join(rootdir, groupId, artifact, dir)) and dir != "target"]
     if versionDirs == []:
-        print("Couldnt find version for", groupId, artifact, file=sys.stderr)
-        continue
+      print("Couldnt find version for", groupId, artifact, file=sys.stderr)
+      continue
     versionDir = versionDirs[0] 
     filesPath = os.path.join(rootdir, groupId, artifact, versionDir)
     jsonPath = os.path.join(filesPath, artifact + "_type=meta.json")
@@ -347,7 +347,7 @@ def genStats(rootdir):
       else:
         resultData[key] = {val : 1}
     
-    stars = metadata["ontology-info"]["stars"]
+    stars = measureStars(metadata["logs"]["rapper-errors"], metadata["test-results"]["License-I"], metadata["test-results"]["consistent"], metadata["test-results"]["consistent-without-imports"], metadata["test-results"]["License-II"])
 
     resultData["stars"][str(stars)+ " Stars"] = resultData["stars"][str(stars)+ " Stars"] + 1
     
