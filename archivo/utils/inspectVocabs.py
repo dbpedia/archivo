@@ -66,11 +66,12 @@ def getOwlVersionIRI(graph):
     queryString=(
         "SELECT DISTINCT ?versionIRI\n"
         "WHERE {\n"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
         " ?uri owl:versionIRI ?versionIRI ."
         "} LIMIT 1"
         )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF})
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
@@ -82,27 +83,11 @@ def getNIRUri(graph):
     queryString=(
         "SELECT DISTINCT ?uri\n"
         "WHERE {\n"
-        " VALUES ?type { owl:Ontology skos:ConceptScheme }"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
         "} LIMIT 1"
         )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
-    if result != None and len(result) > 0:
-        for row in result:
-            return row[0]
-    else:
-        return None
-
-def getScheme(graph):
-    queryString=(
-        "SELECT DISTINCT ?uri\n"
-        "WHERE {\n"
-        " {?uri a skos:ConceptScheme .}\n"
-        "UNION\n"
-        "{?s skos:inScheme ?uri . }\n"
-        "} LIMIT 1"
-        )
-    result=graph.query(queryString, initNs={"skos": SKOS, "rdf":RDF})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
@@ -114,13 +99,14 @@ def getLabel(graph):
     queryString=(
         "SELECT DISTINCT ?label ?dctTitle ?dcTitle \n"
         "WHERE {\n"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
         " OPTIONAL { ?uri rdfs:label ?label FILTER (lang(?label) = \"\" || langMatches(lang(?label), \"en\"))}\n"    
         " OPTIONAL { ?uri dcterms:title ?dctTitle FILTER (lang(?dctTitle) = \"\" || langMatches(lang(?dctTitle), \"en\"))}\n"
         " OPTIONAL { ?uri dc:title ?dcTitle FILTER (lang(?dcTitle) = \"\" || langMatches(lang(?dcTitle), \"en\"))}\n"
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    result=graph.query(queryString, initNs={"owl": OWL, "skos":SKOS,"rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
     if result != None and len(result) > 0:
         for row in result:
             for value in row:
@@ -136,12 +122,13 @@ def getDescription(graph):
         "SELECT DISTINCT ?descProp ?description\n"
         "WHERE {\n"
         " VALUES ?descProp { rdfs:description dcterms:description dc:description rdfs:comment dcterms:abstract }"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
         " ?uri ?descProp ?description .\n"
         " FILTER (lang(?description) = \"\" || langMatches(lang(?description), \"en\"))"
         "}"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC, "skos":SKOS})
     if result != None and len(result) > 0:
         for row in result:
             descString = (
@@ -160,14 +147,15 @@ def getComment(graph):
     queryString=(
         "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription \n"
         "WHERE {\n"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
         " OPTIONAL { ?uri dcterms:description ?dctDescription FILTER (lang(?dctDescription) = \"\" || langMatches(lang(?dctDescription), \"en\")) }\n"
         " OPTIONAL { ?uri dc:description ?dcDescription FILTER (lang(?dcDescription) = \"\" || langMatches(lang(?dcDescription), \"en\")) }\n"    
         " OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER (lang(?rdfsComment) = \"\" || langMatches(lang(?rdfsComment), \"en\")) }\n"
         " OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER (lang(?dctAbstract) = \"\" || langMatches(lang(?dctAbstract), \"en\")) }\n"
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC, "skos":SKOS})
     if result != None and len(result) > 0:
         for row in result:
             for value in row:
@@ -181,12 +169,13 @@ def getLicense(graph):
     queryString=(
         "SELECT DISTINCT ?license \n"
         "WHERE {\n"
-        " VALUES ?licenseProp { dcterms:license xhv:license cc:license }"
-        " ?uri a owl:Ontology .\n"
+        " VALUES ?licenseProp { dcterms:license xhv:license cc:license }\n"
+        "VALUES ?type { owl:Ontology skos:ConceptScheme }"
+        " ?uri a ?type .\n"
         " ?uri ?licenseProp ?license .\n"   
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
+    result=graph.query(queryString, initNs={"skos":SKOS,"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
