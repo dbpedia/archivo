@@ -23,7 +23,8 @@ lodeServiceUrl="https://w3id.org/lode/owlapi/"
 oopsServiceUrl=" http://oops.linkeddata.es/rest"
 
 # possible headers for rdf-data
-rdfHeaders=["application/rdf+xml", "application/ntriples", "text/turtle", "text/rdf+n3", "application/html"]
+rdfHeaders=["application/rdf+xml", "application/ntriples", "text/turtle", "application/html"]
+rdfHeadersMapping = {"application/rdf+xml":"rdfxml", "application/ntriples":"ntriples", "text/turtle":"turtle", "application/html":"rdfa"}
 
 def getLodeDocuFile(vocab_uri):
   print("Generating lode-docu...")
@@ -101,10 +102,10 @@ def determineBestAccHeader(vocab_uri, localDir):
   print("Determining the best header for this vocabulary...")
   headerDict = {}
   os.makedirs(localTestDir, exist_ok=True)
-  for header in rdfHeaders:
+  for header in rdfHeadersMapping:
     success, filePath, response = downloadSource(vocab_uri, localTestDir, "testTriples", header)
     if success:
-      tripleNumber = ontoFiles.getParsedTriples(filePath)
+      tripleNumber = ontoFiles.getParsedTriples(filePath, inputFormat=rdfHeadersMapping[header])
       if tripleNumber != None:
         headerDict[header] = tripleNumber
         #print("Accept-Header: ",header,"; TripleNumber: ",tripleNumber)
@@ -149,6 +150,7 @@ def downloadSource(uri, path, name, accHeader):
     sys.exit(19)
   except:
     print("Unknown error during download")
+    traceback.print_exc(file=sys.stdout)
     return False, "", "Error - UnknownError"
 
 def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, oldMetadata, accessDate, testSuite, semVersion):
@@ -157,9 +159,9 @@ def updateFromOldFile(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader,
   groupId = os.path.split(groupPath)[1]
   nirHeader = oldMetadata["logs"]["nir-header"]
   # generate parsed variants of the ontology
-  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri)
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri)
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.owl"), outputType="rdfxml", deleteEmpty=True, sourceUri=vocab_uri)
+  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
+  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
+  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.owl"), outputType="rdfxml", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
   triples = ontoFiles.getParsedTriples(pathToOrigFile)
   if triples == None:
     triples = 0
@@ -256,9 +258,9 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     nirHeader = ""
   location_url = response.url
   # generate parsed variants of the ontology
-  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri)
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri)
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.owl"), outputType="rdfxml", deleteEmpty=True, sourceUri=vocab_uri)
+  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
+  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
+  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.owl"), outputType="rdfxml", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
   triples = ontoFiles.getParsedTriples(pathToOrigFile)
   if triples == None:
     triples = 0
@@ -429,7 +431,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
 
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
-    print("No header, probably server down"+ "\n".join(headerErrors))
+    print("\n".join(headerErrors))
     if isNIR:
       fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"ERROR: {headerErrorsString}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
@@ -446,13 +448,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"Couldn't access the suggested URI: " + str(response)
   
-  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri)
+  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, silent=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader])
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
-    print("Unparseable ontology")
+    print("There was an error in parsing ontology of", vocab_uri)
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Unparseable file"))
+      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "INTERNAL ERROR: Couldn't parse file. "))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "Unparseable RDF:" + "\n" + rapperErrors.replace(";", "<br>")
+    return False, isNIR, "Couldnt parse RDF:" + "\n" + rapperErrors.replace(";", "<br>")
 
   
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
@@ -461,7 +463,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     if isNIR:
       fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Error in rdflib parsing"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "Unexpected Error: RDFlib couldn't parse the file. Please report the incident as issue at our <a href=https://github.com/dbpedia/Archivo/issues>github page</a>"
+    return False, isNIR, "Unexpected Error: RDFlib couldn't read the file."
   
   try:
     real_ont_uri=inspectVocabs.getNIRUri(graph)
@@ -476,16 +478,16 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     print("Couldn't find ontology uri, trying isDefinedBy...")
     real_ont_uri = inspectVocabs.getDefinedByUri(graph)
     if real_ont_uri == None:
-      if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "No ontology or Class"))
       print("No Ontology discoverable")
+      if isNIR:
+        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Neither a Vocab nor a link to one"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple"
     
-    if not str(real_ont_uri) in index and not checkUriEquality(vocab_uri, str(real_ont_uri)):
+    if not checkUriEquality(vocab_uri, str(real_ont_uri)):
       print("Found isDefinedBy or skos uri", real_ont_uri)
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return handleNewUri(vocab_uri, index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=True) 
+      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=True) 
     else:
       print("Uri already in index or self-defining non-ontology")
       if isNIR:
@@ -496,7 +498,15 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True, testSuite=testSuite)
+    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(str(real_ont_uri))
+    if groupId == None or artifact == None:
+      print("Malformed Uri", vocab_uri)
+      if isNIR:
+        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed Uri"))
+      stringTools.deleteAllFilesInDirAndDir(localDir)
+      return False, isNIR,"Error - Malformed Uri. Please use a valid http URI"
+    else:
+      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True, testSuite=testSuite)
  
 
   #it goes in here if the uri is NIR and  its resolveable
@@ -540,14 +550,15 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # new release
-  generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
+  #generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
   # index writing
   #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
   
-  returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
-  print(deployLog)
+  #returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
+  #print(deployLog)
+  returncode = 0
   if returncode > 0:
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"

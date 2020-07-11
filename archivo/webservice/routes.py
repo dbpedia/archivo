@@ -138,7 +138,7 @@ def getRDFInfoLink(ontologyUrl, mimeType):
         "PREFIX db:     <https://databus.dbpedia.org/>",
         "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
         "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-        "PREFIX archivo: <http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/timebased-ontologies/>",
+        "PREFIX archivo: <http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/>",
         "",
         "CONSTRUCT {?s ?p ?o . ?dist ?p2 ?o2 . }",
         "{?s dataid:artifact <%s>." % databusArtifact, 

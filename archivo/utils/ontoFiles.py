@@ -107,13 +107,17 @@ def getParsedRdf(sourcefile, sourceUri=None, silent=True):
   
   return stdout.decode("utf-8")
 
-def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=True, silent=False):
+def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=True, silent=False, inputFormat=None):
+  rapperCommand = ["rapper",  sourcefile, "-o", outputType]
+  if inputFormat == None:
+    inputList = ["-g"]
+  else:
+    inputList = ["-i", inputFormat]
+  rapperCommand[1:1] = inputList
+  if sourceUri != None:
+    rapperCommand[1:1] = ["-I", sourceUri]
   with open(filepath, "w+") as ontfile:
-    if sourceUri == None:
-      process = subprocess.Popen(["rapper", "-g", sourcefile, "-o", outputType], stdout=ontfile, stderr=subprocess.PIPE)
-    else:
-      process = subprocess.Popen(["rapper", "-I", sourceUri,"-g", sourcefile, "-o", outputType], stdout=ontfile, stderr=subprocess.PIPE)
-    
+    process = subprocess.Popen(rapperCommand, stdout=ontfile, stderr=subprocess.PIPE)
     stderr=process.communicate()[1].decode("utf-8")
     if not silent:
       print(stderr)
@@ -127,8 +131,12 @@ def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=
       os.remove(filepath)
   return returnRapperErrors(stderr)
 
-def getParsedTriples(filepath):
-  process = subprocess.Popen(["rapper", "-c", "-g", filepath], stderr=subprocess.PIPE)
+def getParsedTriples(filepath, inputFormat=None):
+  if inputFormat == None:
+    process = subprocess.Popen(["rapper", "-c", "-g", filepath], stderr=subprocess.PIPE)
+  else:
+    process = subprocess.Popen(["rapper", "-c", "-i", inputFormat, filepath], stderr=subprocess.PIPE)
+
   try:
     stderr = process.communicate()[1].decode("utf-8")
   except UnicodeDecodeError:

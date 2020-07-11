@@ -26,9 +26,12 @@ def sortFile(filepath, targetPath):
     print("Error in sorting file:")
     print(e)
 
-def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True):
+def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True, inputType=None):
   try:
-    rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if inputType == None:
+      rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    else:
+      rapperProcess = subprocess.run(["rapper", "-i", inputType, "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     with open(targetPath, "w+") as sortedNtriples:
       subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples)
     if os.stat(targetPath).st_size == 0:
@@ -112,7 +115,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
     #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
-    errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri)
+    errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[bestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
       print("File not parseable")
       fallout_index.append((uri, True, "Unparseable new File"))
