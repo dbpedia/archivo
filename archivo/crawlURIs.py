@@ -495,7 +495,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "No owl:Ontology defined"
 
-  if not isNIR and not checkUriEquality(vocab_uri, str(real_ont_uri)):
+  isNIR=True
+  if not checkUriEquality(vocab_uri, str(real_ont_uri)):
     print("Non information uri differs from source uri, revalidate", str(real_ont_uri))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(str(real_ont_uri))
@@ -550,14 +551,14 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # new release
-  #generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
+  generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite)
   # index writing
   #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
   
-  #returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
-  #print(deployLog)
+  returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
+  print(deployLog)
   returncode = 0
   if returncode > 0:
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))

@@ -50,7 +50,6 @@ def commDiff(oldFile, newFile):
     newTriples = []
     process = subprocess.run(command, stdout=subprocess.PIPE)
     commOutput = process.stdout.decode("utf-8")
-    print(commOutput)
     for line in commOutput.split("\n"):
       if line.startswith("\t"):
         newTriples.append(line)
@@ -158,7 +157,7 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
         print("\n".join(newAxioms), file=newAxiomsFile) 
       crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite)
       stringTools.deleteAllFilesInDir(localDiffDir)
-      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy"))
+      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy")[1])
   except FileNotFoundError:
     print("Error: Couldn't find file for", uri)
     stringTools.deleteAllFilesInDir(localDiffDir)
