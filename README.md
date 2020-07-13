@@ -86,15 +86,15 @@ Archivo provides a basic star-rating (not to be confused with the 5 stars of lin
 
 Baseline:
 
-* ★: All  of  the  following  criteria  have  to  be  fulfilled:1) The non-information URI resolves to a machine readable format or a ma-chine readable version of the ontology is deterministically discoverable by othercommon means. 2) download was successful 3) uses a common format imple-mented by Archivo19, 4) at least one format was found that parses with no orfew (negligible) syntactical warnin
+* ★: All  of  the  following  criteria  have  to  be  fulfilled:1) The non-information URI resolves to a machine readable format or a ma-chine readable version of the ontology is deterministically discoverable by other common means. 2) download was successful 3) uses a common format implemented by Archivo 4) at least one format was found that parses with no or few (negligible) syntactical warnings
 
-* ★★: A proper ontology declaration was found usingrdf:type owl:Ontologyand some form of license could be detected. A high degree of heterogeneityis permissible for this star regarding the used property/subproperty as wellas  object:  license  URI  (resolvable  linked  data  or  web  link),xsd:stringorxsd:anyURI
+* ★★: A proper ontology declaration was found using `rdf:type owl:Ontology` and some form of license could be detected. A high degree of heterogeneityis permissible for this star regarding the used property/subproperty as well as  object:license  URI  (resolvable  linked  data  or  web  link),xsd:stringorxsd:anyURI
 
 If the ontology fulfills the baseline, it can earn two further stars by using good practises:
 
-* ★★★: We require a homogenized license declaration usingdct:licenseas object property with a URI (not string or anyURI). 
+* ★★★: We require a homogenized license declaration using `dct:licenseas` object property with a URI (not string or anyURI). 
 
-* ★★★★: We measure the compatibility with currently available reasoners suchas Pellet/Stardog (more to follow) and run available tasks such as consistencychecks and classification.
+* ★★★★: We measure the compatibility with currently available reasoners suchas Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.
 
 
 ### Ontology Sources
