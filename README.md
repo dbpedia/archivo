@@ -94,7 +94,7 @@ If the ontology fulfills the baseline, it can earn two further stars by using go
 
 * ★★★: We require a homogenized license declaration using `dct:license` as object property with a URI (not string or anyURI). 
 
-* ★★★★: We measure the compatibility with currently available reasoners suchas Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.
+* ★★★★: We measure the compatibility with currently available reasoners such as Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.
 
 
 ### Ontology Sources
