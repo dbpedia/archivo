@@ -86,15 +86,15 @@ Archivo provides a basic star-rating (not to be confused with the 5 stars of lin
 
 Baseline:
 
-* ★: The Ontology parses (Errors and warnings are ok, but rapper must be able to retrieve at least some triples)
+* ★: All  of  the  following  criteria  have  to  be  fulfilled:1) The non-information URI resolves to a machine readable format or a ma-chine readable version of the ontology is deterministically discoverable by othercommon means. 2) download was successful 3) uses a common format imple-mented by Archivo19, 4) at least one format was found that parses with no orfew (negligible) syntactical warnin
 
-* ★★: The Ontology contains some form of license, given by the most popular properties: dct:license, cc:license or xhv:license
+* ★★: A proper ontology declaration was found usingrdf:type owl:Ontologyand some form of license could be detected. A high degree of heterogeneityis permissible for this star regarding the used property/subproperty as wellas  object:  license  URI  (resolvable  linked  data  or  web  link),xsd:stringorxsd:anyURI
 
 If the ontology fulfills the baseline, it can earn two further stars by using good practises:
 
-* ★★★: The license is given by dct:license and is an IRI.
+* ★★★: We require a homogenized license declaration usingdct:licenseas object property with a URI (not string or anyURI). 
 
-* ★★★★: The ontology is consistent (tested by pellet, with or without imports).
+* ★★★★: We measure the compatibility with currently available reasoners suchas Pellet/Stardog (more to follow) and run available tasks such as consistencychecks and classification.
 
 
 ### Ontology Sources
