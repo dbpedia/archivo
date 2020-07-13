@@ -559,7 +559,6 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
   print(deployLog)
-  returncode = 0
   if returncode > 0:
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"

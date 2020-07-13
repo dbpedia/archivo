@@ -149,7 +149,11 @@ def getRDFInfoLink(ontologyUrl, mimeType):
 
 @app.route("/doc", methods=["GET"])
 def docPage():
-    readme_file = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md").text
+    req = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md")
+    
+    if req.status_code > 400:
+        return render_template("doc.html", markdownDoc=f"Prblem loading the page from <https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md>: Status {req.status_code}")
+    readme_file = req.text
     md_template_string = markdown.markdown(
         readme_file, extensions=["fenced_code", "sane_lists", "tables"]
     )
