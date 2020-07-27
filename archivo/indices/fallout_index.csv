@@ -1,205 +1,646 @@
-http://dati.beniculturali.it/cis,False,Unparseable file
-http://theme-e.adaptcentre.ie/dave,False,Unparseable file
-http://opendata.aragon.es/def/ei2a,False,Unparseable file
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-ub276bL7C1,False,Malformed Uri
-ub329bL7C1,False,Malformed Uri
-http://njh.me,False,Malformed Uri
-ub359bL7C1,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-ub434bL768C1,False,Malformed Uri
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-http://dati.beniculturali.it/cis/,False,Unparseable file
-http://theme-e.adaptcentre.ie/dave,False,Unparseable file
-http://opendata.aragon.es/def/ei2a,False,Unparseable file
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-ub56bL7C1,False,Malformed Uri
-ub76bL7C1,False,Malformed Uri
-http://njh.me/,False,No ontology or Class
-ub80bL7C1,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-ub91bL768C1,False,Malformed Uri
-ub144bL7C1,False,Malformed Uri
-http://purl.org/spar/pro/,False,Unreachable server
-http://iais.fraunhofer.de/vocabs/rami,False,Unreachable server
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-ub395bL7C1,False,Malformed Uri
-ub555bL7C1,False,Malformed Uri
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-http://iais.fraunhofer.de/vocabs/rami,False,Unreachable server
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-ub12bL7C1,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-http://njh.me/,False,No ontology or Class
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-http://purl.org/obo/owl/OBO_REL,False,Unparseable file
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-http://resex.rkbexplorer.com/ontologies/resist,False,Unreachable server
-ub196bL7C1,False,Malformed Uri
-http://www.buildingsmart-tech.org/ifcOWL/IFC2X3_Final,False,Unreachable server
-http://webr3.org/owl/guo,False,Unreachable server
-http://www.intelleo.eu/ontologies/user-model/ns,False,Unreachable server
-ub341bL7C1,False,Malformed Uri
-ub342bL7C1,False,Malformed Uri
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-ub456bL7C1,False,Malformed Uri
-ub473bL64C1,False,Malformed Uri
-ub513bL7C1,False,Malformed Uri
-http://njh.me/,False,No ontology or Class
-http://merlin.phys.uni.lodz.pl/onto/physo/,False,Unparseable file
-http://edamontology.org,False,Malformed Uri
-https://purl.org/heals/sco/,False,Unreachable server
-ub669bL768C1,False,Malformed Uri
-http://babelnet.org/rdf/,False,Unparseable file
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://ns.taverna.org.uk/2010/scufl2,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.kb.se/vocab/,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://opendata.caceres.es/def/ontomunicipio,True,Unreachable ontology
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-http://www.astro.umd.edu/~eshaya/astro-onto/owl/physics.owl,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-http://dati.beniculturali.it/cis/,False,Unparseable file
-http://theme-e.adaptcentre.ie/dave,False,Unparseable file
-http://opendata.aragon.es/def/ei2a,False,Unparseable file
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-ub59bL7C1,False,Malformed Uri
-ub69bL7C1,False,Malformed Uri
-http://njh.me/,False,No ontology or Class
-ub75bL7C1,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-ub89bL768C1,False,Malformed Uri
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-http://dati.beniculturali.it/cis/,False,Unparseable file
-http://theme-e.adaptcentre.ie/dave,False,Unparseable file
-http://opendata.aragon.es/def/ei2a,False,Unparseable file
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-ub31bL7C1,False,Malformed Uri
-ub39bL7C1,False,Malformed Uri
-http://njh.me/,False,No ontology or Class
-ub43bL7C1,False,Malformed Uri
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-ub51bL768C1,False,Malformed Uri
-ub57bL7C1,False,Malformed Uri
-http://purl.org/spar/pro/,False,Unreachable server
-http://iais.fraunhofer.de/vocabs/rami,False,Unreachable server
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-ub80bL7C1,False,Malformed Uri
-ub118bL7C1,False,Malformed Uri
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-http://iais.fraunhofer.de/vocabs/rami,False,Unreachable server
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-http://www.loa-cnr.it/ontologies/DUL.owl,False,Unparseable file
-ub197bL7C1,False,Malformed Uri
-ub198bL768C1,False,Malformed Uri
-http://njh.me/,False,No ontology or Class
-http://iflastandards.info/ns/fr/frbr/frbrer/frbrer.rdf,False,Unreachable server
-http://www.intelleo.eu/ontologies/user-model/ns,False,Unreachable server
-https://w3id.org/i40/sto/iot/concerns/,False,Unreachable server
-http://nr.inria.fr/ludo/v1,False,Unreachable server
-http://purl.org/net/nknouf/ns/bibtex,False,Unparseable file
-http://www.buildingsmart-tech.org/ifcOWL/IFC2X3_Final,False,Unreachable server
-file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,False,Malformed Uri
-ub313bL7C1,False,Malformed Uri
-ub318bL7C1,False,Malformed Uri
-http://webr3.org/owl/guo,False,Unreachable server
-ub350bL64C1,False,Malformed Uri
-http://merlin.phys.uni.lodz.pl/onto/physo/,False,Unparseable file
-ub384bL7C1,False,Malformed Uri
-ub392bL7C1,False,Malformed Uri
-http://www.berkeleybop.org/ontologies/obo-all/ro_bfo_bridge/ro_bfo_bridge.owl,False,No ontology or Class
-http://resex.rkbexplorer.com/ontologies/resist,False,Unreachable server
-http://edamontology.org,False,Malformed Uri
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://opendata.caceres.es/def/ontomunicipio,True,Unreachable ontology
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-http://www.bl.uk/schemas/bibliographic/blterms,True,Unreachable ontology
-http://www.demcare.eu/ontologies/contextdescriptor.owl,True,Unreachable ontology
-http://www.demcare.eu/ontologies/demlab.owl,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://opendata.caceres.es/def/ontomunicipio,True,Unreachable ontology
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-http://www.bl.uk/schemas/bibliographic/blterms,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://opendata.caceres.es/def/ontomunicipio,True,Unreachable ontology
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
-http://data.finlex.fi/schema/sfl,True,Unparseable new File
-http://data.vlaanderen.be/ns/besluit,True,Unreachable ontology
-http://data.vlaanderen.be/ns/mandaat,True,Unreachable ontology
-http://demiblog.org/vocab/oauth#,True,Unreachable ontology
-http://ldf.fi/void-ext,True,Unparseable new File
-http://opendata.caceres.es/def/ontomunicipio,True,Unreachable ontology
-http://purl.org/net/bel-epa/doacc,True,Unreachable ontology
-https://data.omgeving.vlaanderen.be/ns/dossier,True,Unreachable ontology
-https://data.vlaanderen.be/ns/logies,True,Unreachable ontology
-https://data.vlaanderen.be/ns/persoon,True,Unreachable ontology
-https://data.zendantennes.omgeving.vlaanderen.be/ns/zendantenne,True,Unreachable ontology
-https://id.parliament.uk/schema,True,Unreachable ontology
+http://www.irit.fr/recherches/MELODI/ontologies/SAN,2020-07-10 14:57:26.725434,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/ns/auth/acl,2020-07-10 14:57:31.741871,LOV,False,No ontology or Class
+http://privatealpha.com/ontology/certification/1,2020-07-10 14:57:36.286548,LOV,False,Unparseable file
+http://purl.org/ontology/af/,2020-07-10 14:57:48.733322,LOV,False,Malformed non-information uri
+http://www.agls.gov.au/agls/terms,2020-07-10 17:36:19.964734,LOV,False,Error at querying with rdflib
+http://promsns.org/def/agr,2020-07-10 17:36:28.845383,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/vocab/aiiso/schema,2020-07-10 17:36:36.268492,LOV,False,Unparseable file
+http://www.aktors.org/ontology/portal,2020-07-10 17:36:36.767639,LOV,False,ERROR: Error - Status 404
+http://www.aktors.org/ontology/support,2020-07-10 17:36:37.268763,LOV,False,ERROR: Error - Status 404
+http://purl.org/linked-data/api/vocab,2020-07-10 17:36:41.051378,LOV,False,ERROR: Error - Status 404
+http://purl.org/archival/vocab/arch,2020-07-10 17:36:44.648861,LOV,False,ERROR: Error - ConnectionError
+http://www.bbc.co.uk/ontologies/bbc,2020-07-10 17:36:48.708357,LOV,False,Unparseable file
+http://www.bbc.co.uk/ontologies/cms,2020-07-10 17:36:51.897035,LOV,False,Unparseable file
+http://www.bbc.co.uk/ontologies/provenance,2020-07-10 17:36:55.257237,LOV,False,Unparseable file
+http://contextus.net/ontology/ontomedia/ext/common/being,2020-07-10 17:36:55.713902,LOV,False,ERROR: Error - Status 404
+http://purl.org/net/nknouf/ns/bibtex,2020-07-10 17:37:13.388949,LOV,False,Unparseable file
+http://bimerr.iot.linkeddata.es/def/occupancy-profile,2020-07-10 17:37:14.944473,LOV,False,Unparseable file
+http://purl.org/vocab/bio/0.1/,2020-07-10 17:37:27.196043,LOV,False,Unparseable file
+http://www.w3.org/2002/12/cal/ical,2020-07-10 17:37:31.733989,LOV,False,ERROR: Error - Status 406
+http://caressesrobot.org/ontology,2020-07-10 17:37:33.746204,LOV,False,Unparseable file
+http://betalinkeddata.cbs.nl/def/cbs,2020-07-10 17:37:36.195895,LOV,False,ERROR: Error - Status 404
+http://creativecommons.org/ns,2020-07-10 17:37:41.140160,LOV,False,No ontology or Class
+http://purl.org/cld/cdtype/,2020-07-10 17:37:51.443585,LOV,False,Self defining non-ontology
+http://www.ebusiness-unibw.org/ontologies/consumerelectronics/v1,2020-07-10 17:42:00.745892,LOV,False,Unparseable file
+http://www.eurocris.org/ontologies/cerif/1.3,2020-07-10 17:42:02.491790,LOV,False,ERROR: Error - Status 403
+https://privatealpha.com/ontology/content-inventory/1,2020-07-10 17:42:08.762656,LOV,False,Unparseable file
+http://www.essepuntato.it/2013/03/cito-functions,2020-07-10 17:44:19.832194,LOV,False,ERROR: Error - Status 404
+http://purl.org/cld/terms/,2020-07-10 17:44:26.775473,LOV,False,Self defining non-ontology
+http://purl.org/twc/ontologies/cmo.owl,2020-07-10 17:44:31.014560,LOV,False,ERROR: Error - Status 404
+http://data.cochrane.org/ontologies/core/,2020-07-10 17:44:32.502181,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/2000/10/swap/pim/contact,2020-07-10 17:44:36.025436,LOV,False,No ontology or Class
+http://purl.org/coo/ns,2020-07-10 17:44:41.619874,LOV,False,ERROR: Error - Status 404
+http://www.daml.org/2001/09/countries/iso-3166-ont,2020-07-10 17:44:43.110396,LOV,False,ERROR: Error - Status 404
+http://www.cidoc-crm.org/cidoc-crm/,2020-07-10 17:44:46.152946,LOV,False,Unparseable file
+http://rhizomik.net/ontologies/copyrightonto.owl,2020-07-10 17:44:48.048924,LOV,False,Unparseable file
+http://courseware.rkbexplorer.com/ontologies/courseware,2020-07-10 17:44:48.538982,LOV,False,ERROR: Error - Status 403
+http://purl.org/vocab/changeset/schema,2020-07-10 17:44:56.090459,LOV,False,Unparseable file
+http://commontag.org/ns,2020-07-10 17:44:59.979210,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ctic/infraestructuras/organizacion,2020-07-10 17:45:16.454610,LOV,False,ERROR: Error - Status 503
+http://purl.org/cwmo/,2020-07-10 17:45:23.189623,LOV,False,Unparseable file
+http://www.bbc.co.uk/ontologies/creativework,2020-07-10 17:45:26.737375,LOV,False,Unparseable file
+http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1,2020-07-10 17:45:27.640692,LOV,False,ERROR: Error - Status 404
+http://purl.org/ontology/daia,2020-07-10 17:45:30.897088,LOV,False,ERROR: Error - Status 404
+http://contextus.net/ontology/ontomedia/misc/date,2020-07-10 17:45:31.322341,LOV,False,ERROR: Error - Status 404
+http://vocab.datex.org/terms,2020-07-10 17:45:35.574160,LOV,False,Unparseable file
+http://ontology.cybershare.utep.edu/dbowl,2020-07-10 17:49:04.664722,LOV,False,Unparseable file
+http://ontologi.es/doap-bugs,2020-07-10 17:49:05.824077,LOV,False,ERROR: Error - Status 406
+http://purl.org/dc/dcam/,2020-07-10 17:49:17.154809,LOV,False,Self defining non-ontology
+http://purl.org/dc/elements/1.1/,2020-07-10 17:49:29.248086,LOV,False,Self defining non-ontology
+http://ndl.go.jp/dcndl/terms/,2020-07-10 17:49:45.355324,LOV,False,Self defining non-ontology
+http://purl.org/dc/terms/,2020-07-10 17:49:55.282985,LOV,False,Self defining non-ontology
+http://purl.org/dc/dcmitype/,2020-07-10 17:50:05.765312,LOV,False,Self defining non-ontology
+https://decision-ontology.googlecode.com/svn/trunk/decision.owl,2020-07-10 17:50:06.466777,LOV,False,ERROR: Error - Status 404
+http://ontologi.es/doap-deps,2020-07-10 17:50:07.548294,LOV,False,ERROR: Error - Status 406
+https://w3id.org/dio,2020-07-10 17:50:23.769409,LOV,False,ERROR: Error - ConnectionError
+http://rdf-vocabulary.ddialliance.org/discovery,2020-07-10 17:50:28.424361,LOV,False,ERROR: Error - Status 404
+http://www.data-knowledge.org/dk/,2020-07-10 17:50:28.998695,LOV,False,ERROR: Error - Status 404
+http://onto.dm2e.eu/schemas/dm2e,2020-07-10 17:50:29.070938,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/2000/10/swap/pim/doc,2020-07-10 17:50:32.381130,LOV,False,Unparseable file
+http://purl.org/ontology/dso,2020-07-10 17:51:15.172074,LOV,False,ERROR: Error - too many redirects
+http://reference.data.gov.au/def/ont/dataset,2020-07-10 17:51:20.002528,LOV,False,ERROR: Error - Status 404
+http://promsns.org/def/decprov,2020-07-10 17:51:28.182048,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/ns/dqv,2020-07-10 17:51:30.801206,LOV,False,No ontology or Class
+http://purl.org/swan/2.0/discourse-relationships/,2020-07-10 17:51:35.357721,LOV,False,ERROR: Error - Status 404
+http://vocab.data.gov/def/drm,2020-07-10 17:51:40.829694,LOV,False,ERROR: Error - Status 404
+http://purl.org/ctic/dcat,2020-07-10 17:51:57.703097,LOV,False,ERROR: Error - Status 503
+http://inference-web.org/2.0/ds.owl,2020-07-10 17:52:01.450111,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/ns/duv,2020-07-10 18:22:44.556985,LOV,False,Error at querying with rdflib
+http://www.w3.org/ns/earl,2020-07-10 18:56:30.327495,LOV,False,Error at querying with rdflib
+http://purl.org/eem,2020-07-10 18:59:09.356779,LOV,False,ERROR: Error - ReadTimeout
+http://purl.org/ctic/sector-publico/elecciones,2020-07-10 19:03:26.709869,LOV,False,ERROR: Error - Status 503
+http://data.europa.eu/eli/ontology,2020-07-10 19:03:28.796831,LOV,False,ERROR: Error - Status 404
+http://purl.org/ctic/empleo/oferta,2020-07-10 19:03:48.516189,LOV,False,ERROR: Error - Status 503
+http://labs.mondeca.com/vocab/endpointStatus,2020-07-10 19:03:50.318581,LOV,False,Unparseable file
+http://purl.org/essglobal/vocab/,2020-07-10 19:03:57.907558,LOV,False,ERROR: Error - Status 406
+http://vocab.data.gov/def/fea,2020-07-10 19:04:03.249205,LOV,False,ERROR: Error - Status 404
+http://data.lirmm.fr/ontologies/food,2020-07-10 19:08:43.022477,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/TR/2003/PR-owl-guide-20031215/food,2020-07-10 19:08:45.634215,LOV,False,Unparseable file
+http://iflastandards.info/ns/fr/frad/,2020-07-10 19:08:47.199786,LOV,False,Self defining non-ontology
+http://purl.org/cerif/frapo/,2020-07-10 19:08:57.703317,LOV,False,ERROR: Error - Status 404
+http://purl.org/vocab/frbr/core,2020-07-10 19:09:02.646352,LOV,False,Unparseable file
+http://purl.org/vocab/frbr/extended,2020-07-10 19:09:08.696726,LOV,False,Unparseable file
+http://iflastandards.info/ns/fr/frbr/frbrer/,2020-07-10 19:09:10.511811,LOV,False,Self defining non-ontology
+http://data.totl.net/game/,2020-07-10 19:09:13.384655,LOV,False,No ontology or Class
+http://www.oegov.org/core/owl/gc,2020-07-10 19:09:18.452903,LOV,False,Unparseable file
+http://ontology.eil.utoronto.ca/GCI/Foundation/GCI-Foundation.owl,2020-07-10 19:09:27.720167,LOV,False,Malformed non-information uri
+http://vocab.data.gov/gd,2020-07-10 19:09:33.042066,LOV,False,ERROR: Error - Status 404
+http://purl.org/gen/0.1,2020-07-10 19:09:40.844515,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2003/01/geo/wgs84_pos,2020-07-10 19:09:42.654733,LOV,False,No ontology or Class
+http://www.mindswap.org/2003/owl/geo/geoFeatures20040307.owl,2020-07-10 19:09:45.305072,LOV,False,Unparseable file
+http://aims.fao.org/aos/geopolitical.owl,2020-07-10 19:09:46.494865,LOV,False,ERROR: Error - Status 404
+http://rdf.geospecies.org/ont/geospecies,2020-07-10 19:09:48.558193,LOV,False,ERROR: Error - Status 404
+http://purl.org/linguistics/gold,2020-07-10 19:09:58.472812,LOV,False,Unparseable file
+http://www.w3.org/2003/g/data-view,2020-07-10 19:37:00.392910,LOV,False,Error - ConnectionError
+http://www.w3.org/2006/gen/ont,2020-07-10 19:37:02.492179,LOV,False,No ontology or Class
+http://vocab.getty.edu/ontology,2020-07-10 19:37:09.675841,LOV,False,Unparseable file
+http://www.samos.gr/ontologies/helpdeskOnto.owl,2020-07-10 19:37:10.826846,LOV,False,ERROR: Error - Status 404
+http://vocab.data.gov/hosp,2020-07-10 19:37:16.057217,LOV,False,ERROR: Error - Status 404
+http://iserve.kmi.open.ac.uk/ns/hrests,2020-07-10 19:37:16.594985,LOV,False,ERROR: Error - Status 404
+https://privatealpha.com/ontology/ibis/1,2020-07-10 19:37:19.682879,LOV,False,Unparseable file
+http://ontology.eil.utoronto.ca/icontact.owl,2020-07-10 19:37:24.565944,LOV,False,Malformed non-information uri
+http://www.identity.org/ontologies/identity.owl,2020-07-10 19:37:26.773733,LOV,False,ERROR: Error - Status 404
+http://www.irit.fr/recherches/MELODI/ontologies/IoT-O,2020-07-10 19:39:53.992059,LOV,False,ERROR: Error - Status 403
+http://iflastandards.info/ns/isbd/elements/,2020-07-10 19:39:55.840069,LOV,False,Self defining non-ontology
+http://ontology.eil.utoronto.ca/ISO37120.owl,2020-07-10 19:40:06.426130,LOV,False,Malformed non-information uri
+http://reference.data.gov.au/def/ont/iso19160-1-address,2020-07-10 19:40:11.552713,LOV,False,ERROR: Error - Status 404
+http://dati.isprambiente.it/ontology/core,2020-07-10 19:40:16.514261,LOV,False,Unparseable file
+https://data.istex.fr/ontology/istex,2020-07-10 19:40:19.837544,LOV,False,Unparseable file
+http://spi-fm.uca.es/spdef/models/genericTools/itm/1.0,2020-07-10 19:45:00.046835,LOV,False,ERROR: Error - ConnectionError
+http://ontology.it/itsmo/v1,2020-07-10 19:45:05.497682,LOV,False,Unparseable file
+http://kdo.render-project.eu/kdo,2020-07-10 19:45:22.998055,LOV,False,ERROR: Error - ConnectionError
+http://www.disit.org/km4city/schema,2020-07-10 19:46:00.325262,LOV,False,Unparseable file
+http://purl.org/net/vocab/2004/03/label,2020-07-10 19:46:38.885801,LOV,False,ERROR: Error - ConnectionError;Error - Status 503
+http://purl.org/vocab/lifecycle/schema,2020-07-10 19:46:43.893747,LOV,False,Unparseable file
+http://purl.oclc.org/NET/ldr/ns,2020-07-10 19:46:53.423976,LOV,False,ERROR: Error - Status 404
+http://linked.opendata.cz/ontology/ldvm/,2020-07-10 19:46:55.109864,LOV,False,Unparseable file
+http://linkedgeodata.org/ontology,2020-07-10 19:46:55.881909,LOV,False,ERROR: Error - Status 503
+http://purl.org/library/,2020-07-10 19:47:01.963891,LOV,False,ERROR: Error - Status 404
+http://www.irit.fr/recherches/MELODI/ontologies/IoT-Lifecycle,2020-07-10 19:47:03.916470,LOV,False,ERROR: Error - Status 403
+http://purl.org/limo-ontology/limo/,2020-07-10 19:49:38.296209,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/LiMo/0.1,2020-07-10 19:49:42.275029,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ctic/infraestructuras/localizacion,2020-07-10 19:50:05.253077,LOV,False,ERROR: Error - Status 503
+http://data.archiveshub.ac.uk/def/,2020-07-10 19:50:06.753757,LOV,False,Self defining non-ontology
+http://linkedevents.org/ontology/,2020-07-10 19:50:13.062647,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2000/10/swap/log,2020-07-10 19:50:14.916675,LOV,False,Self defining non-ontology
+http://loted.eu/ontology,2020-07-10 19:50:16.308040,LOV,False,ERROR: Error - Status 404
+http://lexvo.org/ontology,2020-07-10 19:57:54.192587,LOV,False,ERROR: Error - ConnectionError
+http://securitytoolbox.appspot.com/MASO,2020-07-10 19:57:57.658683,LOV,False,Malformed non-information uri
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/metadata,2020-07-10 19:58:01.151572,LOV,False,ERROR: Error - Status 404
+http://rdf.myexperiment.org/ontologies/base/,2020-07-10 20:02:45.063866,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/media,2020-07-10 20:02:59.899246,LOV,False,Unparseable file
+http://moat-project.org/ns,2020-07-10 20:03:01.921268,LOV,False,ERROR: Error - Status 408
+https://w3id.org/skgo/modsci,2020-07-10 20:03:05.824217,LOV,False,Unparseable file
+http://id.loc.gov/vocabulary/relators,2020-07-10 20:03:10.878693,LOV,False,No ontology or Class
+http://www.telegraphis.net/ontology/measurement/measurement,2020-07-10 20:03:13.401263,LOV,False,ERROR: Error - Status 404
+http://data.doremus.org/ontology,2020-07-10 20:03:16.363655,LOV,False,Unparseable file
+http://purl.org/muto/core,2020-07-10 20:03:21.824607,LOV,False,ERROR: Cant parse RDF from this URI
+http://www.semanticdesktop.org/ontologies/2007/08/15/nao,2020-07-10 20:03:23.007169,LOV,False,Unparseable file
+http://www.semanticdesktop.org/ontologies/2007/04/02/ncal,2020-07-10 20:03:24.130623,LOV,False,Unparseable file
+http://www.semanticdesktop.org/ontologies/2007/03/22/nco,2020-07-10 20:03:25.207698,LOV,False,Unparseable file
+http://www.semanticdesktop.org/ontologies/2007/03/22/nfo,2020-07-10 20:03:26.191612,LOV,False,Unparseable file
+http://www.semanticdesktop.org/ontologies/2007/01/19/nie,2020-07-10 20:03:27.252412,LOV,False,Unparseable file
+http://lod.nl.go.kr/ontology/,2020-07-10 20:03:32.306474,LOV,False,ERROR: Error - Status 404
+http://www.semanticdesktop.org/ontologies/2007/08/15/nrl,2020-07-10 20:03:33.588302,LOV,False,Unparseable file
+http://purl.org/ontology/storyline,2020-07-10 20:03:41.901651,LOV,False,Unparseable file
+http://culturalis.org/oad,2020-07-10 20:03:43.529951,LOV,False,Unparseable file
+http://data.lirmm.fr/ontologies/oan,2020-07-10 20:08:24.977417,LOV,False,ERROR: Error - ConnectionError
+http://rdf.geospecies.org/methods/observationMethod.rdf,2020-07-10 20:08:27.078617,LOV,False,ERROR: Error - Status 404
+http://contextus.net/ontology/ontomedia/core/expression,2020-07-10 20:08:27.582946,LOV,False,ERROR: Error - Status 404
+http://dati.camera.it/ocd/,2020-07-10 20:08:28.562020,LOV,False,Unparseable file
+http://purl.org/onto-ocds/ocds,2020-07-10 20:08:34.845112,LOV,False,ERROR: Error - Status 404
+http://schema.theodi.org/odrs,2020-07-10 20:08:36.062158,LOV,False,Unparseable file
+http://reference.data.gov.uk/def/organogram,2020-07-10 20:08:36.836024,LOV,False,ERROR: Error - Status 404
+http://www.oegov.org/core/owl/cc,2020-07-10 20:08:41.673575,LOV,False,Unparseable file
+http://owlrep.eu01.aws.af.cm/fridge,2020-07-10 20:08:42.644126,LOV,False,Unparseable file
+http://ogp.me/ns,2020-07-10 20:08:45.914249,LOV,False,ERROR: Error - Status 404
+http://open-multinet.info/ontology/omn,2020-07-10 20:08:51.719767,LOV,False,Unparseable file
+http://open-multinet.info/ontology/omn-federation,2020-07-10 20:08:57.055337,LOV,False,Unparseable file
+http://open-multinet.info/ontology/omn-lifecycle,2020-07-10 20:09:02.650531,LOV,False,Unparseable file
+http://purl.org/net/ns/ontology-annot,2020-07-10 20:09:10.024128,LOV,False,Self defining non-ontology
+http://www.semanticweb.org/ontologies/2008/11/OntologySecurity.owl,2020-07-10 20:13:50.840599,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/openorg/,2020-07-10 20:13:55.392278,LOV,False,ERROR: Error - Status 502
+http://ontology.eil.utoronto.ca/open311.owl,2020-07-10 20:14:01.971897,LOV,False,Malformed non-information uri
+http://openprovenance.org/model/opmo,2020-07-10 20:14:03.296965,LOV,False,ERROR: Error - Status 404
+http://online-presence.net/opo/ns,2020-07-10 20:14:04.867817,LOV,False,ERROR: Error - Status 404
+http://lsdis.cs.uga.edu/projects/semdis/opus,2020-07-10 20:15:11.309031,LOV,False,ERROR: Error - ConnectionError
+http://www.openarchives.org/ore/terms/,2020-07-10 20:15:14.903920,LOV,False,Self defining non-ontology
+http://datos.gob.es/def/sector-publico/organizacion,2020-07-10 20:15:18.968079,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/oslo/ns/localgov,2020-07-10 20:15:24.588335,LOV,False,Unparseable file
+http://data.lirmm.fr/ontologies/osp,2020-07-10 20:20:05.390076,LOV,False,ERROR: Error - ConnectionError
+http://contextus.net/ontology/ontomedia/core/space,2020-07-10 20:20:05.791472,LOV,False,ERROR: Error - Status 404
+http://www.ordnancesurvey.co.uk/ontology/Topography/v0.1/Topography.owl,2020-07-10 20:20:08.045136,LOV,False,ERROR: Error - Status 404
+http://open.vocab.org/terms,2020-07-10 20:20:11.603239,LOV,False,Unparseable file
+http://reference.data.gov.uk/def/parliament,2020-07-10 20:20:12.206034,LOV,False,ERROR: Error - Status 404
+http://purl.org/vocab/participation/schema,2020-07-10 20:20:16.776472,LOV,False,Unparseable file
+http://data.lirmm.fr/ontologies/passim,2020-07-10 20:24:56.206008,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/hpi/patchr,2020-07-10 20:24:59.210929,LOV,False,ERROR: Error - ConnectionError
+http://www.essepuntato.it/2008/12/pattern,2020-07-10 20:25:00.916263,LOV,False,Unparseable file
+http://reference.data.gov.uk/def/payment,2020-07-10 20:25:01.469081,LOV,False,ERROR: Error - Status 404
+http://purl.org/procurement/public-contracts,2020-07-10 20:25:10.422704,LOV,False,Unparseable file
+http://rdf-vocabulary.ddialliance.org/phdd,2020-07-10 20:25:15.234518,LOV,False,ERROR: Error - Status 404
+http://data.cochrane.org/ontologies/pico/,2020-07-10 20:25:16.854303,LOV,False,ERROR: Error - Status 403
+http://purl.org/ontology/places,2020-07-10 20:25:22.801684,LOV,False,ERROR: Error - Status 404
+http://inference-web.org/2.0/pml-provenance.owl,2020-07-10 20:25:27.181424,LOV,False,ERROR: Error - Status 404
+http://data.press.net/ontology/asset/,2020-07-10 20:25:27.402723,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/classification/,2020-07-10 20:25:27.452515,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/event/,2020-07-10 20:25:27.502111,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/identifier/,2020-07-10 20:25:27.552186,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/stuff/,2020-07-10 20:25:27.601044,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/tag/,2020-07-10 20:25:27.651777,LOV,False,ERROR: Error - ConnectionError
+http://data.lirmm.fr/ontologies/poste,2020-07-10 20:30:07.503300,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/prog/,2020-07-10 20:33:20.922134,LOV,False,ERROR: Error - Status 502
+http://purl.org/net/provenance/ns,2020-07-10 20:33:34.727697,LOV,False,Unparseable file
+https://vocab.eccenca.com/pubsub/,2020-07-10 20:33:36.219835,LOV,False,Unparseable file
+http://www.w3.org/ns/radion,2020-07-10 20:33:38.452081,LOV,False,Unparseable file
+http://rdaregistry.info/Elements/a,2020-07-10 20:36:14.758442,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/c,2020-07-10 20:36:16.313374,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/e,2020-07-10 20:36:17.849130,LOV,False,ERROR: Error - Status 406
+http://rdvocab.info/uri/schema/FRBRentitiesRDA,2020-07-10 20:36:20.477607,LOV,False,Self defining non-ontology
+http://rdvocab.info/Elements,2020-07-10 20:36:24.647683,LOV,False,Self defining non-ontology
+http://rdvocab.info/ElementsGr2,2020-07-10 20:36:27.276018,LOV,False,Self defining non-ontology
+http://rdvocab.info/ElementsGr3,2020-07-10 20:36:29.413004,LOV,False,Self defining non-ontology
+http://rdaregistry.info/Elements/i,2020-07-10 20:36:30.958975,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/m,2020-07-10 20:36:32.489367,LOV,False,ERROR: Error - Status 406
+http://rdvocab.info/RDARelationshipsWEMI,2020-07-10 20:36:36.358876,LOV,False,Self defining non-ontology
+http://metadataregistry.org/uri/schema/RDARelationshipsGR2,2020-07-10 20:36:39.120204,LOV,False,Self defining non-ontology
+http://rdvocab.info/roles,2020-07-10 20:36:42.356409,LOV,False,Self defining non-ontology
+http://rdaregistry.info/Elements/u,2020-07-10 20:36:43.909910,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/w,2020-07-10 20:36:45.460341,LOV,False,ERROR: Error - Status 406
+http://www.w3.org/2004/03/trix/rdfg-1/,2020-07-10 20:36:48.009407,LOV,False,Unparseable file
+http://www.w3.org/2001/02pd/rec54,2020-07-10 20:36:50.113415,LOV,False,No ontology or Class
+http://reegle.info/schema,2020-07-10 20:36:50.830513,LOV,False,Unparseable file
+http://purl.org/vocab/relationship/,2020-07-10 20:36:55.691249,LOV,False,Unparseable file
+http://www.purl.org/net/remetca,2020-07-10 20:37:02.431174,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/stuff/rev,2020-07-10 20:37:08.009956,LOV,False,Unparseable file
+http://softeng.polito.it/rsctx,2020-07-10 20:37:09.636657,LOV,False,Unparseable file
+http://purl.org/rss/1.0,2020-07-10 20:37:16.974838,LOV,False,Unparseable file
+https://w3id.org/saref4ee,2020-07-10 20:37:23.337858,LOV,False,Unparseable file
+http://salt.semanticauthoring.org/ontologies/sao,2020-07-10 20:37:23.592027,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/saws/ontology,2020-07-10 20:37:32.223941,LOV,False,ERROR: Error - Status 404
+http://schema.org/,2020-07-10 20:37:34.383464,LOV,False,Unparseable file
+http://purl.org/spar/scoro/,2020-07-10 20:37:41.211511,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/ns/sparql-service-description,2020-07-10 20:37:43.377670,LOV,False,No ontology or Class
+http://purl.org/linked-data/sdmx/2009/code,2020-07-10 20:37:49.146156,LOV,False,Self defining non-ontology
+http://purl.org/linked-data/sdmx/2009/dimension,2020-07-10 21:59:15.865802,LOV,False,Error at querying with rdflib
+http://salt.semanticauthoring.org/ontologies/sdo,2020-07-10 21:59:15.942845,LOV,False,ERROR: Error - ConnectionError
+http://semanticweb.cs.vu.nl/2009/11/sem/,2020-07-10 22:00:21.589125,LOV,False,Self defining non-ontology
+http://www.lingvoj.org/semio.rdf,2020-07-10 22:00:24.023960,LOV,False,Unparseable file
+http://purl.org/SemSur/,2020-07-10 22:00:30.561962,LOV,False,Unparseable file
+http://purl.org/ontology/service,2020-07-10 22:00:42.197628,LOV,False,Unparseable file
+http://purl.org/ontology/similarity/,2020-07-10 22:00:59.908016,LOV,False,ERROR: Error - ConnectionError
+http://ns.cerise-project.nl/energy/def/cim-smartgrid,2020-07-10 22:01:53.562110,LOV,False,ERROR: Error - ConnectionError
+http://rdf.myexperiment.org/ontologies/snarm/,2020-07-10 22:06:35.147636,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/net/soron,2020-07-10 22:06:53.237185,LOV,False,ERROR: Error - Status 502
+http://spi-fm.uca.es/spdef/models/deployment/spcm/1.0,2020-07-10 22:13:59.567354,LOV,False,ERROR: Error - ConnectionError
+http://www.bbc.co.uk/ontologies/sport,2020-07-10 22:16:37.337377,LOV,False,Unparseable file
+http://spitfire-project.eu/ontology/ns,2020-07-10 22:16:38.638335,LOV,False,Unparseable file
+https://bmake.th-brandenburg.de/spv,2020-07-10 22:16:39.389545,LOV,False,ERROR: Error - ConnectionError
+http://salt.semanticauthoring.org/ontologies/sro,2020-07-10 22:16:39.490734,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ontology/ssso,2020-07-10 22:20:10.356528,LOV,False,ERROR: Error - too many redirects
+http://securitytoolbox.appspot.com/stac,2020-07-10 22:20:14.142418,LOV,False,Unparseable file
+http://purl.org/net/step,2020-07-10 22:20:19.482870,LOV,False,No ontology or Class
+http://purl.org/ontology/stories/,2020-07-10 22:23:22.135276,LOV,False,ERROR: Error - Status 404
+http://purl.org/voc/summa/,2020-07-10 22:23:27.733411,LOV,False,ERROR: Error - Status 404
+https://w3id.org/squap/,2020-07-10 22:23:30.663563,LOV,False,ERROR: Error - Status 404
+http://data.semanticweb.org/ns/swc/ontology,2020-07-10 22:28:11.662247,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/2004/03/trix/swp-1,2020-07-10 22:28:14.306077,LOV,False,Unparseable file
+http://spi-fm.uca.es/spdef/models/deployment/swpm/1.0,2020-07-10 22:32:54.130995,LOV,False,ERROR: Error - ConnectionError
+http://sw-portal.deri.org/ontologies/swportal,2020-07-10 22:32:56.607106,LOV,False,ERROR: Error - Status 404
+http://swrc.ontoware.org/ontology-07,2020-07-10 22:33:01.570361,LOV,False,Unparseable file
+http://www.w3.org/2003/11/swrl,2020-07-10 22:33:03.076127,LOV,False,ERROR: Error - Status 406
+http://www.holygoat.co.uk/owl/redwood/0.1/tags/,2020-07-10 22:33:04.469537,LOV,False,ERROR: Error - Status 404
+http://purl.org/biodiversity/taxon/,2020-07-10 22:33:11.597782,LOV,False,Unparseable file
+http://www.w3.org/2006/time-entry,2020-07-10 22:33:14.543402,LOV,False,Unparseable file
+http://linkedscience.org/teach/ns,2020-07-10 22:33:15.853484,LOV,False,No ontology or Class
+http://www.w3.org/2006/03/test-description,2020-07-10 22:33:18.784773,LOV,False,No ontology or Class
+https://privatealpha.com/ontology/transformation/1,2020-07-10 22:33:21.894261,LOV,False,Unparseable file
+http://www.w3.org/2001/sw/hcls/ns/transmed/,2020-07-10 22:33:23.980849,LOV,False,ERROR: Error - Status 404
+http://purl.org/toco/,2020-07-10 22:33:28.516746,LOV,False,Unparseable file
+http://tour-pedia.org/download/tp.owl,2020-07-10 22:35:16.512825,LOV,False,Malformed non-information uri
+http://contextus.net/ontology/ontomedia/ext/common/trait,2020-07-10 22:35:17.029351,LOV,False,ERROR: Error - Status 404
+http://vocab.org/transit/terms/,2020-07-10 22:35:18.065537,LOV,False,ERROR: Error - Status 404
+http://idi.fundacionctic.org/cruzar/turismo,2020-07-10 22:39:58.066879,LOV,False,ERROR: Error - ConnectionError
+http://www.essepuntato.it/2012/04/tvc,2020-07-10 22:40:00.132756,LOV,False,Unparseable file
+http://www.w3.org/2006/timezone,2020-07-10 22:40:01.926111,LOV,False,Unparseable file
+http://purl.oclc.org/NET/muo/ucum/,2020-07-10 22:42:36.172246,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/ns/ui,2020-07-10 22:42:38.595476,LOV,False,Unparseable file
+http://umbel.org/umbel,2020-07-10 22:42:39.728373,LOV,False,ERROR: Error - Status 404
+http://code-research.eu/ontology/visual-analytics,2020-07-10 22:42:40.957925,LOV,False,Unparseable file
+http://www.essepuntato.it/2013/10/vagueness,2020-07-10 22:42:42.169843,LOV,False,ERROR: Error - Status 404
+http://purl.org/vocab/vann/,2020-07-10 22:42:46.909787,LOV,False,Unparseable file
+http://data.lirmm.fr/ontologies/vdpp,2020-07-10 22:47:26.599492,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine,2020-07-10 22:47:29.654895,LOV,False,Unparseable file
+http://spi-fm.uca.es/spdef/models/genericTools/vmm/1.0,2020-07-10 22:52:09.230135,LOV,False,ERROR: Error - ConnectionError
+http://voag.linkedmodel.org/schema/voag,2020-07-10 22:52:11.352240,LOV,False,ERROR: Error - Status 404
+http://simile.mit.edu/2003/10/ontologies/vraCore3,2020-07-10 22:52:13.078868,LOV,False,ERROR: Error - Status 404
+http://vocab.sti2.at/vrank,2020-07-10 22:52:15.326779,LOV,False,Unparseable file
+http://purl.org/vsearch/,2020-07-10 22:52:19.683542,LOV,False,ERROR: Error - Status 404
+http://purl.org/vvo/ns,2020-07-10 22:52:23.968037,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2007/05/powder-s,2020-07-10 22:52:30.988818,LOV,False,Unparseable file
+http://vocab.org/whisky/terms,2020-07-10 22:52:32.636270,LOV,False,Unparseable file
+http://spi-fm.uca.es/spdef/models/genericTools/wikim/1.0,2020-07-10 22:57:12.326189,LOV,False,ERROR: Error - ConnectionError
+http://xmlns.com/wot/0.1/,2020-07-10 22:57:14.272549,LOV,False,Unparseable file
+http://www.w3.org/1999/xhtml/vocab,2020-07-10 22:58:39.217159,LOV,False,ERROR: Error - Status 406
+http://rdf-vocabulary.ddialliance.org/xkos,2020-07-10 22:58:43.946431,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2001/XMLSchema,2020-07-10 22:58:45.400843,LOV,False,ERROR: Error - Status 406
+http://zbw.eu/namespaces/zbw-extensions,2020-07-11 00:21:03.875146,LOV,False,Error at querying with rdflib
+ub5485bL7C1,2020-07-11 00:47:18.678628,spoHashUris,False,Malformed Uri
+http://purl.org/linked-data/sdmx/2009/concept,2020-07-11 02:19:07.682684,spoHashUris,False,Error at querying with rdflib
+http://purl.org/linked-data/sdmx/2009/dimension,2020-07-11 03:43:58.042219,spoHashUris,False,Error at querying with rdflib
+http://soiland-reyes.com/stian/,2020-07-11 04:29:28.386764,spoHashUris,False,Error at querying with rdflib
+http://www.loa-cnr.it/ontologies/DUL.owl,2020-07-11 04:51:49.447964,spoHashUris,False,Unparseable file
+http://www.w3.org/ns/duv,2020-07-11 05:36:01.904148,spoHashUris,False,Error at querying with rdflib
+ub9166bL7C1,2020-07-11 05:38:33.557675,prefix.cc,False,Malformed Uri
+http://www.w3.org/ns/earl,2020-07-11 06:39:20.626030,prefix.cc,False,Error at querying with rdflib
+http://rdvocab.info/Elements/,2020-07-11 08:09:12.434616,prefix.cc,False,Error at querying with rdflib
+ub10981bL7C1,2020-07-11 08:17:01.038900,prefix.cc,False,Malformed Uri
+http://purl.org/linked-data/sdmx/2009/measure,2020-07-11 10:31:06.533041,prefix.cc,False,Error at querying with rdflib
+http://www.w3.org/2003/g/data-view,2020-07-11 11:13:25.548105,prefix.cc,False,Error at querying with rdflib
+http://purl.org/net/nknouf/ns/bibtex,2020-07-11 11:58:51.143660,prefix.cc,False,Unparseable file
+http://rdvocab.info/ElementsGr2/,2020-07-11 14:09:25.239093,prefix.cc,False,Error at querying with rdflib
+http://semanticweb.cs.vu.nl/2009/11/sem/,2020-07-11 14:22:20.917143,prefix.cc,False,Self defining non-ontology
+file:///home/moustaki/work/workspace/motools/af/rdf/audio_features.n3,2020-07-11 14:29:00.341741,prefix.cc,False,Malformed Uri
+http://www.buildingsmart-tech.org/ifcOWL/IFC2X3_Final,2020-07-11 14:52:12.405856,prefix.cc,False,ERROR: Error - Status 404
+http://purl.org/linked-data/sdmx/2009/attribute,2020-07-11 16:45:54.218135,prefix.cc,False,Error at querying with rdflib
+http://purl.org/linked-data/sdmx/2009/concept,2020-07-11 18:29:36.332392,prefix.cc,False,Error at querying with rdflib
+http://www.berkeleybop.org/ontologies/obo-all/ro_bfo_bridge/ro_bfo_bridge.owl,2020-07-11 18:48:44.061808,prefix.cc,False,No ontology or Class
+http://resex.rkbexplorer.com/ontologies/resist,2020-07-11 18:50:39.142886,prefix.cc,False,ERROR: Error - Status 403
+http://merlin.phys.uni.lodz.pl/onto/physo/,2020-07-11 18:54:34.166703,prefix.cc,False,Unparseable file
+http://www.w3.org/ns/duv,2020-07-11 19:35:05.167181,prefix.cc,False,Error at querying with rdflib
+ub16534bL768C1,2020-07-11 20:11:10.470214,prefix.cc,False,Malformed Uri
+ub16535bL64C1,2020-07-11 20:12:06.668227,prefix.cc,False,Malformed Uri
+http://www.intelleo.eu/ontologies/user-model/ns,2020-07-11 20:35:31.365535,prefix.cc,False,ERROR: Error - Status 404
+http://rdvocab.info/roles/,2020-07-11 21:38:05.075928,prefix.cc,False,Error at querying with rdflib
+ub17450bL7C1,2020-07-11 21:40:06.483885,prefix.cc,False,Malformed Uri
+ub17458bL7C1,2020-07-11 22:00:23.094002,prefix.cc,False,Malformed Uri
+http://www.irit.fr/recherches/MELODI/ontologies/SAN,2020-07-16 16:32:20.362051,LOV,False,ERROR: Error - Status 403
+http://www.irit.fr/recherches/MELODI/ontologies/SAN,2020-07-16 16:33:20.302527,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/ns/auth/acl,2020-07-16 16:33:25.048339,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/ontology/af/,2020-07-16 16:33:48.817742,LOV,False,Malformed Uri
+http://www.agls.gov.au/agls/terms/,2020-07-16 16:34:07.043627,LOV,False,Self defining non-ontology
+http://promsns.org/def/agr,2020-07-16 16:34:13.290730,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/vocab/aiiso/schema,2020-07-16 16:34:24.752312,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.aktors.org/ontology/portal,2020-07-16 16:34:25.240702,LOV,False,ERROR: Error - Status 404
+http://www.aktors.org/ontology/support,2020-07-16 16:34:25.483376,LOV,False,ERROR: Error - Status 404
+http://purl.org/linked-data/api/vocab,2020-07-16 16:34:28.419840,LOV,False,ERROR: Error - Status 404
+http://purl.org/archival/vocab/arch,2020-07-16 16:34:34.144092,LOV,False,ERROR: Error - ConnectionError
+http://contextus.net/ontology/ontomedia/ext/common/being,2020-07-16 16:38:12.137423,LOV,False,ERROR: Error - Status 404
+http://bimerr.iot.linkeddata.es/def/occupancy-profile,2020-07-16 16:38:47.804843,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/vocab/bio/0.1/,2020-07-16 16:38:53.673690,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.w3.org/2002/12/cal/ical,2020-07-16 16:38:57.585816,LOV,False,ERROR: Error - Status 406
+http://caressesrobot.org/ontology,2020-07-16 16:38:59.082285,LOV,False,Neither a Vocab nor a link to one
+http://betalinkeddata.cbs.nl/def/cbs,2020-07-16 16:39:01.177739,LOV,False,ERROR: Error - Status 404
+http://creativecommons.org/ns,2020-07-16 16:39:05.163171,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/cld/cdtype/,2020-07-16 16:39:15.416738,LOV,False,Self defining non-ontology
+http://www.irit.fr/recherches/MELODI/ontologies/SAN,2020-07-16 16:47:16.278545,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/ns/auth/acl,2020-07-16 16:47:20.906183,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/ontology/af/,2020-07-16 16:47:33.808986,LOV,False,Malformed Uri
+http://www.agls.gov.au/agls/terms/,2020-07-16 16:47:50.117313,LOV,False,Self defining non-ontology
+http://promsns.org/def/agr,2020-07-16 16:47:58.546170,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/vocab/aiiso/schema,2020-07-16 16:48:06.195113,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.aktors.org/ontology/portal,2020-07-16 16:48:06.713188,LOV,False,ERROR: Error - Status 404
+http://www.aktors.org/ontology/support,2020-07-16 16:48:06.956463,LOV,False,ERROR: Error - Status 404
+http://purl.org/linked-data/api/vocab,2020-07-16 16:48:09.798827,LOV,False,ERROR: Error - Status 404
+http://purl.org/archival/vocab/arch,2020-07-16 16:48:12.440161,LOV,False,ERROR: Error - ConnectionError
+http://contextus.net/ontology/ontomedia/ext/common/being,2020-07-16 16:48:13.313852,LOV,False,ERROR: Error - Status 404
+http://bimerr.iot.linkeddata.es/def/occupancy-profile,2020-07-16 16:48:24.308085,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/vocab/bio/0.1/,2020-07-16 16:48:30.144072,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.w3.org/2002/12/cal/ical,2020-07-16 16:48:34.050694,LOV,False,ERROR: Error - Status 406
+http://caressesrobot.org/ontology,2020-07-16 16:48:35.467177,LOV,False,Neither a Vocab nor a link to one
+http://betalinkeddata.cbs.nl/def/cbs,2020-07-16 16:48:37.493587,LOV,False,ERROR: Error - Status 404
+http://creativecommons.org/ns,2020-07-16 16:48:42.581449,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/cld/cdtype/,2020-07-16 16:48:47.626428,LOV,False,Self defining non-ontology
+http://www.ebusiness-unibw.org/ontologies/consumerelectronics/v1,2020-07-16 16:53:03.228588,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.eurocris.org/ontologies/cerif/1.3,2020-07-16 16:53:04.704632,LOV,False,ERROR: Error - Status 403
+http://www.irit.fr/recherches/MELODI/ontologies/SAN,2020-07-16 16:57:01.857250,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/ns/auth/acl,2020-07-16 16:57:06.678827,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/ontology/af/,2020-07-16 16:57:21.635445,LOV,False,Malformed Uri
+http://www.agls.gov.au/agls/terms/,2020-07-16 16:57:38.353780,LOV,False,Self defining non-ontology
+http://promsns.org/def/agr,2020-07-16 16:57:45.254709,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/vocab/aiiso/schema,2020-07-16 16:57:50.848854,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.aktors.org/ontology/portal,2020-07-16 16:57:51.185920,LOV,False,ERROR: Error - Status 404
+http://www.aktors.org/ontology/support,2020-07-16 16:57:51.427760,LOV,False,ERROR: Error - Status 404
+http://purl.org/linked-data/api/vocab,2020-07-16 16:57:54.263301,LOV,False,ERROR: Error - Status 404
+http://purl.org/archival/vocab/arch,2020-07-16 16:57:59.783741,LOV,False,ERROR: Error - ConnectionError
+http://contextus.net/ontology/ontomedia/ext/common/being,2020-07-16 16:58:00.683061,LOV,False,ERROR: Error - Status 404
+http://bimerr.iot.linkeddata.es/def/occupancy-profile,2020-07-16 16:58:11.880299,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/vocab/bio/0.1/,2020-07-16 16:58:16.146732,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.w3.org/2002/12/cal/ical,2020-07-16 16:58:20.054743,LOV,False,ERROR: Error - Status 406
+http://caressesrobot.org/ontology,2020-07-16 16:58:21.524986,LOV,False,Neither a Vocab nor a link to one
+http://betalinkeddata.cbs.nl/def/cbs,2020-07-16 16:58:23.805705,LOV,False,ERROR: Error - Status 404
+http://creativecommons.org/ns,2020-07-16 16:58:28.037269,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/cld/cdtype/,2020-07-16 16:58:33.009838,LOV,False,Self defining non-ontology
+http://www.ebusiness-unibw.org/ontologies/consumerelectronics/v1,2020-07-16 17:01:16.437701,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.eurocris.org/ontologies/cerif/1.3,2020-07-16 17:01:17.974020,LOV,False,ERROR: Error - Status 403
+http://www.essepuntato.it/2013/03/cito-functions,2020-07-16 17:19:44.360951,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/twc/ontologies/cmo.owl,2020-07-16 17:21:04.969095,LOV,False,ERROR: Error - Status 404
+http://data.cochrane.org/ontologies/core/,2020-07-16 17:21:06.227212,LOV,False,ERROR: Error - Status 403
+http://www.w3.org/2000/10/swap/pim/contact,2020-07-16 17:21:09.398872,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/coo/ns,2020-07-16 17:21:14.229001,LOV,False,ERROR: Error - Status 404
+http://www.daml.org/2001/09/countries/iso-3166-ont,2020-07-16 17:21:15.589005,LOV,False,ERROR: Error - Status 404
+http://www.cidoc-crm.org/cidoc-crm/,2020-07-16 17:21:19.570887,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://courseware.rkbexplorer.com/ontologies/courseware,2020-07-16 17:21:35.279426,LOV,False,ERROR: Error - Status 403
+http://purl.org/vocab/changeset/schema,2020-07-16 17:21:39.151788,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://commontag.org/ns,2020-07-16 17:21:42.476781,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ctic/infraestructuras/organizacion,2020-07-16 17:21:55.941887,LOV,False,ERROR: Error - Status 503
+http://purl.org/cwmo/,2020-07-16 17:30:00.436913,LOV,False,ERROR: Error - ConnectionError
+http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1,2020-07-16 17:31:06.445227,LOV,False,ERROR: Error - Status 404
+http://purl.org/ontology/daia,2020-07-16 17:31:08.854819,LOV,False,ERROR: Error - Status 404
+http://contextus.net/ontology/ontomedia/misc/date,2020-07-16 17:31:09.388396,LOV,False,ERROR: Error - Status 404
+http://vocab.datex.org/terms,2020-07-16 17:31:10.982225,LOV,False,Neither a Vocab nor a link to one
+http://ontology.cybershare.utep.edu/dbowl,2020-07-16 17:31:15.615661,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://ontologi.es/doap-bugs,2020-07-16 17:31:16.467864,LOV,False,ERROR: Error - Status 406
+http://purl.org/dc/dcam/,2020-07-16 17:31:26.018563,LOV,False,Self defining non-ontology
+http://purl.org/dc/elements/1.1/,2020-07-16 17:31:34.145199,LOV,False,Self defining non-ontology
+http://ndl.go.jp/dcndl/terms/,2020-07-16 17:31:46.788309,LOV,False,Self defining non-ontology
+http://purl.org/dc/terms/,2020-07-16 17:32:00.822180,LOV,False,Self defining non-ontology
+http://purl.org/dc/dcmitype/,2020-07-16 17:32:09.675848,LOV,False,Self defining non-ontology
+https://decision-ontology.googlecode.com/svn/trunk/decision.owl,2020-07-16 17:32:10.284305,LOV,False,ERROR: Error - Status 404
+http://ontologi.es/doap-deps,2020-07-16 17:32:11.198120,LOV,False,ERROR: Error - Status 406
+https://w3id.org/dio,2020-07-16 17:32:24.407280,LOV,False,ERROR: Error - ConnectionError
+http://rdf-vocabulary.ddialliance.org/discovery,2020-07-16 17:32:28.366750,LOV,False,ERROR: Error - Status 404
+http://www.data-knowledge.org/dk/,2020-07-16 17:32:28.877082,LOV,False,ERROR: Error - Status 404
+http://onto.dm2e.eu/schemas/dm2e,2020-07-16 17:32:28.959723,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/2000/10/swap/pim/doc,2020-07-16 17:32:31.796945,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/ontology/dso,2020-07-16 17:33:03.917116,LOV,False,ERROR: Error - too many redirects
+http://reference.data.gov.au/def/ont/dataset,2020-07-16 17:41:07.570516,LOV,False,ERROR: Error - ConnectionError
+http://promsns.org/def/decprov,2020-07-16 17:41:14.513131,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/ns/dqv,2020-07-16 17:41:16.944767,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/swan/2.0/discourse-relationships/,2020-07-16 17:41:19.919390,LOV,False,ERROR: Error - Status 404
+http://vocab.data.gov/def/drm,2020-07-16 17:41:29.189240,LOV,False,ERROR: Error - Status 404
+http://purl.org/ctic/dcat,2020-07-16 17:41:59.974176,LOV,False,ERROR: Error - Status 503
+http://inference-web.org/2.0/ds.owl,2020-07-16 17:42:03.059709,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/TR/vocab-duv/,2020-07-16 17:42:07.887435,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/TR/EARL10/,2020-07-16 17:42:18.133726,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/eem,2020-07-16 17:44:39.143627,LOV,False,ERROR: Error - ReadTimeout
+http://purl.org/ctic/sector-publico/elecciones,2020-07-16 17:44:57.190376,LOV,False,ERROR: Error - Status 503
+http://data.europa.eu/eli/ontology,2020-07-16 17:44:59.158668,LOV,False,ERROR: Error - Status 404
+http://purl.org/ctic/empleo/oferta,2020-07-16 17:45:15.462513,LOV,False,ERROR: Error - Status 503
+http://labs.mondeca.com/vocab/endpointStatus,2020-07-16 17:45:16.849615,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/essglobal/vocab/,2020-07-16 17:45:21.498458,LOV,False,ERROR: Error - Status 406
+http://vocab.data.gov/def/fea,2020-07-16 17:45:26.502236,LOV,False,ERROR: Error - Status 404
+http://data.lirmm.fr/ontologies/food,2020-07-16 17:49:41.215517,LOV,False,ERROR: Error - ConnectionError
+http://iflastandards.info/ns/fr/frad/,2020-07-16 17:52:08.801534,LOV,False,Self defining non-ontology
+http://purl.org/cerif/frapo/,2020-07-16 17:52:16.026942,LOV,False,ERROR: Error - Status 404
+http://purl.org/vocab/frbr/core,2020-07-16 17:52:20.235456,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/vocab/frbr/extended,2020-07-16 17:52:24.306180,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://iflastandards.info/ns/fr/frbr/frbrer/,2020-07-16 17:54:25.704135,LOV,False,Self defining non-ontology
+http://data.totl.net/game/,2020-07-16 17:54:28.006394,LOV,False,Neither a Vocab nor a link to one
+http://www.oegov.org/core/owl/gc,2020-07-16 17:54:32.306410,LOV,False,Neither a Vocab nor a link to one
+http://ontology.eil.utoronto.ca/GCI/Foundation/GCI-Foundation.owl,2020-07-16 17:54:39.880888,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://vocab.data.gov/gd,2020-07-16 17:54:45.519018,LOV,False,ERROR: Error - Status 404
+http://purl.org/gen/0.1,2020-07-16 17:54:50.821038,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2003/01/geo/wgs84_pos,2020-07-16 17:54:52.313434,LOV,False,Neither a Vocab nor a link to one
+http://www.mindswap.org/2003/owl/geo/geoFeatures20040307.owl,2020-07-16 17:54:55.607860,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://aims.fao.org/aos/geopolitical.owl,2020-07-16 17:54:56.581412,LOV,False,ERROR: Error - Status 404
+http://rdf.geospecies.org/ont/geospecies,2020-07-16 17:54:58.311357,LOV,False,ERROR: Error - Status 404
+http://purl.org/linguistics/gold,2020-07-16 17:55:10.253208,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/TR/2004/REC-webarch-20041215/,2020-07-16 17:55:14.780632,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/2006/gen/ont,2020-07-16 17:55:16.418385,LOV,False,Neither a Vocab nor a link to one
+http://www.samos.gr/ontologies/helpdeskOnto.owl,2020-07-16 17:56:19.425056,LOV,False,ERROR: Error - Status 404
+http://vocab.data.gov/hosp,2020-07-16 17:56:25.133830,LOV,False,ERROR: Error - Status 404
+http://iserve.kmi.open.ac.uk/ns/hrests,2020-07-16 17:56:25.607997,LOV,False,ERROR: Error - Status 404
+http://ontology.eil.utoronto.ca/icontact.owl,2020-07-16 17:56:45.789298,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.identity.org/ontologies/identity.owl,2020-07-16 17:56:47.108315,LOV,False,ERROR: Error - Status 404
+http://www.irit.fr/recherches/MELODI/ontologies/IoT-O,2020-07-16 17:56:55.604855,LOV,False,ERROR: Error - Status 403
+http://iflastandards.info/ns/isbd/elements/,2020-07-16 17:58:57.077158,LOV,False,Self defining non-ontology
+http://ontology.eil.utoronto.ca/ISO37120.owl,2020-07-16 17:59:05.778960,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://reference.data.gov.au/def/ont/iso19160-1-address,2020-07-16 18:07:09.432305,LOV,False,ERROR: Error - ConnectionError
+http://dati.isprambiente.it/ontology/core,2020-07-16 18:07:16.022734,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+https://data.istex.fr/ontology/istex,2020-07-16 18:07:19.771221,LOV,False,Neither a Vocab nor a link to one
+http://spi-fm.uca.es/spdef/models/genericTools/itm/1.0,2020-07-16 18:11:29.215280,LOV,False,ERROR: Error - ConnectionError
+http://ontology.it/itsmo/v1,2020-07-16 18:11:36.304333,LOV,False,Neither a Vocab nor a link to one
+http://kdo.render-project.eu/kdo,2020-07-16 18:11:50.641299,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/net/vocab/2004/03/label,2020-07-16 18:13:19.449907,LOV,False,ERROR: Error - Status 503
+http://purl.org/vocab/lifecycle/schema,2020-07-16 18:13:24.763946,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.oclc.org/NET/ldr/ns,2020-07-16 18:13:31.764599,LOV,False,ERROR: Error - Status 404
+http://linked.opendata.cz/ontology/ldvm/,2020-07-16 18:13:33.175213,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://linkedgeodata.org/ontology,2020-07-16 18:13:33.426803,LOV,False,ERROR: Error - Status 503
+http://purl.org/library/,2020-07-16 18:13:36.914992,LOV,False,ERROR: Error - Status 404
+http://www.irit.fr/recherches/MELODI/ontologies/IoT-Lifecycle,2020-07-16 18:13:38.493914,LOV,False,ERROR: Error - Status 403
+http://purl.org/limo-ontology/limo/,2020-07-16 18:15:42.227038,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/LiMo/0.1,2020-07-16 18:15:46.692244,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ctic/infraestructuras/localizacion,2020-07-16 18:16:10.540170,LOV,False,ERROR: Error - Status 503
+http://data.archiveshub.ac.uk/def/,2020-07-16 18:16:11.720736,LOV,False,Self defining non-ontology
+http://linkedevents.org/ontology/,2020-07-16 18:16:16.597720,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2000/10/swap/log,2020-07-16 18:16:18.132113,LOV,False,Self defining non-ontology
+http://loted.eu/ontology,2020-07-16 18:16:18.252521,LOV,False,ERROR: Error - ConnectionError
+http://lexvo.org/ontology,2020-07-16 18:20:44.220896,LOV,False,ERROR: Error - ConnectionError
+http://securitytoolbox.appspot.com/MASO,2020-07-16 18:20:46.287431,LOV,False,Malformed Uri
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/metadata,2020-07-16 18:20:50.704663,LOV,False,ERROR: Error - Status 404
+http://rdf.myexperiment.org/ontologies/base/,2020-07-16 18:26:24.189857,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/media,2020-07-16 18:26:37.709884,LOV,False,Neither a Vocab nor a link to one
+http://moat-project.org/ns,2020-07-16 18:26:39.413052,LOV,False,ERROR: Error - Status 408
+https://w3id.org/skgo/modsci,2020-07-16 18:30:58.027382,LOV,False,Neither a Vocab nor a link to one
+http://id.loc.gov/vocabulary/relators,2020-07-16 18:31:02.049114,LOV,False,Neither a Vocab nor a link to one
+http://www.telegraphis.net/ontology/measurement/measurement,2020-07-16 18:31:06.065817,LOV,False,ERROR: Error - Status 404
+http://data.doremus.org/ontology,2020-07-16 18:31:08.556401,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/muto/core,2020-07-16 18:31:14.594096,LOV,False,Neither a Vocab nor a link to one
+http://www.semanticdesktop.org/ontologies/2007/08/15/nao,2020-07-16 18:31:54.794980,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.semanticdesktop.org/ontologies/2007/04/02/ncal,2020-07-16 18:31:56.615349,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.semanticdesktop.org/ontologies/2007/03/22/nco,2020-07-16 18:31:58.509894,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.semanticdesktop.org/ontologies/2007/03/22/nfo,2020-07-16 18:31:59.212341,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.semanticdesktop.org/ontologies/2007/01/19/nie,2020-07-16 18:32:00.163908,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://lod.nl.go.kr/ontology/,2020-07-16 18:32:25.670419,LOV,False,ERROR: Error - Status 404
+http://www.semanticdesktop.org/ontologies/2007/08/15/nrl,2020-07-16 18:32:26.545462,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://culturalis.org/oad,2020-07-16 18:32:56.508205,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://data.lirmm.fr/ontologies/oan,2020-07-16 18:37:07.261818,LOV,False,ERROR: Error - ConnectionError
+http://rdf.geospecies.org/methods/observationMethod.rdf,2020-07-16 18:37:09.007516,LOV,False,ERROR: Error - Status 404
+http://contextus.net/ontology/ontomedia/core/expression,2020-07-16 18:37:09.513403,LOV,False,ERROR: Error - Status 404
+http://dati.camera.it/ocd/,2020-07-16 18:37:10.260667,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/onto-ocds/ocds,2020-07-16 18:37:14.081731,LOV,False,ERROR: Error - Status 404
+http://schema.theodi.org/odrs,2020-07-16 18:53:58.891608,LOV,False,ERROR: Error - ConnectionError
+http://reference.data.gov.uk/def/organogram,2020-07-16 18:53:59.425233,LOV,False,ERROR: Error - Status 404
+http://www.oegov.org/core/owl/cc,2020-07-16 18:54:03.157111,LOV,False,Neither a Vocab nor a link to one
+http://owlrep.eu01.aws.af.cm/fridge,2020-07-16 18:54:05.037028,LOV,False,Neither a Vocab nor a link to one
+http://ogp.me/ns,2020-07-16 18:54:06.888681,LOV,False,ERROR: Error - Status 404
+http://open-multinet.info/ontology/omn,2020-07-16 18:54:11.663802,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://open-multinet.info/ontology/omn-federation,2020-07-16 18:54:16.033642,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://open-multinet.info/ontology/omn-lifecycle,2020-07-16 18:54:20.718119,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/net/ns/ontology-annot,2020-07-16 18:54:29.507743,LOV,False,Self defining non-ontology
+http://www.semanticweb.org/ontologies/2008/11/OntologySecurity.owl,2020-07-16 18:58:39.737369,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/openorg/,2020-07-16 18:58:44.788797,LOV,False,ERROR: Error - Status 502
+http://ontology.eil.utoronto.ca/open311.owl,2020-07-16 18:58:50.102651,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://openprovenance.org/model/opmo,2020-07-16 18:58:51.231289,LOV,False,ERROR: Error - Status 404
+http://online-presence.net/opo/ns,2020-07-16 18:58:53.315146,LOV,False,ERROR: Error - Status 404
+http://lsdis.cs.uga.edu/projects/semdis/opus,2020-07-16 18:59:39.303883,LOV,False,ERROR: Error - ConnectionError
+http://www.openarchives.org/ore/terms/,2020-07-16 18:59:42.189950,LOV,False,Self defining non-ontology
+http://datos.gob.es/def/sector-publico/organizacion,2020-07-16 18:59:43.684362,LOV,False,ERROR: Error - ConnectionError
+http://data.lirmm.fr/ontologies/osp,2020-07-16 19:04:44.093256,LOV,False,ERROR: Error - ConnectionError
+http://contextus.net/ontology/ontomedia/core/space,2020-07-16 19:04:44.465507,LOV,False,ERROR: Error - Status 404
+http://www.ordnancesurvey.co.uk/ontology/Topography/v0.1/Topography.owl,2020-07-16 19:04:45.239779,LOV,False,ERROR: Error - Status 404
+http://open.vocab.org/terms,2020-07-16 19:04:48.253414,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://reference.data.gov.uk/def/parliament,2020-07-16 19:04:48.771151,LOV,False,ERROR: Error - Status 404
+http://purl.org/vocab/participation/schema,2020-07-16 19:04:54.966209,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://data.lirmm.fr/ontologies/passim,2020-07-16 19:09:06.239018,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/hpi/patchr,2020-07-16 19:09:09.875414,LOV,False,ERROR: Error - ConnectionError
+http://www.essepuntato.it/2008/12/pattern,2020-07-16 19:25:53.754385,LOV,False,ERROR: Error - ConnectionError
+http://reference.data.gov.uk/def/payment,2020-07-16 19:25:54.243007,LOV,False,ERROR: Error - Status 404
+http://rdf-vocabulary.ddialliance.org/phdd,2020-07-16 19:26:38.638460,LOV,False,ERROR: Error - Status 404
+http://data.cochrane.org/ontologies/pico/,2020-07-16 19:26:39.776856,LOV,False,ERROR: Error - Status 403
+http://purl.org/ontology/places,2020-07-16 19:26:42.860619,LOV,False,ERROR: Error - Status 404
+http://inference-web.org/2.0/pml-provenance.owl,2020-07-16 19:26:45.940218,LOV,False,ERROR: Error - Status 404
+http://data.press.net/ontology/asset/,2020-07-16 19:26:46.169019,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/classification/,2020-07-16 19:26:46.227661,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/event/,2020-07-16 19:26:46.283342,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/identifier/,2020-07-16 19:26:46.332739,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/stuff/,2020-07-16 19:26:46.382837,LOV,False,ERROR: Error - ConnectionError
+http://data.press.net/ontology/tag/,2020-07-16 19:26:46.433443,LOV,False,ERROR: Error - ConnectionError
+http://data.lirmm.fr/ontologies/poste,2020-07-16 19:30:56.958053,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/spar/pro,2020-07-16 19:33:18.098532,LOV,False,Error - ConnectionError
+http://purl.org/prog/,2020-07-16 19:33:22.176832,LOV,False,ERROR: Error - Status 502
+https://vocab.eccenca.com/pubsub/,2020-07-16 19:33:55.691788,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://rdaregistry.info/Elements/a,2020-07-16 19:34:45.391554,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/c,2020-07-16 19:34:46.692242,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/e,2020-07-16 19:34:47.981872,LOV,False,ERROR: Error - Status 406
+http://rdvocab.info/uri/schema/FRBRentitiesRDA,2020-07-16 19:34:50.329811,LOV,False,Self defining non-ontology
+http://rdvocab.info/Elements,2020-07-16 19:34:54.014346,LOV,False,Self defining non-ontology
+http://rdvocab.info/ElementsGr2,2020-07-16 19:34:56.279183,LOV,False,Self defining non-ontology
+http://rdvocab.info/ElementsGr3,2020-07-16 19:34:58.054445,LOV,False,Self defining non-ontology
+http://rdaregistry.info/Elements/i,2020-07-16 19:34:59.349066,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/m,2020-07-16 19:35:00.647064,LOV,False,ERROR: Error - Status 406
+http://rdvocab.info/RDARelationshipsWEMI,2020-07-16 19:35:04.116992,LOV,False,Self defining non-ontology
+http://metadataregistry.org/uri/schema/RDARelationshipsGR2,2020-07-16 19:35:06.444343,LOV,False,Self defining non-ontology
+http://rdvocab.info/roles,2020-07-16 19:35:09.275586,LOV,False,Self defining non-ontology
+http://rdaregistry.info/Elements/u,2020-07-16 19:35:10.579718,LOV,False,ERROR: Error - Status 406
+http://rdaregistry.info/Elements/w,2020-07-16 19:35:11.870218,LOV,False,ERROR: Error - Status 406
+http://www.w3.org/2004/03/trix/rdfg-1/,2020-07-16 19:35:13.567773,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/2001/02pd/rec54,2020-07-16 19:35:15.441143,LOV,False,Neither a Vocab nor a link to one
+http://reegle.info/schema,2020-07-16 19:35:15.997678,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/vocab/relationship/,2020-07-16 19:35:21.930577,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.purl.org/net/remetca,2020-07-16 19:35:26.089236,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/stuff/rev,2020-07-16 19:35:34.194416,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://softeng.polito.it/rsctx,2020-07-16 19:35:35.524144,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/rss/1.0,2020-07-16 19:35:42.182365,LOV,False,Neither a Vocab nor a link to one
+https://w3id.org/saref4ee,2020-07-16 19:35:46.581239,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://salt.semanticauthoring.org/ontologies/sao,2020-07-16 19:35:46.780834,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/saws/ontology,2020-07-16 19:35:51.658469,LOV,False,ERROR: Error - Status 404
+http://schema.org/,2020-07-16 19:35:53.414560,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/spar/scoro/,2020-07-16 19:35:58.818854,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/ns/sparql-service-description,2020-07-16 19:36:00.742800,LOV,False,Neither a Vocab nor a link to one
+https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-16 19:36:37.143716,LOV,False,ERROR: Error - ConnectionError
+http://salt.semanticauthoring.org/ontologies/sdo,2020-07-16 19:36:37.194466,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/dc/elements/1.1/,2020-07-16 19:36:49.594506,LOV,False,Self defining non-ontology
+http://www.lingvoj.org/semio.rdf,2020-07-16 19:36:52.637045,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/SemSur/,2020-07-16 19:44:57.654746,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ontology/service,2020-07-16 19:53:08.161575,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ontology/similarity/,2020-07-16 19:53:23.594640,LOV,False,ERROR: Error - ConnectionError
+http://ns.cerise-project.nl/energy/def/cim-smartgrid,2020-07-16 19:53:28.104728,LOV,False,ERROR: Error - ConnectionError
+http://rdf.myexperiment.org/ontologies/snarm/,2020-07-16 19:57:40.601022,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/net/soron,2020-07-16 19:57:55.061820,LOV,False,ERROR: Error - Status 502
+http://spi-fm.uca.es/spdef/models/deployment/spcm/1.0,2020-07-16 20:02:04.732963,LOV,False,ERROR: Error - ConnectionError
+http://spitfire-project.eu/ontology/ns,2020-07-16 20:03:05.085553,LOV,False,Neither a Vocab nor a link to one
+https://bmake.th-brandenburg.de/spv,2020-07-16 20:03:05.725326,LOV,False,ERROR: Error - ConnectionError
+http://salt.semanticauthoring.org/ontologies/sro,2020-07-16 20:03:05.898582,LOV,False,ERROR: Error - ConnectionError
+http://www.loa-cnr.it/ontologies/DUL.owl,2020-07-16 20:03:18.343515,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://purl.org/ontology/ssso,2020-07-16 20:03:52.765424,LOV,False,ERROR: Error - too many redirects
+http://purl.org/net/step,2020-07-16 20:12:06.543163,LOV,False,ERROR: Error - ConnectionError
+https://w3id.org/i40/sto,2020-07-16 20:20:09.554345,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/ontology/stories/,2020-07-16 20:20:12.084575,LOV,False,ERROR: Error - Status 404
+http://purl.org/voc/summa/,2020-07-16 20:20:20.157282,LOV,False,ERROR: Error - Status 404
+https://w3id.org/squap/,2020-07-16 20:20:22.681235,LOV,False,ERROR: Error - Status 404
+http://data.semanticweb.org/ns/swc/ontology,2020-07-16 20:24:32.397220,LOV,False,ERROR: Error - ConnectionError
+http://www.w3.org/2004/03/trix/swp-1,2020-07-16 20:24:35.618992,LOV,False,Neither a Vocab nor a link to one
+http://spi-fm.uca.es/spdef/models/deployment/swpm/1.0,2020-07-16 20:28:46.272161,LOV,False,ERROR: Error - ConnectionError
+http://sw-portal.deri.org/ontologies/swportal,2020-07-16 20:28:48.647847,LOV,False,ERROR: Error - Status 404
+http://swrc.ontoware.org/ontology-07,2020-07-16 20:28:52.804829,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/2003/11/swrl,2020-07-16 20:28:54.003532,LOV,False,ERROR: Error - Status 406
+http://www.holygoat.co.uk/owl/redwood/0.1/tags/,2020-07-16 20:28:55.238436,LOV,False,ERROR: Error - Status 404
+http://linkedscience.org/teach/ns,2020-07-16 20:30:22.941491,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/2006/03/test-description,2020-07-16 20:30:24.483912,LOV,False,Neither a Vocab nor a link to one
+http://www.w3.org/2001/sw/hcls/ns/transmed/,2020-07-16 20:30:50.030651,LOV,False,ERROR: Error - Status 404
+http://purl.org/toco/,2020-07-16 20:31:02.367312,LOV,False,Neither a Vocab nor a link to one
+http://tour-pedia.org/download/tp.owl,2020-07-16 20:32:51.729597,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://contextus.net/ontology/ontomedia/ext/common/trait,2020-07-16 20:32:52.248061,LOV,False,ERROR: Error - Status 404
+http://vocab.org/transit/terms/,2020-07-16 20:32:53.162597,LOV,False,ERROR: Error - Status 404
+http://idi.fundacionctic.org/cruzar/turismo,2020-07-16 20:37:03.877310,LOV,False,ERROR: Error - ConnectionError
+http://www.essepuntato.it/2012/04/tvc,2020-07-16 20:53:47.287198,LOV,False,ERROR: Error - ConnectionError
+http://purl.oclc.org/NET/muo/ucum/,2020-07-16 20:55:45.437743,LOV,False,ERROR: Error - Status 502;Error - ConnectionError
+http://www.w3.org/ns/ui,2020-07-16 20:55:47.725562,LOV,False,Neither a Vocab nor a link to one
+http://umbel.org/umbel,2020-07-16 20:55:48.917141,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://code-research.eu/ontology/visual-analytics,2020-07-16 20:55:49.119463,LOV,False,ERROR: Error - ConnectionError
+http://www.essepuntato.it/2013/10/vagueness,2020-07-16 21:12:33.752989,LOV,False,ERROR: Error - ConnectionError
+http://purl.org/vocab/vann/,2020-07-16 21:12:39.747327,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://data.lirmm.fr/ontologies/vdpp,2020-07-16 21:16:49.854382,LOV,False,ERROR: Error - ConnectionError
+http://spi-fm.uca.es/spdef/models/genericTools/vmm/1.0,2020-07-16 21:21:48.862896,LOV,False,ERROR: Error - ConnectionError
+http://voag.linkedmodel.org/schema/voag,2020-07-16 21:21:50.633371,LOV,False,ERROR: Error - Status 404
+http://simile.mit.edu/2003/10/ontologies/vraCore3,2020-07-16 21:21:52.137518,LOV,False,ERROR: Error - Status 404
+http://vocab.sti2.at/vrank,2020-07-16 21:21:53.977932,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/vsearch/,2020-07-16 21:21:59.895973,LOV,False,ERROR: Error - Status 404
+http://purl.org/vvo/ns,2020-07-16 21:22:21.584067,LOV,False,ERROR: Error - Status 502;Error - Status 404
+http://vocab.org/whisky/terms,2020-07-16 21:22:36.349419,LOV,False,INTERNAL ERROR: Couldn't parse file. 
+http://spi-fm.uca.es/spdef/models/genericTools/wikim/1.0,2020-07-16 21:26:45.800134,LOV,False,ERROR: Error - ConnectionError
+http://xmlns.com/wot/0.1/,2020-07-16 21:26:47.429871,LOV,False,Neither a Vocab nor a link to one
+http://purl.org/xapi/ontology,2020-07-16 21:30:58.802011,LOV,False,ERROR: Error - Status 404;Error - ConnectionError
+http://www.w3.org/1999/xhtml/vocab,2020-07-16 21:32:00.458529,LOV,False,ERROR: Error - Status 406
+http://rdf-vocabulary.ddialliance.org/xkos,2020-07-16 21:32:04.329373,LOV,False,ERROR: Error - Status 404
+http://www.w3.org/2001/XMLSchema,2020-07-16 21:32:06.336217,LOV,False,ERROR: Error - Status 406
+http://zbw.eu/namespaces/zbw-extensions/zbw-extensions.rdf,2020-07-16 21:32:11.323529,LOV,False,Self defining non-ontology
+https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-16 22:43:32.422141,spoHashUris,False,ERROR: Error - ConnectionError
+https://sws.geonames.org/9884116/about.rdf,2020-07-16 23:05:10.201103,spoHashUris,False,Self defining non-ontology
+http://www.loa-cnr.it/ontologies/DUL.owl,2020-07-17 00:19:47.548954,spoHashUris,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.w3.org/TR/vocab-duv/,2020-07-17 00:32:51.546489,spoHashUris,False,Neither a Vocab nor a link to one
+http://rdvocab.info/Elements,2020-07-17 00:33:32.320578,prefix.cc,False,Self defining non-ontology
+http://rdvocab.info/ElementsGr3,2020-07-17 01:40:44.889188,prefix.cc,False,Self defining non-ontology
+http://www.ietf.org/rfc/rfc2616.txt,2020-07-17 02:07:47.387417,prefix.cc,False,INTERNAL ERROR: Couldn't parse file. 
+http://rdvocab.info/uri/schema/FRBRentitiesRDA,2020-07-17 02:09:57.279615,prefix.cc,False,Self defining non-ontology
+http://rdf.jpostdb.org/ontology/jpost.owl,2020-07-17 03:45:24.553306,prefix.cc,False,Malformed Uri
+https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-17 03:47:32.382953,prefix.cc,False,ERROR: Error - ConnectionError
+http://zbw.eu/namespaces/zbw-extensions/zbw-extensions.rdf,2020-07-17 04:36:57.935727,prefix.cc,False,Self defining non-ontology
+http://www.w3.org/TR/EARL10/,2020-07-17 05:20:00.135294,prefix.cc,False,Neither a Vocab nor a link to one
+http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/,2020-07-17 05:37:03.663917,prefix.cc,False,Neither a Vocab nor a link to one
+http://metadataregistry.org/uri/schema/RDARelationshipsGR2,2020-07-17 06:03:57.026897,prefix.cc,False,Self defining non-ontology
+https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-17 07:56:56.146682,prefix.cc,False,ERROR: Error - ConnectionError
+http://rdvocab.info/RDARelationshipsWEMI,2020-07-17 09:06:33.191066,prefix.cc,False,Self defining non-ontology
+http://securitytoolbox.appspot.com/MASO,2020-07-17 09:26:18.525813,prefix.cc,False,Malformed Uri
+http://rdvocab.info/ElementsGr2,2020-07-17 10:52:04.285871,prefix.cc,False,Self defining non-ontology
+http://rdvocab.info/roles,2020-07-17 12:10:54.675505,prefix.cc,False,Self defining non-ontology
+http://www.aifb.kit.edu/id/,2020-07-17 12:11:44.817366,prefix.cc,False,Malformed Uri
+http://www.buildingsmart-tech.org/ifcOWL/IFC2X3_Final,2020-07-17 12:31:44.304502,prefix.cc,False,ERROR: Error - Status 404
+http://www.w3.org/TR/vocab-duv/,2020-07-17 12:47:43.518204,prefix.cc,False,Neither a Vocab nor a link to one
+http://resex.rkbexplorer.com/ontologies/resist,2020-07-17 13:27:53.415352,prefix.cc,False,ERROR: Error - Status 403
+http://www.ukoln.ac.uk/metadata/cen/ws-mmi-dc/terms/2005-01-19/,2020-07-17 14:11:03.976503,prefix.cc,False,INTERNAL ERROR: Couldn't parse file. 
+http://merlin.phys.uni.lodz.pl/onto/physo/,2020-07-17 14:17:23.813172,prefix.cc,False,INTERNAL ERROR: Couldn't parse file. 
+http://www.intelleo.eu/ontologies/user-model/ns,2020-07-17 14:22:30.997150,prefix.cc,False,ERROR: Error - Status 404
+https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-17 15:05:22.576790,prefix.cc,False,ERROR: Error - ConnectionError
