@@ -152,10 +152,14 @@ def docPage():
     req = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md")
     
     if req.status_code > 400:
-        return render_template("doc.html", markdownDoc=f"Prblem loading the page from <https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md>: Status {req.status_code}")
+        return render_template("doc.html", markdownDoc=f"Problem loading the page from <https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md>: Status {req.status_code}")
     readme_file = req.text
     md_template_string = markdown.markdown(
         readme_file, extensions=["fenced_code", "sane_lists", "tables"]
     )
 
     return render_template("doc.html", markdownDoc=md_template_string)
+
+@app.route("/sys/licenses")
+def licensesPage():
+    return render_template("licenses.html")
