@@ -355,6 +355,8 @@ def genStats(rootdir):
       else:
         resultData[key] = {val : 1}
     
+    if metadata["logs"]["rapper-errors"] != "":
+      print("Wrong Stars:", indexUri)
     stars = measureStars(metadata["logs"]["rapper-errors"], metadata["test-results"]["License-I"], metadata["test-results"]["consistent"], metadata["test-results"]["consistent-without-imports"], metadata["test-results"]["License-II"])
 
     resultData["stars"][str(stars)+ " Stars"] = resultData["stars"][str(stars)+ " Stars"] + 1

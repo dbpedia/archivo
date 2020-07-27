@@ -140,14 +140,24 @@ def checkAllLicenses(dataPath, index):
 
 
 def checkLOVOntologies(dataPath):
-    resultDict = {"No RDF available":0, "RDF available":0}
+    resultDict = {"ERROR":{}, "OK":0}
     lov_uris = crawlURIs.getLovUrls()
-    for uri in lov_uris:
+    for i,uri in enumerate(lov_uris):
+        print("Handling uri", str(i), "/", str(len(lov_uris)))
         bestHeader, errors = crawlURIs.determineBestAccHeader(uri, dataPath)
-        if bestHeader == None:
-            resultDict["No RDF available"] = resultDict["No RDF available"] + 1
+        if len(errors) > 1:
+            print("Multiple ERRORS:", uri)
+        if bestHeader != None:
+            resultDict["OK"] = resultDict["OK"] + 1
         else:
-            resultDict["RDF available"] = resultDict["RDF available"] + 1
+            if len(errors) == 0:
+                error = "Unparseable"
+            else:
+                error = errors.pop()
+            if error in resultDict["ERROR"]:
+                resultDict["ERROR"][error] = resultDict["ERROR"][error] +1
+            else:
+                resultDict["ERROR"][error] = 1
 
     return json.dumps(resultDict, indent=4, sort_keys=True)
 
@@ -198,8 +208,9 @@ testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0]))
 
 #updateIndex(relativeUrls, rootdir, newDir,testSuite)
 
-interpretIndex(index)
+#interpretIndex(index)
 
+print(checkLOVOntologies(rootdir))
 #print(checkAllLicenses(rootdir, index))
 
 #ontoFiles.genStats(rootdir)
