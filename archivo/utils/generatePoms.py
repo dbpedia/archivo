@@ -127,7 +127,6 @@ def writeMarkdownFromTemplate(destination, artifact, label, uri, snapshot_url, o
 def callMaven(pomfilePath, command):
     process = subprocess.Popen(["mvn", "-B", "-f", pomfilePath, command], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
-    print(stderr.decode("utf-8"))
     return process.returncode, stdout.decode("utf-8")
 
 

@@ -7,6 +7,7 @@ import rdflib
 import crawlURIs
 from utils import ontoFiles, generatePoms, inspectVocabs, archivoConfig, stringTools, queryDatabus
 from utils.validation import TestSuite
+from utils.archivoLogs import discovery_logger
 
 
 
@@ -14,17 +15,17 @@ def crawlNewOntologies(dataPath, hashUris, prefixUris, voidPath, testSuite, inde
     index = ontoFiles.loadIndexJsonFromFile(indexFilePath)
     fallout = ontoFiles.loadFalloutIndexFromFile(falloutFilePath)
     for uri in crawlURIs.getLovUrls():
-        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "LOV", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "LOV", False, testSuite=testSuite, logger=discovery_logger)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
         ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
     for uri in hashUris:
-        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "spoHashUris", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "spoHashUris", False, testSuite=testSuite, logger=discovery_logger)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
         ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
     for uri in prefixUris:
-        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "prefix.cc", False, testSuite=testSuite)
+        crawlURIs.handleNewUri(uri, index, dataPath, fallout, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
         ontoFiles.writeIndexJsonToFile(index, indexFilePath)
         ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 

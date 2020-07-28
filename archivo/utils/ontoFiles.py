@@ -38,10 +38,8 @@ def getLatestVersionFromArtifactDir(artifactDir):
     latestVersionDir = os.path.join(artifactDir, latestVersion)
     return latestVersionDir
   except IndexError:
-    print(f"No versions for {artifactDir}")
     return None
   except FileNotFoundError:
-    print(f"Couldn't find artifact {artifactDir}")
     return None
   
 
@@ -57,8 +55,6 @@ def deleteEmptyDirsRecursive(startpath):
           os.remove(startpath + os.sep + pathname)
     if len(os.listdir(startpath)) == 0:
       os.rmdir(startpath)
-  else:
-    print(f"Not a directory: {startpath}")
 
 def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, rapperWarnings, etag, tripleSize, bestHeader, licenseViolationsBool, licenseWarningsBool, consistentWithImports, consistentWithoutImports, lodeConform, accessed, headerString, nirHeader, contentLenght, semVersion, snapshot_url):
   vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
@@ -95,19 +91,19 @@ def writeVocabInformation(pathToFile, definedByUri, lastModified, rapperErrors, 
   with open(pathToFile, "w+") as outfile:
     json.dump(vocabInformation, outfile, indent=4, sort_keys=True)
 
-def getParsedRdf(sourcefile, sourceUri=None, silent=True):
+def getParsedRdf(sourcefile, sourceUri=None, logger=None, silent=True):
   if sourceUri == None:
     process = subprocess.Popen(["rapper", "-g", sourcefile, "-o", "rdfxml"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   else:
     process = subprocess.Popen(["rapper", "-I", sourceUri, "-g", sourcefile, "-o", "rdfxml"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   
   stdout, stderr=process.communicate()
-  if not silent:
-    print(stderr.decode("utf-8"))
+  if logger != None and not silent:
+    logger.debug(stderr.decode("utf-8"))
   
   return stdout.decode("utf-8")
 
-def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=True, silent=False, inputFormat=None):
+def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=True, logger=None, inputFormat=None, silent=True):
   rapperCommand = ["rapper",  sourcefile, "-o", outputType]
   if inputFormat == None:
     inputList = ["-g"]
@@ -119,15 +115,15 @@ def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=
   with open(filepath, "w+") as ontfile:
     process = subprocess.Popen(rapperCommand, stdout=ontfile, stderr=subprocess.PIPE)
     stderr=process.communicate()[1].decode("utf-8")
-    if not silent:
-      print(stderr)
+    if logger != None and not silent:
+      logger.debug(stderr)
   if deleteEmpty:
     returnedTriples = getTripleNumberFromRapperLog(stderr)
-    if not silent:
-      print("Returned Triples: ", returnedTriples)
+    if logger != None and not silent:
+      logger.info("Returned Triples: ", returnedTriples)
     if returnedTriples == None or returnedTriples == 0:
-      if not silent:
-        print("Parsed file empty, deleting...")
+      if logger != None and not silent:
+        logger.warning("Parsed file empty, deleting...")
       os.remove(filepath)
   return returnRapperErrors(stderr)
 
@@ -140,7 +136,6 @@ def getParsedTriples(filepath, inputFormat=None):
   try:
     stderr = process.communicate()[1].decode("utf-8")
   except UnicodeDecodeError:
-    print("There was a decoding error at parsing " + filepath)
     return None
   return getTripleNumberFromRapperLog(stderr)
 

@@ -58,12 +58,8 @@ class TestSuite:
             process = subprocess.run(pelletCommand, timeout=300, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return process.stdout.decode("utf-8"), process.stderr.decode("utf-8"), process.returncode
         except TimeoutError:
-            print("Timeout in consistency check")
-            traceback.print_exc(file=sys.stdout)
             return "", "Timeout in pellet", 999
         except subprocess.TimeoutExpired:
-            print("Timeout in consistency check")
-            traceback.print_exc(file=sys.stdout)
             return "", "Timeout in pellet", 999
 
     def getPelletInfo(self, ontofile, ignoreImports=False):

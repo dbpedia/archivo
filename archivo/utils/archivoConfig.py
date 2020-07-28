@@ -14,8 +14,8 @@ pub="https://yum-yab.github.io/webid.ttl#onto"
 
 
 # paths for external services
-pelletPath = "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
-profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.0.0.jar"
+pelletPath = "/home/denis/Workspace/Job/pellet/cli/target/pelletcli/bin/pellet"
+profileCheckerJar="/home/denis/Downloads/profilechecker-1.1.0.jar"
 
 # iri sources
 voidResults = "/home/denis/Downloads/voidResults"
@@ -27,5 +27,5 @@ ontoIndexPath = "./indices/vocab_index.json"
 falloutIndexPath = "./indices/fallout_index.csv"
 
 # local paths
-localPath = "/data/home/dstreitmatter/data/archivo-ontologies"
+localPath = "/home/denis/Workspace/Job/Archivo/scd-testdir"
 

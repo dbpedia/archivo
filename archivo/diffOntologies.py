@@ -9,6 +9,7 @@ import json
 import sys
 import re
 from utils import ontoFiles, generatePoms, stringTools
+from utils.archivoLogs import diff_logger
 
 semanticVersionRegex=re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 
@@ -17,15 +18,6 @@ def graphDiff(oldGraph, newGraph):
     newIsoGraph = compare.to_isomorphic(newGraph)
     return compare.graph_diff(oldIsoGraph, newIsoGraph)
 
-def sortFile(filepath, targetPath):
-  command = ["sort", "-u", filepath]
-  try:
-    with open(targetPath, "w+") as sortedFile:
-      process = subprocess.run(command, stdout=sortedFile)
-  except Exception as e:
-    print("Error in sorting file:")
-    print(e)
-
 def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True, inputType=None):
   try:
     if inputType == None:
@@ -33,13 +25,17 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, silent=True, inputType=
     else:
       rapperProcess = subprocess.run(["rapper", "-i", inputType, "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     with open(targetPath, "w+") as sortedNtriples:
-      subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples)
+      sortProcess = subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples, stderr=subprocess.PIPE)
+      sortErrors = sortProcess.stderr.decode("utf-8")
     if os.stat(targetPath).st_size == 0:
-      print("Error in parsing file, no triples returned")
+      diff_logger.error("Error in parsing file, no triples returned")
       os.remove(targetPath)
+    if sortErrors != "":
+      diff_logger.error(f"An error in sorting triples occured: {sortErrors}")
+    
     return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
   except Exception as e:
-    print("Error in sorting file:")
+    diff_logger.error("Exeption during parsing and sorting", exc_info=True)
     return str(e), None
 
 
@@ -48,8 +44,11 @@ def commDiff(oldFile, newFile):
   try:
     oldTriples = []
     newTriples = []
-    process = subprocess.run(command, stdout=subprocess.PIPE)
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    diffErrors = process.stderr.decode("utf-8")
     commOutput = process.stdout.decode("utf-8")
+    if diffErrors != "":
+      diff_logger.error(f"Error in diffing with comm: {diffErrors}")
     for line in commOutput.split("\n"):
       if line.startswith("\t"):
         newTriples.append(line)
@@ -59,12 +58,11 @@ def commDiff(oldFile, newFile):
       return True, oldTriples, newTriples
     else:
       return False, [line.strip() for line in oldTriples if line != ""], [line.strip() for line in newTriples if line != ""]
-  except Exception as e:
-    print("Error in diffing file:")
-    print(e)
+  except Exception:
+    diff_logger.error("Exeption during diffing with comm", exc_info=True)
 
 def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader):
-  print("Checking the header for ", vocab_uri)
+  diff_logger.info(f"Checking the header for {vocab_uri}")
   # when both of the old values are not compareable, always download and check
   if stringTools.isNoneOrEmpty(oldETag) and stringTools.isNoneOrEmpty(oldLastMod) and stringTools.isNoneOrEmpty(oldContentLength):
     return True
@@ -82,19 +80,19 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
     else:
       return None
   except requests.exceptions.TooManyRedirects:
-        print("Too many redirects, cancel parsing...")
+        diff_logger.warning("Too many redirects, cancel parsing...")
         return None
   except TimeoutError:
-        print("Timed out: "+vocab_uri)
+        diff_logger.warning(f"Timed out for {vocab_uri}")
         return None
   except requests.exceptions.ConnectionError:
-        print("Bad Connection "+ vocab_uri)
+        diff_logger.warning(f"Bad Connection for {vocab_uri}")
         return None
   except requests.exceptions.ReadTimeout:
-        print("Connection timed out for URI ", vocab_uri)
+        diff_logger.warning(f"Connection timed out for URI {vocab_uri}")
         return None
   except:
-        print("Unkown Error occurred for URI", vocab_uri)
+        diff_logger.warning(f"Unkown Error occurred for URI {vocab_uri}")
         return None
 
 
@@ -102,25 +100,25 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
   try:
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
-    print("Found different headers, downloading and parsing to compare...")
+    diff_logger.info("Found different headers, downloading and parsing to compare...")
     allowed, error = crawlURIs.checkRobot(uri)
     if not allowed:
       return
     success, sourcePath, response = crawlURIs.downloadSource(uri, localDiffDir, "tmpSource", bestHeader)
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
-      print("Uri not reachable")
+      diff_logger.warning("Uri not reachable")
       fallout_index.append((uri, True, "Couldnt download file"))
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
     #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
     errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[bestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
-      print("File not parseable")
+      diff_logger.error("File not parseable")
       fallout_index.append((uri, True, "Unparseable new File"))
       stringTools.deleteAllFilesInDir(localDiffDir)
       return
-    print("Loading the graphs of old and new version...")
+    diff_logger.info("Loading the graphs of old and new version...")
     oldOriginal = [f for f in os.listdir(latestVersionDir) if "_type=orig" in f][0]
     getSortedNtriples(os.path.join(latestVersionDir, oldOriginal), os.path.join(localDiffDir, "oldVersionSorted.nt"), uri)
     #oldGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(latestVersionDir, artifactName + "_type=parsed.ttl"))
@@ -129,17 +127,17 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
     isEqual, oldTriples, newTriples = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
     #if len(old) == 0 and len(new) == 0:
     if isEqual:
-      print("Not different")
+      diff_logger.info("No new version")
       stringTools.deleteAllFilesInDir(localDiffDir)
     else:
-      print("Different!")
+      diff_logger.info("New Version!")
       # generating new semantic version
       oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(latestVersionDir, artifactName + "_type=parsed.nt"))
       newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "newVersionSorted.nt"))
       if oldSuccess and newSuccess:
         newSemVersion, oldAxioms, newAxioms = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
-        print("Couldn't generate a new Semantic Version, keeping the old...")
+        diff_logger.error("Couldn't generate the axioms, no new semantic version")
         if not oldSuccess and not newSuccess:
           newSemVersion = "ERROR: No Axioms for both versions"
         elif not oldSuccess:
@@ -155,11 +153,14 @@ def localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVers
         print("\n".join(oldAxioms), file=oldAxiomsFile)
       with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.nt"), "w+") as newAxiomsFile:
         print("\n".join(newAxioms), file=newAxiomsFile) 
-      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite)
+      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), bestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger)
       stringTools.deleteAllFilesInDir(localDiffDir)
-      print(generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy")[1])
+      status, log = generatePoms.callMaven(os.path.join(artifactDir, "pom.xml"), "deploy")
+      if status > 0:
+        diff_logger.critical("Couldn't deploy new diff version")
+      diff_logger.info(log)
   except FileNotFoundError:
-    print("Error: Couldn't find file for", uri)
+    diff_logger.critical(f"Couldn't find file for {uri}")
     stringTools.deleteAllFilesInDir(localDiffDir)
 
 
@@ -171,18 +172,17 @@ def handleDiffForUri(uri, rootdir, fallout_index, testSuite):
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
   artifactDir = os.path.join(rootdir, groupId, artifact)
   if not os.path.isdir(artifactDir):
-    print("No data for this uri", uri)
+    diff_logger.critical(f"No data for this uri {uri}")
     return
   versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
   versionDirs.sort(reverse=True)
   latestVersion = versionDirs[0]
   latestVersionDir = os.path.join(artifactDir, latestVersion)
-  print("Found latest version:", latestVersionDir)
   if os.path.isfile(os.path.join(latestVersionDir, artifact + "_type=meta.json")):
     with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
       metadata = json.load(jsonFile)
   else:
-    print("No metadata", groupId, artifact)
+    diff_logger.critical(f"No metadata for {groupId}; {artifact}")
     return
 
   oldETag = metadata["http-data"]["e-tag"]
@@ -199,13 +199,13 @@ def handleDiffForUri(uri, rootdir, fallout_index, testSuite):
 
   if isDiff == None:
     fallout_index.append((uri, True, "Unreachable ontology"))
-    print("Couldnt access ontology", uri)
+    diff_logger.warning(f"Couldnt access ontology {uri}")
     return
   if isDiff:
-    print("Fond potential different version for", uri)
+    diff_logger.info(f"Fond potential different version for {uri}")
     localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, semVersion, testSuite)
   else:
-    print("No different version for", uri)
+    diff_logger.info(f"No different version for {uri}")
 
 
 def getAxiomsOfOntology(ontologyPath):
@@ -216,20 +216,20 @@ def getAxiomsOfOntology(ontologyPath):
   stdout, stderr= process.communicate()
 
   axiomSet = stdout.decode("utf-8").split("\n")
-  print("Returncode:", process.returncode)
   if process.returncode == 0:
     success = True
     return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
   else:
     success = False
-    print(stderr.decode("utf-8"))
+    diff_logger.error(f"Error in parsing the axioms for {ontologyPath}")
+    diff_logger.error(stderr.decode("utf-8"))
     return success, stderr.decode("utf-8")
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
   match = semanticVersionRegex.match(oldSemanticVersion)
   if match == None:
-    print("Bad format of semantic version", oldSemanticVersion)
+    diff_logger.error(f"Bad format of semantic version: {oldSemanticVersion}")
     return "ERROR: old semantic version corrupted", None, None
   
   major = int(match.group(1))
@@ -240,8 +240,8 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
   old = oldAxiomSet - newAxiomSet
   new = newAxiomSet - oldAxiomSet
 
-  print("Old:", old)
-  print("New:", new)
+  diff_logger.info("Old:", "\n".join(old))
+  diff_logger.info("New:", "\n".join(new))
 
 
   if old == set() and new == set():

@@ -13,6 +13,8 @@ import requests
 import markdown
 from flask_accept import accept
 from urllib.parse import quote
+from utils.archivoLogs import webservice_logger
+
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
 fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
@@ -34,7 +36,7 @@ class InfoForm(FlaskForm):
 def index():
     form = SuggestionForm()
     if form.validate_on_submit():
-        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, archivoConfig.localPath, fallout, "user-suggestion", False, testSuite=testingSuite)
+        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, archivoConfig.localPath, fallout, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
         if success:
             ontoFiles.writeIndexJsonToFile(ontoIndex, archivoConfig.ontoIndexPath)
         elif not success and isNir:

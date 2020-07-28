@@ -13,15 +13,15 @@ descriptionNamespaceGraph.bind("dct", DCTERMS)
 descriptionNamespaceGraph.bind("dc", DC)
 descriptionNamespaceGraph.bind("rdfs", RDFS)
 
-def getGraphOfVocabFile(filepath):
+def getGraphOfVocabFile(filepath, logger=None):
     try:  
         rdfFormat=rdflib.util.guess_format(filepath)
         graph = rdflib.Graph()
         graph.parse(filepath, format=rdfFormat)
         return graph
     except Exception:
-        print("Error in parsing:")
-        traceback.print_exc(file=sys.stderr)
+        if logger != None:
+            logger.error("Exception in rdflib parsing", exc_info=True)
         return None
 
 def getTurtleGraph(graph, base=None):    
@@ -199,37 +199,6 @@ def getDefinedByUri(ontgraph):
         return None
 
 
-def getOntologyReport(rootdir):
-    for group in os.listdir(rootdir):
-        if not os.path.isdir(rootdir + os.sep +group):
-            continue
-        for artifact in os.listdir(rootdir + os.sep + group):
-            versionDir=rootdir + os.sep + group + os.sep + artifact
-            if not os.path.isdir(versionDir):
-                continue
-            for version in os.listdir(versionDir):
-                if not os.path.isdir(versionDir + os.sep + version):
-                   continue
-                dataPath=versionDir + os.sep + version
-                filepath = dataPath + os.sep + artifact + ".ttl"
-                jsonPath = dataPath + os.sep + artifact + ".json"
-                if not os.path.isfile(filepath):
-                    continue
-                print("File: " + filepath)
-                graph = getGraphOfVocabFile(filepath)
-                vocab_uri, vocab_license = getRelevantDCTERMSVocabInfo(graph)[:2]
-                if vocab_uri != None:
-                    print("Uri: ",vocab_uri.n3())
-                if vocab_license != None:
-                    print("License: ",vocab_license.n3())
-                with open(jsonPath) as json_file:
-                    data = json.load(json_file)
-                    if data["lastModified"] != "":
-                        print("LastModified: ", data["lastModified"])
-                    if data["rapperErrorLog"] != "":
-                        print("RapperErrors: ", data["rapperErrorLog"])
-
-
 def changeMetadata(rootdir):
     for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
         for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
@@ -250,15 +219,9 @@ def changeMetadata(rootdir):
                 metadata["semantic-version"] = "0.0.1"
                 json.dump(metadata, jsonFile, indent=4, sort_keys=True)
 
-def loadNQuadsFile(filepath):
-    conGraph = ConjunctiveGraph()
-    conGraph.parse(filepath)
-
-    print(len([x for x in conGraph.store.contexts()]))
 
 def checkShaclReport(shaclReportGraph):
     if shaclReportGraph == None:
-        print("No report graph available", file=sys.stderr)
         return "Error, no graph available"
     violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
     warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
