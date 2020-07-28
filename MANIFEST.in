@@ -1,0 +1,3 @@
+graft archivo/webservice/static/styles/static
+graft archivo/webservice/templates
+global-exclude *.pyc

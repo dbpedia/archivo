@@ -80,7 +80,7 @@ def turtleInfo():
     ontoUri = args["o"] if "o" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404) 
-    return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=303)
+    return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
 
 @vocabInfo.support("application/rdf+xml")
 def rdfxmlInfo():
@@ -88,7 +88,7 @@ def rdfxmlInfo():
     ontoUri = args["o"] if "o" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404) 
-    return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=303)
+    return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
 
 @vocabInfo.support("application/n-triples")
 def ntriplesInfo():
@@ -96,7 +96,7 @@ def ntriplesInfo():
     ontoUri = args["o"] if "o" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404) 
-    return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=303)
+    return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
 @app.route("/", methods=["GET"])
