@@ -61,10 +61,10 @@ def getOOPSReport(parsedRdfString, logger):
     if response.status_code < 400:
       return response.text
     else:
-      logger.error(f"OOPS not acessible: Status {response.status_code}")
+      logger.debug(f"OOPS not acessible: Status {response.status_code}")
       return None
   except Exception:
-    logger.error("Exeption in loading the OOPS-report", exc_info=True)
+    logger.debug("Exeption in loading the OOPS-report", exc_info=True)
     return None
 
 

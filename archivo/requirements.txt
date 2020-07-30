@@ -7,3 +7,5 @@ rdflib
 markdown
 SPARQLWrapper
 flask_accept
+gunicorn
+APScheduler

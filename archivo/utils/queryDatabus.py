@@ -95,3 +95,6 @@ def getLatestParsedOntology(group, artifact):
         traceback.print_exc(file=sys.stdout)
     except Exception:
         traceback.print_exc(file=sys.stdout)
+
+def allOntologies():
+    pass

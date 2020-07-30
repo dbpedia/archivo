@@ -169,13 +169,13 @@ def getLicense(graph):
     queryString=(
         "SELECT DISTINCT ?license \n"
         "WHERE {\n"
-        " VALUES ?licenseProp { dcterms:license xhv:license cc:license }\n"
+        " VALUES ?licenseProp { dcterms:license xhv:license cc:license dc:license }\n"
         "VALUES ?type { owl:Ontology skos:ConceptScheme }"
         " ?uri a ?type .\n"
         " ?uri ?licenseProp ?license .\n"   
         "} LIMIT 1"
         )
-    result=graph.query(queryString, initNs={"skos":SKOS,"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "cc":URIRef("http://creativecommons.org/ns#")})
+    result=graph.query(queryString, initNs={"skos":SKOS,"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "dc":DC,"cc":URIRef("http://creativecommons.org/ns#")})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]

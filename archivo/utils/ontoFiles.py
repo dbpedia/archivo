@@ -119,8 +119,6 @@ def parseRDFSource(sourcefile, filepath, outputType, sourceUri=None,deleteEmpty=
       logger.debug(stderr)
   if deleteEmpty:
     returnedTriples = getTripleNumberFromRapperLog(stderr)
-    if logger != None and not silent:
-      logger.info("Returned Triples: ", returnedTriples)
     if returnedTriples == None or returnedTriples == 0:
       if logger != None and not silent:
         logger.warning("Parsed file empty, deleting...")
