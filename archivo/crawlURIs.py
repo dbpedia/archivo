@@ -28,7 +28,6 @@ rdfHeaders=["application/rdf+xml", "application/ntriples", "text/turtle", "appli
 rdfHeadersMapping = {"application/rdf+xml":"rdfxml", "application/ntriples":"ntriples", "text/turtle":"turtle", "application/html":"rdfa"}
 
 def getLodeDocuFile(vocab_uri, logger):
-  logger.info("Generating lode-docu...")
   try:
     response = requests.get(lodeServiceUrl + vocab_uri)
     if response.status_code < 400:
@@ -36,16 +35,19 @@ def getLodeDocuFile(vocab_uri, logger):
     else:
       return None
   except requests.exceptions.TooManyRedirects:
-        return None
+    logger.error("Exeption in loading the LODE-docu", exc_info=True)
+    return None
   except TimeoutError:
-        return None
+    logger.error("Exeption in loading the LODE-docu", exc_info=True)
+    return None
   except requests.exceptions.ConnectionError:
-        return None
+    logger.error("Exeption in loading the LODE-docu", exc_info=True)
+    return None
   except requests.exceptions.ReadTimeout:
-        return None
+    logger.error("Exeption in loading the LODE-docu", exc_info=True)
+    return None
 
 def getOOPSReport(parsedRdfString, logger):
-  logger.info("Generating OOPS report...")
   oopsXml=(
           "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
           "   <OOPSRequest>\n"
@@ -61,10 +63,10 @@ def getOOPSReport(parsedRdfString, logger):
     if response.status_code < 400:
       return response.text
     else:
-      logger.debug(f"OOPS not acessible: Status {response.status_code}")
+      logger.error(f"OOPS not acessible: Status {response.status_code}")
       return None
   except Exception:
-    logger.debug("Exeption in loading the OOPS-report", exc_info=True)
+    logger.error("Exeption in loading the OOPS-report", exc_info=True)
     return None
 
 
@@ -96,30 +98,33 @@ def determineBestAccHeader(vocab_uri, localDir):
   if not os.path.isdir(localTestDir):
     os.mkdir(localTestDir)
   headerDict = {}
-  os.makedirs(localTestDir, exist_ok=True)
   for header in rdfHeadersMapping:
     success, filePath, response = downloadSource(vocab_uri, localTestDir, "testTriples", header)
     if success:
       tripleNumber = ontoFiles.getParsedTriples(filePath, inputFormat=rdfHeadersMapping[header])
-      if tripleNumber != None:
+      if tripleNumber != None and tripleNumber > 0:
         headerDict[header] = tripleNumber
-        #print("Accept-Header: ",header,"; TripleNumber: ",tripleNumber)
+      else:
+        errors.add(f"Couldn't parse triples for header {header}")
     else:
       errors.add(response)
   generatedFiles = [f for f in os.listdir(localTestDir) if os.path.isfile(localTestDir + os.sep + f)]
   for filename in generatedFiles:
     os.remove(os.path.join(localTestDir, filename))
   # return the header with the most triples
+  stringTools.deleteAllFilesInDirAndDir(localTestDir)
   if headerDict == {}:
     return None, errors
   else:
     return [k for k, v in sorted(headerDict.items(), key=lambda item: item[1], reverse=True)][0], errors
 
 
-def downloadSource(uri, path, name, accHeader):
+def downloadSource(uri, path, name, accHeader, encoding=None):
   try:
     acc_header = {'Accept': accHeader}
-    response=requests.get(uri, headers=acc_header, timeout=30, allow_redirects=True)    
+    response=requests.get(uri, headers=acc_header, timeout=30, allow_redirects=True)
+    if encoding != None:
+      response.encoding = encoding
     fileEnding = stringTools.getFileEnding(response)
     filePath = path + os.sep + name +"_type=orig"+ fileEnding
     if response.status_code < 400:
@@ -166,21 +171,16 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     parseable = True
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    logger.info("Run SHACL Tests...")
     conformsLicense, reportGraphLicense, reportTextLicense = testSuite.licenseViolationValidation(ontoGraph)
-    logger.info(f"License-I: {conformsLicense}")
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
     conformsLode, reportGraphLode, reportTextLode = testSuite.lodeReadyValidation(ontoGraph)
-    logger.info(f"LODE-conform: {conformsLode}")
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
     conformsLicense2, reportGraphLicense2, reportTextLicense2 = testSuite.licenseWarningValidation(ontoGraph)
-    logger.info(f"License-II: {conformsLicense2}")
     with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile)
     # checks consistency with and without imports
-    logger.info("Check consistency...")
     isConsistent, output = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
     isConsistentNoImports, outputNoImports = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
     with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
@@ -188,13 +188,11 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
       print(outputNoImports, file=consistencyReportNoImports)
     # print pellet info files
-    logger.info("Generate Pellet info for vocabulary...")
     with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
       print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
     with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
       print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
     # profile check for ontology
-    logger.info("Get profile check...")
     stdout, stderr = testSuite.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
     with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
       print(stderr + "\n" + stdout, file=profileCheckFile)
@@ -326,7 +324,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
 
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
-    logger.info(f"Error in parsing: {headerErrorsString}")
+    logger.error(f"Error in parsing: {headerErrorsString}")
     if isNIR:
       fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"ERROR: {headerErrorsString}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
