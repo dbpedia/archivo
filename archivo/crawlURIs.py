@@ -409,7 +409,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if isNIR and vocab_uri != real_ont_uri:
     logger.warning(f"unexpected value for real uri: {real_ont_uri}")
 
-  logger.info("Found non-information URI:", real_ont_uri)
+  logger.info(f"Found non-information URI: {real_ont_uri}")
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
   if groupId == None or artifact == None:
     logger.warning(f"Malformed Uri {vocab_uri}")
@@ -451,10 +451,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   stringTools.deleteAllFilesInDirAndDir(localDir)
   
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
-  logger.info(deployLog)
+  
   if returncode > 0:
     logger.error("There was an Error deploying to the databus")
+    logger.error(deployLog)
     return False, isNIR, "There was an error deploying the Ontology to the databus:<br><br>" + "<br>".join(deployLog.split("\n"))
+  else:
+    logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
   return True, isNIR, f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"
 
 
