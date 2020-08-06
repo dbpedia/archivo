@@ -104,9 +104,18 @@ def ntriplesInfo():
 @app.route("/", methods=["GET"])
 def ontoList():
     ontos = []
+    allOntosInfo = queryDatabus.allLatestParsedTurtleFiles()
     for uri in ontoIndex:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        ontos.append((uri, f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"))
+        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        try:
+            downloadUri = allOntosInfo[databus_uri]["parsedFile"]
+        except KeyError:
+            webservice_logger.error(f"Could't find databus artifact for {uri}")
+            downloadUri = None
+            
+
+        ontos.append((uri, databus_uri, downloadUri))
     return render_template("list.html", len=len(ontos), Ontologies=ontos)
 
 

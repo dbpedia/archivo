@@ -11,6 +11,7 @@
 <tr>
  <th data-sortable="true" data-field="non-information-uri">Ontology URI</th>
  <th data-sortable="true" data-field="databus-link">Archivo URI</th>
+ <th data-sortable="true" data-field="latest-parsed-turtle">Download Latest Turtle</th>
 </tr>
 </thead>
 <tbody>
@@ -18,6 +19,7 @@
 <tr>
     <td><a href=/info?o={{Ontologies[i][0]}}>{{Ontologies[i][0]}}</a></td>
     <td><a href="{{Ontologies[i][1]}}">{{Ontologies[i][1]}}</a></td>
+    <td><a href="{{Ontologies[i][2]}}">Download</a></td>
 </tr>
 {%endfor%}
 
