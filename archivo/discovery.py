@@ -41,7 +41,7 @@ index = ontoFiles.loadIndexJson()
 
 fallout = ontoFiles.loadFalloutIndex()
 
-testSuite = TestSuite(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "shacl"))
+testSuite = TestSuite(os.path.abspath(os.path.dirname(sys.argv[0])))
 
 hashUris = ontoFiles.loadListFile("/home/denis/all_hash_uris.lst")
 

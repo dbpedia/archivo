@@ -30,10 +30,11 @@ class TestSuite:
     pelletPath = archivoConfig.pelletPath
     profileCheckerJar=archivoConfig.profileCheckerJar
 
-    def __init__(self, pathToShaclFiles):
-        self.licenseViolationGraph = loadShacl(os.path.join(pathToShaclFiles, "license-I.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl")
-        self.licenseWarningGraph = loadShacl(os.path.join(pathToShaclFiles, "license-II.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl")
-        self.lodeTestGraph = loadShacl(os.path.join(pathToShaclFiles, "LODE.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl")
+    def __init__(self, archivoPath):
+        self.licenseViolationGraph = loadShacl(os.path.join(archivoPath, "shacl", "license-I.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl")
+        self.licenseWarningGraph = loadShacl(os.path.join(archivoPath, "shacl","license-II.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl")
+        self.lodeTestGraph = loadShacl(os.path.join(archivoPath, "shacl", "LODE.ttl"), pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl")
+        self.displayAxiomsPath = os.path.join(archivoPath, "helpingBinaries", "DisplayAxioms.jar")
 
     def licenseViolationValidation(self, ontograph):
         r = validate(ontograph, shacl_graph=self.licenseViolationGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
@@ -84,3 +85,16 @@ class TestSuite:
             return "Error - pellet timed out", stderr + "\n\n" + stdout
         else:
             return "Error - Exit " + str(returncode), stderr + "\n\n" + stdout
+
+    def getAxiomsOfOntology(self, ontologyPath):
+        process = subprocess.Popen(["java", "-jar", self.displayAxiomsPath, ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        stdout, stderr= process.communicate()
+
+        axiomSet = stdout.decode("utf-8").split("\n")
+        if process.returncode == 0:
+            success = True
+            return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
+        else:
+            success = False
+            return success, stderr.decode("utf-8")

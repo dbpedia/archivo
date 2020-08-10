@@ -16,7 +16,7 @@ cron.start()
 
 indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vocab_index.json")
 falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
-testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0], "shacl"))
+
 
 # This is the discovery process
 #@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="1", day_of_week="sun")
@@ -24,6 +24,8 @@ def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
 
+
+    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     # load the other sources
     hashUris = ontoFiles.loadListFile(archivoConfig.hashUriPath)
 
@@ -50,13 +52,14 @@ def ontology_discovery():
         #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
-@cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sat")
+@cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_update():
     index = ontoFiles.loadIndexJsonFromFile(indexFilePath)
     fallout = ontoFiles.loadFalloutIndexFromFile(falloutFilePath)
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestOriginalOntlogies()
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
+    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for uri in index:
         source = index[uri]["source"]
         diff_logger.info(f"Handling ontology: {uri}")
@@ -73,7 +76,6 @@ def ontology_update():
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
-
 
 if __name__ == "__main__":
     app.run(debug=False)

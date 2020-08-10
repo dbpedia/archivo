@@ -110,7 +110,11 @@ def localDiffAndRelease(uri, localDiffDir, oldOriginal, bestHeader, fallout_inde
     new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     newVersionPath = os.path.join(artifactDir, new_version)
     os.makedirs(newVersionPath, exist_ok=True)
-    newBestHeader, errors = crawlURIs.determineBestAccHeader(uri, localDiffDir)
+    newBestHeader, headerErrors = crawlURIs.determineBestAccHeader(uri, localDiffDir)
+    if newBestHeader == None:
+      diff_logger.warning("Couldn't parse new version")
+      diff_logger.warning(headerErrors)
+      return
     success, sourcePath, response = crawlURIs.downloadSource(uri, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
@@ -137,12 +141,14 @@ def localDiffAndRelease(uri, localDiffDir, oldOriginal, bestHeader, fallout_inde
     else:
       diff_logger.info("New Version!")
       # generating new semantic version
-      oldSuccess, oldAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "oldVersionSorted.nt"))
-      newSuccess, newAxioms = getAxiomsOfOntology(os.path.join(localDiffDir, "newVersionSorted.nt"))
+      oldSuccess, oldAxioms = testSuite.getAxiomsOfOntology(os.path.join(localDiffDir, "oldVersionSorted.nt"))
+      newSuccess, newAxioms = testSuite.getAxiomsOfOntology(os.path.join(localDiffDir, "newVersionSorted.nt"))
       if oldSuccess and newSuccess:
         newSemVersion, oldAxioms, newAxioms = getNewSemanticVersion(lastSemVersion, oldAxioms, newAxioms)
       else:
         diff_logger.error("Couldn't generate the axioms, no new semantic version")
+        diff_logger.debug("Old Axioms:"+str(oldAxioms))
+        diff_logger.debug("New Axioms:"+str(newAxioms))
         if not oldSuccess and not newSuccess:
           newSemVersion = "ERROR: No Axioms for both versions"
         elif not oldSuccess:
@@ -212,7 +218,7 @@ def handleDiffForUri_old(uri, rootdir, fallout_index, testSuite, source):
   #isDiff = True
 
   if isDiff == None:
-    fallout_index.append((uri, str(datetime.now()), source, False, "Malformed non-information uri"))
+    fallout_index.append((uri, str(datetime.now()), source, True, errors))
     diff_logger.warning(f"Couldnt access ontology {uri}")
     return
   if isDiff:
@@ -273,23 +279,6 @@ def handleDiffForUri(uri, localDir, metafileUrl, origFileUrl, lastVersion, fallo
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     diff_logger.info(f"No different version for {uri}")
-
-def getAxiomsOfOntology(ontologyPath):
-  displayAxiomsPath = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "helpingBinaries", "DisplayAxioms.jar")
-
-  process = subprocess.Popen(["java", "-jar", displayAxiomsPath, ontologyPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-  stdout, stderr= process.communicate()
-
-  axiomSet = stdout.decode("utf-8").split("\n")
-  if process.returncode == 0:
-    success = True
-    return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
-  else:
-    success = False
-    diff_logger.error(f"Error in parsing the axioms for {ontologyPath}")
-    diff_logger.error(stderr.decode("utf-8"))
-    return success, stderr.decode("utf-8")
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
