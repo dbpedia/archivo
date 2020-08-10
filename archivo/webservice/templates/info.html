@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<h2>Ontology Info Service</h2>
-<br>
+<h3>Ontology Info Service</h3>
 Select an ontology to get info on its latest version:
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
@@ -14,48 +13,104 @@ Select an ontology to get info on its latest version:
         </div>
     </p>
 </form>
+<br>
+{% if general_info.title %}
+<h2>{{general_info.title}}</h2>
+<p>{{general_info.comment}}</p>
 
-{% if info.databusLink %}
-Archivo URL on Databus: <a title="Databus Release" href={{ info.databusLink }} target="_blank">{{ info.databusLink }}</a><br><br>
-Latest release URL: <a title="Databus Release" href={{ info.latestRelease }} target="_blank">{{ info.latestRelease }}</a> <br><br>
-Source: {{ info.source }}<br><br>
-Latest retrieval time: {{ info.accessed }}<br><br>
-Archivement Date: {{ info.addedDate }} <br><br>
-Triples: {{ info.triples }} <br><br>
-Semantic Version: {{ info.semVersion }}<br><br>
-<!--button type="button" class="collapsible">Archivo Stars</button-->Archivo-Stars : {{ info.stars }}
+<h4>General Information:</h4>
+
+<p>
+    <table style="width:400px; border: 1px solid black;">
+        <tr>
+            <td><b>Archived</b></td>
+            <td>{{general_info.archivement}}</td>
+        </tr>
+        <tr>
+            <td><b>Source</b></td>
+            <td>{{general_info.source}}</td>
+        </tr>
+        <tr>
+            <td><b>Databus-Artifact</b></td>
+            <td><a href="{{ general_info.databusArtifact }}">Link</a></td>
+        </tr>
+    </table>
+</p>
+<br>
+
+<h4>Versions:</h4>
+<p>Click the version-link to check out the release on the databus for further information!</p>
 <div class="content">
     <p>
         <table>
             <tr>
-                <td><span title="The Ontology is accessible at the IRI and parses with neglegible errors & warnings">First Star: Retrieval & Parsing</span></td>
-                <td><span title="The ontology contains at least some license information">Second Star: License I</span></td>
-                <td><span title="The ontology contains the URI of the license given by dct:license">Third Star: License II</span></td>
-                <td><span title="The ontology is consistent (tested by pellet)">Fourth Star: Consistency</span></td>
+                <th>Version</th>
+                <th>Triples</th>
+                <th>Stars</th>
+                <th>Semantic Version</th>
+                <th>★: Retrieval & Parsing</th>
+                <th>★★: License I</th>
+                <th>★★★: License II</th>
+                <th>★★★★: Consistency</th>
+                <th>Lode-Conform</th>
             </tr>
+            {% for version in versions_info %}
             <tr>
-                <td>{{info.parseable}}</td>
-                <td>{{info.licenseI}}</td>
-                <td>{{info.licenseII}}</td>
-                <td>{{info.consistent}}</td>
+                <td><a href="{{version.version.url}}">{{version.version.label}}</a></td>
+                <td>{{version.triples}}</td>
+                <td>{{version.stars}}</td>
+                <td>{{version.semversion}}</td>
+                <td>
+                    {% if version.parsing %}
+                        <span class="check">✔</span>
+                    {% else %}
+                        <span class="x">✘</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if version.minLicense.conforms %}
+                        <a href="{{version.minLicense.url}}" class="check">✔</a>
+                    {% else %}
+                        <a href="{{version.minLicense.url}}" class="x">✘</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if version.goodLicense.conforms %}
+                        <a href="{{version.goodLicense.url}}" class="check">✔</a>
+                    {% else %}
+                        <a href="{{version.goodLicense.url}}" class="x">✘</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if version.consistent.conforms %}
+                        <a href="{{version.consistent.url}}" class="check">✔</a>
+                    {% else %}
+                        <a href="{{version.consistent.url}}" class="x">✘</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if version.lode.conforms %}
+                        <a href="{{version.lode.url}}" class="check">✔</a>
+                    {% else %}
+                        <a href="{{version.lode.url}}" class="x">✘</a>
+                    {% endif %}
+                </td>
             </tr>
+            {% endfor %}
         </table>
     </p>
 </div>
-
-
 {% else %}
-{{ info.message }}<br><br>
+<p>{{general_info.message}}</p>
 {% endif %}
-
 <script>
-$(document).ready(function() {
-    $('#uris').select2({  // init Select2 on form's uris field
-        placeholder: "{{ form.uris.label.text }}",
-        allowClear: true,
-        "width": 500
+    $(document).ready(function() {
+        $('#uris').select2({  // init Select2 on form's uris field
+            placeholder: "{{ form.uris.label.text }}",
+            allowClear: true,
+            "width": 500
+        });
     });
-});
 </script>
 
 {% endblock %}

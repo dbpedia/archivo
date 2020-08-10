@@ -20,8 +20,7 @@ ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
 fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
 
 archivoPath = os.path.split(app.instance_path)[0]
-shaclPath = os.path.join(archivoPath, "shacl")
-testingSuite = TestSuite(shaclPath)
+testingSuite = TestSuite(archivoPath)
 
 class SuggestionForm(FlaskForm):
     suggestUrl = StringField(label="Suggest URL", validators=[validators.DataRequired()])
@@ -56,25 +55,19 @@ def vocabInfo():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
-            abort(status=404) 
-        try:
-            indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
-            if indexUri == None:
-                return  render_template("info.html", info={"message":f"ERROR: Couln't find {ontoUri} in the Archivo Index."}, form=form)
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
-            source = ontoIndex[indexUri]["source"]
-            success, databusLink, versionLink, metadata = queryDatabus.getLatestMetaFile(group, artifact)
-            if success:
-                info = generateInfoDict(metadata, source, databusLink, versionLink)
-            else:
-                info = {"message":metadata}
-            info["addedDate"] = ontoIndex[indexUri]["accessed"]
-            return render_template("info.html", info=info, form=form)
-        except KeyError:
-            traceback.print_exc(file=sys.stdout)
-            return render_template("info.html", info={"message":f"ERROR: {ontoUri} is not in the Archivo Index."}, form=form)
-    return render_template("info.html", info={"message":"Enter an ontology URI!"}, form=form)
+        if crawlURIs.checkIndexForUri(ontoUri, ontoIndex) == None:
+            abort(status=404)
+        indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
+        title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+        general_info = {}
+        general_info["source"] = ontoIndex[indexUri]["source"]
+        general_info["archivement"] = ontoIndex[indexUri]["accessed"]
+        general_info["title"] = title
+        general_info["comment"] = comment
+        general_info["databusArtifact"] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        return render_template("info2.html", versions_info=sorted(versions_info, key=lambda d: d["version"]["label"], reverse=True), general_info=general_info, form=form)
+    return render_template("info2.html", general_info={"message":"Enter an ontology URI!"}, form=form)
 
 @vocabInfo.support("text/turtle")
 def turtleInfo():
@@ -111,7 +104,7 @@ def ontoList():
         try:
             downloadUri = allOntosInfo[databus_uri]["parsedFile"]
         except KeyError:
-            webservice_logger.error(f"Could't find databus artifact for {uri}")
+            webservice_logger.warning(f"Could't find databus artifact for {uri}")
             downloadUri = None
             
 
