@@ -3,9 +3,13 @@
 {% block content %}
 
 <h2>Add a new ontology to Archivo</h2>
-Archivo indexes ontologies from lov.okfn.org, linked classes and properties found in indexed Archivo ontologies and VOID information generated from all files on the Databus. 
-If an ontology was not discovered via these mechanism, you can attempt to register it here in the following manner.
-TODO needs more explanation:
+
+An ontology has to fulfill some requirements to be part of Archivo:
+<ol>
+    <li>The URL must be accessible and the RDF content of the ontology must be reachable via content negotiation from there in any of these formats: RDF+XML, N-Triples, Turtle</li>
+    <li>The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided here. If thats not the case Archivo tries to parse the new URI</li>
+</ol>
+
 Paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its index for daily crawling:
 <br>
 
@@ -17,5 +21,5 @@ Paste the URL of an OWL ontology here, Archivo will download and parse it and if
     <p>{{ form.submit() }}</p>
 </form>
 <br><br>
-{{ responseText|safe }} 
+{{ responseText|safe }}
 {% endblock %}
