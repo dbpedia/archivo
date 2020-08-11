@@ -167,3 +167,57 @@ def docPage():
 @app.route("/sys/licenses")
 def licensesPage():
     return render_template("licenses.html")
+
+@app.route("/download")
+@accept("text/html")
+def downloadOntology():
+    args = request.args
+    ontoUri = args["o"] if "o" in args else ""
+    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+        abort(status=404)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact)
+    if downloadLink != None:
+        return redirect(downloadLink, code=307)
+    else:
+        abort(status=404)
+
+
+@downloadOntology.support("text/turtle")
+def turtleDownload():
+    args = request.args
+    ontoUri = args["o"] if "o" in args else ""
+    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+        abort(status=404)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="ttl")
+    if downloadLink != None:
+        return redirect(downloadLink, code=307)
+    else:
+        abort(status=404)
+
+@downloadOntology.support("application/rdf+xml")
+def rdfxmlDownload():
+    args = request.args
+    ontoUri = args["o"] if "o" in args else ""
+    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+        abort(status=404)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="owl")
+    if downloadLink != None:
+        return redirect(downloadLink, code=307)
+    else:
+        abort(status=404)
+
+@downloadOntology.support("application/n-triples")
+def ntriplesDownload():
+    args = request.args
+    ontoUri = args["o"] if "o" in args else ""
+    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+        abort(status=404)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="nt")
+    if downloadLink != None:
+        return redirect(downloadLink, code=307)
+    else:
+        abort(status=404)

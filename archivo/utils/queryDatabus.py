@@ -140,9 +140,6 @@ def getInfoForArtifact(group, artifact):
     
 
 
-
-
-
 def getLatestParsedOntology(group, artifact):
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     query = "\n".join((
@@ -189,6 +186,47 @@ def getLatestParsedOntology(group, artifact):
     except Exception:
         traceback.print_exc(file=sys.stdout)
 
+
+def getLatestTurtleURL(group, artifact, fileExt="ttl"):
+    databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+    query = "\n".join((
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+        "PREFIX dct:    <http://purl.org/dc/terms/>",
+        "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+        "PREFIX db:     <https://databus.dbpedia.org/>",
+        "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+        "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "",
+        "SELECT DISTINCT ?file WHERE {",
+        "VALUES ?art { <%s> } ." % databusLink,
+        "   ?dataset dataid:account db:ontologies .",
+        "   ?dataset dataid:artifact ?art .",
+        "   ?dataset dcat:distribution ?distribution .",
+        "   ?distribution dataid-cv:type 'parsed'^^xsd:string .",
+        "   ?distribution dataid:formatExtension '%s'^^xsd:string ." % fileExt,
+        "   ?distribution dcat:downloadURL ?file .",
+        "   ?dataset dct:hasVersion ?latestVersion .",
+        "{",
+        "   SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
+        "    ?dataset dataid:account db:ontologies .",
+        "    ?dataset dataid:artifact ?art .",
+        "    ?dataset dct:hasVersion ?v .",
+            "}",
+            "}",
+        "}",
+    ))
+    sparql = SPARQLWrapper(databusRepoUrl)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    try:
+        return results["results"]["bindings"][0]["file"]["value"]
+    except KeyError:
+        return None
+    except IndexError:
+        return None
 
 def allLatestParsedTurtleFiles():
     query = "\n".join((
