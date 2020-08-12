@@ -187,7 +187,7 @@ def getLatestParsedOntology(group, artifact):
         traceback.print_exc(file=sys.stdout)
 
 
-def getLatestTurtleURL(group, artifact, fileExt="ttl"):
+def getLatestTurtleURL(group, artifact, fileExt="owl"):
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     query = "\n".join((
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",

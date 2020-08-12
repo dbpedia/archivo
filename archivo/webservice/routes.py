@@ -11,7 +11,7 @@ import traceback
 import sys
 import requests
 import markdown
-from flask_accept import accept
+from flask_accept import accept, accept_fallback
 from urllib.parse import quote
 from utils.archivoLogs import webservice_logger
 
@@ -169,7 +169,7 @@ def licensesPage():
     return render_template("licenses.html")
 
 @app.route("/download")
-@accept("text/html")
+@accept_fallback
 def downloadOntology():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
