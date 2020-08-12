@@ -134,8 +134,8 @@ def getRDFInfoLink(ontologyUrl, mimeType):
     databusArtifact = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     queryString = "\n".join((
         "PREFIX dcterm: <http://purl.org/dc/terms/>",
-        "PREFIX  owl: <http://www.w3.org/2002/07/owl#>",
-        "PREFIX  dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
         "PREFIX dct:    <http://purl.org/dc/terms/>",
         "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
@@ -168,15 +168,19 @@ def docPage():
 def licensesPage():
     return render_template("licenses.html")
 
-@app.route("/download")
+@app.route("/download", methods=["GET"])
 @accept_fallback
 def downloadOntology():
     args = request.args
-    ontoUri = args["o"] if "o" in args else ""
+    ontoUri = args.get("o", "")
+    rdfFormat = args.get("f", "")
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact)
+    if rdfFormat == "":
+        rdfFormat = "owl"
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
+
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:
@@ -187,10 +191,13 @@ def downloadOntology():
 def turtleDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    rdfFormat = args["f"] if "f" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="ttl")
+    if rdfFormat == "":
+        rdfFormat = "ttl"
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:
@@ -200,10 +207,13 @@ def turtleDownload():
 def rdfxmlDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    rdfFormat = args["f"] if "f" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="owl")
+    if rdfFormat == "":
+        rdfFormat = "owl"
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:
@@ -213,10 +223,13 @@ def rdfxmlDownload():
 def ntriplesDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    rdfFormat = args["f"] if "f" in args else ""
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt="nt")
+    if rdfFormat == "":
+        rdfFormat = "nt"
+    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:

@@ -3,7 +3,7 @@
 {% block content %}
 
 <h3>Ontology Info Service</h3>
-Select an ontology to get info on its latest version:
+Select an ontology to see information about all versions deployed:
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
     {{ form.csrf_token }}
@@ -46,18 +46,20 @@ Select an ontology to get info on its latest version:
             <tr>
                 <th>Version</th>
                 <th>Triples</th>
-                <th>Stars</th>
+                <th><a href="https://github.com/dbpedia/Archivo#stars">Stars</a></th>
                 <th>Semantic Version</th>
                 <th><span title="All of the following criteria have to be fulfilled:1) The non-information URI resolves to a machine readable format or a machine readable version of the ontology is deterministically discoverable by other common means. 2) download was successful 3) uses a common format implemented by Archivo 4) at least one format was found that parses with no or few (negligible) syntactical warnings">
                     ★: Retrieval & Parsing
                 </span></th>
                 <th><span title="A proper ontology declaration was found using rdf:type owl:Ontology and some form of license could be detected. A high degree of heterogeneity is permissible for this star regarding the used property/subproperty as well as object:license URI (resolvable linked data or web link),xsd:stringorxsd:anyURI">
-                    ★★: License I
+                    ★: License I
                 </span></th>
                 <th><span title="We require a homogenized license declaration using dct:license as object property with a URI (not string or anyURI). ">
-                    ★★★: License II
+                    ☆: License II
                 </span></th>
-                <th><span title="We measure the compatibility with currently available reasoners such as Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.">★★★★: Consistency</span></th>
+                <th><span title="We measure the compatibility with currently available reasoners such as Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.">
+                    ☆: Consistency</span>
+                </th>
                 <th>Lode-Conform</th>
             </tr>
             {% for version in versions_info %}
