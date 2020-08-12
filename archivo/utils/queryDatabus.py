@@ -3,6 +3,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
 from utils import ontoFiles
+from utils.stringTools import generateStarString
 from datetime import datetime
 
 databusRepoUrl = "https://databus.dbpedia.org/repo/sparql"
@@ -126,6 +127,7 @@ def getInfoForArtifact(group, artifact):
                                         metadata["test-results"]["consistent"], 
                                         metadata["test-results"]["consistent-without-imports"],
                                         metadata["test-results"]["License-II"])
+        stars = generateStarString(stars)
         isConsistent=lambda s: True if s == "Yes" else False
         version_infos.append({"minLicense":{"conforms":metadata["test-results"]["License-I"], "url":minLicenseURL}, 
                                   "goodLicense":{"conforms":metadata["test-results"]["License-II"], "url":goodLicenseURL},

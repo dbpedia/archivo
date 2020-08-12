@@ -138,3 +138,6 @@ def deleteAllFilesInDir(directory):
   for filename in os.listdir(directory):
     if os.path.isfile(os.path.join(directory, filename)):
       os.remove(os.path.join(directory, filename))
+
+def generateStarString(number):
+  return "★" * number + "☆" * (4-number)
