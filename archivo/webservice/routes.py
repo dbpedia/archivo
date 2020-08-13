@@ -252,7 +252,7 @@ def getLatestFallout():
             if distance.seconds > 10800:
                 break
             if not t[0] in falloutOntos: 
-                falloutOntos[t[0]] = t[4]
+                falloutOntos[t[0]] = str(t[1]) + t[4]
         except IndexError:
             break
     return falloutOntos
