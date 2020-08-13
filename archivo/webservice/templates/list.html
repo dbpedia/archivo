@@ -1,12 +1,14 @@
 {% extends "index.html" %}
 
 {% block content %}
-<p>DBpedia Archivo (backronym for Ontology Archive) is an online ontology interface and augmented archive that discovers, crawls, versions and archives ontologies on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a>. 
-    Based on daily crawls, different features, quality measures and, if possible, fixes are deployed to handle and stabilize the changes in the found ontologies at web-scale. Read the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
-    </p>
-<h2>List all discovered ontologies</h2>
+<h2>List of all discovered ontologies</h2>
 <br>
 <!--TODO: if possible include how many stars there are and oter critical info in the table-->
+<p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br>
+The <b>Ontology URI</b> leads to more information about the versions of this ontology.<br>
+The <b>Archivo URI</b> represents the release on the DBpedia Databus.<br>
+The <b>Download</b> offers a link to the latest version of the ontology, available in the formats RDF+XML, Turtle and N-Triples.<br>
+</p>
 <table
  data-toggle="table"
  data-search="true">
@@ -14,15 +16,27 @@
 <tr>
  <th data-sortable="true" data-field="non-information-uri">Ontology URI</th>
  <th data-sortable="true" data-field="databus-link">Archivo URI</th>
- <th data-sortable="true" data-field="latest-parsed-turtle">Download Latest Turtle</th>
+ <th data-sortable="true" data-field="download-latest">Download Latest</th>
+ <th data-sortable="true" data-field="availablity">Availablity</th>
 </tr>
 </thead>
 <tbody>
 {% for i in range(0, len) %}
 <tr>
-    <td><a href=/info?o={{Ontologies[i][0]}}>{{Ontologies[i][0]}}</a></td>
+    <td><a href=/info?o={{Ontologies[i][0].uri}}>{{Ontologies[i][0].title}}</a></td>
     <td><a href="{{Ontologies[i][1]}}">{{Ontologies[i][1]}}</a></td>
-    <td><a href="{{Ontologies[i][2]}}">Download</a></td>
+    <td>
+        <a href="{{Ontologies[i][2].owl}}">owl</a>,
+        <a href="{{Ontologies[i][2].ttl}}">ttl</a>,
+        <a href="{{Ontologies[i][2].nt}}">nt</a>
+    </td>
+    <td>
+        {% if Ontologies[i][3][0] %}
+            <span class="check">✔</span>
+        {% else %}
+            <span title="{{Ontologies[i][3][1]}}" class="x">✘</span>
+        {% endif %}
+    </td>
 </tr>
 {%endfor%}
 

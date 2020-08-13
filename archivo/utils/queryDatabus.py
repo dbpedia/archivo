@@ -241,14 +241,22 @@ def allLatestParsedTurtleFiles():
         "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
 
-        "SELECT DISTINCT ?art ?latestVersion ?parsedFile ?metafile WHERE {",
+        "SELECT DISTINCT ?art ?title ?latestVersion ?ttlFile ?owlFile ?ntFile ?metafile WHERE {",
             "?dataset dataid:account db:ontologies .", 
             "?dataset dataid:artifact ?art .",
-            "?dataset dcat:distribution ?parsedDst .",
-            "?parsedDst dataid-cv:type 'parsed'^^xsd:string .",     
-            "?parsedDst dataid:formatExtension 'ttl'^^xsd:string .", 
-            "?parsedDst dcat:downloadURL ?parsedFile .",
-        
+            "?dataset dct:title ?title .",
+            "?dataset dcat:distribution ?turtleDst .",
+            "?turtleDst dataid-cv:type 'parsed'^^xsd:string .",     
+            "?turtleDst dataid:formatExtension 'ttl'^^xsd:string .", 
+            "?turtleDst dcat:downloadURL ?ttlFile .",
+            "?dataset dcat:distribution ?owlDst .",
+            "?owlDst dataid-cv:type 'parsed'^^xsd:string .",     
+            "?owlDst dataid:formatExtension 'owl'^^xsd:string .", 
+            "?owlDst dcat:downloadURL ?owlFile .",
+            "?dataset dcat:distribution ?ntDst .",
+            "?ntDst dataid-cv:type 'parsed'^^xsd:string .",     
+            "?ntDst dataid:formatExtension 'nt'^^xsd:string .", 
+            "?ntDst dcat:downloadURL ?ntFile .",
             "?dataset dcat:distribution ?metaDst .",
             "?metaDst dataid-cv:type 'meta'^^xsd:string .",
             "?metaDst dcat:downloadURL ?metafile .",
@@ -274,8 +282,14 @@ def allLatestParsedTurtleFiles():
     for binding in ontdata["results"]["bindings"]:
         try:
             databusUri = binding["art"]["value"]
+            title = binding["title"]["value"]
             if not databusUri in result:
-                result[databusUri] = {"parsedFile":binding["parsedFile"]["value"], "meta":binding["metafile"]["value"], "version":binding["latestVersion"]["value"]}
+                result[databusUri] = {"title":title, 
+                                        "ttlFile":binding["ttlFile"]["value"],
+                                        "owlFile":binding["owlFile"]["value"],
+                                        "ntFile":binding["ntFile"]["value"], 
+                                        "meta":binding["metafile"]["value"], 
+                                        "version":binding["latestVersion"]["value"]}
         except KeyError:
             continue
 

@@ -14,11 +14,11 @@ import markdown
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote
 from utils.archivoLogs import webservice_logger
+from datetime import datetime
 
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
 fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
-
 archivoPath = os.path.split(app.instance_path)[0]
 testingSuite = TestSuite(archivoPath)
 
@@ -101,15 +101,19 @@ def ontoList():
     for uri in ontoIndex:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        latestFallout = getLatestFallout()
         try:
-            downloadUri = allOntosInfo[databus_uri]["parsedFile"]
+            infoDict = allOntosInfo[databus_uri]
+            downloadURIs = {"ttl":infoDict.get("ttlFile", ""), "owl":infoDict.get("owlFile", ""), "nt":infoDict.get("ntFile", "")}
+            title = infoDict.get("title", uri)
+            available = (False, latestFallout[uri]) if uri in latestFallout else (True, None)
         except KeyError:
             webservice_logger.warning(f"Could't find databus artifact for {uri}")
             downloadUri = None
             
 
-        ontos.append((uri, databus_uri, downloadUri))
-    return render_template("list.html", len=len(ontos), Ontologies=ontos)
+        ontos.append(({"title":title, "uri":uri}, databus_uri, downloadURIs, available))
+    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontoIndex))
 
 
         
@@ -234,3 +238,21 @@ def ntriplesDownload():
         return redirect(downloadLink, code=307)
     else:
         abort(status=404)
+
+@app.route("/home")
+def home():
+    return render_template("home.html")
+
+def getLatestFallout():
+    falloutOntos = {}
+    lastTime = datetime.strptime(fallout[-1][1], "%Y-%m-%d %H:%M:%S.%f")
+    for t in fallout[::-1]:
+        try:
+            distance = lastTime - datetime.strptime(t[1], "%Y-%m-%d %H:%M:%S.%f")
+            if distance.seconds > 10800:
+                break
+            if not t[0] in falloutOntos: 
+                falloutOntos[t[0]] = t[4]
+        except IndexError:
+            break
+    return falloutOntos
