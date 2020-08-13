@@ -107,6 +107,10 @@
         "accessed": "2020.05.06; 21:08:30",
         "source": "LOV"
     },
+    "http://www.georss.org/georss/": {
+	"accessed": "2020.08.10; 11:00:00",
+	"source": "forced-admin-inclusion"
+    },
     "http://data.ign.fr/def/geometrie": {
         "accessed": "2020.05.06; 21:09:12",
         "source": "LOV"
@@ -886,6 +890,10 @@
     "http://purl.obolibrary.org/obo/obi.owl": {
         "accessed": "2020.05.06; 23:54:58",
         "source": "LOV"
+    },
+    "http://purl.obolibrary.org/obo/po.owl": {
+	"accessed" : "2020-08-06 13:09:36",
+	"source" : "user-suggestion"
     },
     "http://purl.oclc.org/NET/UNIS/fiware/iot-lite#": {
         "accessed": "2020.05.06; 21:38:51",

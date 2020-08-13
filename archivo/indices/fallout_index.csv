@@ -644,3 +644,605 @@ http://www.ukoln.ac.uk/metadata/cen/ws-mmi-dc/terms/2005-01-19/,2020-07-17 14:11
 http://merlin.phys.uni.lodz.pl/onto/physo/,2020-07-17 14:17:23.813172,prefix.cc,False,INTERNAL ERROR: Couldn't parse file. 
 http://www.intelleo.eu/ontologies/user-model/ns,2020-07-17 14:22:30.997150,prefix.cc,False,ERROR: Error - Status 404
 https://sdmx.org/wp-content/uploads/01_sdmx_cog_annex_1_cdc_2009.pdf,2020-07-17 15:05:22.576790,prefix.cc,False,ERROR: Error - ConnectionError
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-06 18:00:02.222243,LOV,False,No Access - Status 404
+http://biohackathon.org/resource/faldo,2020-08-06 18:00:08.743059,LOV,True,Error - UnknownError
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-06 18:00:08.953639,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-06 18:00:09.168070,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-06 18:00:12.103128,prefix.cc,False,Connection Error
+http://colin.maudry.com/ontologies/dgfr#,2020-08-06 18:00:30.378991,prefix.cc,True,Error - UnknownError
+http://cookingbigdata.com/linkeddata/ccpricing#,2020-08-06 18:00:38.889963,LOV,True,Error - UnknownError
+http://data.europa.eu/esco/flow,2020-08-06 18:00:50.413634,spoHashUris,True,Error - UnknownError
+http://data.vlaanderen.be/ns/besluit,2020-08-06 18:19:10.979789,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-06 18:19:11.157552,prefix.cc,False,No Access - Status 405
+http://dati.cdec.it/lod/shoah/,2020-08-06 18:19:24.041588,LOV,False,No Access - Status 403
+http://dati.san.beniculturali.it/SAN/,2020-08-06 18:19:24.549556,LOV,False,Connection Error
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-06 18:19:34.930458,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-06 18:19:35.420579,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-06 18:19:35.910221,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-06 18:19:36.399418,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-06 18:19:36.888264,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-06 18:19:37.376686,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-06 18:19:37.866297,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-06 18:19:38.355755,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-06 18:19:38.845128,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-06 18:19:39.334318,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-06 18:19:39.823564,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-06 18:19:40.313548,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-06 18:19:40.802845,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-06 18:19:41.291823,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-06 18:19:41.781268,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-06 18:19:42.189125,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-06 18:20:04.224583,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-06 18:25:51.219136,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-06 18:28:59.923478,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-06 18:29:17.556586,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-06 18:32:46.029764,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-06 18:33:05.727289,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-06 18:33:25.115228,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-06 18:34:10.728370,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-06 18:34:11.577191,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-06 18:34:30.336894,prefix.cc,False,Connection Error
+http://purl.org/reco#,2020-08-06 18:37:39.499391,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-06 18:37:51.620097,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-06 18:37:59.117563,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-06 18:38:08.656150,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-06 18:38:17.943003,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-06 18:41:13.724506,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-07 02:00:02.581871,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-07 02:00:06.633467,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-07 02:00:06.846009,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-07 02:00:07.948959,prefix.cc,False,Connection Error
+http://colin.maudry.com/ontologies/dgfr#,2020-08-07 02:00:26.033149,prefix.cc,True,Error - UnknownError
+http://cookingbigdata.com/linkeddata/ccinstances#,2020-08-07 02:00:28.254466,LOV,True,Error - UnknownError
+http://cookingbigdata.com/linkeddata/ccsla#,2020-08-07 02:00:50.396867,LOV,True,Error - UnknownError
+http://data.ordnancesurvey.co.uk/ontology/geometry/,2020-08-07 02:01:09.409542,LOV,True,Error - UnknownError
+http://data.ordnancesurvey.co.uk/ontology/postcode/,2020-08-07 02:01:09.975135,LOV,True,Error - UnknownError
+http://data.vlaanderen.be/ns/besluit,2020-08-07 02:01:11.262814,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-07 02:01:11.433282,prefix.cc,False,No Access - Status 405
+http://datafoodconsortium.org/ontologies/DFC_BusinessOntology.owl,2020-08-07 02:01:15.874767,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: AttValue: ' expected;rapper: Error -  - XML parser error: attributes construct error;rapper: Error -  - XML parser error: Couldn't find end of Start Tag owl:cardinality
+http://dati.cdec.it/lod/shoah/,2020-08-07 02:01:24.754549,LOV,False,No Access - Status 403
+http://dati.san.beniculturali.it/SAN/,2020-08-07 02:01:43.129278,LOV,False,Connection Error
+http://dbpedia.org/ontology/,2020-08-07 02:01:47.120682,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Extra content at the end of the document
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-07 02:01:52.603794,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-07 02:01:53.093073,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-07 02:01:53.582769,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-07 02:01:54.072999,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-07 02:01:54.562538,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-07 02:01:55.052011,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-07 02:01:55.540775,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-07 02:01:56.029634,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-07 02:01:56.520355,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-07 02:01:57.010744,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-07 02:01:57.500168,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-07 02:01:57.990053,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-07 02:01:58.480331,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-07 02:01:58.969892,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-07 02:01:59.459795,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-07 02:01:59.868385,prefix.cc,False,No Access - Status 404
+http://eprints.org/ontology/,2020-08-07 02:02:12.889163,LOV,True,Error - UnknownError
+http://eunis.eea.europa.eu/rdf/species-schema.rdf,2020-08-07 02:02:43.976917,spoHashUris,True,Error - UnknownError
+http://gov.genealogy.net/ontology.owl,2020-08-07 02:02:45.673515,LOV,True,Couldn't parse File: rapper: Error - URI /data/home/dstreitmatter/data/archivo-init-release/gov.genealogy.net/ontology--owl/2020.08.07-020245/ontology--owl_type=orig.rdf - Resolving URI failed: <url> malformed
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-07 02:02:46.564767,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-07 02:03:01.746537,prefix.cc,False,No Access - Status 405
+http://ldf.fi/void-ext,2020-08-07 02:03:04.267542,prefix.cc,True,Error - UnknownError
+http://lod.nl.go.kr/ontology/,2020-08-07 02:03:21.150605,prefix.cc,True,Error - UnknownError
+http://njh.me/,2020-08-07 02:03:27.421319,LOV,True,Error - UnknownError
+http://nr.inria.fr/ludo/v1,2020-08-07 02:03:27.525971,LOV,False,Connection Error
+http://ontologi.es/days#,2020-08-07 02:03:32.469822,prefix.cc,True,Error - UnknownError
+http://opendata.aragon.es/def/ei2a,2020-08-07 02:03:47.148563,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.bdrc.io/ontology/core/,2020-08-07 02:04:20.131478,prefix.cc,True,Error - UnknownError
+http://purl.org/NET/biol/botany#,2020-08-07 02:04:45.063336,LOV,True,Error - UnknownError
+http://purl.org/NET/biol/ns#,2020-08-07 02:04:49.610443,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-07 02:05:17.644757,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/NET/uri#,2020-08-07 02:05:30.597359,prefix.cc,True,Error - UnknownError
+http://purl.org/carfo#,2020-08-07 02:05:40.475733,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-07 02:06:26.286262,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-07 02:06:26.948776,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-07 02:06:53.032181,prefix.cc,False,Connection Error
+http://purl.org/ontology/bibo/,2020-08-07 02:07:59.329054,LOV,True,Error - UnknownError
+http://purl.org/ontology/rec/core#,2020-08-07 02:08:39.963057,LOV,False,No Access - Status 429
+http://purl.org/ontology/symbolic-music/,2020-08-07 02:08:42.052952,prefix.cc,False,No Access - Status 429
+http://purl.org/ontology/wi/core#,2020-08-07 02:08:42.898812,LOV,False,No Access - Status 429
+http://purl.org/ontology/wo/core#,2020-08-07 02:08:47.974932,LOV,False,No Access - Status 429
+http://purl.org/reco#,2020-08-07 02:10:32.078482,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-07 02:10:47.778644,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-07 02:10:56.373017,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-07 02:11:06.232612,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-07 02:11:14.439912,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-07 02:11:27.355192,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-10 18:02:01.847630,LOV,False,No Access - Status 404
+http://biohackathon.org/resource/faldo,2020-08-10 18:02:32.304742,LOV,False,Connection Error
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-10 18:02:32.557211,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-10 18:02:32.810865,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-10 18:02:34.148390,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-10 18:04:01.655773,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-10 18:04:01.830489,prefix.cc,False,No Access - Status 405
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-10 18:04:30.603944,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-10 18:04:31.093455,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-10 18:04:31.583176,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-10 18:04:32.072527,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-10 18:04:32.562503,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-10 18:04:33.051823,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-10 18:04:33.540466,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-10 18:04:34.031404,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-10 18:04:34.520993,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-10 18:04:35.010711,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-10 18:04:35.499778,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-10 18:04:35.988762,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-10 18:04:36.478026,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-10 18:04:36.967414,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-10 18:04:37.456470,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-10 18:04:38.150376,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-10 18:05:05.925328,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-10 18:06:26.943029,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-10 18:07:18.179041,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-10 18:07:37.315996,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-10 18:08:52.196759,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-10 18:09:12.739566,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-10 18:09:32.135259,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-10 18:10:26.754584,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-10 18:10:27.541258,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-10 18:10:53.189994,prefix.cc,False,No Access - Status 403
+http://purl.org/reco#,2020-08-10 18:13:45.704256,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-10 18:13:59.508890,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-10 18:14:07.679600,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-10 18:14:20.176220,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-10 18:14:28.114905,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-10 18:15:08.760845,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://rdfs.org/scot/ns#,2020-08-10 18:27:55.946737,LOV,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-10 18:37:04.528770,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-10 18:39:52.886796,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-10 18:39:52.986967,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-10 18:40:22.614743,prefix.cc,False,No Access - Status 406
+http://www.bl.uk/schemas/bibliographic/blterms,2020-08-10 18:44:07.486836,LOV,False,No Access - Status 429
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-10 18:44:19.831289,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-10 18:45:59.625603,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-10 18:46:15.202040,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-10 18:53:40.151125,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-10 18:53:40.273305,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-10 18:53:42.046958,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-10 18:55:43.871865,LOV,False,No Access - Status 404
+https://w3id.org/pnv,2020-08-10 18:57:01.340414,prefix.cc,False,Connection Error
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-11 10:02:01.767631,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-11 10:02:05.825491,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-11 10:02:06.098586,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-11 10:02:06.784658,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-11 10:02:48.930124,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-11 10:02:49.101855,prefix.cc,False,No Access - Status 405
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-11 10:03:18.021499,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-11 10:03:18.519644,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-11 10:03:19.016773,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-11 10:03:19.513738,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-11 10:03:20.010946,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-11 10:03:20.508237,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-11 10:03:21.005780,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-11 10:03:21.502985,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-11 10:03:22.000371,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-11 10:03:22.497370,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-11 10:03:22.994847,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-11 10:03:23.491836,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-11 10:03:23.989234,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-11 10:03:24.486198,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-11 10:03:24.983328,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-11 10:03:25.560708,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-11 10:03:52.911799,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-11 10:04:05.719935,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-11 10:04:35.721802,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-11 10:04:56.164956,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.oclc.org/NET/UNIS/fiware/iot-lite#,2020-08-11 10:05:16.763877,LOV,False,No Access - Status 502
+http://purl.oclc.org/NET/ssnx/ssn,2020-08-11 10:05:37.028316,LOV,False,No Access - Status 502
+http://purl.org/NET/biol/ns#,2020-08-11 10:06:23.427428,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/c4dm/timeline.owl,2020-08-11 10:06:35.771293,LOV,False,No Access - Status 502
+http://purl.org/NET/cpan-uri/terms#,2020-08-11 10:06:41.754823,prefix.cc,False,No Access - Status 502
+http://purl.org/NET/decimalised#d,2020-08-11 10:06:42.107056,prefix.cc,False,No Access - Status 502
+http://purl.org/NET/ssnext/electricmeters#,2020-08-11 10:07:13.593030,prefix.cc,False,No Access - Status 502
+http://purl.org/NET/uri#,2020-08-11 10:07:13.947555,prefix.cc,False,No Access - Status 502
+http://purl.org/a-proc,2020-08-11 10:07:14.299241,prefix.cc,False,No Access - Status 502
+http://purl.org/acco/ns#,2020-08-11 10:07:14.651905,LOV,False,No Access - Status 502
+http://purl.org/adms/sw/,2020-08-11 10:07:15.004964,prefix.cc,False,No Access - Status 502
+http://purl.org/biodiversity/eol/,2020-08-11 10:07:15.357379,prefix.cc,False,No Access - Status 502
+http://purl.org/biodiversity/taxon/,2020-08-11 10:07:15.709145,LOV,False,No Access - Status 502
+http://purl.org/carfo#,2020-08-11 10:07:27.493040,prefix.cc,False,Connection Error
+http://purl.org/cld/terms/AccrualMethod,2020-08-11 10:08:06.703512,LOV,False,No Access - Status 503
+http://purl.org/cld/terms/AccrualPolicy,2020-08-11 10:08:25.513716,prefix.cc,True,Error - Status 502
+http://purl.org/configurationontology,2020-08-11 10:08:50.034306,LOV,True,Error - Status 502
+http://purl.org/crmeh#CRMEH,2020-08-11 10:08:50.388354,prefix.cc,False,No Access - Status 502
+http://purl.org/csm/1.0,2020-08-11 10:08:50.741112,prefix.cc,False,No Access - Status 502
+http://purl.org/dita/ns#,2020-08-11 10:09:27.169561,LOV,True,Error - Status 502
+http://purl.org/dpn,2020-08-11 10:09:27.522893,LOV,False,No Access - Status 502
+http://purl.org/dpn/dataset,2020-08-11 10:09:27.874823,spoHashUris,False,No Access - Status 502
+http://purl.org/dqm-vocabulary/v1/dqm,2020-08-11 10:09:28.227560,LOV,False,No Access - Status 502
+http://purl.org/eis/vocab/scor#,2020-08-11 10:09:43.877838,prefix.cc,False,No Access - Status 502
+http://purl.org/finlex/schema/laki/,2020-08-11 10:09:51.100624,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-11 10:09:52.837763,prefix.cc,False,No Access - Status 405
+http://purl.org/foodontology,2020-08-11 10:09:53.189205,prefix.cc,False,No Access - Status 502
+http://purl.org/goodrelations/v1,2020-08-11 10:09:53.541414,LOV,False,No Access - Status 502
+http://purl.org/healthcarevocab/v1,2020-08-11 10:09:53.893244,LOV,False,No Access - Status 502
+http://purl.org/imbi/ru-meta.owl,2020-08-11 10:09:54.244565,LOV,False,No Access - Status 502
+http://purl.org/innovation/ns,2020-08-11 10:09:54.596691,LOV,False,No Access - Status 502
+http://purl.org/iot/vocab/m3-lite#,2020-08-11 10:10:04.802834,LOV,False,No Access - Status 502
+http://purl.org/ipo/core,2020-08-11 10:10:05.155623,LOV,False,No Access - Status 502
+http://purl.org/iso25964/skos-thes,2020-08-11 10:10:05.507406,LOV,False,No Access - Status 502
+http://purl.org/linked-data/cube,2020-08-11 10:10:05.859108,LOV,False,No Access - Status 502
+http://purl.org/linked-data/registry,2020-08-11 10:10:06.211511,spoHashUris,False,No Access - Status 502
+http://purl.org/metainfo/terms/dsp,2020-08-11 10:10:34.721250,prefix.cc,False,No Access - Status 502
+http://purl.org/minim/minim,2020-08-11 10:10:35.073866,prefix.cc,False,No Access - Status 502
+http://purl.org/momayo/mmo/,2020-08-11 10:10:35.426038,prefix.cc,False,No Access - Status 502
+http://purl.org/net/VideoGameOntology,2020-08-11 10:10:35.778154,LOV,False,No Access - Status 502
+http://purl.org/net/bel-epa/doacc,2020-08-11 10:10:44.412313,prefix.cc,False,No Access - Status 403
+http://purl.org/net/hifm/ontology#,2020-08-11 10:10:58.847333,LOV,False,No Access - Status 502
+http://purl.org/net/nknouf/ns/bibtex,2020-08-11 10:10:59.199286,LOV,False,No Access - Status 502
+http://purl.org/net/p-plan#,2020-08-11 10:11:53.132485,LOV,False,No Access - Status 502
+http://purl.org/net/provenance/integrity#,2020-08-11 10:12:09.981680,prefix.cc,False,No Access - Status 502
+http://purl.org/net/provenance/ns#,2020-08-11 10:12:10.334075,LOV,False,No Access - Status 502
+http://purl.org/net/provenance/types#,2020-08-11 10:12:10.686141,LOV,False,No Access - Status 502
+http://purl.org/net/tsn#,2020-08-11 10:12:11.039350,LOV,False,No Access - Status 502
+http://purl.org/net/tsnchange#,2020-08-11 10:12:11.391641,LOV,False,No Access - Status 502
+http://purl.org/ontology/co/core#,2020-08-11 10:13:53.578894,LOV,False,No Access - Status 502
+http://purl.org/ontology/dvia,2020-08-11 10:13:53.931408,LOV,False,No Access - Status 502
+http://purl.org/ontology/olo/core#,2020-08-11 10:14:27.455077,LOV,False,No Access - Status 502
+http://purl.org/ontology/pbo/core#,2020-08-11 10:14:27.807266,LOV,False,No Access - Status 502
+http://purl.org/ontology/po/,2020-08-11 10:14:28.159709,LOV,False,No Access - Status 502
+http://purl.org/ontology/prv/rules#,2020-08-11 10:14:36.524390,prefix.cc,False,No Access - Status 502
+http://purl.org/ontology/rec/core#,2020-08-11 10:14:36.878387,LOV,False,No Access - Status 502
+http://purl.org/ontology/storyline,2020-08-11 10:14:37.231578,LOV,False,No Access - Status 502
+http://purl.org/ontology/symbolic-music/,2020-08-11 10:14:37.583725,prefix.cc,False,No Access - Status 502
+http://purl.org/ontology/wi/core#,2020-08-11 10:14:37.936087,LOV,False,No Access - Status 502
+http://purl.org/opdm/utility#,2020-08-11 10:16:11.562079,spoHashUris,False,No Access - Status 502
+http://purl.org/oslo/ns/localgov,2020-08-11 10:16:11.913966,LOV,False,No Access - Status 502
+http://purl.org/procurement/public-contracts,2020-08-11 10:16:38.621790,LOV,False,No Access - Status 502
+http://purl.org/procurement/public-contracts-kinds#,2020-08-11 10:16:48.777537,spoHashUris,False,No Access - Status 502
+http://purl.org/procurement/public-contracts-procedure-types#,2020-08-11 10:16:49.129894,spoHashUris,False,No Access - Status 502
+http://purl.org/qb4olap/cubes,2020-08-11 10:16:49.482788,LOV,False,No Access - Status 502
+http://purl.org/reco#,2020-08-11 10:17:05.538394,LOV,False,Connection Error
+http://purl.org/spar/deo,2020-08-11 10:17:39.419851,LOV,False,No Access - Status 502
+http://purl.org/spar/fabio,2020-08-11 10:17:49.145407,LOV,False,No Access - Status 502
+http://purl.org/spar/pro/,2020-08-11 10:17:49.497391,LOV,False,No Access - Status 502
+http://purl.org/spar/pso,2020-08-11 10:17:49.850236,LOV,False,No Access - Status 502
+http://purl.org/spar/pwo,2020-08-11 10:17:50.201633,LOV,False,No Access - Status 502
+http://purl.org/tio/ns#,2020-08-11 10:17:51.944466,LOV,False,No Access - Status 502
+http://purl.org/uF/hCard/terms/,2020-08-11 10:19:00.720150,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/viso/,2020-08-11 10:19:09.296777,prefix.cc,False,No Access - Status 502
+http://purl.org/voc/vrank,2020-08-11 10:19:09.649234,prefix.cc,False,No Access - Status 502
+http://purl.org/wai#,2020-08-11 10:19:31.084675,LOV,False,No Access - Status 502
+http://purl.org/xtypes/,2020-08-11 10:19:59.821369,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://rdfs.org/scot/ns#,2020-08-11 10:20:23.643135,LOV,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-11 10:30:32.780489,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-11 10:32:54.928455,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-11 10:32:55.030102,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-11 10:33:25.372375,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-11 10:39:59.178614,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-11 10:41:53.899244,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-11 10:42:09.120269,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+http://www.purl.org/drammar,2020-08-11 10:42:43.300520,LOV,False,No Access - Status 502
+https://data.vlaanderen.be/ns/logies,2020-08-11 10:56:44.394125,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-11 10:56:44.512758,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-11 10:56:46.225821,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-11 11:03:37.638049,LOV,False,No Access - Status 404
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-11 18:00:02.523876,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-11 18:00:06.809093,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-11 18:00:07.093594,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-11 18:00:08.025580,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-11 18:00:54.978252,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-11 18:00:55.154576,prefix.cc,False,No Access - Status 405
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-11 18:01:23.770334,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-11 18:01:24.268218,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-11 18:01:24.765424,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-11 18:01:25.262567,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-11 18:01:25.760418,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-11 18:01:26.258243,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-11 18:01:26.756007,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-11 18:01:27.253963,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-11 18:01:27.751899,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-11 18:01:28.249885,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-11 18:01:28.747694,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-11 18:01:29.245256,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-11 18:01:29.742878,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-11 18:01:30.240832,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-11 18:01:30.738439,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-11 18:01:31.528569,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-11 18:01:58.664319,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-11 18:02:10.449957,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-11 18:02:37.435007,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-11 18:03:00.702689,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-11 18:06:44.472506,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-11 18:07:04.861352,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-11 18:07:23.395488,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-11 18:08:16.505040,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-11 18:08:17.221686,prefix.cc,False,No Access - Status 405
+http://purl.org/innovation/ns,2020-08-11 18:08:53.443225,LOV,False,Connection Error
+http://purl.org/net/bel-epa/doacc,2020-08-11 18:09:21.808683,prefix.cc,False,No Access - Status 403
+http://purl.org/reco#,2020-08-11 18:12:12.217137,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-11 18:12:28.596433,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-11 18:12:35.447089,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-11 18:12:47.275509,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-11 18:12:54.811646,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-11 18:13:10.887431,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://rdfs.org/sioc/argument#,2020-08-11 18:13:35.309717,prefix.cc,False,No Access - Status 404
+http://rdfs.org/sioc/ns#,2020-08-11 18:13:35.399324,LOV,False,No Access - Status 404
+http://rdfs.org/sioc/services#,2020-08-11 18:13:35.488539,prefix.cc,False,No Access - Status 404
+http://rdfs.org/sioc/types#,2020-08-11 18:13:35.577822,prefix.cc,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-11 18:18:05.199159,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-11 18:20:34.034358,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-11 18:20:34.138077,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-11 18:21:02.346732,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-11 18:22:34.642567,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-11 18:24:43.356077,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-11 18:24:58.264241,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-11 18:31:39.077087,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-11 18:31:39.206462,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-11 18:31:42.457853,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-11 18:32:48.503609,LOV,False,No Access - Status 404
+https://www.w3.org/TR/ldn/#ldn-tests-sender,2020-08-11 18:35:08.524259,prefix.cc,False,Connection Error
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-12 02:01:01.943215,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-12 02:01:06.070600,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-12 02:01:06.314639,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-12 02:01:07.046633,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-12 02:01:57.082639,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-12 02:01:57.252940,prefix.cc,False,No Access - Status 405
+http://dati.cdec.it/lod/shoah/,2020-08-12 02:02:10.576973,LOV,False,No Access - Status 403
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-12 02:02:25.652644,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-12 02:02:26.445388,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-12 02:02:26.943887,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-12 02:02:27.442096,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-12 02:02:27.939969,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-12 02:02:28.438254,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-12 02:02:28.936175,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-12 02:02:29.434396,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-12 02:02:29.932590,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-12 02:02:30.430702,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-12 02:02:30.929107,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-12 02:02:31.427878,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-12 02:02:31.925904,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-12 02:02:32.423699,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-12 02:02:32.922160,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-12 02:02:33.537269,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-12 02:03:58.759832,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-12 02:04:21.036703,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-12 02:04:52.255537,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-12 02:05:12.495200,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-12 02:08:57.488376,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-12 02:09:17.722657,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-12 02:09:38.665954,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-12 02:10:29.407586,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-12 02:10:30.214149,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-12 02:10:57.037864,prefix.cc,False,No Access - Status 403
+http://purl.org/olia/olia.owl,2020-08-12 02:12:08.467021,prefix.cc,False,Read Timeout
+http://purl.org/olia/penn.owl,2020-08-12 02:12:39.016131,prefix.cc,False,Read Timeout
+http://purl.org/olia/stanford.owl,2020-08-12 02:13:09.548806,prefix.cc,False,Read Timeout
+http://purl.org/olia/system.owl,2020-08-12 02:13:40.078469,spoHashUris,False,Read Timeout
+http://purl.org/olia/ubyCat.owl,2020-08-12 02:14:10.839854,LOV,False,Read Timeout
+http://purl.org/powla/powla.owl,2020-08-12 02:16:58.753555,prefix.cc,False,Read Timeout
+http://purl.org/reco#,2020-08-12 02:17:09.978123,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-12 02:17:24.596415,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-12 02:17:31.347357,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-12 02:17:42.829767,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-12 02:17:50.054402,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-12 02:18:07.323532,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://rdfs.org/sioc/argument#,2020-08-12 02:18:26.647627,prefix.cc,False,No Access - Status 404
+http://rdfs.org/sioc/ns#,2020-08-12 02:18:26.738594,LOV,False,No Access - Status 404
+http://rdfs.org/sioc/services#,2020-08-12 02:18:26.829155,prefix.cc,False,No Access - Status 404
+http://rdfs.org/sioc/types#,2020-08-12 02:18:26.919487,prefix.cc,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-12 02:22:52.490534,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-12 02:25:14.975488,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-12 02:25:15.075446,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-12 02:25:47.577344,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-12 02:27:09.201450,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-12 02:29:17.310635,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-12 02:29:32.218790,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-12 02:36:17.896678,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-12 02:36:18.021089,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-12 02:36:44.616184,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-12 02:37:54.044580,LOV,False,No Access - Status 404
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-12 10:00:02.421092,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-12 10:00:06.833392,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-12 10:00:07.092175,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-12 10:00:07.843580,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-12 10:01:04.869565,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-12 10:01:05.036731,prefix.cc,False,No Access - Status 405
+http://dati.cdec.it/lod/shoah/,2020-08-12 10:01:18.356969,LOV,False,No Access - Status 403
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-12 10:01:34.066921,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-12 10:01:34.565881,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-12 10:01:35.065157,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-12 10:01:35.564263,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-12 10:01:36.063014,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-12 10:01:36.561371,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-12 10:01:37.062553,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-12 10:01:37.561444,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-12 10:01:38.060236,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-12 10:01:38.559083,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-12 10:01:39.058073,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-12 10:01:39.556214,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-12 10:01:40.054936,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-12 10:01:40.553777,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-12 10:01:41.052389,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-12 10:01:41.556529,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-12 10:03:03.378673,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-12 10:03:17.411269,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-12 10:03:42.820951,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-12 10:04:02.055370,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/acc,2020-08-12 10:07:41.611948,prefix.cc,False,Connection Error
+http://purl.org/NET/biol/ns#,2020-08-12 10:07:52.336511,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cidoc-crm/core,2020-08-12 10:08:13.777584,prefix.cc,False,Connection Error
+http://purl.org/NET/cpan-uri/terms#,2020-08-12 10:08:21.147708,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/NET/lx,2020-08-12 10:08:37.963746,prefix.cc,False,Connection Error
+http://purl.org/carfo#,2020-08-12 10:08:55.831672,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-12 10:09:51.265245,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-12 10:09:51.934350,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-12 10:10:17.292209,prefix.cc,False,No Access - Status 403
+http://purl.org/olia/olia.owl,2020-08-12 10:11:27.832452,prefix.cc,False,Read Timeout
+http://purl.org/olia/penn.owl,2020-08-12 10:11:58.447387,prefix.cc,False,Read Timeout
+http://purl.org/olia/stanford.owl,2020-08-12 10:12:31.192423,prefix.cc,False,Read Timeout
+http://purl.org/olia/system.owl,2020-08-12 10:13:01.740207,spoHashUris,False,Read Timeout
+http://purl.org/olia/ubyCat.owl,2020-08-12 10:13:32.297672,LOV,False,Read Timeout
+http://purl.org/powla/powla.owl,2020-08-12 10:16:00.317261,prefix.cc,False,Read Timeout
+http://purl.org/reco#,2020-08-12 10:16:11.526644,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-12 10:16:26.491968,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-12 10:16:36.148295,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-12 10:16:45.594169,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-12 10:16:53.285371,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-12 10:17:10.182115,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://purl.uniprot.org/core/,2020-08-12 10:17:18.381840,LOV,True,Error - ConnectionError
+http://rdfs.org/scot/ns#,2020-08-12 10:17:28.864787,LOV,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-12 10:22:02.617919,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-12 10:24:27.123834,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-12 10:24:27.230874,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-12 10:24:55.736474,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-12 10:26:31.626110,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-12 10:28:10.802828,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-12 10:28:26.419799,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-12 10:37:39.658510,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-12 10:37:39.795759,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-12 10:37:41.496434,prefix.cc,False,No Access - Status 404
+https://w3id.org/GConsent,2020-08-12 10:38:35.411738,LOV,False,Connection Error
+https://w3id.org/i40/aml#,2020-08-12 10:39:48.203560,LOV,False,Read Timeout
+https://w3id.org/i40/sto/iot/concerns/,2020-08-12 10:39:48.860528,LOV,False,No Access - Status 404
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-12 18:00:03.299549,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-12 18:00:08.171616,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-12 18:00:08.430204,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-12 18:00:09.168735,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-12 18:00:51.500391,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-12 18:00:51.672417,prefix.cc,False,No Access - Status 405
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-12 18:01:23.582492,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-12 18:01:24.082330,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-12 18:01:24.581350,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-12 18:01:25.079916,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-12 18:01:25.579147,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-12 18:01:26.078586,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-12 18:01:26.577804,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-12 18:01:27.076482,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-12 18:01:27.575033,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-12 18:01:28.073631,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-12 18:01:28.572662,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-12 18:01:29.071292,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-12 18:01:29.570171,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-12 18:01:30.068547,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-12 18:01:30.567638,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-12 18:01:31.327023,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-12 18:02:55.247343,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-12 18:03:10.039632,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-12 18:03:37.088047,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-12 18:03:56.983146,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-12 18:07:40.743777,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-12 18:07:56.791827,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-12 18:08:16.208145,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-12 18:09:08.529921,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-12 18:09:09.183162,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-12 18:09:39.060923,prefix.cc,False,No Access - Status 403
+http://purl.org/olia/olia.owl,2020-08-12 18:10:56.372244,prefix.cc,False,Read Timeout
+http://purl.org/olia/penn.owl,2020-08-12 18:11:28.532475,prefix.cc,False,Read Timeout
+http://purl.org/olia/stanford.owl,2020-08-12 18:11:59.083378,prefix.cc,False,Read Timeout
+http://purl.org/olia/system.owl,2020-08-12 18:12:29.651952,spoHashUris,False,Read Timeout
+http://purl.org/olia/ubyCat.owl,2020-08-12 18:13:01.074142,LOV,False,Read Timeout
+http://purl.org/powla/powla.owl,2020-08-12 18:15:52.587701,prefix.cc,False,Read Timeout
+http://purl.org/reco#,2020-08-12 18:16:01.503391,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-12 18:16:17.468448,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-12 18:16:25.211064,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-12 18:16:37.020470,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-12 18:16:46.973269,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-12 18:17:02.468904,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://rdfs.org/scot/ns#,2020-08-12 18:19:43.653109,LOV,False,No Access - Status 404
+http://theme-e.adaptcentre.ie/dave#,2020-08-12 18:24:21.274663,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-12 18:26:45.345341,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-12 18:26:45.446694,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-12 18:27:15.868343,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-12 18:28:49.048768,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-12 18:30:27.973476,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-12 18:30:43.350313,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-12 18:37:30.962746,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-12 18:37:31.085032,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-12 18:37:33.875560,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-12 18:38:39.923382,LOV,False,No Access - Status 404
+https://www.w3.org/2019/wot/security#,2020-08-12 18:40:27.826006,prefix.cc,True,Couldn't parse File: rapper: Error - URI https://www.w3.org/2019/wot/security#:117 - syntax error at 's'
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-13 02:00:02.300531,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-13 02:00:06.604943,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-13 02:00:06.865790,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-13 02:00:07.652138,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-13 02:00:55.114062,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-13 02:00:55.291654,prefix.cc,False,No Access - Status 405
+http://dati.cdec.it/lod/shoah/,2020-08-13 02:01:08.657688,LOV,False,No Access - Status 403
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-13 02:01:23.155740,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-13 02:01:23.655209,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-13 02:01:24.155266,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-13 02:01:24.655080,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-13 02:01:25.154999,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-13 02:01:25.655091,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-13 02:01:26.154808,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-13 02:01:26.653983,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-13 02:01:27.153322,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-13 02:01:27.653176,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-13 02:01:28.152429,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-13 02:01:28.651876,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-13 02:01:29.151063,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-13 02:01:29.650648,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-13 02:01:30.149855,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-13 02:01:30.778592,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-13 02:01:56.356100,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-13 02:02:19.726129,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-13 02:02:51.991428,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-13 02:03:22.941653,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-13 02:07:04.129692,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-13 02:07:20.905239,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-13 02:07:40.779634,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-13 02:08:41.371794,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-13 02:08:42.157173,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-13 02:09:11.125347,prefix.cc,False,No Access - Status 403
+http://purl.org/olia/olia.owl,2020-08-13 02:10:20.100894,prefix.cc,False,Read Timeout
+http://purl.org/olia/penn.owl,2020-08-13 02:10:50.801450,prefix.cc,False,Read Timeout
+http://purl.org/olia/stanford.owl,2020-08-13 02:11:21.497883,prefix.cc,False,Read Timeout
+http://purl.org/olia/system.owl,2020-08-13 02:11:52.024949,spoHashUris,False,Read Timeout
+http://purl.org/olia/ubyCat.owl,2020-08-13 02:12:22.594803,LOV,False,Read Timeout
+http://purl.org/powla/powla.owl,2020-08-13 02:14:58.730857,prefix.cc,False,Read Timeout
+http://purl.org/reco#,2020-08-13 02:15:08.890904,LOV,False,Connection Error
+http://purl.org/spar/pro/,2020-08-13 02:15:24.098664,LOV,False,No Access - Status 404
+http://purl.org/theatre#,2020-08-13 02:15:32.303100,LOV,True,Couldn't parse File: rapper: Error - URI http://purl.org/theatre#:122 - RDF term resource is forbidden as a property attribute.
+http://purl.org/uF/hCard/terms/,2020-08-13 02:15:45.105103,prefix.cc,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined
+http://purl.org/wai#,2020-08-13 02:15:52.554149,LOV,False,Connection Error
+http://purl.org/xtypes/,2020-08-13 02:16:08.908490,prefix.cc,True,"Couldn't parse File: rapper: Error - URI http://purl.org/xtypes/:16 - property element 'hasFormat' has multiple object node elements, skipping."
+http://theme-e.adaptcentre.ie/dave#,2020-08-13 02:21:00.012271,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://vocab.resc.info/communication,2020-08-13 02:23:19.158611,LOV,False,No Access - Status 500
+http://vocab.resc.info/incident,2020-08-13 02:23:19.264685,LOV,False,No Access - Status 500
+http://w3id.org/lindt/voc#,2020-08-13 02:23:52.466071,prefix.cc,False,No Access - Status 406
+http://www.ebu.ch/metadata/ontologies/ebucore/ebucore,2020-08-13 02:25:13.534799,LOV,False,No Access - Status 404
+http://www.influenceTracker.com/ontology,2020-08-13 02:27:22.081045,prefix.cc,False,Connection Error
+http://www.loc.gov/mads/rdf/v1,2020-08-13 02:27:38.602528,LOV,True,Couldn't parse File: rapper: Error - URI http://www.loc.gov/mads/rdf/v1:336 - RDF term resource is forbidden as a property attribute.
+https://data.vlaanderen.be/ns/logies,2020-08-13 02:34:07.539639,prefix.cc,False,No Access - Status 405
+https://data.vlaanderen.be/ns/persoon,2020-08-13 02:34:07.661379,LOV,False,No Access - Status 405
+https://id.parliament.uk/schema,2020-08-13 02:34:10.341761,prefix.cc,False,No Access - Status 404
+https://w3id.org/i40/sto/iot/concerns/,2020-08-13 02:35:19.186391,LOV,False,No Access - Status 404
+https://www.w3.org/2019/wot/security#,2020-08-13 02:37:08.396798,prefix.cc,True,Couldn't parse File: rapper: Error - URI https://www.w3.org/2019/wot/security#:117 - syntax error at 's'
+http://bag.basisregistraties.overheid.nl/def/bag,2020-08-13 10:00:02.472477,LOV,False,No Access - Status 404
+http://brk.basisregistraties.overheid.nl/def/brk,2020-08-13 10:00:06.832476,LOV,False,No Access - Status 404
+http://brt.basisregistraties.overheid.nl/def/top10nl,2020-08-13 10:00:07.103211,LOV,False,No Access - Status 404
+http://catalogus-professorum.org/cpm/2/,2020-08-13 10:00:07.915654,prefix.cc,False,Connection Error
+http://data.vlaanderen.be/ns/besluit,2020-08-13 10:01:00.101423,prefix.cc,False,No Access - Status 405
+http://data.vlaanderen.be/ns/mandaat,2020-08-13 10:01:00.289599,prefix.cc,False,No Access - Status 405
+http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic,2020-08-13 10:01:28.963117,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry,2020-08-13 10:01:29.472452,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal,2020-08-13 10:01:29.982411,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature,2020-08-13 10:01:30.492340,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation,2020-08-13 10:01:31.001937,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality,2020-08-13 10:01:31.511337,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset,2020-08-13 10:01:32.021033,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent,2020-08-13 10:01:32.530326,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage,2020-08-13 10:01:33.039500,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage,2020-08-13 10:01:33.548377,spoHashUris,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic,2020-08-13 10:01:34.057252,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation,2020-08-13 10:01:34.566231,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling,2020-08-13 10:01:35.074920,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/om-lite,2020-08-13 10:01:35.583969,LOV,False,No Access - Status 404
+http://def.seegrid.csiro.au/ontology/om/sam-lite,2020-08-13 10:01:36.092942,LOV,False,No Access - Status 404
+http://demiblog.org/vocab/oauth#,2020-08-13 10:01:36.797678,prefix.cc,False,No Access - Status 404
+http://iais.fraunhofer.de/vocabs/rami#,2020-08-13 10:02:04.093108,LOV,False,Connection Error
+http://ldf.fi/schema/mmm/,2020-08-13 10:02:19.627948,prefix.cc,False,No Access - Status 405
+http://nr.inria.fr/ludo/v1,2020-08-13 10:02:46.191154,LOV,False,Connection Error
+http://opendata.aragon.es/def/ei2a,2020-08-13 10:03:16.988688,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Opening and ending tag mismatch: br line 0 and ul
+http://purl.org/NET/biol/ns#,2020-08-13 10:06:54.376847,LOV,True,Couldn't parse File: rapper: Error -  - XML parser error: Entity 'copy' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined;rapper: Error -  - XML parser error: Entity 'nbsp' not defined
+http://purl.org/NET/cpan-uri/terms#,2020-08-13 10:07:14.446976,prefix.cc,True,"Couldn't parse File: rapper: Error -  - The namespace prefix in ""xsd:string"" was not declared.;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - Failed to convert qname xsd:string to URI;rapper: Error - URI http://purl.org/NET/cpan-uri/terms#:38 - syntax error, unexpected $end"
+http://purl.org/carfo#,2020-08-13 10:07:35.556027,prefix.cc,False,Connection Error
+http://purl.org/finlex/schema/laki/,2020-08-13 10:08:30.210373,prefix.cc,False,No Access - Status 405
+http://purl.org/finlex/schema/oikeus/,2020-08-13 10:08:30.952389,prefix.cc,False,No Access - Status 405
+http://purl.org/net/bel-epa/doacc,2020-08-13 10:08:56.223355,prefix.cc,False,No Access - Status 403
+http://purl.org/olia/olia.owl,2020-08-13 10:10:07.455965,prefix.cc,False,Read Timeout
+http://purl.org/olia/penn.owl,2020-08-13 10:10:38.073033,prefix.cc,False,Read Timeout
+http://purl.org/olia/stanford.owl,2020-08-13 10:11:08.652822,prefix.cc,False,Read Timeout
