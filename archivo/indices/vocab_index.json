@@ -1,3378 +1,3378 @@
 {
     "http://advene.org/ns/cinelab/ld": {
-        "accessed": "2020.05.06; 19:36:55",
+        "accessed": "2020-05-06 19:36:55",
         "source": "LOV"
     },
     "http://archivi.ibc.regione.emilia-romagna.it/ontology/eac-cpf/eac-cpf.rdf": {
-        "accessed": "2020.05.06; 20:26:02",
+        "accessed": "2020-05-06 20:26:02",
         "source": "LOV"
     },
     "http://assemblee-virtuelle.github.io/grands-voisins-v2/gv.owl.ttl": {
-        "accessed": "2020.05.07; 16:48:32",
+        "accessed": "2020-05-07 16:48:32",
         "source": "prefix.cc"
     },
     "http://babelnet.org/rdf/": {
-        "accessed": "2020.07.17; 01:00:19",
+        "accessed": "2020-07-17 01:00:19",
         "source": "prefix.cc"
     },
     "http://bag.basisregistraties.overheid.nl/def/bag": {
-        "accessed": "2020.05.06; 19:03:18",
+        "accessed": "2020-05-06 19:03:18",
         "source": "LOV"
     },
     "http://bblfish.net/work/atom-owl/2006-06-06/": {
-        "accessed": "2020.05.06; 19:00:57",
+        "accessed": "2020-05-06 19:00:57",
         "source": "LOV"
     },
     "http://biohackathon.org/resource/faldo": {
-        "accessed": "2020.05.06; 20:53:12",
+        "accessed": "2020-05-06 20:53:12",
         "source": "LOV"
     },
     "http://brk.basisregistraties.overheid.nl/def/brk": {
-        "accessed": "2020.05.06; 19:16:27",
+        "accessed": "2020-05-06 19:16:27",
         "source": "LOV"
     },
     "http://brt.basisregistraties.overheid.nl/def/top10nl": {
-        "accessed": "2020.05.06; 19:17:18",
+        "accessed": "2020-05-06 19:17:18",
         "source": "LOV"
     },
     "http://buzzword.org.uk/rdf/personal-link-types#": {
-        "accessed": "2020.05.07; 10:29:33",
+        "accessed": "2020-05-07 10:29:33",
         "source": "prefix.cc"
     },
     "http://catalogus-professorum.org/cpm/2/": {
-        "accessed": "2020.05.07; 16:44:39",
+        "accessed": "2020-05-07 16:44:39",
         "source": "prefix.cc"
     },
     "http://cedric.cnam.fr/isid/ontologies/PersonLink.owl#": {
-        "accessed": "2020.05.07; 00:55:56",
+        "accessed": "2020-05-07 00:55:56",
         "source": "LOV"
     },
     "http://citydata.wu.ac.at/qb-equations#": {
-        "accessed": "2020.05.07; 12:13:30",
+        "accessed": "2020-05-07 12:13:30",
         "source": "prefix.cc"
     },
     "http://colin.maudry.com/ontologies/dgfr#": {
-        "accessed": "2020.05.07; 18:53:53",
+        "accessed": "2020-05-07 18:53:53",
         "source": "prefix.cc"
     },
     "http://comicmeta.org/cbo/": {
-        "accessed": "2020.05.06; 19:20:58",
+        "accessed": "2020-05-06 19:20:58",
         "source": "LOV"
     },
     "http://completeness.inf.unibz.it/sp-vocab": {
-        "accessed": "2020.05.07; 16:51:38",
+        "accessed": "2020-05-07 16:51:38",
         "source": "prefix.cc"
     },
     "http://contsem.unizar.es/def/sector-publico/pproc#": {
-        "accessed": "2020.05.07; 01:07:34",
+        "accessed": "2020-05-07 01:07:34",
         "source": "LOV"
     },
     "http://cookingbigdata.com/linkeddata/ccinstances#": {
-        "accessed": "2020.05.06; 19:21:51",
+        "accessed": "2020-05-06 19:21:51",
         "source": "LOV"
     },
     "http://cookingbigdata.com/linkeddata/ccpricing#": {
-        "accessed": "2020.05.06; 19:25:35",
+        "accessed": "2020-05-06 19:25:35",
         "source": "LOV"
     },
     "http://cookingbigdata.com/linkeddata/ccregions#": {
-        "accessed": "2020.05.06; 19:26:16",
+        "accessed": "2020-05-06 19:26:16",
         "source": "LOV"
     },
     "http://cookingbigdata.com/linkeddata/ccsla#": {
-        "accessed": "2020.05.06; 19:26:43",
+        "accessed": "2020-05-06 19:26:43",
         "source": "LOV"
     },
     "http://data-gov.tw.rpi.edu/2009/data-gov-twc.rdf": {
-        "accessed": "2020.05.07; 09:02:32",
+        "accessed": "2020-05-07 09:02:32",
         "source": "prefix.cc"
     },
     "http://data.europa.eu/esco/flow": {
-        "accessed": "2020.05.07; 03:36:43",
+        "accessed": "2020-05-07 03:36:43",
         "source": "spoHashUris"
     },
     "http://data.europa.eu/esco/model": {
-        "accessed": "2020.05.06; 20:47:45",
+        "accessed": "2020-05-06 20:47:45",
         "source": "LOV"
     },
     "http://data.finlex.fi/schema/sfl/": {
-        "accessed": "2020.05.21; 03:03:11",
+        "accessed": "2020-05-21 03:03:11",
         "source": "prefix.cc"
     },
     "http://data.globalchange.gov/gcis.owl": {
-        "accessed": "2020.05.07; 09:54:32",
+        "accessed": "2020-05-07 09:54:32",
         "source": "prefix.cc"
     },
     "http://data.ign.fr/def/geofla": {
-        "accessed": "2020.05.06; 21:08:30",
+        "accessed": "2020-05-06 21:08:30",
         "source": "LOV"
     },
-    "http://www.georss.org/georss/": {
-	"accessed": "2020.08.10; 11:00:00",
-	"source": "forced-admin-inclusion"
-    },
     "http://data.ign.fr/def/geometrie": {
-        "accessed": "2020.05.06; 21:09:12",
+        "accessed": "2020-05-06 21:09:12",
         "source": "LOV"
     },
     "http://data.ign.fr/def/ignf": {
-        "accessed": "2020.05.06; 21:32:12",
+        "accessed": "2020-05-06 21:32:12",
         "source": "LOV"
     },
     "http://data.ign.fr/def/topo#": {
-        "accessed": "2020.05.07; 02:47:58",
+        "accessed": "2020-05-07 02:47:58",
         "source": "LOV"
     },
     "http://data.nobelprize.org/terms/": {
-        "accessed": "2020.05.07; 11:48:23",
+        "accessed": "2020-05-07 11:48:23",
         "source": "prefix.cc"
     },
     "http://data.opendiscoveryspace.eu/lom_ontology_ods.owl#": {
-        "accessed": "2020.05.06; 22:03:46",
+        "accessed": "2020-05-06 22:03:46",
         "source": "LOV"
     },
     "http://data.ordnancesurvey.co.uk/ontology/50kGazetteer/": {
-        "accessed": "2020.05.06; 23:22:05",
+        "accessed": "2020-05-06 23:22:05",
         "source": "LOV"
     },
     "http://data.ordnancesurvey.co.uk/ontology/admingeo/": {
-        "accessed": "2020.05.07; 00:36:35",
+        "accessed": "2020-05-07 00:36:35",
         "source": "LOV"
     },
     "http://data.ordnancesurvey.co.uk/ontology/geometry/": {
-        "accessed": "2020.05.07; 00:38:11",
+        "accessed": "2020-05-07 00:38:11",
         "source": "LOV"
     },
     "http://data.ordnancesurvey.co.uk/ontology/postcode/": {
-        "accessed": "2020.05.07; 01:02:40",
+        "accessed": "2020-05-07 01:02:40",
         "source": "LOV"
     },
     "http://data.ordnancesurvey.co.uk/ontology/spatialrelations/": {
-        "accessed": "2020.05.07; 00:41:47",
+        "accessed": "2020-05-07 00:41:47",
         "source": "LOV"
     },
     "http://data.persee.fr/ontology/persee-ontology/": {
-        "accessed": "2020.07.17; 13:56:56",
+        "accessed": "2020-07-17 13:56:56",
         "source": "prefix.cc"
     },
     "http://data.qudt.org/qudt/owl/1.0.0/unit.owl": {
-        "accessed": "2020.05.07; 03:40:19",
+        "accessed": "2020-05-07 03:40:19",
         "source": "spoHashUris"
     },
     "http://data.vlaanderen.be/ns/besluit": {
-        "accessed": "2020.05.07; 14:05:02",
+        "accessed": "2020-05-07 14:05:02",
         "source": "prefix.cc"
     },
     "http://data.vlaanderen.be/ns/mandaat": {
-        "accessed": "2020.05.07; 12:58:30",
+        "accessed": "2020-05-07 12:58:30",
         "source": "prefix.cc"
     },
     "http://datafoodconsortium.org/ontologies/DFC_BusinessOntology.owl": {
-        "accessed": "2020.05.06; 20:05:58",
+        "accessed": "2020-05-06 20:05:58",
         "source": "LOV"
     },
     "http://datafoodconsortium.org/ontologies/DFC_FullModel.owl": {
-        "accessed": "2020.05.06; 20:05:07",
+        "accessed": "2020-05-06 20:05:07",
         "source": "LOV"
     },
     "http://dataid.dbpedia.org/ns/core#": {
-        "accessed": "2020.05.06; 19:55:08",
+        "accessed": "2020-05-06 19:55:08",
         "source": "LOV"
     },
     "http://datashapes.org/dash": {
-        "accessed": "2020.05.07; 16:16:48",
+        "accessed": "2020-05-07 16:16:48",
         "source": "prefix.cc"
     },
     "http://dati.beniculturali.it/cis/": {
-        "accessed": "2020.07.10; 17:42:13",
+        "accessed": "2020-07-10 17:42:13",
         "source": "LOV"
     },
     "http://dati.cdec.it/lod/shoah/": {
-        "accessed": "2020.05.20; 17:36:37",
+        "accessed": "2020-05-20 17:36:37",
         "source": "LOV"
     },
     "http://dati.san.beniculturali.it/SAN/": {
-        "accessed": "2020.05.07; 01:43:29",
+        "accessed": "2020-05-07 01:43:29",
         "source": "LOV"
     },
     "http://datos.bcn.cl/ontologies/bcn-biographies#": {
-        "accessed": "2020.05.07; 05:48:08",
+        "accessed": "2020-05-07 05:48:08",
         "source": "prefix.cc"
     },
     "http://datos.bcn.cl/ontologies/bcn-congress#": {
-        "accessed": "2020.05.07; 13:39:55",
+        "accessed": "2020-05-07 13:39:55",
         "source": "prefix.cc"
     },
     "http://datos.bcn.cl/ontologies/bcn-geographics#GeographicOntology": {
-        "accessed": "2020.05.07; 12:15:53",
+        "accessed": "2020-05-07 12:15:53",
         "source": "prefix.cc"
     },
     "http://dbpedia.org/ontology/": {
-        "accessed": "2020.05.06; 23:10:36",
+        "accessed": "2020-05-06 23:10:36",
         "source": "LOV"
     },
     "http://dd.eionet.europa.eu/vocabulary/common/nuts/": {
-        "accessed": "2020.07.17; 09:21:16",
+        "accessed": "2020-07-17 09:21:16",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/biological-collections.owl.ttl#": {
-        "accessed": "2020.05.07; 12:30:55",
+        "accessed": "2020-05-07 12:30:55",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/doas.owl.ttl#": {
-        "accessed": "2020.05.07; 13:39:01",
+        "accessed": "2020-05-07 13:39:01",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/geoloc.owl.ttl#": {
-        "accessed": "2020.05.07; 14:37:40",
+        "accessed": "2020-05-07 14:37:40",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/nature_observation.owl.ttl#": {
-        "accessed": "2020.05.07; 13:37:44",
+        "accessed": "2020-05-07 13:37:44",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/seeds.owl.ttl#": {
-        "accessed": "2020.05.07; 16:24:38",
+        "accessed": "2020-05-07 16:24:38",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/task-management.owl.ttl#": {
-        "accessed": "2020.05.07; 11:14:31",
+        "accessed": "2020-05-07 11:14:31",
         "source": "prefix.cc"
     },
     "http://deductions.github.io/vehicule-management.owl.ttl#": {
-        "accessed": "2020.05.07; 12:27:54",
+        "accessed": "2020-05-07 12:27:54",
         "source": "prefix.cc"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19103/2005/basic": {
-        "accessed": "2020.05.06; 19:03:36",
+        "accessed": "2020-05-06 19:03:36",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19107/2003/geometry": {
-        "accessed": "2020.05.06; 21:11:42",
+        "accessed": "2020-05-06 21:11:42",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19108/2002/temporal": {
-        "accessed": "2020.05.07; 02:46:24",
+        "accessed": "2020-05-07 02:46:24",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19109/2005/feature": {
-        "accessed": "2020.05.06; 21:10:01",
+        "accessed": "2020-05-06 21:10:01",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19115/2003/citation": {
-        "accessed": "2020.05.07; 03:42:05",
+        "accessed": "2020-05-07 03:42:05",
         "source": "spoHashUris"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataquality": {
-        "accessed": "2020.05.06; 20:19:41",
+        "accessed": "2020-05-06 20:19:41",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19115/2003/dataset": {
-        "accessed": "2020.05.07; 03:43:28",
+        "accessed": "2020-05-07 03:43:28",
         "source": "spoHashUris"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19115/2003/extent": {
-        "accessed": "2020.05.06; 20:50:52",
+        "accessed": "2020-05-06 20:50:52",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19115/2003/lineage": {
-        "accessed": "2020.05.06; 21:54:42",
+        "accessed": "2020-05-06 21:54:42",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19123/2005/coverage": {
-        "accessed": "2020.05.07; 03:45:00",
+        "accessed": "2020-05-07 03:45:00",
         "source": "spoHashUris"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19150/-2/2012/basic": {
-        "accessed": "2020.05.06; 21:23:26",
+        "accessed": "2020-05-06 21:23:26",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19156/2011/observation": {
-        "accessed": "2020.05.07; 00:18:08",
+        "accessed": "2020-05-07 00:18:08",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/isotc211/iso19156/2011/sampling": {
-        "accessed": "2020.05.07; 01:40:03",
+        "accessed": "2020-05-07 01:40:03",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/ontology/om/om-lite": {
-        "accessed": "2020.05.07; 00:20:54",
+        "accessed": "2020-05-07 00:20:54",
         "source": "LOV"
     },
     "http://def.seegrid.csiro.au/ontology/om/sam-lite": {
-        "accessed": "2020.05.07; 01:42:02",
+        "accessed": "2020-05-07 01:42:02",
         "source": "LOV"
     },
     "http://delicias.dia.fi.upm.es/ontologies/ObjectWithStates.owl": {
-        "accessed": "2020.05.07; 00:08:14",
+        "accessed": "2020-05-07 00:08:14",
         "source": "LOV"
     },
     "http://demiblog.org/vocab/oauth#": {
-        "accessed": "2020.05.07; 18:49:50",
+        "accessed": "2020-05-07 18:49:50",
         "source": "prefix.cc"
     },
     "http://dev.poderopedia.com/vocab/schema": {
-        "accessed": "2020.05.07; 01:01:56",
+        "accessed": "2020-05-07 01:01:56",
         "source": "LOV"
     },
     "http://ec.europa.eu/eurostat/ramon/ontologies/geographic.rdf": {
-        "accessed": "2020.05.07; 03:46:47",
+        "accessed": "2020-05-07 03:46:47",
         "source": "spoHashUris"
     },
     "http://ecoinformatics.org/oboe/oboe.1.0/oboe-core.owl": {
-        "accessed": "2020.05.07; 03:47:29",
+        "accessed": "2020-05-07 03:47:29",
         "source": "spoHashUris"
     },
     "http://edamontology.org": {
-        "accessed": "2020.07.17; 02:44:50",
+        "accessed": "2020-07-17 02:44:50",
         "source": "prefix.cc"
     },
     "http://elite.polito.it/ontologies/dogont.owl": {
-        "accessed": "2020.05.06; 20:15:29",
+        "accessed": "2020-05-06 20:15:29",
         "source": "LOV"
     },
     "http://elite.polito.it/ontologies/eupont.owl": {
-        "accessed": "2020.05.06; 20:48:22",
+        "accessed": "2020-05-06 20:48:22",
         "source": "LOV"
     },
     "http://elite.polito.it/ontologies/muo-vocab.owl#": {
-        "accessed": "2020.05.07; 03:48:11",
+        "accessed": "2020-05-07 03:48:11",
         "source": "spoHashUris"
     },
     "http://environment.data.gov.au/def/op": {
-        "accessed": "2020.05.07; 00:28:13",
+        "accessed": "2020-05-07 00:28:13",
         "source": "LOV"
     },
     "http://eprints.org/ontology/": {
-        "accessed": "2020.05.20; 17:00:32",
+        "accessed": "2020-05-20 17:00:32",
         "source": "LOV"
     },
     "http://erlangen-crm.org/current/": {
-        "accessed": "2020.05.06; 23:14:38",
+        "accessed": "2020-05-06 23:14:38",
         "source": "LOV"
     },
     "http://erlangen-crm.org/efrbroo/": {
-        "accessed": "2020.05.07; 18:44:45",
+        "accessed": "2020-05-07 18:44:45",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/agent": {
-        "accessed": "2020.05.07; 14:01:35",
+        "accessed": "2020-05-07 14:01:35",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/bioSKOSSchemes": {
-        "accessed": "2020.05.07; 13:19:25",
+        "accessed": "2020-05-07 13:19:25",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/care": {
-        "accessed": "2020.05.07; 09:29:05",
+        "accessed": "2020-05-07 09:29:05",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/countries": {
-        "accessed": "2020.05.07; 14:20:03",
+        "accessed": "2020-05-07 14:20:03",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/environment": {
-        "accessed": "2020.05.07; 16:47:13",
+        "accessed": "2020-05-07 16:47:13",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/event": {
-        "accessed": "2020.05.07; 10:18:16",
+        "accessed": "2020-05-07 10:18:16",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/genomeAbnormality#": {
-        "accessed": "2020.05.07; 10:42:08",
+        "accessed": "2020-05-07 10:42:08",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/human": {
-        "accessed": "2020.05.07; 11:30:31",
+        "accessed": "2020-05-07 11:30:31",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/humanBody": {
-        "accessed": "2020.05.07; 16:30:06",
+        "accessed": "2020-05-07 16:30:06",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/languages#": {
-        "accessed": "2020.05.07; 08:45:19",
+        "accessed": "2020-05-07 08:45:19",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/organism#": {
-        "accessed": "2020.05.07; 11:24:10",
+        "accessed": "2020-05-07 11:24:10",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/organization#": {
-        "accessed": "2020.05.07; 06:01:01",
+        "accessed": "2020-05-07 06:01:01",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/quantitiesExtension#": {
-        "accessed": "2020.05.07; 11:07:36",
+        "accessed": "2020-05-07 11:07:36",
         "source": "prefix.cc"
     },
     "http://eulersharp.sourceforge.net/2003/03swap/units#": {
-        "accessed": "2020.05.07; 17:00:53",
+        "accessed": "2020-05-07 17:00:53",
         "source": "prefix.cc"
     },
     "http://eunis.eea.europa.eu/rdf/species-schema.rdf": {
-        "accessed": "2020.05.07; 03:49:03",
+        "accessed": "2020-05-07 03:49:03",
         "source": "spoHashUris"
     },
     "http://fedora.info/definitions/v4/audit#": {
-        "accessed": "2020.05.07; 11:33:52",
+        "accessed": "2020-05-07 11:33:52",
         "source": "prefix.cc"
     },
     "http://gadm.geovocab.org/ontology": {
-        "accessed": "2020.05.07; 17:00:30",
+        "accessed": "2020-05-07 17:00:30",
         "source": "prefix.cc"
     },
     "http://geni-orca.renci.org/owl/topology.owl": {
-        "accessed": "2020.05.07; 05:58:10",
+        "accessed": "2020-05-07 05:58:10",
         "source": "prefix.cc"
     },
     "http://geovocab.org/geometry": {
-        "accessed": "2020.05.06; 22:42:01",
+        "accessed": "2020-05-06 22:42:01",
         "source": "LOV"
     },
     "http://geovocab.org/spatial": {
-        "accessed": "2020.05.07; 02:22:29",
+        "accessed": "2020-05-07 02:22:29",
         "source": "LOV"
     },
     "http://gov.genealogy.net/ontology.owl": {
-        "accessed": "2020.05.06; 21:17:10",
+        "accessed": "2020-05-06 21:17:10",
         "source": "LOV"
     },
     "http://guava.iis.sinica.edu.tw/r4r": {
-        "accessed": "2020.05.07; 01:21:50",
+        "accessed": "2020-05-07 01:21:50",
         "source": "LOV"
     },
     "http://iais.fraunhofer.de/vocabs/rami#": {
-        "accessed": "2020.07.10; 20:33:43",
+        "accessed": "2020-07-10 20:33:43",
         "source": "LOV"
     },
     "http://id.loc.gov/ontologies/bflc/": {
-        "accessed": "2020.05.07; 10:48:01",
+        "accessed": "2020-05-07 10:48:01",
         "source": "prefix.cc"
     },
     "http://id.loc.gov/ontologies/bibframe/": {
-        "accessed": "2020.05.06; 19:09:09",
+        "accessed": "2020-05-06 19:09:09",
         "source": "LOV"
     },
     "http://id.nlm.nih.gov/mesh/vocab#": {
-        "accessed": "2020.05.07; 10:22:47",
+        "accessed": "2020-05-07 10:22:47",
         "source": "prefix.cc"
     },
     "http://iflastandards.info/ns/muldicat": {
-        "accessed": "2020.07.17; 09:11:51",
+        "accessed": "2020-07-17 09:11:51",
         "source": "prefix.cc"
     },
     "http://iiif.io/api/image/2#": {
-        "accessed": "2020.05.07; 11:14:20",
+        "accessed": "2020-05-07 11:14:20",
         "source": "prefix.cc"
     },
     "http://imi.go.jp/ns/core/rdf": {
-        "accessed": "2020.05.07; 18:51:13",
+        "accessed": "2020-05-07 18:51:13",
         "source": "prefix.cc"
     },
     "http://info.deepcarbon.net/schema": {
-        "accessed": "2020.05.07; 10:27:13",
+        "accessed": "2020-05-07 10:27:13",
         "source": "prefix.cc"
     },
     "http://iserve.kmi.open.ac.uk/ns/msm": {
-        "accessed": "2020.05.06; 22:32:54",
+        "accessed": "2020-05-06 22:32:54",
         "source": "LOV"
     },
     "http://jazz.net/ns/rm#": {
-        "accessed": "2020.05.07; 18:45:45",
+        "accessed": "2020-05-07 18:45:45",
         "source": "prefix.cc"
     },
     "http://kaiko.getalp.org/dbnary": {
-        "accessed": "2020.05.07; 10:45:24",
+        "accessed": "2020-05-07 10:45:24",
         "source": "prefix.cc"
     },
     "http://km.aifb.kit.edu/projects/numbers/number": {
-        "accessed": "2020.05.07; 17:20:58",
+        "accessed": "2020-05-07 17:20:58",
         "source": "prefix.cc"
     },
     "http://kmi.open.ac.uk/projects/smartproducts/ontologies/food.owl": {
-        "accessed": "2020.05.07; 02:26:32",
+        "accessed": "2020-05-07 02:26:32",
         "source": "LOV"
     },
     "http://kmi.open.ac.uk/projects/smartproducts/ontologies/generic.owl": {
-        "accessed": "2020.05.07; 03:55:05",
+        "accessed": "2020-05-07 03:55:05",
         "source": "spoHashUris"
     },
     "http://kmi.open.ac.uk/projects/smartproducts/ontologies/process.owl": {
-        "accessed": "2020.05.07; 03:56:01",
+        "accessed": "2020-05-07 03:56:01",
         "source": "spoHashUris"
     },
     "http://kmi.open.ac.uk/projects/smartproducts/ontologies/product.owl": {
-        "accessed": "2020.05.07; 03:57:00",
+        "accessed": "2020-05-07 03:57:00",
         "source": "spoHashUris"
     },
     "http://kmi.open.ac.uk/projects/smartproducts/ontologies/user.owl": {
-        "accessed": "2020.05.07; 03:57:58",
+        "accessed": "2020-05-07 03:57:58",
         "source": "spoHashUris"
     },
     "http://kulturarvsdata.se/ksamsok": {
-        "accessed": "2020.05.07; 13:06:51",
+        "accessed": "2020-05-07 13:06:51",
         "source": "prefix.cc"
     },
     "http://lawd.info/ontology/": {
-        "accessed": "2020.05.06; 21:50:26",
+        "accessed": "2020-05-06 21:50:26",
         "source": "LOV"
     },
     "http://ldf.fi/schema/mmm/": {
-        "accessed": "2020.07.17; 02:11:14",
+        "accessed": "2020-07-17 02:11:14",
         "source": "prefix.cc"
     },
     "http://ldf.fi/void-ext": {
-        "accessed": "2020.05.07; 09:04:10",
+        "accessed": "2020-05-07 09:04:10",
         "source": "prefix.cc"
     },
     "http://lei.info/gleio/": {
-        "accessed": "2020.05.07; 17:15:08",
+        "accessed": "2020-05-07 17:15:08",
         "source": "prefix.cc"
     },
     "http://lemon-model.net/lemon": {
-        "accessed": "2020.05.06; 21:52:29",
+        "accessed": "2020-05-06 21:52:29",
         "source": "LOV"
     },
     "http://lemon-model.net/oils": {
-        "accessed": "2020.05.07; 14:43:42",
+        "accessed": "2020-05-07 14:43:42",
         "source": "prefix.cc"
     },
     "http://linked.data.gov.au/def/asgs": {
-        "accessed": "2020.05.07; 10:19:15",
+        "accessed": "2020-05-07 10:19:15",
         "source": "prefix.cc"
     },
     "http://linked.data.gov.au/def/geofabric": {
-        "accessed": "2020.05.21; 02:24:40",
+        "accessed": "2020-05-21 02:24:40",
         "source": "prefix.cc"
     },
     "http://linked.data.gov.au/def/gnaf": {
-        "accessed": "2020.05.07; 11:37:15",
+        "accessed": "2020-05-07 11:37:15",
         "source": "prefix.cc"
     },
     "http://linked.data.gov.au/def/loci": {
-        "accessed": "2020.05.07; 10:52:14",
+        "accessed": "2020-05-07 10:52:14",
         "source": "prefix.cc"
     },
     "http://linked.earth/ontology#": {
-        "accessed": "2020.05.06; 20:28:06",
+        "accessed": "2020-05-06 20:28:06",
         "source": "LOV"
     },
     "http://linkeddata.center/kees/v1": {
-        "accessed": "2020.05.06; 21:48:08",
+        "accessed": "2020-05-06 21:48:08",
         "source": "LOV"
     },
     "http://linkeddata.finki.ukim.mk/lod/ontology/cfrl#": {
-        "accessed": "2020.05.20; 16:53:27",
+        "accessed": "2020-05-20 16:53:27",
         "source": "LOV"
     },
     "http://linkeddata.finki.ukim.mk/lod/ontology/tao#": {
-        "accessed": "2020.05.20; 17:50:32",
+        "accessed": "2020-05-20 17:50:32",
         "source": "LOV"
     },
     "http://linkeddata.finki.ukim.mk/lod/ontology/veo#": {
-        "accessed": "2020.05.20; 17:58:25",
+        "accessed": "2020-05-20 17:58:25",
         "source": "LOV"
     },
     "http://linkedscience.org/lsc/ns#": {
-        "accessed": "2020.05.06; 22:07:12",
+        "accessed": "2020-05-06 22:07:12",
         "source": "LOV"
     },
     "http://lod.nl.go.kr/ontology/": {
-        "accessed": "2020.07.17; 09:23:07",
+        "accessed": "2020-07-17 09:23:07",
         "source": "prefix.cc"
     },
     "http://lod.taxonconcept.org/ontology/dwc_area.owl": {
-        "accessed": "2020.05.07; 04:01:56",
+        "accessed": "2020-05-07 04:01:56",
         "source": "spoHashUris"
     },
     "http://lod.taxonconcept.org/ontology/p01/Mammalia/index.owl": {
-        "accessed": "2020.05.07; 11:43:07",
+        "accessed": "2020-05-07 11:43:07",
         "source": "prefix.cc"
     },
     "http://lod.taxonconcept.org/ontology/people.owl": {
-        "accessed": "2020.05.07; 04:02:38",
+        "accessed": "2020-05-07 04:02:38",
         "source": "spoHashUris"
     },
     "http://lod.taxonconcept.org/ontology/sci_people.owl": {
-        "accessed": "2020.05.07; 01:45:05",
+        "accessed": "2020-05-07 01:45:05",
         "source": "LOV"
     },
     "http://lod.taxonconcept.org/ontology/txn.owl": {
-        "accessed": "2020.05.07; 02:53:19",
+        "accessed": "2020-05-07 02:53:19",
         "source": "LOV"
     },
     "http://lsq.aksw.org/vocab": {
-        "accessed": "2020.05.06; 22:09:46",
+        "accessed": "2020-05-06 22:09:46",
         "source": "LOV"
     },
     "http://mex.aksw.org/mex-algo": {
-        "accessed": "2020.05.06; 22:26:34",
+        "accessed": "2020-05-06 22:26:34",
         "source": "LOV"
     },
     "http://mex.aksw.org/mex-core": {
-        "accessed": "2020.05.06; 22:27:24",
+        "accessed": "2020-05-06 22:27:24",
         "source": "LOV"
     },
     "http://mex.aksw.org/mex-perf": {
-        "accessed": "2020.05.06; 22:28:11",
+        "accessed": "2020-05-06 22:28:11",
         "source": "LOV"
     },
     "http://mged.sourceforge.net/ontologies/MGEDOntology.owl": {
-        "accessed": "2020.05.07; 05:44:06",
+        "accessed": "2020-05-07 05:44:06",
         "source": "prefix.cc"
     },
     "http://mmoon.org/core/": {
-        "accessed": "2020.06.12; 12:48:29",
+        "accessed": "2020-06-12 12:48:29",
         "source": "user-suggestion"
     },
     "http://models.okkam.org/ENS-core-vocabulary.owl": {
-        "accessed": "2020.05.07; 15:09:45",
+        "accessed": "2020-05-07 15:09:45",
         "source": "prefix.cc"
     },
     "http://njh.me/": {
-        "accessed": "2020.07.10; 19:37:30",
+        "accessed": "2020-07-10 19:37:30",
         "source": "LOV"
     },
     "http://nl.ijs.si/ME/owl/multext-east.owl": {
-        "accessed": "2020.05.07; 17:39:16",
+        "accessed": "2020-05-07 17:39:16",
         "source": "prefix.cc"
     },
     "http://nr.inria.fr/ludo/v1": {
-        "accessed": "2020.07.10; 19:50:33",
+        "accessed": "2020-07-10 19:50:33",
         "source": "LOV"
     },
     "http://ns.bergnet.org/tac/0.1/triple-access-control#": {
-        "accessed": "2020.05.07; 02:36:41",
+        "accessed": "2020-05-07 02:36:41",
         "source": "LOV"
     },
     "http://ns.inria.fr/ast/sql#": {
-        "accessed": "2020.05.07; 02:27:46",
+        "accessed": "2020-05-07 02:27:46",
         "source": "LOV"
     },
     "http://ns.inria.fr/emoca#": {
-        "accessed": "2020.05.06; 20:39:21",
+        "accessed": "2020-05-06 20:39:21",
         "source": "LOV"
     },
     "http://ns.inria.fr/l4lod/v2": {
-        "accessed": "2020.05.07; 08:59:35",
+        "accessed": "2020-05-07 08:59:35",
         "source": "prefix.cc"
     },
     "http://ns.inria.fr/ludo/v1/gamemodel": {
-        "accessed": "2020.05.06; 22:12:53",
+        "accessed": "2020-05-06 22:12:53",
         "source": "LOV"
     },
     "http://ns.inria.fr/ludo/v1/gamepresentation#": {
-        "accessed": "2020.05.06; 22:13:36",
+        "accessed": "2020-05-06 22:13:36",
         "source": "LOV"
     },
     "http://ns.inria.fr/ludo/v1/virtualcontext#": {
-        "accessed": "2020.05.06; 22:14:19",
+        "accessed": "2020-05-06 22:14:19",
         "source": "LOV"
     },
     "http://ns.inria.fr/ludo/v1/xapi": {
-        "accessed": "2020.05.06; 22:15:02",
+        "accessed": "2020-05-06 22:15:02",
         "source": "LOV"
     },
     "http://ns.inria.fr/munc#": {
-        "accessed": "2020.05.06; 22:34:07",
+        "accessed": "2020-05-06 22:34:07",
         "source": "LOV"
     },
     "http://ns.inria.fr/munc/v1#": {
-        "accessed": "2020.05.07; 04:05:07",
+        "accessed": "2020-05-07 04:05:07",
         "source": "spoHashUris"
     },
     "http://ns.inria.fr/nicetag/2010/09/09/voc": {
-        "accessed": "2020.05.06; 23:50:30",
+        "accessed": "2020-05-06 23:50:30",
         "source": "LOV"
     },
     "http://ns.inria.fr/nrv#": {
-        "accessed": "2020.05.06; 23:49:39",
+        "accessed": "2020-05-06 23:49:39",
         "source": "LOV"
     },
     "http://ns.inria.fr/prissma/v1": {
-        "accessed": "2020.05.07; 15:15:38",
+        "accessed": "2020-05-07 15:15:38",
         "source": "prefix.cc"
     },
     "http://ns.inria.fr/prissma/v2#": {
-        "accessed": "2020.05.07; 01:11:50",
+        "accessed": "2020-05-07 01:11:50",
         "source": "LOV"
     },
     "http://ns.inria.fr/provoc": {
-        "accessed": "2020.05.07; 01:12:58",
+        "accessed": "2020-05-07 01:12:58",
         "source": "LOV"
     },
     "http://ns.inria.fr/ratio4ta/v1": {
-        "accessed": "2020.05.07; 05:52:04",
+        "accessed": "2020-05-07 05:52:04",
         "source": "prefix.cc"
     },
     "http://ns.inria.fr/s4ac/v2": {
-        "accessed": "2020.05.07; 01:39:09",
+        "accessed": "2020-05-07 01:39:09",
         "source": "LOV"
     },
     "http://ns.inria.fr/semed/eduprogression/v1": {
-        "accessed": "2020.05.06; 20:33:49",
+        "accessed": "2020-05-06 20:33:49",
         "source": "LOV"
     },
     "http://ns.nature.com/terms/": {
-        "accessed": "2020.05.06; 22:43:34",
+        "accessed": "2020-05-06 22:43:34",
         "source": "LOV"
     },
     "http://ns.ottr.xyz/templates": {
-        "accessed": "2020.05.07; 10:12:01",
+        "accessed": "2020-05-07 10:12:01",
         "source": "prefix.cc"
     },
     "http://ns.taverna.org.uk/2010/scufl2": {
-        "accessed": "2020.05.07; 18:49:33",
+        "accessed": "2020-05-07 18:49:33",
         "source": "prefix.cc"
     },
     "http://ns.taverna.org.uk/2012/tavernaprov/": {
-        "accessed": "2020.05.07; 15:38:37",
+        "accessed": "2020-05-07 15:38:37",
         "source": "prefix.cc"
     },
     "http://onto.eva.mpg.de/ontologies/gfo-bio.owl": {
-        "accessed": "2020.06.10; 20:03:11",
+        "accessed": "2020-06-10 20:03:11",
         "source": "user-suggestion"
     },
     "http://ontologi.es/days#": {
-        "accessed": "2020.05.07; 10:43:46",
+        "accessed": "2020-05-07 10:43:46",
         "source": "prefix.cc"
     },
     "http://ontologi.es/lang/core#": {
-        "accessed": "2020.05.07; 11:03:11",
+        "accessed": "2020-05-07 11:03:11",
         "source": "prefix.cc"
     },
     "http://ontologies.geohive.ie/osi": {
-        "accessed": "2020.06.19; 19:04:11",
+        "accessed": "2020-06-19 19:04:11",
         "source": "user-suggestion"
     },
     "http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-data.owl": {
-        "accessed": "2020.05.06; 22:10:31",
+        "accessed": "2020-05-06 22:10:31",
         "source": "LOV"
     },
     "http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-edac.owl": {
-        "accessed": "2020.05.06; 20:31:39",
+        "accessed": "2020-05-06 20:31:39",
         "source": "LOV"
     },
     "http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-modelling.owl": {
-        "accessed": "2020.05.06; 22:11:15",
+        "accessed": "2020-05-06 22:11:15",
         "source": "LOV"
     },
     "http://ontology.cybershare.utep.edu/ELSEWeb/elseweb-service.owl": {
-        "accessed": "2020.05.07; 04:09:35",
+        "accessed": "2020-05-07 04:09:35",
         "source": "spoHashUris"
     },
     "http://ontology.cybershare.utep.edu/ELSEWeb/mappings/elseweb-mappings.owl": {
-        "accessed": "2020.05.06; 22:08:03",
+        "accessed": "2020-05-06 22:08:03",
         "source": "LOV"
     },
     "http://ontology.cybershare.utep.edu/dbowl/relational-to-ontology-mapping-primitive.owl": {
-        "accessed": "2020.05.07; 14:21:13",
+        "accessed": "2020-05-07 14:21:13",
         "source": "prefix.cc"
     },
     "http://ontosoft.org/software": {
-        "accessed": "2020.05.07; 04:11:16",
+        "accessed": "2020-05-07 04:11:16",
         "source": "spoHashUris"
     },
     "http://open-services.net/ns/asset#": {
-        "accessed": "2020.05.06; 18:37:06",
+        "accessed": "2020-05-06 18:37:06",
         "source": "LOV"
     },
     "http://open-services.net/ns/core#": {
-        "accessed": "2020.07.09; 18:12:40",
+        "accessed": "2020-07-09 18:12:40",
         "source": "LOV"
     },
     "http://opendata.aragon.es/def/ei2a": {
-        "accessed": "2020.07.10; 18:59:13",
+        "accessed": "2020-07-10 18:59:13",
         "source": "LOV"
     },
     "http://opendata.aragon.es/def/ei2a/categorization": {
-        "accessed": "2020.05.07; 04:12:34",
+        "accessed": "2020-05-07 04:12:34",
         "source": "spoHashUris"
     },
     "http://opendata.caceres.es/def/ontomunicipio": {
-        "accessed": "2020.05.07; 17:06:27",
+        "accessed": "2020-05-07 17:06:27",
         "source": "prefix.cc"
     },
     "http://openenergy-platform.org/ontology/oeo/": {
-        "accessed": "2020.06.15; 10:52:08",
+        "accessed": "2020-06-15 10:52:08",
         "source": "user-suggestion"
     },
     "http://openenergy-platform.org/ontology/oeo/imports/iao-module.owl": {
-        "accessed": "2020.06.26; 11:29:24",
+        "accessed": "2020-06-26 11:29:24",
         "source": "user-suggestion"
     },
     "http://paul.staroch.name/thesis/SmartHomeWeather.owl#": {
-        "accessed": "2020.05.07; 02:07:11",
+        "accessed": "2020-05-07 02:07:11",
         "source": "LOV"
     },
     "http://pcdm.org/use#": {
-        "accessed": "2020.05.07; 09:34:41",
+        "accessed": "2020-05-07 09:34:41",
         "source": "prefix.cc"
     },
     "http://permid.org/ontology/organization/": {
-        "accessed": "2020.05.07; 12:20:48",
+        "accessed": "2020-05-07 12:20:48",
         "source": "prefix.cc"
     },
     "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#": {
-        "accessed": "2020.05.20; 17:18:52",
+        "accessed": "2020-05-20 17:18:52",
         "source": "LOV"
     },
     "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#": {
-        "accessed": "2020.05.20; 17:35:33",
+        "accessed": "2020-05-20 17:35:33",
         "source": "LOV"
     },
     "http://philosurfical.open.ac.uk/ontology/philosurfical.owl": {
-        "accessed": "2020.05.07; 09:57:05",
+        "accessed": "2020-05-07 09:57:05",
         "source": "prefix.cc"
     },
     "http://premon.fbk.eu/ontology/core": {
-        "accessed": "2020.05.07; 04:14:48",
+        "accessed": "2020-05-07 04:14:48",
         "source": "spoHashUris"
     },
     "http://premon.fbk.eu/ontology/fn": {
-        "accessed": "2020.05.07; 00:56:41",
+        "accessed": "2020-05-07 00:56:41",
         "source": "LOV"
     },
     "http://premon.fbk.eu/ontology/nb": {
-        "accessed": "2020.05.07; 00:57:24",
+        "accessed": "2020-05-07 00:57:24",
         "source": "LOV"
     },
     "http://premon.fbk.eu/ontology/pb": {
-        "accessed": "2020.05.07; 00:58:08",
+        "accessed": "2020-05-07 00:58:08",
         "source": "LOV"
     },
     "http://premon.fbk.eu/ontology/vn": {
-        "accessed": "2020.05.07; 00:58:52",
+        "accessed": "2020-05-07 00:58:52",
         "source": "LOV"
     },
     "http://protege.stanford.edu/plugins/owl/dc/protege-dc.owl": {
-        "accessed": "2020.05.21; 04:45:28",
+        "accessed": "2020-05-21 04:45:28",
         "source": "prefix.cc"
     },
     "http://protege.stanford.edu/plugins/owl/protege": {
-        "accessed": "2020.05.07; 04:15:37",
+        "accessed": "2020-05-07 04:15:37",
         "source": "spoHashUris"
     },
     "http://purl.allotrope.org/voc/afo/REC/2019/09/aft": {
-        "accessed": "2020.05.07; 13:21:11",
+        "accessed": "2020-05-07 13:21:11",
         "source": "prefix.cc"
     },
     "http://purl.allotrope.org/voc/afo/domain/WD/2018/04/x-ray-diffraction": {
-        "accessed": "2020.05.21; 04:34:59",
+        "accessed": "2020-05-21 04:34:59",
         "source": "prefix.cc"
     },
     "http://purl.allotrope.org/voc/afo/perspective/REC/2020/06/organization": {
-        "accessed": "2020.07.17; 00:52:51",
+        "accessed": "2020-07-17 00:52:51",
         "source": "prefix.cc"
     },
     "http://purl.bdrc.io/ontology/core/": {
-        "accessed": "2020.05.07; 14:04:24",
+        "accessed": "2020-05-07 14:04:24",
         "source": "prefix.cc"
     },
     "http://purl.jp/bio/11/mbgd": {
-        "accessed": "2020.07.17; 14:25:56",
+        "accessed": "2020-07-17 14:25:56",
         "source": "prefix.cc"
     },
     "http://purl.obolibrary.org/obo/bco.owl": {
-        "accessed": "2020.05.07; 09:18:27",
+        "accessed": "2020-05-07 09:18:27",
         "source": "prefix.cc"
     },
     "http://purl.obolibrary.org/obo/iao.owl": {
-        "accessed": "2020.05.07; 10:51:20",
+        "accessed": "2020-05-07 10:51:20",
         "source": "prefix.cc"
     },
     "http://purl.obolibrary.org/obo/ido.owl": {
-        "accessed": "2020.05.07; 15:07:56",
+        "accessed": "2020-05-07 15:07:56",
         "source": "prefix.cc"
     },
     "http://purl.obolibrary.org/obo/obi.owl": {
-        "accessed": "2020.05.06; 23:54:58",
+        "accessed": "2020-05-06 23:54:58",
         "source": "LOV"
     },
     "http://purl.obolibrary.org/obo/po.owl": {
-	"accessed" : "2020-08-06 13:09:36",
-	"source" : "user-suggestion"
+        "accessed": "2020-08-06 13:09:36",
+        "source": "user-suggestion"
     },
     "http://purl.oclc.org/NET/UNIS/fiware/iot-lite#": {
-        "accessed": "2020.05.06; 21:38:51",
+        "accessed": "2020-05-06 21:38:51",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/mvco.owl": {
-        "accessed": "2020.05.06; 22:35:35",
+        "accessed": "2020-05-06 22:35:35",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/ssnx/cf/cf-feature": {
-        "accessed": "2020.05.06; 19:32:31",
+        "accessed": "2020-05-06 19:32:31",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/ssnx/cf/cf-property": {
-        "accessed": "2020.05.06; 19:34:04",
+        "accessed": "2020-05-06 19:34:04",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/ssnx/meteo/aws": {
-        "accessed": "2020.05.06; 19:02:26",
+        "accessed": "2020-05-06 19:02:26",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/ssnx/qu/qu": {
-        "accessed": "2020.05.07; 01:19:13",
+        "accessed": "2020-05-07 01:19:13",
         "source": "LOV"
     },
     "http://purl.oclc.org/NET/ssnx/ssn": {
-        "accessed": "2020.07.10; 22:16:43",
+        "accessed": "2020-07-10 22:16:43",
         "source": "LOV"
     },
     "http://purl.oreilly.com/ns/meta/": {
-        "accessed": "2020.05.07; 08:57:10",
+        "accessed": "2020-05-07 08:57:10",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/acc": {
-        "accessed": "2020.05.07; 11:29:21",
+        "accessed": "2020-05-07 11:29:21",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/biol/botany#": {
-        "accessed": "2020.05.06; 19:14:36",
+        "accessed": "2020-05-06 19:14:36",
         "source": "LOV"
     },
     "http://purl.org/NET/biol/ns#": {
-        "accessed": "2020.05.06; 19:10:14",
+        "accessed": "2020-05-06 19:10:14",
         "source": "LOV"
     },
     "http://purl.org/NET/biol/zoology#": {
-        "accessed": "2020.05.07; 14:06:29",
+        "accessed": "2020-05-07 14:06:29",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/book/vocab#": {
-        "accessed": "2020.07.17; 06:02:46",
+        "accessed": "2020-07-17 06:02:46",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/c4dm/event.owl": {
-        "accessed": "2020.05.06; 20:49:23",
+        "accessed": "2020-05-06 20:49:23",
         "source": "LOV"
     },
     "http://purl.org/NET/c4dm/keys.owl": {
-        "accessed": "2020.05.06; 21:48:54",
+        "accessed": "2020-05-06 21:48:54",
         "source": "LOV"
     },
     "http://purl.org/NET/c4dm/timeline.owl": {
-        "accessed": "2020.05.07; 02:45:29",
+        "accessed": "2020-05-07 02:45:29",
         "source": "LOV"
     },
     "http://purl.org/NET/cidoc-crm/core": {
-        "accessed": "2020.05.07; 05:46:09",
+        "accessed": "2020-05-07 05:46:09",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/cpan-uri/terms#": {
-        "accessed": "2020.05.07; 14:01:01",
+        "accessed": "2020-05-07 14:01:01",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/decimalised#d": {
-        "accessed": "2020.07.17; 09:06:55",
+        "accessed": "2020-07-17 09:06:55",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/lx": {
-        "accessed": "2020.05.07; 10:28:26",
+        "accessed": "2020-05-07 10:28:26",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/puc": {
-        "accessed": "2020.05.07; 10:39:21",
+        "accessed": "2020-05-07 10:39:21",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/ssnext/electricmeters#": {
-        "accessed": "2020.05.07; 15:08:55",
+        "accessed": "2020-05-07 15:08:55",
         "source": "prefix.cc"
     },
     "http://purl.org/NET/uri#": {
-        "accessed": "2020.05.07; 15:03:14",
+        "accessed": "2020-05-07 15:03:14",
         "source": "prefix.cc"
     },
     "http://purl.org/a-proc": {
-        "accessed": "2020.05.20; 20:35:59",
+        "accessed": "2020-05-20 20:35:59",
         "source": "prefix.cc"
     },
     "http://purl.org/acco/ns#": {
-        "accessed": "2020.05.06; 17:50:42",
+        "accessed": "2020-05-06 17:50:42",
         "source": "LOV"
     },
     "http://purl.org/adms/sw/": {
-        "accessed": "2020.07.17; 13:45:15",
+        "accessed": "2020-07-17 13:45:15",
         "source": "prefix.cc"
     },
     "http://purl.org/biodiversity/eol/": {
-        "accessed": "2020.05.07; 09:10:41",
+        "accessed": "2020-05-07 09:10:41",
         "source": "prefix.cc"
     },
     "http://purl.org/biodiversity/taxon/": {
-        "accessed": "2020.07.16; 20:29:00",
+        "accessed": "2020-07-16 20:29:00",
         "source": "LOV"
     },
     "http://purl.org/biotop/biotop.owl": {
-        "accessed": "2020.05.06; 19:10:55",
+        "accessed": "2020-05-06 19:10:55",
         "source": "LOV"
     },
     "http://purl.org/carfo#": {
-        "accessed": "2020.05.07; 12:42:18",
+        "accessed": "2020-05-07 12:42:18",
         "source": "prefix.cc"
     },
     "http://purl.org/cerif/frapo": {
-        "accessed": "2020.05.06; 21:00:38",
+        "accessed": "2020-05-06 21:00:38",
         "source": "LOV"
     },
     "http://purl.org/ceu/eco": {
-        "accessed": "2020.05.07; 14:59:47",
+        "accessed": "2020-05-07 14:59:47",
         "source": "prefix.cc"
     },
     "http://purl.org/cld/terms/AccrualMethod": {
-        "accessed": "2020.07.16; 17:20:52",
+        "accessed": "2020-07-16 17:20:52",
         "source": "LOV"
     },
     "http://purl.org/cld/terms/AccrualPolicy": {
-        "accessed": "2020.07.17; 14:53:15",
+        "accessed": "2020-07-17 14:53:15",
         "source": "prefix.cc"
     },
     "http://purl.org/co": {
-        "accessed": "2020.05.06; 19:43:16",
+        "accessed": "2020-05-06 19:43:16",
         "source": "LOV"
     },
     "http://purl.org/configurationontology": {
-        "accessed": "2020.05.06; 19:42:52",
+        "accessed": "2020-05-06 19:42:52",
         "source": "LOV"
     },
     "http://purl.org/crmeh#CRMEH": {
-        "accessed": "2020.05.07; 18:15:15",
+        "accessed": "2020-05-07 18:15:15",
         "source": "prefix.cc"
     },
     "http://purl.org/csm/1.0": {
-        "accessed": "2020.05.07; 18:40:35",
+        "accessed": "2020-05-07 18:40:35",
         "source": "prefix.cc"
     },
     "http://purl.org/cyber/misp": {
-        "accessed": "2020.05.07; 16:17:39",
+        "accessed": "2020-05-07 16:17:39",
         "source": "prefix.cc"
     },
     "http://purl.org/cyber/stix": {
-        "accessed": "2020.05.07; 16:46:25",
+        "accessed": "2020-05-07 16:46:25",
         "source": "prefix.cc"
     },
     "http://purl.org/datanode/ns/": {
-        "accessed": "2020.05.07; 15:10:29",
+        "accessed": "2020-05-07 15:10:29",
         "source": "prefix.cc"
     },
     "http://purl.org/dita/ns#": {
-        "accessed": "2020.05.06; 20:11:24",
+        "accessed": "2020-05-06 20:11:24",
         "source": "LOV"
     },
     "http://purl.org/dpn": {
-        "accessed": "2020.05.06; 20:17:24",
+        "accessed": "2020-05-06 20:17:24",
         "source": "LOV"
     },
     "http://purl.org/dpn/dataset": {
-        "accessed": "2020.05.07; 04:20:12",
+        "accessed": "2020-05-07 04:20:12",
         "source": "spoHashUris"
     },
     "http://purl.org/dqm-vocabulary/v1/dqm": {
-        "accessed": "2020.05.06; 20:22:04",
+        "accessed": "2020-05-06 20:22:04",
         "source": "LOV"
     },
     "http://purl.org/dsnotify/vocab/eventset/": {
-        "accessed": "2020.05.06; 23:12:42",
+        "accessed": "2020-05-06 23:12:42",
         "source": "LOV"
     },
     "http://purl.org/dsw/": {
-        "accessed": "2020.05.07; 09:11:35",
+        "accessed": "2020-05-07 09:11:35",
         "source": "prefix.cc"
     },
     "http://purl.org/eis/vocab/daq#": {
-        "accessed": "2020.05.06; 19:54:24",
+        "accessed": "2020-05-06 19:54:24",
         "source": "LOV"
     },
     "http://purl.org/eis/vocab/scor#": {
-        "accessed": "2020.05.07; 09:00:44",
+        "accessed": "2020-05-07 09:00:44",
         "source": "prefix.cc"
     },
     "http://purl.org/finlex/schema/laki/": {
-        "accessed": "2020.07.17; 01:10:44",
+        "accessed": "2020-07-17 01:10:44",
         "source": "prefix.cc"
     },
     "http://purl.org/finlex/schema/oikeus/": {
-        "accessed": "2020.07.17; 05:14:39",
+        "accessed": "2020-07-17 05:14:39",
         "source": "prefix.cc"
     },
     "http://purl.org/foodontology": {
-        "accessed": "2020.05.07; 14:06:11",
+        "accessed": "2020-05-07 14:06:11",
         "source": "prefix.cc"
     },
     "http://purl.org/goodrelations/v1": {
-        "accessed": "2020.05.06; 21:18:02",
+        "accessed": "2020-05-06 21:18:02",
         "source": "LOV"
     },
     "http://purl.org/healthcarevocab/v1": {
-        "accessed": "2020.05.06; 20:06:49",
+        "accessed": "2020-05-06 20:06:49",
         "source": "LOV"
     },
     "http://purl.org/imbi/ru-meta.owl": {
-        "accessed": "2020.05.07; 01:38:12",
+        "accessed": "2020-05-07 01:38:12",
         "source": "LOV"
     },
     "http://purl.org/innovation/ns": {
-        "accessed": "2020.05.06; 21:34:22",
+        "accessed": "2020-05-06 21:34:22",
         "source": "LOV"
     },
     "http://purl.org/iot/ontology/fiesta-iot#": {
-        "accessed": "2020.05.06; 20:55:07",
+        "accessed": "2020-05-06 20:55:07",
         "source": "LOV"
     },
     "http://purl.org/iot/vocab/m3-lite#": {
-        "accessed": "2020.05.06; 22:19:46",
+        "accessed": "2020-05-06 22:19:46",
         "source": "LOV"
     },
     "http://purl.org/ipo/core": {
-        "accessed": "2020.05.06; 21:39:16",
+        "accessed": "2020-05-06 21:39:16",
         "source": "LOV"
     },
     "http://purl.org/iso25964/skos-thes": {
-        "accessed": "2020.05.06; 21:43:07",
+        "accessed": "2020-05-06 21:43:07",
         "source": "LOV"
     },
     "http://purl.org/linked-data/cube": {
-        "accessed": "2020.05.07; 01:16:46",
+        "accessed": "2020-05-07 01:16:46",
         "source": "LOV"
     },
     "http://purl.org/linked-data/registry": {
-        "accessed": "2020.05.07; 04:26:30",
+        "accessed": "2020-05-07 04:26:30",
         "source": "spoHashUris"
     },
     "http://purl.org/linked-data/sdmx": {
-        "accessed": "2020.05.07; 01:48:08",
+        "accessed": "2020-05-07 01:48:08",
         "source": "LOV"
     },
     "http://purl.org/linked-data/sdmx/2009/code#timeFormat": {
-        "accessed": "2020.07.16; 19:36:06",
+        "accessed": "2020-07-16 19:36:06",
         "source": "LOV"
     },
     "http://purl.org/linked-data/sdmx/2009/concept#cog": {
-        "accessed": "2020.07.17; 14:23:03",
+        "accessed": "2020-07-17 14:23:03",
         "source": "prefix.cc"
     },
     "http://purl.org/linkingyou/": {
-        "accessed": "2020.05.06; 23:40:47",
+        "accessed": "2020-05-06 23:40:47",
         "source": "LOV"
     },
     "http://purl.org/lobid/lv": {
-        "accessed": "2020.05.06; 22:15:49",
+        "accessed": "2020-05-06 22:15:49",
         "source": "LOV"
     },
     "http://purl.org/makolab/caont/": {
-        "accessed": "2020.05.07; 13:36:35",
+        "accessed": "2020-05-07 13:36:35",
         "source": "prefix.cc"
     },
     "http://purl.org/metainfo/terms/dsp": {
-        "accessed": "2020.05.07; 10:46:44",
+        "accessed": "2020-05-07 10:46:44",
         "source": "prefix.cc"
     },
     "http://purl.org/minim/minim": {
-        "accessed": "2020.05.07; 14:57:50",
+        "accessed": "2020-05-07 14:57:50",
         "source": "prefix.cc"
     },
     "http://purl.org/momayo/mmo/": {
-        "accessed": "2020.05.07; 14:33:21",
+        "accessed": "2020-05-07 14:33:21",
         "source": "prefix.cc"
     },
     "http://purl.org/net/VideoGameOntology": {
-        "accessed": "2020.05.07; 03:04:42",
+        "accessed": "2020-05-07 03:04:42",
         "source": "LOV"
     },
     "http://purl.org/net/bel-epa/doacc": {
-        "accessed": "2020.05.07; 16:55:44",
+        "accessed": "2020-05-07 16:55:44",
         "source": "prefix.cc"
     },
     "http://purl.org/net/cartCoord#": {
-        "accessed": "2020.05.06; 19:20:13",
+        "accessed": "2020-05-06 19:20:13",
         "source": "LOV"
     },
     "http://purl.org/net/dbm/ontology#": {
-        "accessed": "2020.05.20; 16:54:58",
+        "accessed": "2020-05-20 16:54:58",
         "source": "LOV"
     },
     "http://purl.org/net/hifm/ontology#": {
-        "accessed": "2020.05.20; 17:04:39",
+        "accessed": "2020-05-20 17:04:39",
         "source": "LOV"
     },
     "http://purl.org/net/nknouf/ns/bibtex": {
-        "accessed": "2020.07.16; 16:38:27",
+        "accessed": "2020-07-16 16:38:27",
         "source": "LOV"
     },
     "http://purl.org/net/ns/ex": {
-        "accessed": "2020.05.06; 20:50:15",
+        "accessed": "2020-05-06 20:50:15",
         "source": "LOV"
     },
     "http://purl.org/net/ns/wordmap": {
-        "accessed": "2020.05.07; 12:50:02",
+        "accessed": "2020-05-07 12:50:02",
         "source": "prefix.cc"
     },
     "http://purl.org/net/opmv/ns#": {
-        "accessed": "2020.05.07; 00:31:52",
+        "accessed": "2020-05-07 00:31:52",
         "source": "LOV"
     },
     "http://purl.org/net/orth": {
-        "accessed": "2020.05.07; 16:15:28",
+        "accessed": "2020-05-07 16:15:28",
         "source": "prefix.cc"
     },
     "http://purl.org/net/p-plan#": {
-        "accessed": "2020.05.07; 00:45:07",
+        "accessed": "2020-05-07 00:45:07",
         "source": "LOV"
     },
     "http://purl.org/net/po#": {
-        "accessed": "2020.05.20; 17:31:24",
+        "accessed": "2020-05-20 17:31:24",
         "source": "LOV"
     },
     "http://purl.org/net/provenance/files#": {
-        "accessed": "2020.05.07; 04:29:36",
+        "accessed": "2020-05-07 04:29:36",
         "source": "spoHashUris"
     },
     "http://purl.org/net/provenance/integrity#": {
-        "accessed": "2020.05.07; 16:45:36",
+        "accessed": "2020-05-07 16:45:36",
         "source": "prefix.cc"
     },
     "http://purl.org/net/provenance/ns#": {
-        "accessed": "2020.07.16; 19:33:31",
+        "accessed": "2020-07-16 19:33:31",
         "source": "LOV"
     },
     "http://purl.org/net/provenance/types#": {
-        "accessed": "2020.05.07; 01:13:29",
+        "accessed": "2020-05-07 01:13:29",
         "source": "LOV"
     },
     "http://purl.org/net/tsn#": {
-        "accessed": "2020.05.07; 02:49:16",
+        "accessed": "2020-05-07 02:49:16",
         "source": "LOV"
     },
     "http://purl.org/net/tsnchange#": {
-        "accessed": "2020.05.07; 02:50:06",
+        "accessed": "2020-05-07 02:50:06",
         "source": "LOV"
     },
     "http://purl.org/net/wf-invocation": {
-        "accessed": "2020.05.07; 03:17:02",
+        "accessed": "2020-05-07 03:17:02",
         "source": "LOV"
     },
     "http://purl.org/net/wf-motifs": {
-        "accessed": "2020.05.07; 03:18:41",
+        "accessed": "2020-05-07 03:18:41",
         "source": "LOV"
     },
     "http://purl.org/nxp/schema/v1": {
-        "accessed": "2020.05.07; 10:05:19",
+        "accessed": "2020-05-07 10:05:19",
         "source": "prefix.cc"
     },
     "http://purl.org/olia/olia.owl": {
-        "accessed": "2020.05.21; 04:18:43",
+        "accessed": "2020-05-21 04:18:43",
         "source": "prefix.cc"
     },
     "http://purl.org/olia/penn.owl": {
-        "accessed": "2020.05.07; 09:39:26",
+        "accessed": "2020-05-07 09:39:26",
         "source": "prefix.cc"
     },
     "http://purl.org/olia/stanford.owl": {
-        "accessed": "2020.05.07; 17:19:20",
+        "accessed": "2020-05-07 17:19:20",
         "source": "prefix.cc"
     },
     "http://purl.org/olia/system.owl": {
-        "accessed": "2020.05.07; 04:31:49",
+        "accessed": "2020-05-07 04:31:49",
         "source": "spoHashUris"
     },
     "http://purl.org/olia/ubyCat.owl": {
-        "accessed": "2020.05.07; 02:53:43",
+        "accessed": "2020-05-07 02:53:43",
         "source": "LOV"
     },
     "http://purl.org/ontology/ao/core#": {
-        "accessed": "2020.05.06; 18:38:42",
+        "accessed": "2020-05-06 18:38:42",
         "source": "LOV"
     },
     "http://purl.org/ontology/bibo/": {
-        "accessed": "2020.05.06; 23:01:49",
+        "accessed": "2020-05-06 23:01:49",
         "source": "LOV"
     },
     "http://purl.org/ontology/cco/core#": {
-        "accessed": "2020.05.06; 19:22:11",
+        "accessed": "2020-05-06 19:22:11",
         "source": "LOV"
     },
     "http://purl.org/ontology/cco/mappings#": {
-        "accessed": "2020.05.07; 16:28:19",
+        "accessed": "2020-05-07 16:28:19",
         "source": "prefix.cc"
     },
     "http://purl.org/ontology/chord/": {
-        "accessed": "2020.05.06; 23:07:07",
+        "accessed": "2020-05-06 23:07:07",
         "source": "LOV"
     },
     "http://purl.org/ontology/co/core#": {
-        "accessed": "2020.05.06; 19:40:07",
+        "accessed": "2020-05-06 19:40:07",
         "source": "LOV"
     },
     "http://purl.org/ontology/dvia": {
-        "accessed": "2020.05.06; 20:25:01",
+        "accessed": "2020-05-06 20:25:01",
         "source": "LOV"
     },
     "http://purl.org/ontology/ecpo": {
-        "accessed": "2020.05.06; 20:30:51",
+        "accessed": "2020-05-06 20:30:51",
         "source": "LOV"
     },
     "http://purl.org/ontology/holding": {
-        "accessed": "2020.05.06; 21:26:07",
+        "accessed": "2020-05-06 21:26:07",
         "source": "LOV"
     },
     "http://purl.org/ontology/is/core#": {
-        "accessed": "2020.05.06; 21:40:54",
+        "accessed": "2020-05-06 21:40:54",
         "source": "LOV"
     },
     "http://purl.org/ontology/mo/": {
-        "accessed": "2020.05.06; 23:45:05",
+        "accessed": "2020-05-06 23:45:05",
         "source": "LOV"
     },
     "http://purl.org/ontology/myspace": {
-        "accessed": "2020.05.07; 14:51:41",
+        "accessed": "2020-05-07 14:51:41",
         "source": "prefix.cc"
     },
     "http://purl.org/ontology/olo/core#": {
-        "accessed": "2020.05.07; 00:16:29",
+        "accessed": "2020-05-07 00:16:29",
         "source": "LOV"
     },
     "http://purl.org/ontology/pbo/core#": {
-        "accessed": "2020.05.07; 00:48:57",
+        "accessed": "2020-05-07 00:48:57",
         "source": "LOV"
     },
     "http://purl.org/ontology/po/": {
-        "accessed": "2020.05.07; 00:59:44",
+        "accessed": "2020-05-07 00:59:44",
         "source": "LOV"
     },
     "http://purl.org/ontology/prv/core#": {
-        "accessed": "2020.05.07; 01:08:29",
+        "accessed": "2020-05-07 01:08:29",
         "source": "LOV"
     },
     "http://purl.org/ontology/prv/rules#": {
-        "accessed": "2020.05.07; 13:41:26",
+        "accessed": "2020-05-07 13:41:26",
         "source": "prefix.cc"
     },
     "http://purl.org/ontology/rec/core#": {
-        "accessed": "2020.05.07; 01:30:20",
+        "accessed": "2020-05-07 01:30:20",
         "source": "LOV"
     },
     "http://purl.org/ontology/storyline": {
-        "accessed": "2020.07.16; 18:32:33",
+        "accessed": "2020-07-16 18:32:33",
         "source": "LOV"
     },
     "http://purl.org/ontology/symbolic-music/": {
-        "accessed": "2020.05.07; 16:59:50",
+        "accessed": "2020-05-07 16:59:50",
         "source": "prefix.cc"
     },
     "http://purl.org/ontology/wi/core#": {
-        "accessed": "2020.05.07; 03:20:16",
+        "accessed": "2020-05-07 03:20:16",
         "source": "LOV"
     },
     "http://purl.org/ontology/wo/": {
-        "accessed": "2020.05.07; 03:26:51",
+        "accessed": "2020-05-07 03:26:51",
         "source": "LOV"
     },
     "http://purl.org/ontology/wo/core#": {
-        "accessed": "2020.05.07; 03:29:05",
+        "accessed": "2020-05-07 03:29:05",
         "source": "LOV"
     },
     "http://purl.org/opdm/category/google#": {
-        "accessed": "2020.05.07; 04:37:35",
+        "accessed": "2020-05-07 04:37:35",
         "source": "spoHashUris"
     },
     "http://purl.org/opdm/refrigerator#": {
-        "accessed": "2020.05.07; 00:14:03",
+        "accessed": "2020-05-07 00:14:03",
         "source": "LOV"
     },
     "http://purl.org/opdm/utility#": {
-        "accessed": "2020.05.07; 04:43:57",
+        "accessed": "2020-05-07 04:43:57",
         "source": "spoHashUris"
     },
     "http://purl.org/oslo/ns/localgov": {
-        "accessed": "2020.07.16; 18:59:50",
+        "accessed": "2020-07-16 18:59:50",
         "source": "LOV"
     },
     "http://purl.org/pav/": {
-        "accessed": "2020.05.07; 00:48:35",
+        "accessed": "2020-05-07 00:48:35",
         "source": "LOV"
     },
     "http://purl.org/powla/powla.owl": {
-        "accessed": "2020.05.07; 12:10:09",
+        "accessed": "2020-05-07 12:10:09",
         "source": "prefix.cc"
     },
     "http://purl.org/procurement/public-contracts": {
-        "accessed": "2020.07.16; 19:25:58",
+        "accessed": "2020-07-16 19:25:58",
         "source": "LOV"
     },
     "http://purl.org/procurement/public-contracts-activities#": {
-        "accessed": "2020.07.16; 22:47:58",
+        "accessed": "2020-07-16 22:47:58",
         "source": "spoHashUris"
     },
     "http://purl.org/procurement/public-contracts-authority-kinds#": {
-        "accessed": "2020.07.16; 22:48:28",
+        "accessed": "2020-07-16 22:48:28",
         "source": "spoHashUris"
     },
     "http://purl.org/procurement/public-contracts-czech#": {
-        "accessed": "2020.05.07; 09:56:22",
+        "accessed": "2020-05-07 09:56:22",
         "source": "prefix.cc"
     },
     "http://purl.org/procurement/public-contracts-kinds#": {
-        "accessed": "2020.07.16; 22:49:23",
+        "accessed": "2020-07-16 22:49:23",
         "source": "spoHashUris"
     },
     "http://purl.org/procurement/public-contracts-procedure-types#": {
-        "accessed": "2020.07.16; 22:50:39",
+        "accessed": "2020-07-16 22:50:39",
         "source": "spoHashUris"
     },
     "http://purl.org/qb4olap/cubes": {
-        "accessed": "2020.05.07; 01:17:45",
+        "accessed": "2020-05-07 01:17:45",
         "source": "LOV"
     },
     "http://purl.org/query/voidext": {
-        "accessed": "2020.05.07; 03:12:31",
+        "accessed": "2020-05-07 03:12:31",
         "source": "LOV"
     },
     "http://purl.org/reco#": {
-        "accessed": "2020.05.07; 01:33:31",
+        "accessed": "2020-05-07 01:33:31",
         "source": "LOV"
     },
     "http://purl.org/rvl/": {
-        "accessed": "2020.05.07; 09:58:02",
+        "accessed": "2020-05-07 09:58:02",
         "source": "prefix.cc"
     },
     "http://purl.org/science/owl/sciencecommons/": {
-        "accessed": "2020.07.17; 15:05:31",
+        "accessed": "2020-07-17 15:05:31",
         "source": "prefix.cc"
     },
     "http://purl.org/spar/biro": {
-        "accessed": "2020.05.06; 19:11:38",
+        "accessed": "2020-05-06 19:11:38",
         "source": "LOV"
     },
     "http://purl.org/spar/c4o": {
-        "accessed": "2020.05.06; 19:18:53",
+        "accessed": "2020-05-06 19:18:53",
         "source": "LOV"
     },
     "http://purl.org/spar/cito": {
-        "accessed": "2020.05.06; 19:36:35",
+        "accessed": "2020-05-06 19:36:35",
         "source": "LOV"
     },
     "http://purl.org/spar/datacite": {
-        "accessed": "2020.05.06; 20:00:41",
+        "accessed": "2020-05-06 20:00:41",
         "source": "LOV"
     },
     "http://purl.org/spar/deo": {
-        "accessed": "2020.05.06; 20:04:45",
+        "accessed": "2020-05-06 20:04:45",
         "source": "LOV"
     },
     "http://purl.org/spar/doco": {
-        "accessed": "2020.05.06; 20:13:40",
+        "accessed": "2020-05-06 20:13:40",
         "source": "LOV"
     },
     "http://purl.org/spar/fabio": {
-        "accessed": "2020.05.06; 20:52:34",
+        "accessed": "2020-05-06 20:52:34",
         "source": "LOV"
     },
     "http://purl.org/spar/pro/": {
-        "accessed": "2020.07.10; 20:30:27",
+        "accessed": "2020-07-10 20:30:27",
         "source": "LOV"
     },
     "http://purl.org/spar/pso": {
-        "accessed": "2020.05.07; 01:14:31",
+        "accessed": "2020-05-07 01:14:31",
         "source": "LOV"
     },
     "http://purl.org/spar/pwo": {
-        "accessed": "2020.05.07; 01:15:36",
+        "accessed": "2020-05-07 01:15:36",
         "source": "LOV"
     },
     "http://purl.org/theatre#": {
-        "accessed": "2020.05.07; 02:40:06",
+        "accessed": "2020-05-07 02:40:06",
         "source": "LOV"
     },
     "http://purl.org/tio/ns#": {
-        "accessed": "2020.05.07; 02:43:11",
+        "accessed": "2020-05-07 02:43:11",
         "source": "LOV"
     },
     "http://purl.org/twc/ontology/cdm.owl#": {
-        "accessed": "2020.05.06; 19:28:04",
+        "accessed": "2020-05-06 19:28:04",
         "source": "LOV"
     },
     "http://purl.org/twc/ontology/frir.owl": {
-        "accessed": "2020.05.07; 13:43:17",
+        "accessed": "2020-05-07 13:43:17",
         "source": "prefix.cc"
     },
     "http://purl.org/twc/vocab/aapi-schema#": {
-        "accessed": "2020.05.07; 10:47:13",
+        "accessed": "2020-05-07 10:47:13",
         "source": "prefix.cc"
     },
     "http://purl.org/twc/vocab/conversion/": {
-        "accessed": "2020.05.06; 23:08:24",
+        "accessed": "2020-05-06 23:08:24",
         "source": "LOV"
     },
     "http://purl.org/twc/vocab/vsr#": {
-        "accessed": "2020.05.07; 18:52:16",
+        "accessed": "2020-05-07 18:52:16",
         "source": "prefix.cc"
     },
     "http://purl.org/uF/hCard/terms/": {
-        "accessed": "2020.05.07; 11:04:41",
+        "accessed": "2020-05-07 11:04:41",
         "source": "prefix.cc"
     },
     "http://purl.org/uco/ns#": {
-        "accessed": "2020.05.07; 02:54:38",
+        "accessed": "2020-05-07 02:54:38",
         "source": "LOV"
     },
     "http://purl.org/umu/uneskos": {
-        "accessed": "2020.05.07; 02:57:52",
+        "accessed": "2020-05-07 02:57:52",
         "source": "LOV"
     },
     "http://purl.org/viso/": {
-        "accessed": "2020.05.07; 17:07:19",
+        "accessed": "2020-05-07 17:07:19",
         "source": "prefix.cc"
     },
     "http://purl.org/voc/vrank": {
-        "accessed": "2020.05.07; 16:47:30",
+        "accessed": "2020-05-07 16:47:30",
         "source": "prefix.cc"
     },
     "http://purl.org/vocommons/voaf": {
-        "accessed": "2020.05.07; 03:10:10",
+        "accessed": "2020-05-07 03:10:10",
         "source": "LOV"
     },
     "http://purl.org/vso/ns": {
-        "accessed": "2020.05.07; 03:15:11",
+        "accessed": "2020-05-07 03:15:11",
         "source": "LOV"
     },
     "http://purl.org/wai#": {
-        "accessed": "2020.05.07; 03:16:13",
+        "accessed": "2020-05-07 03:16:13",
         "source": "LOV"
     },
     "http://purl.org/weso/ontology/computex": {
-        "accessed": "2020.05.07; 10:25:26",
+        "accessed": "2020-05-07 10:25:26",
         "source": "prefix.cc"
     },
     "http://purl.org/wf4ever/ro": {
-        "accessed": "2020.05.07; 01:34:41",
+        "accessed": "2020-05-07 01:34:41",
         "source": "LOV"
     },
     "http://purl.org/wf4ever/roevo": {
-        "accessed": "2020.05.07; 10:54:51",
+        "accessed": "2020-05-07 10:54:51",
         "source": "prefix.cc"
     },
     "http://purl.org/wf4ever/roterms#": {
-        "accessed": "2020.07.17; 05:51:35",
+        "accessed": "2020-07-17 05:51:35",
         "source": "prefix.cc"
     },
     "http://purl.org/wf4ever/wf4ever": {
-        "accessed": "2020.05.07; 14:45:03",
+        "accessed": "2020-05-07 14:45:03",
         "source": "prefix.cc"
     },
     "http://purl.org/wf4ever/wfdesc": {
-        "accessed": "2020.05.07; 03:17:54",
+        "accessed": "2020-05-07 03:17:54",
         "source": "LOV"
     },
     "http://purl.org/wf4ever/wfprov": {
-        "accessed": "2020.05.07; 03:19:01",
+        "accessed": "2020-05-07 03:19:01",
         "source": "LOV"
     },
     "http://purl.org/wild/vocab": {
-        "accessed": "2020.05.07; 08:35:06",
+        "accessed": "2020-05-07 08:35:06",
         "source": "prefix.cc"
     },
     "http://purl.org/xro/ns": {
-        "accessed": "2020.05.07; 14:09:10",
+        "accessed": "2020-05-07 14:09:10",
         "source": "prefix.cc"
     },
     "http://purl.org/xtypes/": {
-        "accessed": "2020.07.17; 01:39:29",
+        "accessed": "2020-07-17 01:39:29",
         "source": "prefix.cc"
     },
     "http://purl.uniprot.org/core/": {
-        "accessed": "2020.05.07; 02:58:54",
+        "accessed": "2020-05-07 02:58:54",
         "source": "LOV"
     },
     "http://qudt.org/1.1/schema/qudt": {
-        "accessed": "2020.05.07; 04:47:46",
+        "accessed": "2020-05-07 04:47:46",
         "source": "spoHashUris"
     },
     "http://qudt.org/schema/qudt": {
-        "accessed": "2020.05.07; 01:20:02",
+        "accessed": "2020-05-07 01:20:02",
         "source": "LOV"
     },
     "http://qudt.org/vocab/constant": {
-        "accessed": "2020.05.07; 08:33:17",
+        "accessed": "2020-05-07 08:33:17",
         "source": "prefix.cc"
     },
     "http://qudt.org/vocab/dimensionvector": {
-        "accessed": "2020.05.07; 10:03:36",
+        "accessed": "2020-05-07 10:03:36",
         "source": "prefix.cc"
     },
     "http://qudt.org/vocab/quantitykind": {
-        "accessed": "2020.05.07; 11:21:58",
+        "accessed": "2020-05-07 11:21:58",
         "source": "prefix.cc"
     },
     "http://qudt.org/vocab/unit": {
-        "accessed": "2020.05.07; 14:35:43",
+        "accessed": "2020-05-07 14:35:43",
         "source": "prefix.cc"
     },
     "http://rdf.histograph.io/": {
-        "accessed": "2020.05.07; 07:55:25",
+        "accessed": "2020-05-07 07:55:25",
         "source": "prefix.cc"
     },
     "http://rdf.insee.fr/def/demo": {
-        "accessed": "2020.05.06; 21:30:45",
+        "accessed": "2020-05-06 21:30:45",
         "source": "LOV"
     },
     "http://rdf.insee.fr/def/geo": {
-        "accessed": "2020.05.06; 21:31:28",
+        "accessed": "2020-05-06 21:31:28",
         "source": "LOV"
     },
     "http://rdf.muninn-project.org/ontologies/appearances": {
-        "accessed": "2020.05.06; 18:41:33",
+        "accessed": "2020-05-06 18:41:33",
         "source": "LOV"
     },
     "http://rdf.muninn-project.org/ontologies/graves": {
-        "accessed": "2020.05.07; 10:26:22",
+        "accessed": "2020-05-07 10:26:22",
         "source": "prefix.cc"
     },
     "http://rdf.muninn-project.org/ontologies/jp1": {
-        "accessed": "2020.05.07; 04:49:10",
+        "accessed": "2020-05-07 04:49:10",
         "source": "spoHashUris"
     },
     "http://rdf.muninn-project.org/ontologies/military": {
-        "accessed": "2020.05.06; 22:29:07",
+        "accessed": "2020-05-06 22:29:07",
         "source": "LOV"
     },
     "http://rdf.muninn-project.org/ontologies/muninn": {
-        "accessed": "2020.05.07; 04:51:38",
+        "accessed": "2020-05-07 04:51:38",
         "source": "spoHashUris"
     },
     "http://rdf.muninn-project.org/ontologies/naval": {
-        "accessed": "2020.05.07; 14:52:45",
+        "accessed": "2020-05-07 14:52:45",
         "source": "prefix.cc"
     },
     "http://rdf.muninn-project.org/ontologies/organization": {
-        "accessed": "2020.05.07; 04:52:29",
+        "accessed": "2020-05-07 04:52:29",
         "source": "spoHashUris"
     },
     "http://rdf.muninn-project.org/ontologies/religion": {
-        "accessed": "2020.05.07; 04:52:49",
+        "accessed": "2020-05-07 04:52:49",
         "source": "spoHashUris"
     },
     "http://rdfs.co/bevon/0.8": {
-        "accessed": "2020.05.06; 19:08:40",
+        "accessed": "2020-05-06 19:08:40",
         "source": "LOV"
     },
     "http://rdfs.co/juso/0.1.2": {
-        "accessed": "2020.05.06; 21:47:19",
+        "accessed": "2020-05-06 21:47:19",
         "source": "LOV"
     },
     "http://rdfs.co/juso/kr/0.1.1": {
-        "accessed": "2020.05.06; 21:47:52",
+        "accessed": "2020-05-06 21:47:52",
         "source": "LOV"
     },
     "http://rdfs.org/scot/ns#": {
-        "accessed": "2020.05.07; 01:45:55",
+        "accessed": "2020-05-07 01:45:55",
         "source": "LOV"
     },
     "http://rdfs.org/sioc/argument#": {
-        "accessed": "2020.05.07; 10:58:40",
+        "accessed": "2020-05-07 10:58:40",
         "source": "prefix.cc"
     },
     "http://rdfs.org/sioc/ns#": {
-        "accessed": "2020.05.07; 02:12:35",
+        "accessed": "2020-05-07 02:12:35",
         "source": "LOV"
     },
     "http://rdfs.org/sioc/services#": {
-        "accessed": "2020.05.07; 11:36:33",
+        "accessed": "2020-05-07 11:36:33",
         "source": "prefix.cc"
     },
     "http://rdfs.org/sioc/types#": {
-        "accessed": "2020.05.07; 12:58:46",
+        "accessed": "2020-05-07 12:58:46",
         "source": "prefix.cc"
     },
     "http://rdfunit.aksw.org/ns/core#": {
-        "accessed": "2020.05.07; 01:38:26",
+        "accessed": "2020-05-07 01:38:26",
         "source": "LOV"
     },
     "http://rdfvizler.dyreriket.xyz/vocabulary/core": {
-        "accessed": "2020.05.07; 16:35:38",
+        "accessed": "2020-05-07 16:35:38",
         "source": "prefix.cc"
     },
     "http://reference.data.gov.uk/def/central-government": {
-        "accessed": "2020.05.06; 19:35:49",
+        "accessed": "2020-05-06 19:35:49",
         "source": "LOV"
     },
     "http://reference.data.gov.uk/def/intervals/": {
-        "accessed": "2020.05.06; 21:35:24",
+        "accessed": "2020-05-06 21:35:24",
         "source": "LOV"
     },
     "http://resource.geosciml.org/ontology/timescale/gts": {
-        "accessed": "2020.05.06; 21:21:41",
+        "accessed": "2020-05-06 21:21:41",
         "source": "LOV"
     },
     "http://resource.geosciml.org/ontology/timescale/thors": {
-        "accessed": "2020.05.07; 02:40:50",
+        "accessed": "2020-05-07 02:40:50",
         "source": "LOV"
     },
     "http://rhizomik.net/ontologies/2005/03/Mpeg7-2001.owl": {
-        "accessed": "2020.05.07; 17:17:56",
+        "accessed": "2020-05-07 17:17:56",
         "source": "prefix.cc"
     },
     "http://rhizomik.net/ontologies/PlantHealthThreats.owl.ttl": {
-        "accessed": "2020.05.07; 16:55:02",
+        "accessed": "2020-05-07 16:55:02",
         "source": "prefix.cc"
     },
     "http://rhizomik.net/ontologies/copyrightonto.owl": {
-        "accessed": "2020.07.16; 17:21:20",
+        "accessed": "2020-07-16 17:21:20",
         "source": "LOV"
     },
     "http://rinfo.lagrummet.se/ns/2008/11/rinfo/publ#": {
-        "accessed": "2020.05.07; 13:37:56",
+        "accessed": "2020-05-07 13:37:56",
         "source": "prefix.cc"
     },
     "http://schema.mobivoc.org/#": {
-        "accessed": "2020.05.06; 23:49:14",
+        "accessed": "2020-05-06 23:49:14",
         "source": "LOV"
     },
     "http://securitytoolbox.appspot.com/securityAlgorithms#": {
-        "accessed": "2020.05.06; 18:36:41",
+        "accessed": "2020-05-06 18:36:41",
         "source": "LOV"
     },
     "http://securitytoolbox.appspot.com/securityMain#": {
-        "accessed": "2020.05.07; 02:01:12",
+        "accessed": "2020-05-07 02:01:12",
         "source": "LOV"
     },
     "http://securitytoolbox.appspot.com/stac#": {
-        "accessed": "2020.07.16; 20:03:54",
+        "accessed": "2020-07-16 20:03:54",
         "source": "LOV"
     },
     "http://semantic-mediawiki.org/swivt/1.0": {
-        "accessed": "2020.05.07; 11:00:19",
+        "accessed": "2020-05-07 11:00:19",
         "source": "prefix.cc"
     },
     "http://semantic.eurobau.com/eurobau-utility.owl": {
-        "accessed": "2020.05.07; 13:40:38",
+        "accessed": "2020-05-07 13:40:38",
         "source": "prefix.cc"
     },
     "http://semanticscience.org/ontology/sio.owl": {
-        "accessed": "2020.05.07; 02:09:59",
+        "accessed": "2020-05-07 02:09:59",
         "source": "LOV"
     },
     "http://semanticturkey.uniroma2.it/ns/mdr": {
-        "accessed": "2020.07.16; 18:20:52",
+        "accessed": "2020-07-16 18:20:52",
         "source": "LOV"
     },
     "http://semweb.mmlab.be/ns/apps4X": {
-        "accessed": "2020.05.06; 18:42:25",
+        "accessed": "2020-05-06 18:42:25",
         "source": "LOV"
     },
     "http://semweb.mmlab.be/ns/dicera#ontology": {
-        "accessed": "2020.05.07; 06:01:53",
+        "accessed": "2020-05-07 06:01:53",
         "source": "prefix.cc"
     },
     "http://semweb.mmlab.be/ns/fnml": {
-        "accessed": "2020.05.07; 14:53:11",
+        "accessed": "2020-05-07 14:53:11",
         "source": "prefix.cc"
     },
     "http://semweb.mmlab.be/ns/linkedconnections#Ontology": {
-        "accessed": "2020.05.07; 12:48:48",
+        "accessed": "2020-05-07 12:48:48",
         "source": "prefix.cc"
     },
     "http://semweb.mmlab.be/ns/odapps": {
-        "accessed": "2020.05.07; 00:09:52",
+        "accessed": "2020-05-07 00:09:52",
         "source": "LOV"
     },
     "http://semweb.mmlab.be/ns/oh": {
-        "accessed": "2020.05.07; 00:15:39",
+        "accessed": "2020-05-07 00:15:39",
         "source": "LOV"
     },
     "http://semweb.mmlab.be/ns/rml#": {
-        "accessed": "2020.05.07; 14:20:22",
+        "accessed": "2020-05-07 14:20:22",
         "source": "prefix.cc"
     },
     "http://semweb.mmlab.be/ns/stoptimes#Ontology": {
-        "accessed": "2020.05.07; 11:30:44",
+        "accessed": "2020-05-07 11:30:44",
         "source": "prefix.cc"
     },
     "http://semwebquality.org/ontologies/dq-constraints": {
-        "accessed": "2020.05.06; 20:21:02",
+        "accessed": "2020-05-06 20:21:02",
         "source": "LOV"
     },
     "http://sensormeasurement.appspot.com/m3#": {
-        "accessed": "2020.07.17; 07:27:40",
+        "accessed": "2020-07-17 07:27:40",
         "source": "prefix.cc"
     },
     "http://sensormeasurement.appspot.com/naturopathy#": {
-        "accessed": "2020.07.16; 23:04:29",
+        "accessed": "2020-07-16 23:04:29",
         "source": "spoHashUris"
     },
     "http://sensormeasurement.appspot.com/ont/home/homeActivity#": {
-        "accessed": "2020.05.06; 21:24:59",
+        "accessed": "2020-05-06 21:24:59",
         "source": "LOV"
     },
     "http://sparql.cwrc.ca/ontologies/cwrc": {
-        "accessed": "2020.05.06; 19:52:27",
+        "accessed": "2020-05-06 19:52:27",
         "source": "LOV"
     },
     "http://sparql.cwrc.ca/ontologies/genre": {
-        "accessed": "2020.05.07; 07:58:55",
+        "accessed": "2020-05-07 07:58:55",
         "source": "prefix.cc"
     },
     "http://sparql.cwrc.ca/ontologies/ii": {
-        "accessed": "2020.05.07; 05:00:42",
+        "accessed": "2020-05-07 05:00:42",
         "source": "spoHashUris"
     },
     "http://sparql.sstu.ru:3030/speciality/": {
-        "accessed": "2020.05.06; 22:06:15",
+        "accessed": "2020-05-06 22:06:15",
         "source": "LOV"
     },
     "http://spinrdf.org/sp": {
-        "accessed": "2020.07.10; 22:06:58",
+        "accessed": "2020-07-10 22:06:58",
         "source": "LOV"
     },
     "http://spinrdf.org/spin": {
-        "accessed": "2020.07.10; 22:14:04",
+        "accessed": "2020-07-10 22:14:04",
         "source": "LOV"
     },
     "http://spinrdf.org/spl": {
-        "accessed": "2020.07.11; 04:29:42",
+        "accessed": "2020-07-11 04:29:42",
         "source": "spoHashUris"
     },
     "http://strdf.di.uoa.gr/ontology": {
-        "accessed": "2020.05.07; 07:57:33",
+        "accessed": "2020-05-07 07:57:33",
         "source": "prefix.cc"
     },
     "http://streamreasoning.org/ontologies/frappe#": {
-        "accessed": "2020.05.06; 21:01:03",
+        "accessed": "2020-05-06 21:01:03",
         "source": "LOV"
     },
     "http://swa.cefriel.it/ontologies/botdcat-ap": {
-        "accessed": "2020.05.06; 19:13:14",
+        "accessed": "2020-05-06 19:13:14",
         "source": "LOV"
     },
     "http://swat.cse.lehigh.edu/onto/univ-bench.owl": {
-        "accessed": "2020.05.07; 15:08:40",
+        "accessed": "2020-05-07 15:08:40",
         "source": "prefix.cc"
     },
     "http://swat.cse.lehigh.edu/resources/onto/aigp.owl": {
-        "accessed": "2020.05.07; 12:42:39",
+        "accessed": "2020-05-07 12:42:39",
         "source": "prefix.cc"
     },
     "http://swpatho.ag-nbi.de/context/meta.owl": {
-        "accessed": "2020.05.07; 13:07:52",
+        "accessed": "2020-05-07 13:07:52",
         "source": "prefix.cc"
     },
     "http://swrl.stanford.edu/ontologies/3.3/swrla.owl": {
-        "accessed": "2020.05.07; 05:17:46",
+        "accessed": "2020-05-07 05:17:46",
         "source": "spoHashUris"
     },
     "http://theme-e.adaptcentre.ie/dave#": {
-        "accessed": "2020.07.10; 17:45:37",
+        "accessed": "2020-07-10 17:45:37",
         "source": "LOV"
     },
     "http://timbus.teco.edu/ontologies/VPlan.owl": {
-        "accessed": "2020.05.07; 06:05:26",
+        "accessed": "2020-05-07 06:05:26",
         "source": "prefix.cc"
     },
     "http://topbraid.org/sparqlmotion": {
-        "accessed": "2020.05.07; 14:38:02",
+        "accessed": "2020-05-07 14:38:02",
         "source": "prefix.cc"
     },
     "http://topbraid.org/sparqlmotionfunctions": {
-        "accessed": "2020.05.07; 05:19:47",
+        "accessed": "2020-05-07 05:19:47",
         "source": "spoHashUris"
     },
     "http://topbraid.org/sparqlmotionlib": {
-        "accessed": "2020.05.07; 12:47:35",
+        "accessed": "2020-05-07 12:47:35",
         "source": "prefix.cc"
     },
     "http://topbraid.org/swa": {
-        "accessed": "2020.05.07; 05:59:21",
+        "accessed": "2020-05-07 05:59:21",
         "source": "prefix.cc"
     },
     "http://topbraid.org/teamwork": {
-        "accessed": "2020.05.07; 14:22:15",
+        "accessed": "2020-05-07 14:22:15",
         "source": "prefix.cc"
     },
     "http://topbraid.org/tosh": {
-        "accessed": "2020.05.07; 13:18:29",
+        "accessed": "2020-05-07 13:18:29",
         "source": "prefix.cc"
     },
     "http://tw.rpi.edu/schema/": {
-        "accessed": "2020.05.07; 13:15:39",
+        "accessed": "2020-05-07 13:15:39",
         "source": "prefix.cc"
     },
     "http://uri4uri.net/vocab#": {
-        "accessed": "2020.05.07; 02:59:25",
+        "accessed": "2020-05-07 02:59:25",
         "source": "LOV"
     },
     "http://usefulinc.com/ns/doap#": {
-        "accessed": "2020.05.06; 20:13:16",
+        "accessed": "2020-05-06 20:13:16",
         "source": "LOV"
     },
     "http://vcharpenay.github.io/hto/hto.xml": {
-        "accessed": "2020.05.06; 21:26:32",
+        "accessed": "2020-05-06 21:26:32",
         "source": "LOV"
     },
     "http://vivoweb.org/ontology/core": {
-        "accessed": "2020.05.07; 03:06:54",
+        "accessed": "2020-05-07 03:06:54",
         "source": "LOV"
     },
     "http://vocab.capes.gov.br/def/vcav#": {
-        "accessed": "2020.07.17; 01:43:30",
+        "accessed": "2020-07-17 01:43:30",
         "source": "prefix.cc"
     },
     "http://vocab.ciudadesabiertas.es/def/sector-publico/agenda-municipal": {
-        "accessed": "2020.05.07; 13:50:06",
+        "accessed": "2020-05-07 13:50:06",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/am": {
-        "accessed": "2020.05.07; 14:13:27",
+        "accessed": "2020-05-07 14:13:27",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/br": {
-        "accessed": "2020.05.06; 19:16:03",
+        "accessed": "2020-05-06 19:16:03",
         "source": "LOV"
     },
     "http://vocab.deri.ie/c4n": {
-        "accessed": "2020.05.06; 19:18:05",
+        "accessed": "2020-05-06 19:18:05",
         "source": "LOV"
     },
     "http://vocab.deri.ie/cloudisus": {
-        "accessed": "2020.05.07; 08:43:29",
+        "accessed": "2020-05-07 08:43:29",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/cogs": {
-        "accessed": "2020.05.06; 19:42:33",
+        "accessed": "2020-05-06 19:42:33",
         "source": "LOV"
     },
     "http://vocab.deri.ie/csp": {
-        "accessed": "2020.05.06; 19:46:48",
+        "accessed": "2020-05-06 19:46:48",
         "source": "LOV"
     },
     "http://vocab.deri.ie/dady": {
-        "accessed": "2020.05.06; 19:53:36",
+        "accessed": "2020-05-06 19:53:36",
         "source": "LOV"
     },
     "http://vocab.deri.ie/fingal": {
-        "accessed": "2020.05.07; 14:42:47",
+        "accessed": "2020-05-07 14:42:47",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/odapp": {
-        "accessed": "2020.05.07; 00:09:11",
+        "accessed": "2020-05-07 00:09:11",
         "source": "LOV"
     },
     "http://vocab.deri.ie/orca": {
-        "accessed": "2020.05.07; 00:34:53",
+        "accessed": "2020-05-07 00:34:53",
         "source": "LOV"
     },
     "http://vocab.deri.ie/pdo": {
-        "accessed": "2020.05.07; 00:52:05",
+        "accessed": "2020-05-07 00:52:05",
         "source": "LOV"
     },
     "http://vocab.deri.ie/ppo": {
-        "accessed": "2020.05.07; 01:06:46",
+        "accessed": "2020-05-07 01:06:46",
         "source": "LOV"
     },
     "http://vocab.deri.ie/raul": {
-        "accessed": "2020.05.07; 01:22:45",
+        "accessed": "2020-05-07 01:22:45",
         "source": "LOV"
     },
     "http://vocab.deri.ie/rooms": {
-        "accessed": "2020.05.07; 01:35:56",
+        "accessed": "2020-05-07 01:35:56",
         "source": "LOV"
     },
     "http://vocab.deri.ie/rulz": {
-        "accessed": "2020.05.07; 15:10:15",
+        "accessed": "2020-05-07 15:10:15",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/sad": {
-        "accessed": "2020.05.07; 10:42:53",
+        "accessed": "2020-05-07 10:42:53",
         "source": "prefix.cc"
     },
     "http://vocab.deri.ie/scovo": {
-        "accessed": "2020.05.07; 01:46:38",
+        "accessed": "2020-05-07 01:46:38",
         "source": "LOV"
     },
     "http://vocab.deri.ie/scsv": {
-        "accessed": "2020.05.07; 01:47:22",
+        "accessed": "2020-05-07 01:47:22",
         "source": "LOV"
     },
     "http://vocab.deri.ie/search": {
-        "accessed": "2020.05.07; 01:49:17",
+        "accessed": "2020-05-07 01:49:17",
         "source": "LOV"
     },
     "http://vocab.deri.ie/tao": {
-        "accessed": "2020.05.07; 02:37:26",
+        "accessed": "2020-05-07 02:37:26",
         "source": "LOV"
     },
     "http://vocab.deri.ie/void": {
-        "accessed": "2020.05.06; 20:40:27",
+        "accessed": "2020-05-06 20:40:27",
         "source": "LOV"
     },
     "http://vocab.getty.edu/aat/": {
-        "accessed": "2020.07.17; 03:47:04",
+        "accessed": "2020-07-17 03:47:04",
         "source": "prefix.cc"
     },
     "http://vocab.getty.edu/ontology": {
-        "accessed": "2020.07.16; 17:55:21",
+        "accessed": "2020-07-16 17:55:21",
         "source": "LOV"
     },
     "http://vocab.getty.edu/tgn/": {
-        "accessed": "2020.07.17; 14:05:36",
+        "accessed": "2020-07-17 14:05:36",
         "source": "prefix.cc"
     },
     "http://vocab.getty.edu/ulan/": {
-        "accessed": "2020.07.17; 14:18:02",
+        "accessed": "2020-07-17 14:18:02",
         "source": "prefix.cc"
     },
     "http://vocab.gtfs.org/terms#": {
-        "accessed": "2020.05.06; 21:20:54",
+        "accessed": "2020-05-06 21:20:54",
         "source": "LOV"
     },
     "http://vocab.lenka.no/geo-deling": {
-        "accessed": "2020.05.06; 21:07:42",
+        "accessed": "2020-05-06 21:07:42",
         "source": "LOV"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/medio-ambiente/calidad-aire": {
-        "accessed": "2020.05.07; 13:04:03",
+        "accessed": "2020-05-07 13:04:03",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/medio-ambiente/contaminacion-acustica": {
-        "accessed": "2020.05.07; 17:36:42",
+        "accessed": "2020-05-07 17:36:42",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/sector-publico/servicio": {
-        "accessed": "2020.05.07; 12:54:59",
+        "accessed": "2020-05-07 12:54:59",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/sector-publico/territorio": {
-        "accessed": "2020.05.07; 18:50:48",
+        "accessed": "2020-05-07 18:50:48",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/transporte/trafico": {
-        "accessed": "2020.05.07; 17:11:10",
+        "accessed": "2020-05-07 17:11:10",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/turismo/alojamiento": {
-        "accessed": "2020.05.07; 14:05:32",
+        "accessed": "2020-05-07 14:05:32",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/urbanismo-infraestructuras/callejero": {
-        "accessed": "2020.05.07; 14:32:54",
+        "accessed": "2020-05-07 14:32:54",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/urbanismo-infraestructuras/direccion-postal": {
-        "accessed": "2020.05.07; 11:47:50",
+        "accessed": "2020-05-07 11:47:50",
         "source": "prefix.cc"
     },
     "http://vocab.linkeddata.es/datosabiertos/def/urbanismo-infraestructuras/equipamiento": {
-        "accessed": "2020.05.07; 10:58:55",
+        "accessed": "2020-05-07 10:58:55",
         "source": "prefix.cc"
     },
     "http://vocab.resc.info/communication": {
-        "accessed": "2020.05.06; 19:44:08",
+        "accessed": "2020-05-06 19:44:08",
         "source": "LOV"
     },
     "http://vocab.resc.info/incident": {
-        "accessed": "2020.05.06; 21:33:00",
+        "accessed": "2020-05-06 21:33:00",
         "source": "LOV"
     },
     "http://vocabularies.wikipathways.org/gpml#": {
-        "accessed": "2020.05.07; 17:01:24",
+        "accessed": "2020-05-07 17:01:24",
         "source": "prefix.cc"
     },
     "http://vocabularies.wikipathways.org/wp#": {
-        "accessed": "2020.05.21; 01:00:19",
+        "accessed": "2020-05-21 01:00:19",
         "source": "prefix.cc"
     },
     "http://vocabularies.wikipathways.org/wpTypes#": {
-        "accessed": "2020.05.07; 11:35:55",
+        "accessed": "2020-05-07 11:35:55",
         "source": "prefix.cc"
     },
     "http://w3id.org/amlo/core": {
-        "accessed": "2020.07.09; 15:45:34",
+        "accessed": "2020-07-09 15:45:34",
         "source": "LOV"
     },
     "http://w3id.org/art/terms/1.0/": {
-        "accessed": "2020.05.07; 10:17:54",
+        "accessed": "2020-05-07 10:17:54",
         "source": "prefix.cc"
     },
     "http://w3id.org/charta77/jup": {
-        "accessed": "2020.05.06; 21:46:35",
+        "accessed": "2020-05-06 21:46:35",
         "source": "LOV"
     },
     "http://w3id.org/lindt/voc#": {
-        "accessed": "2020.05.07; 10:15:24",
+        "accessed": "2020-05-07 10:15:24",
         "source": "prefix.cc"
     },
     "http://w3id.org/medred/medred#": {
-        "accessed": "2020.05.06; 22:25:42",
+        "accessed": "2020-05-06 22:25:42",
         "source": "LOV"
     },
     "http://w3id.org/nkos": {
-        "accessed": "2020.05.07; 09:13:35",
+        "accessed": "2020-05-07 09:13:35",
         "source": "prefix.cc"
     },
     "http://w3id.org/prohow#": {
-        "accessed": "2020.05.07; 14:25:56",
+        "accessed": "2020-05-07 14:25:56",
         "source": "prefix.cc"
     },
     "http://w3id.org/rsp/vocals#": {
-        "accessed": "2020.05.07; 03:11:01",
+        "accessed": "2020-05-07 03:11:01",
         "source": "LOV"
     },
     "http://w3id.org/s3n/": {
-        "accessed": "2020.05.07; 12:59:24",
+        "accessed": "2020-05-07 12:59:24",
         "source": "prefix.cc"
     },
     "http://w3id.org/semiot/ontologies/semiot#": {
-        "accessed": "2020.05.07; 10:21:21",
+        "accessed": "2020-05-07 10:21:21",
         "source": "prefix.cc"
     },
     "http://w3id.org/vcb/fel#": {
-        "accessed": "2020.05.06; 20:54:09",
+        "accessed": "2020-05-06 20:54:09",
         "source": "LOV"
     },
     "http://w3id.org/version/ontology": {
-        "accessed": "2020.05.07; 16:39:52",
+        "accessed": "2020-05-07 16:39:52",
         "source": "prefix.cc"
     },
     "http://w3id.org/vir#": {
-        "accessed": "2020.05.07; 03:05:02",
+        "accessed": "2020-05-07 03:05:02",
         "source": "LOV"
     },
     "http://wab.uib.no/cost-a32_rdf/wittgenstein_model.owl": {
-        "accessed": "2020.07.11; 11:55:03",
+        "accessed": "2020-07-11 11:55:03",
         "source": "prefix.cc"
     },
     "http://wab.uib.no/cost-a32_rdf/wittgenstein_model_pubby.owl": {
-        "accessed": "2020.05.07; 16:42:54",
+        "accessed": "2020-05-07 16:42:54",
         "source": "prefix.cc"
     },
     "http://wikiba.se/ontology#": {
-        "accessed": "2020.05.07; 15:19:38",
+        "accessed": "2020-05-07 15:19:38",
         "source": "prefix.cc"
     },
     "http://wordnet-rdf.princeton.edu/ontology": {
-        "accessed": "2020.05.07; 11:39:08",
+        "accessed": "2020-05-07 11:39:08",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/clinicalEvaluation": {
-        "accessed": "2020.05.07; 10:32:45",
+        "accessed": "2020-05-07 10:32:45",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/clinicalProcedure": {
-        "accessed": "2020.05.07; 09:09:49",
+        "accessed": "2020-05-07 09:09:49",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/drugTherapy": {
-        "accessed": "2020.05.07; 11:27:45",
+        "accessed": "2020-05-07 11:27:45",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/healthCare#": {
-        "accessed": "2020.05.07; 13:03:51",
+        "accessed": "2020-05-07 13:03:51",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/hemogram#": {
-        "accessed": "2020.05.07; 09:48:31",
+        "accessed": "2020-05-07 09:48:31",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/hospital#": {
-        "accessed": "2020.05.07; 12:45:59",
+        "accessed": "2020-05-07 12:45:59",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/humanDisorder#": {
-        "accessed": "2020.05.07; 08:39:36",
+        "accessed": "2020-05-07 08:39:36",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/infectiousDisorder#": {
-        "accessed": "2020.05.07; 09:08:23",
+        "accessed": "2020-05-07 09:08:23",
         "source": "prefix.cc"
     },
     "http://www.agfa.com/w3c/2009/malignantNeoplasm#": {
-        "accessed": "2020.05.07; 12:20:34",
+        "accessed": "2020-05-07 12:20:34",
         "source": "prefix.cc"
     },
     "http://www.arpenteur.org/ontology/Arpenteur.owl": {
-        "accessed": "2020.05.06; 18:43:55",
+        "accessed": "2020-05-06 18:43:55",
         "source": "LOV"
     },
     "http://www.astro.umd.edu/~eshaya/astro-onto/owl/physics.owl": {
-        "accessed": "2020.05.07; 11:34:19",
+        "accessed": "2020-05-07 11:34:19",
         "source": "prefix.cc"
     },
     "http://www.bbc.co.uk/ontologies/bbc": {
-        "accessed": "2020.07.16; 16:34:37",
+        "accessed": "2020-07-16 16:34:37",
         "source": "LOV"
     },
     "http://www.bbc.co.uk/ontologies/cms": {
-        "accessed": "2020.07.16; 16:35:51",
+        "accessed": "2020-07-16 16:35:51",
         "source": "LOV"
     },
     "http://www.bbc.co.uk/ontologies/coreconcepts": {
-        "accessed": "2020.05.06; 19:05:03",
+        "accessed": "2020-05-06 19:05:03",
         "source": "LOV"
     },
     "http://www.bbc.co.uk/ontologies/creativework": {
-        "accessed": "2020.07.16; 17:30:04",
+        "accessed": "2020-07-16 17:30:04",
         "source": "LOV"
     },
     "http://www.bbc.co.uk/ontologies/provenance": {
-        "accessed": "2020.07.16; 16:36:57",
+        "accessed": "2020-07-16 16:36:57",
         "source": "LOV"
     },
     "http://www.bbc.co.uk/ontologies/sport": {
-        "accessed": "2020.07.16; 20:02:08",
+        "accessed": "2020-07-16 20:02:08",
         "source": "LOV"
     },
     "http://www.biopax.org/release/biopax-level3.owl": {
-        "accessed": "2020.05.06; 19:10:32",
+        "accessed": "2020-05-06 19:10:32",
         "source": "LOV"
     },
     "http://www.bl.uk/schemas/bibliographic/blterms": {
-        "accessed": "2020.05.06; 19:12:50",
+        "accessed": "2020-05-06 19:12:50",
         "source": "LOV"
     },
     "http://www.coinsweb.nl/cbim-2.0.rdf": {
-        "accessed": "2020.05.07; 14:08:47",
+        "accessed": "2020-05-07 14:08:47",
         "source": "prefix.cc"
     },
     "http://www.conjecto.com/ontology/2015/lheo": {
-        "accessed": "2020.05.07; 12:27:17",
+        "accessed": "2020-05-07 12:27:17",
         "source": "prefix.cc"
     },
     "http://www.daml.org/services/owl-s/1.2/Service.owl": {
-        "accessed": "2020.05.07; 10:23:55",
+        "accessed": "2020-05-07 10:23:55",
         "source": "prefix.cc"
     },
     "http://www.daml.org/services/owl-s/1.2/generic/Expression.owl": {
-        "accessed": "2020.05.07; 16:44:17",
+        "accessed": "2020-05-07 16:44:17",
         "source": "prefix.cc"
     },
     "http://www.demcare.eu/ontologies/contextdescriptor.owl": {
-        "accessed": "2020.05.06; 19:51:14",
+        "accessed": "2020-05-06 19:51:14",
         "source": "LOV"
     },
     "http://www.demcare.eu/ontologies/demlab.owl": {
-        "accessed": "2020.05.06; 20:04:19",
+        "accessed": "2020-05-06 20:04:19",
         "source": "LOV"
     },
     "http://www.disit.org/km4city/schema": {
-        "accessed": "2020.07.16; 18:12:14",
+        "accessed": "2020-07-16 18:12:14",
         "source": "LOV"
     },
     "http://www.ebi.ac.uk/efo/efo.owl": {
-        "accessed": "2020.05.20; 23:21:49",
+        "accessed": "2020-05-20 23:21:49",
         "source": "prefix.cc"
     },
     "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore": {
-        "accessed": "2020.05.06; 20:29:02",
+        "accessed": "2020-05-06 20:29:02",
         "source": "LOV"
     },
     "http://www.ebusiness-unibw.org/ontologies/cpi/ns": {
-        "accessed": "2020.05.07; 15:17:37",
+        "accessed": "2020-05-07 15:17:37",
         "source": "prefix.cc"
     },
     "http://www.ebusiness-unibw.org/ontologies/eclass/5.1.4/#": {
-        "accessed": "2020.07.17; 06:25:53",
+        "accessed": "2020-07-17 06:25:53",
         "source": "prefix.cc"
     },
     "http://www.ebusiness-unibw.org/ontologies/hva/ontology#Ontology": {
-        "accessed": "2020.05.07; 13:46:14",
+        "accessed": "2020-05-07 13:46:14",
         "source": "prefix.cc"
     },
     "http://www.eclap.eu/schema/eclap/": {
-        "accessed": "2020.05.06; 20:29:38",
+        "accessed": "2020-05-06 20:29:38",
         "source": "LOV"
     },
     "http://www.europeana.eu/schemas/edm/": {
-        "accessed": "2020.05.06; 23:14:59",
+        "accessed": "2020-05-06 23:14:59",
         "source": "LOV"
     },
     "http://www.geneontology.org/formats/oboInOwl": {
-        "accessed": "2020.05.07; 05:23:41",
+        "accessed": "2020-05-07 05:23:41",
         "source": "spoHashUris"
     },
     "http://www.geonames.org/ontology": {
-        "accessed": "2020.05.06; 21:15:23",
+        "accessed": "2020-05-06 21:15:23",
         "source": "LOV"
     },
+    "http://www.georss.org/georss/": {
+        "accessed": "2020-08-10 11:00:00",
+        "source": "forced-admin-inclusion"
+    },
     "http://www.gsi.dit.upm.es/ontologies/marl/ns": {
-        "accessed": "2020.05.06; 22:21:15",
+        "accessed": "2020-05-06 22:21:15",
         "source": "LOV"
     },
     "http://www.gsi.dit.upm.es/ontologies/onyx/ns": {
-        "accessed": "2020.05.07; 00:27:16",
+        "accessed": "2020-05-07 00:27:16",
         "source": "LOV"
     },
     "http://www.ics.forth.gr/isl/MarineTLO/v4/marinetlo.owl": {
-        "accessed": "2020.05.06; 22:33:50",
+        "accessed": "2020-05-06 22:33:50",
         "source": "LOV"
     },
     "http://www.ics.forth.gr/isl/VoIDWarehouse/VoID_Extension_Schema.owl": {
-        "accessed": "2020.05.07; 03:13:38",
+        "accessed": "2020-05-07 03:13:38",
         "source": "LOV"
     },
     "http://www.ics.forth.gr/isl/oae/core": {
-        "accessed": "2020.05.06; 23:51:30",
+        "accessed": "2020-05-06 23:51:30",
         "source": "LOV"
     },
     "http://www.ics.forth.gr/isl/oncm/core": {
-        "accessed": "2020.05.07; 00:22:50",
+        "accessed": "2020-05-07 00:22:50",
         "source": "LOV"
     },
     "http://www.influenceTracker.com/ontology": {
-        "accessed": "2020.05.21; 03:11:33",
+        "accessed": "2020-05-21 03:11:33",
         "source": "prefix.cc"
     },
     "http://www.isibang.ac.in/ns/mod": {
-        "accessed": "2020.05.06; 22:31:29",
+        "accessed": "2020-05-06 22:31:29",
         "source": "LOV"
     },
     "http://www.junkwork.net/xml/DocumentList": {
-        "accessed": "2020.05.07; 12:14:34",
+        "accessed": "2020-05-07 12:14:34",
         "source": "prefix.cc"
     },
     "http://www.kanzaki.com/ns/dpd": {
-        "accessed": "2020.07.17; 14:56:59",
+        "accessed": "2020-07-17 14:56:59",
         "source": "prefix.cc"
     },
     "http://www.kanzaki.com/ns/music": {
-        "accessed": "2020.05.06; 23:48:52",
+        "accessed": "2020-05-06 23:48:52",
         "source": "LOV"
     },
     "http://www.kanzaki.com/ns/music-rdfs.rdf": {
-        "accessed": "2020.05.06; 22:34:58",
+        "accessed": "2020-05-06 22:34:58",
         "source": "LOV"
     },
     "http://www.kanzaki.com/ns/whois": {
-        "accessed": "2020.05.07; 03:19:55",
+        "accessed": "2020-05-07 03:19:55",
         "source": "LOV"
     },
     "http://www.lexinfo.net/ontology/2.0/lexinfo": {
-        "accessed": "2020.05.06; 21:53:34",
+        "accessed": "2020-05-06 21:53:34",
         "source": "LOV"
     },
     "http://www.linkeddata.es/ontology/ldq": {
-        "accessed": "2020.05.07; 08:44:11",
+        "accessed": "2020-05-07 08:44:11",
         "source": "prefix.cc"
     },
     "http://www.linkedmodel.org/schema/dtype": {
-        "accessed": "2020.05.06; 20:23:21",
+        "accessed": "2020-05-06 20:23:21",
         "source": "LOV"
     },
     "http://www.linkedmodel.org/schema/vaem": {
-        "accessed": "2020.05.07; 03:00:29",
+        "accessed": "2020-05-07 03:00:29",
         "source": "LOV"
     },
     "http://www.linklion.org/ontology": {
-        "accessed": "2020.05.06; 21:59:36",
+        "accessed": "2020-05-06 21:59:36",
         "source": "LOV"
     },
     "http://www.loc.gov/mads/rdf/v1": {
-        "accessed": "2020.05.06; 22:21:02",
+        "accessed": "2020-05-06 22:21:02",
         "source": "LOV"
     },
     "http://www.loc.gov/premis/rdf/v3/": {
-        "accessed": "2020.05.07; 01:11:05",
+        "accessed": "2020-05-07 01:11:05",
         "source": "LOV"
     },
     "http://www.mygrid.org.uk/mygrid-moby-service": {
-        "accessed": "2020.05.07; 17:42:34",
+        "accessed": "2020-05-07 17:42:34",
         "source": "prefix.cc"
     },
     "http://www.mygrid.org.uk/ontology": {
-        "accessed": "2020.05.07; 16:51:51",
+        "accessed": "2020-05-07 16:51:51",
         "source": "prefix.cc"
     },
     "http://www.nanopub.org/nschema": {
-        "accessed": "2020.05.07; 11:31:32",
+        "accessed": "2020-05-07 11:31:32",
         "source": "prefix.cc"
     },
     "http://www.observedchange.com/moac/ns#": {
-        "accessed": "2020.05.06; 22:30:36",
+        "accessed": "2020-05-06 22:30:36",
         "source": "LOV"
     },
     "http://www.observedchange.com/tisc/ns#": {
-        "accessed": "2020.05.07; 02:44:39",
+        "accessed": "2020-05-07 02:44:39",
         "source": "LOV"
     },
     "http://www.onto-med.de/ontologies/gfo.owl": {
-        "accessed": "2020.05.07; 11:36:09",
+        "accessed": "2020-05-07 11:36:09",
         "source": "prefix.cc"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/classification.owl": {
-        "accessed": "2020.05.07; 05:25:23",
+        "accessed": "2020-05-07 05:25:23",
         "source": "spoHashUris"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl": {
-        "accessed": "2020.05.07; 04:10:21",
+        "accessed": "2020-05-07 04:10:21",
         "source": "spoHashUris"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/componency.owl": {
-        "accessed": "2020.05.07; 14:20:43",
+        "accessed": "2020-05-07 14:20:43",
         "source": "prefix.cc"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/informationobjectsandrepresentationlanguages.owl": {
-        "accessed": "2020.05.07; 09:35:27",
+        "accessed": "2020-05-07 09:35:27",
         "source": "prefix.cc"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/informationrealization.owl": {
-        "accessed": "2020.05.06; 21:33:36",
+        "accessed": "2020-05-06 21:33:36",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/participation.owl": {
-        "accessed": "2020.05.07; 00:10:34",
+        "accessed": "2020-05-07 00:10:34",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/partof.owl": {
-        "accessed": "2020.05.07; 05:26:04",
+        "accessed": "2020-05-07 05:26:04",
         "source": "spoHashUris"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/place.owl": {
-        "accessed": "2020.05.07; 05:26:44",
+        "accessed": "2020-05-07 05:26:44",
         "source": "spoHashUris"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/sequence.owl": {
-        "accessed": "2020.05.07; 02:03:02",
+        "accessed": "2020-05-07 02:03:02",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/set.owl": {
-        "accessed": "2020.05.07; 05:27:25",
+        "accessed": "2020-05-07 05:27:25",
         "source": "spoHashUris"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/situation.owl": {
-        "accessed": "2020.05.07; 02:13:17",
+        "accessed": "2020-05-07 02:13:17",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/timeindexedsituation.owl": {
-        "accessed": "2020.05.07; 02:43:57",
+        "accessed": "2020-05-07 02:43:57",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cp/owl/timeinterval.owl": {
-        "accessed": "2020.05.07; 02:42:12",
+        "accessed": "2020-05-07 02:42:12",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/cpont/ire.owl": {
-        "accessed": "2020.05.07; 17:00:06",
+        "accessed": "2020-05-07 17:00:06",
         "source": "prefix.cc"
     },
     "http://www.ontologydesignpatterns.org/ont/d0.owl": {
-        "accessed": "2020.05.07; 05:53:22",
+        "accessed": "2020-05-07 05:53:22",
         "source": "prefix.cc"
     },
     "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl": {
-        "accessed": "2020.05.06; 20:24:08",
+        "accessed": "2020-05-06 20:24:08",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/ont/dul/IOLite.owl": {
-        "accessed": "2020.05.06; 21:38:04",
+        "accessed": "2020-05-06 21:38:04",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/ont/dul/ontopic.owl": {
-        "accessed": "2020.05.07; 00:23:59",
+        "accessed": "2020-05-07 00:23:59",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/ont/lmm/LMM_L1.owl": {
-        "accessed": "2020.05.06; 22:00:17",
+        "accessed": "2020-05-06 22:00:17",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/ont/lmm/LMM_L2.owl": {
-        "accessed": "2020.05.06; 22:01:03",
+        "accessed": "2020-05-06 22:01:03",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/ont/web/irw.owl": {
-        "accessed": "2020.05.06; 21:40:03",
+        "accessed": "2020-05-06 21:40:03",
         "source": "LOV"
     },
     "http://www.ontologydesignpatterns.org/schemas/cpannotationschema.owl": {
-        "accessed": "2020.05.06; 19:45:57",
+        "accessed": "2020-05-06 19:45:57",
         "source": "LOV"
     },
     "http://www.ontologyrepository.com/CommonCoreOntologies/Mid/AgentOntology": {
-        "accessed": "2020.05.07; 15:01:09",
+        "accessed": "2020-05-07 15:01:09",
         "source": "prefix.cc"
     },
     "http://www.ontotext.com/proton/protonext": {
-        "accessed": "2020.05.07; 00:54:36",
+        "accessed": "2020-05-07 00:54:36",
         "source": "LOV"
     },
     "http://www.ontotext.com/proton/protontop": {
-        "accessed": "2020.05.07; 01:15:15",
+        "accessed": "2020-05-07 01:15:15",
         "source": "LOV"
     },
     "http://www.opengis.net/ont/geosparql": {
-        "accessed": "2020.05.06; 21:18:59",
+        "accessed": "2020-05-06 21:18:59",
         "source": "LOV"
     },
     "http://www.opengis.net/ont/gml": {
-        "accessed": "2020.05.06; 21:13:15",
+        "accessed": "2020-05-06 21:13:15",
         "source": "LOV"
     },
     "http://www.opengis.net/ont/sf": {
-        "accessed": "2020.05.07; 02:03:51",
+        "accessed": "2020-05-07 02:03:51",
         "source": "LOV"
     },
     "http://www.openlinksw.com/ontology/acl#": {
-        "accessed": "2020.07.17; 13:53:41",
+        "accessed": "2020-07-17 13:53:41",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/benefits#": {
-        "accessed": "2020.07.17; 10:52:07",
+        "accessed": "2020-07-17 10:52:07",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/dbms-app-ontology#": {
-        "accessed": "2020.07.17; 07:57:04",
+        "accessed": "2020-07-17 07:57:04",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/ecrm#": {
-        "accessed": "2020.07.17; 05:20:46",
+        "accessed": "2020-07-17 05:20:46",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/faq#": {
-        "accessed": "2020.07.17; 05:13:18",
+        "accessed": "2020-07-17 05:13:18",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/licenses#": {
-        "accessed": "2020.07.17; 15:33:34",
+        "accessed": "2020-07-17 15:33:34",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/logging#": {
-        "accessed": "2020.07.17; 10:52:22",
+        "accessed": "2020-07-17 10:52:22",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/market#": {
-        "accessed": "2020.07.17; 05:56:45",
+        "accessed": "2020-07-17 05:56:45",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/odbc#": {
-        "accessed": "2020.07.17; 06:02:27",
+        "accessed": "2020-07-17 06:02:27",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/products#": {
-        "accessed": "2020.07.17; 05:40:56",
+        "accessed": "2020-07-17 05:40:56",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/purchases#": {
-        "accessed": "2020.07.17; 15:17:34",
+        "accessed": "2020-07-17 15:17:34",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/restrictions#": {
-        "accessed": "2020.07.17; 02:05:28",
+        "accessed": "2020-07-17 02:05:28",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/ontology/webservices#": {
-        "accessed": "2020.07.17; 02:01:43",
+        "accessed": "2020-07-17 02:01:43",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schema/attribution#": {
-        "accessed": "2020.07.17; 12:43:02",
+        "accessed": "2020-07-17 12:43:02",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/angel#": {
-        "accessed": "2020.07.17; 09:43:54",
+        "accessed": "2020-07-17 09:43:54",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/bif#": {
-        "accessed": "2020.07.17; 12:16:53",
+        "accessed": "2020-07-17 12:16:53",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/cert#": {
-        "accessed": "2020.07.17; 12:46:18",
+        "accessed": "2020-07-17 12:46:18",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/crunchbase#": {
-        "accessed": "2020.07.17; 15:44:01",
+        "accessed": "2020-07-17 15:44:01",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/linkedin#": {
-        "accessed": "2020.07.17; 14:15:30",
+        "accessed": "2020-07-17 14:15:30",
         "source": "prefix.cc"
     },
     "http://www.openlinksw.com/schemas/oplweb#": {
-        "accessed": "2020.07.17; 13:50:47",
+        "accessed": "2020-07-17 13:50:47",
         "source": "prefix.cc"
     },
     "http://www.opmw.org/ontology/": {
-        "accessed": "2020.05.07; 00:33:32",
+        "accessed": "2020-05-07 00:33:32",
         "source": "LOV"
     },
     "http://www.purl.org/drammar": {
-        "accessed": "2020.05.06; 20:22:31",
+        "accessed": "2020-05-06 20:22:31",
         "source": "LOV"
     },
     "http://www.rkbexplorer.com/ontologies/acm": {
-        "accessed": "2020.05.06; 17:51:33",
+        "accessed": "2020-05-06 17:51:33",
         "source": "LOV"
     },
     "http://www.rkbexplorer.com/ontologies/coref": {
-        "accessed": "2020.05.07; 13:03:24",
+        "accessed": "2020-05-07 13:03:24",
         "source": "prefix.cc"
     },
     "http://www.semanlink.net/2001/00/semanlink-schema": {
-        "accessed": "2020.05.07; 18:54:07",
+        "accessed": "2020-05-07 18:54:07",
         "source": "prefix.cc"
     },
     "http://www.sensormeasurement.appspot.com/ont/transport/traffic#": {
-        "accessed": "2020.05.07; 02:48:20",
+        "accessed": "2020-05-07 02:48:20",
         "source": "LOV"
     },
     "http://www.tele.pw.edu.pl/~sims-onto/ConnectivityType.owl": {
-        "accessed": "2020.05.06; 19:48:18",
+        "accessed": "2020-05-06 19:48:18",
         "source": "LOV"
     },
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#": {
-        "accessed": "2020.05.07; 01:27:19",
+        "accessed": "2020-05-07 01:27:19",
         "source": "LOV"
     },
     "http://www.w3.org/2000/01/rdf-schema#": {
-        "accessed": "2020.05.07; 01:29:34",
+        "accessed": "2020-05-07 01:29:34",
         "source": "LOV"
     },
     "http://www.w3.org/2002/07/owl": {
-        "accessed": "2020.05.07; 00:44:17",
+        "accessed": "2020-05-07 00:44:17",
         "source": "LOV"
     },
     "http://www.w3.org/2003/06/sw-vocab-status/ns": {
-        "accessed": "2020.05.07; 03:14:24",
+        "accessed": "2020-05-07 03:14:24",
         "source": "LOV"
     },
     "http://www.w3.org/2003/12/exif/ns": {
-        "accessed": "2020.05.06; 20:50:37",
+        "accessed": "2020-05-06 20:50:37",
         "source": "LOV"
     },
     "http://www.w3.org/2004/02/skos/core": {
-        "accessed": "2020.05.07; 02:14:00",
+        "accessed": "2020-05-07 02:14:00",
         "source": "LOV"
     },
     "http://www.w3.org/2004/09/fresnel": {
-        "accessed": "2020.05.06; 21:03:04",
+        "accessed": "2020-05-06 21:03:04",
         "source": "LOV"
     },
     "http://www.w3.org/2005/11/its/rdf#": {
-        "accessed": "2020.05.07; 11:38:54",
+        "accessed": "2020-05-07 11:38:54",
         "source": "prefix.cc"
     },
     "http://www.w3.org/2006/time": {
-        "accessed": "2020.05.07; 02:42:54",
+        "accessed": "2020-05-07 02:42:54",
         "source": "LOV"
     },
     "http://www.w3.org/2006/time-entry": {
-        "accessed": "2020.07.16; 20:29:42",
+        "accessed": "2020-07-16 20:29:42",
         "source": "LOV"
     },
     "http://www.w3.org/2006/timezone": {
-        "accessed": "2020.07.16; 20:53:48",
+        "accessed": "2020-07-16 20:53:48",
         "source": "LOV"
     },
     "http://www.w3.org/2006/vcard/ns": {
-        "accessed": "2020.05.07; 03:01:18",
+        "accessed": "2020-05-07 03:01:18",
         "source": "LOV"
     },
     "http://www.w3.org/2007/05/powder-s": {
-        "accessed": "2020.07.16; 21:22:26",
+        "accessed": "2020-07-16 21:22:26",
         "source": "LOV"
     },
     "http://www.w3.org/2007/ont/httph": {
-        "accessed": "2020.05.07; 16:39:31",
+        "accessed": "2020-05-07 16:39:31",
         "source": "prefix.cc"
     },
     "http://www.w3.org/2007/uwa/context/deliverycontext.owl": {
-        "accessed": "2020.05.06; 19:44:53",
+        "accessed": "2020-05-06 19:44:53",
         "source": "LOV"
     },
     "http://www.w3.org/2008/05/skos": {
-        "accessed": "2020.05.07; 05:40:31",
+        "accessed": "2020-05-07 05:40:31",
         "source": "spoHashUris"
     },
     "http://www.w3.org/2008/05/skos-xl": {
-        "accessed": "2020.05.07; 02:16:55",
+        "accessed": "2020-05-07 02:16:55",
         "source": "LOV"
     },
     "http://www.w3.org/2011/content": {
-        "accessed": "2020.05.06; 19:38:45",
+        "accessed": "2020-05-06 19:38:45",
         "source": "LOV"
     },
     "http://www.w3.org/2011/http": {
-        "accessed": "2020.05.06; 21:26:58",
+        "accessed": "2020-05-06 21:26:58",
         "source": "LOV"
     },
     "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine": {
-        "accessed": "2020.07.16; 21:16:54",
+        "accessed": "2020-07-16 21:16:54",
         "source": "LOV"
     },
     "http://www.w3.org/TR/2003/PR-owl-guide-20031209/food": {
-        "accessed": "2020.07.16; 17:49:45",
+        "accessed": "2020-07-16 17:49:45",
         "source": "LOV"
     },
     "http://www.w3.org/ns/adms": {
-        "accessed": "2020.05.06; 17:53:30",
+        "accessed": "2020-05-06 17:53:30",
         "source": "LOV"
     },
     "http://www.w3.org/ns/auth/cert#": {
-        "accessed": "2020.05.06; 19:31:25",
+        "accessed": "2020-05-06 19:31:25",
         "source": "LOV"
     },
     "http://www.w3.org/ns/auth/rsa": {
-        "accessed": "2020.05.07; 12:20:21",
+        "accessed": "2020-05-07 12:20:21",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/csvw#": {
-        "accessed": "2020.05.06; 19:47:30",
+        "accessed": "2020-05-06 19:47:30",
         "source": "LOV"
     },
     "http://www.w3.org/ns/dcat": {
-        "accessed": "2020.05.06; 19:58:15",
+        "accessed": "2020-05-06 19:58:15",
         "source": "LOV"
     },
     "http://www.w3.org/ns/dx/prof": {
-        "accessed": "2020.05.07; 10:16:39",
+        "accessed": "2020-05-07 10:16:39",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/formats/": {
-        "accessed": "2020.07.17; 13:50:39",
+        "accessed": "2020-07-17 13:50:39",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/hydra/core": {
-        "accessed": "2020.05.06; 21:29:55",
+        "accessed": "2020-05-06 21:29:55",
         "source": "LOV"
     },
     "http://www.w3.org/ns/ldp#": {
-        "accessed": "2020.05.06; 21:51:37",
+        "accessed": "2020-05-06 21:51:37",
         "source": "LOV"
     },
     "http://www.w3.org/ns/lemon/lime": {
-        "accessed": "2020.05.07; 17:14:32",
+        "accessed": "2020-05-07 17:14:32",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/lemon/ontolex": {
-        "accessed": "2020.05.07; 05:41:28",
+        "accessed": "2020-05-07 05:41:28",
         "source": "spoHashUris"
     },
     "http://www.w3.org/ns/lemon/vartrans": {
-        "accessed": "2020.05.07; 14:02:27",
+        "accessed": "2020-05-07 14:02:27",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/locn": {
-        "accessed": "2020.05.06; 22:02:48",
+        "accessed": "2020-05-06 22:02:48",
         "source": "LOV"
     },
     "http://www.w3.org/ns/ma-ont": {
-        "accessed": "2020.05.06; 22:20:08",
+        "accessed": "2020-05-06 22:20:08",
         "source": "LOV"
     },
     "http://www.w3.org/ns/mls#": {
-        "accessed": "2020.05.06; 22:29:46",
+        "accessed": "2020-05-06 22:29:46",
         "source": "LOV"
     },
     "http://www.w3.org/ns/oa#": {
-        "accessed": "2020.05.06; 23:50:42",
+        "accessed": "2020-05-06 23:50:42",
         "source": "LOV"
     },
     "http://www.w3.org/ns/odrl/2/": {
-        "accessed": "2020.05.07; 00:11:17",
+        "accessed": "2020-05-07 00:11:17",
         "source": "LOV"
     },
     "http://www.w3.org/ns/org#": {
-        "accessed": "2020.05.07; 00:36:20",
+        "accessed": "2020-05-07 00:36:20",
         "source": "LOV"
     },
     "http://www.w3.org/ns/person": {
-        "accessed": "2020.05.07; 00:53:34",
+        "accessed": "2020-05-07 00:53:34",
         "source": "LOV"
     },
     "http://www.w3.org/ns/prov#": {
-        "accessed": "2020.05.06; 22:12:07",
+        "accessed": "2020-05-06 22:12:07",
         "source": "LOV"
     },
     "http://www.w3.org/ns/prov-dc#": {
-        "accessed": "2020.05.07; 05:41:51",
+        "accessed": "2020-05-07 05:41:51",
         "source": "spoHashUris"
     },
     "http://www.w3.org/ns/prov-o#": {
-        "accessed": "2020.05.07; 04:08:51",
+        "accessed": "2020-05-07 04:08:51",
         "source": "spoHashUris"
     },
     "http://www.w3.org/ns/prov-o-inverses#": {
-        "accessed": "2020.05.07; 05:42:38",
+        "accessed": "2020-05-07 05:42:38",
         "source": "spoHashUris"
     },
     "http://www.w3.org/ns/r2rml#": {
-        "accessed": "2020.05.07; 01:37:20",
+        "accessed": "2020-05-07 01:37:20",
         "source": "LOV"
     },
     "http://www.w3.org/ns/radion#": {
-        "accessed": "2020.07.16; 19:33:58",
+        "accessed": "2020-07-16 19:33:58",
         "source": "LOV"
     },
     "http://www.w3.org/ns/rdfa#": {
-        "accessed": "2020.05.07; 01:28:06",
+        "accessed": "2020-05-07 01:28:06",
         "source": "LOV"
     },
     "http://www.w3.org/ns/regorg": {
-        "accessed": "2020.05.07; 01:36:38",
+        "accessed": "2020-05-07 01:36:38",
         "source": "LOV"
     },
     "http://www.w3.org/ns/shacl#": {
-        "accessed": "2020.05.07; 02:05:19",
+        "accessed": "2020-05-07 02:05:19",
         "source": "LOV"
     },
     "http://www.w3.org/ns/solid/terms": {
-        "accessed": "2020.05.07; 02:20:42",
+        "accessed": "2020-05-07 02:20:42",
         "source": "LOV"
     },
     "http://www.w3.org/ns/sosa/": {
-        "accessed": "2020.05.07; 02:21:42",
+        "accessed": "2020-05-07 02:21:42",
         "source": "LOV"
     },
     "http://www.w3.org/ns/sparql#": {
-        "accessed": "2020.07.17; 14:06:28",
+        "accessed": "2020-07-17 14:06:28",
         "source": "prefix.cc"
     },
     "http://www.w3.org/ns/ssn/": {
-        "accessed": "2020.05.07; 02:28:37",
+        "accessed": "2020-05-07 02:28:37",
         "source": "LOV"
     },
     "http://www.w3.org/ns/wsdl-rdf": {
-        "accessed": "2020.05.07; 14:03:50",
+        "accessed": "2020-05-07 14:03:50",
         "source": "prefix.cc"
     },
     "http://www.wsmo.org/ns/wsmo-lite#": {
-        "accessed": "2020.05.07; 03:26:00",
+        "accessed": "2020-05-07 03:26:00",
         "source": "LOV"
     },
     "http://www.yso.fi/onto/yso/": {
-        "accessed": "2020.07.17; 13:14:50",
+        "accessed": "2020-07-17 13:14:50",
         "source": "prefix.cc"
     },
     "http://xmlns.com/foaf/0.1/": {
-        "accessed": "2020.05.06; 20:55:29",
+        "accessed": "2020-05-06 20:55:29",
         "source": "LOV"
     },
     "https://budayakb.cs.ui.ac.id/ns": {
-        "accessed": "2020.07.17; 00:42:38",
+        "accessed": "2020-07-17 00:42:38",
         "source": "prefix.cc"
     },
     "https://d-nb.info/standards/elementset/agrelon#": {
-        "accessed": "2020.05.06; 18:35:31",
+        "accessed": "2020-05-06 18:35:31",
         "source": "LOV"
     },
     "https://d-nb.info/standards/elementset/dnb#": {
-        "accessed": "2020.05.06; 20:12:31",
+        "accessed": "2020-05-06 20:12:31",
         "source": "LOV"
     },
     "https://d-nb.info/standards/elementset/gnd#": {
-        "accessed": "2020.05.06; 21:15:54",
+        "accessed": "2020-05-06 21:15:54",
         "source": "LOV"
     },
     "https://d-nb.info/standards/vocab/gnd/gender#": {
-        "accessed": "2020.05.07; 04:56:46",
+        "accessed": "2020-05-07 04:56:46",
         "source": "spoHashUris"
     },
     "https://d-nb.info/standards/vocab/gnd/geographic-area-code#": {
-        "accessed": "2020.05.07; 04:57:31",
+        "accessed": "2020-05-07 04:57:31",
         "source": "spoHashUris"
     },
     "https://d-nb.info/standards/vocab/gnd/gnd-sc#": {
-        "accessed": "2020.05.07; 04:57:51",
+        "accessed": "2020-05-07 04:57:51",
         "source": "spoHashUris"
     },
     "https://d-nb.info/standards/vocab/gnd/type-of-coordinates#": {
-        "accessed": "2020.05.07; 04:58:38",
+        "accessed": "2020-05-07 04:58:38",
         "source": "spoHashUris"
     },
     "https://data.nasa.gov/ontologies/atmonto/ATM": {
-        "accessed": "2020.05.06; 18:54:01",
+        "accessed": "2020-05-06 18:54:01",
         "source": "LOV"
     },
     "https://data.nasa.gov/ontologies/atmonto/NAS": {
-        "accessed": "2020.05.06; 22:40:01",
+        "accessed": "2020-05-06 22:40:01",
         "source": "LOV"
     },
     "https://data.nasa.gov/ontologies/atmonto/data": {
-        "accessed": "2020.05.06; 18:48:17",
+        "accessed": "2020-05-06 18:48:17",
         "source": "LOV"
     },
     "https://data.nasa.gov/ontologies/atmonto/equipment": {
-        "accessed": "2020.05.06; 20:45:47",
+        "accessed": "2020-05-06 20:45:47",
         "source": "LOV"
     },
     "https://data.nasa.gov/ontologies/atmonto/general": {
-        "accessed": "2020.05.06; 18:59:12",
+        "accessed": "2020-05-06 18:59:12",
         "source": "LOV"
     },
     "https://data.vlaanderen.be/ns/logies": {
-        "accessed": "2020.07.11; 13:03:03",
+        "accessed": "2020-07-11 13:03:03",
         "source": "prefix.cc"
     },
     "https://data.vlaanderen.be/ns/persoon": {
-        "accessed": "2020.05.06; 19:15:11",
+        "accessed": "2020-05-06 19:15:11",
         "source": "LOV"
     },
     "https://id.kb.se/vocab/": {
-        "accessed": "2020.05.07; 10:08:40",
+        "accessed": "2020-05-07 10:08:40",
         "source": "prefix.cc"
     },
     "https://id.parliament.uk/schema": {
-        "accessed": "2020.05.07; 16:59:24",
+        "accessed": "2020-05-07 16:59:24",
         "source": "prefix.cc"
     },
     "https://ns.eccenca.com/": {
-        "accessed": "2020.05.07; 15:30:53",
+        "accessed": "2020-05-07 15:30:53",
         "source": "prefix.cc"
     },
     "https://pi.pauwel.be/voc/buildingelement": {
-        "accessed": "2020.05.07; 12:21:52",
+        "accessed": "2020-05-07 12:21:52",
         "source": "prefix.cc"
     },
     "https://privatealpha.com/ontology/certification/1#": {
-        "accessed": "2020.07.16; 16:33:31",
+        "accessed": "2020-07-16 16:33:31",
         "source": "LOV"
     },
     "https://privatealpha.com/ontology/content-inventory/1#": {
-        "accessed": "2020.07.16; 17:01:21",
+        "accessed": "2020-07-16 17:01:21",
         "source": "LOV"
     },
     "https://privatealpha.com/ontology/ibis/1#": {
-        "accessed": "2020.07.16; 17:56:27",
+        "accessed": "2020-07-16 17:56:27",
         "source": "LOV"
     },
     "https://privatealpha.com/ontology/process-model/1#": {
-        "accessed": "2020.07.16; 23:05:20",
+        "accessed": "2020-07-16 23:05:20",
         "source": "spoHashUris"
     },
     "https://privatealpha.com/ontology/transformation/1#": {
-        "accessed": "2020.07.16; 20:30:26",
+        "accessed": "2020-07-16 20:30:26",
         "source": "LOV"
     },
     "https://purl.org/heals/sco/": {
-        "accessed": "2020.05.21; 03:56:24",
+        "accessed": "2020-05-21 03:56:24",
         "source": "prefix.cc"
     },
     "https://raw.githubusercontent.com/airs-linked-data/lov/latest/src/airs_vocabulary.ttl#": {
-        "accessed": "2020.05.06; 18:35:50",
+        "accessed": "2020-05-06 18:35:50",
         "source": "LOV"
     },
     "https://saref.etsi.org/saref4syst#": {
-        "accessed": "2020.05.07; 14:10:29",
+        "accessed": "2020-05-07 14:10:29",
         "source": "prefix.cc"
     },
     "https://schema.edu.ee/0.1": {
-        "accessed": "2020.07.09; 17:07:12",
+        "accessed": "2020-07-09 17:07:12",
         "source": "LOV"
     },
     "https://sireneld.io/vocab/sirene#": {
-        "accessed": "2020.05.21; 01:31:32",
+        "accessed": "2020-05-21 01:31:32",
         "source": "prefix.cc"
     },
     "https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#": {
-        "accessed": "2020.05.07; 12:37:03",
+        "accessed": "2020-05-07 12:37:03",
         "source": "prefix.cc"
     },
     "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology": {
-        "accessed": "2020.05.07; 08:38:32",
+        "accessed": "2020-05-07 08:38:32",
         "source": "prefix.cc"
     },
     "https://vocab.eccenca.com/auth/": {
-        "accessed": "2020.05.07; 14:38:39",
+        "accessed": "2020-05-07 14:38:39",
         "source": "prefix.cc"
     },
     "https://vocab.eccenca.com/geniustex/": {
-        "accessed": "2020.05.07; 05:52:45",
+        "accessed": "2020-05-07 05:52:45",
         "source": "prefix.cc"
     },
     "https://vocab.eccenca.com/revision/": {
-        "accessed": "2020.05.06; 23:13:41",
+        "accessed": "2020-05-06 23:13:41",
         "source": "LOV"
     },
     "https://w3.org/ns/dpv": {
-        "accessed": "2020.05.07; 15:18:55",
+        "accessed": "2020-05-07 15:18:55",
         "source": "prefix.cc"
     },
     "https://w3id.org/BCI-ontology": {
-        "accessed": "2020.05.06; 19:07:08",
+        "accessed": "2020-05-06 19:07:08",
         "source": "LOV"
     },
     "https://w3id.org/GConsent": {
-        "accessed": "2020.05.06; 21:04:07",
+        "accessed": "2020-05-06 21:04:07",
         "source": "LOV"
     },
     "https://w3id.org/GDPRov": {
-        "accessed": "2020.05.06; 21:05:13",
+        "accessed": "2020-05-06 21:05:13",
         "source": "LOV"
     },
     "https://w3id.org/GDPRtEXT": {
-        "accessed": "2020.05.06; 21:06:28",
+        "accessed": "2020-05-06 21:06:28",
         "source": "LOV"
     },
     "https://w3id.org/affectedBy": {
-        "accessed": "2020.05.07; 05:02:48",
+        "accessed": "2020-05-07 05:02:48",
         "source": "spoHashUris"
     },
     "https://w3id.org/akn/ontology/allot": {
-        "accessed": "2020.05.07; 09:00:21",
+        "accessed": "2020-05-07 09:00:21",
         "source": "prefix.cc"
     },
     "https://w3id.org/arco/ontology/arco": {
-        "accessed": "2020.05.07; 01:21:02",
+        "accessed": "2020-05-07 01:21:02",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/catalogue": {
-        "accessed": "2020.05.06; 19:49:56",
+        "accessed": "2020-05-06 19:49:56",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/context-description": {
-        "accessed": "2020.05.06; 19:27:26",
+        "accessed": "2020-05-06 19:27:26",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/core": {
-        "accessed": "2020.05.06; 18:43:11",
+        "accessed": "2020-05-06 18:43:11",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/cultural-event": {
-        "accessed": "2020.05.06; 19:32:08",
+        "accessed": "2020-05-06 19:32:08",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/denotative-description": {
-        "accessed": "2020.05.06; 20:03:37",
+        "accessed": "2020-05-06 20:03:37",
         "source": "LOV"
     },
     "https://w3id.org/arco/ontology/location": {
-        "accessed": "2020.05.06; 17:50:14",
+        "accessed": "2020-05-06 17:50:14",
         "source": "LOV"
     },
     "https://w3id.org/associations/vocab": {
-        "accessed": "2020.05.07; 17:03:00",
+        "accessed": "2020-05-07 17:03:00",
         "source": "prefix.cc"
     },
     "https://w3id.org/bot#": {
-        "accessed": "2020.05.06; 19:17:49",
+        "accessed": "2020-05-06 19:17:49",
         "source": "LOV"
     },
     "https://w3id.org/bpo": {
-        "accessed": "2020.05.07; 17:39:36",
+        "accessed": "2020-05-07 17:39:36",
         "source": "prefix.cc"
     },
     "https://w3id.org/cc#": {
-        "accessed": "2020.05.07; 16:43:33",
+        "accessed": "2020-05-07 16:43:33",
         "source": "prefix.cc"
     },
     "https://w3id.org/cocoon/v1.0": {
-        "accessed": "2020.05.06; 19:41:40",
+        "accessed": "2020-05-06 19:41:40",
         "source": "LOV"
     },
     "https://w3id.org/def/saref4agri": {
-        "accessed": "2020.07.09; 18:33:02",
+        "accessed": "2020-07-09 18:33:02",
         "source": "LOV"
     },
     "https://w3id.org/def/saref4bldg": {
-        "accessed": "2020.05.07; 17:02:05",
+        "accessed": "2020-05-07 17:02:05",
         "source": "prefix.cc"
     },
     "https://w3id.org/def/saref4envi": {
-        "accessed": "2020.05.07; 13:37:26",
+        "accessed": "2020-05-07 13:37:26",
         "source": "prefix.cc"
     },
     "https://w3id.org/digitalconstruction/EnergySystems": {
-        "accessed": "2020.06.17; 17:53:47",
+        "accessed": "2020-06-17 17:53:47",
         "source": "user-suggestion"
     },
     "https://w3id.org/dot#": {
-        "accessed": "2020.05.07; 17:38:42",
+        "accessed": "2020-05-07 17:38:42",
         "source": "prefix.cc"
     },
     "https://w3id.org/edwin/ontology/": {
-        "accessed": "2020.05.07; 10:10:35",
+        "accessed": "2020-05-07 10:10:35",
         "source": "prefix.cc"
     },
     "https://w3id.org/eepsa#": {
-        "accessed": "2020.05.06; 20:37:03",
+        "accessed": "2020-05-06 20:37:03",
         "source": "LOV"
     },
     "https://w3id.org/eepsa/ek4eepsa": {
-        "accessed": "2020.05.07; 05:03:24",
+        "accessed": "2020-05-07 05:03:24",
         "source": "spoHashUris"
     },
     "https://w3id.org/eepsa/exn4eepsa": {
-        "accessed": "2020.05.07; 05:04:11",
+        "accessed": "2020-05-07 05:04:11",
         "source": "spoHashUris"
     },
     "https://w3id.org/eepsa/exr4eepsa": {
-        "accessed": "2020.05.07; 05:04:58",
+        "accessed": "2020-05-07 05:04:58",
         "source": "spoHashUris"
     },
     "https://w3id.org/eepsa/foi4eepsa#": {
-        "accessed": "2020.05.07; 05:05:16",
+        "accessed": "2020-05-07 05:05:16",
         "source": "spoHashUris"
     },
     "https://w3id.org/eepsa/p4eepsa": {
-        "accessed": "2020.05.07; 05:06:06",
+        "accessed": "2020-05-07 05:06:06",
         "source": "spoHashUris"
     },
     "https://w3id.org/eepsa/q4eepsa": {
-        "accessed": "2020.05.07; 05:06:54",
+        "accessed": "2020-05-07 05:06:54",
         "source": "spoHashUris"
     },
     "https://w3id.org/ep-plan": {
-        "accessed": "2020.05.06; 20:41:12",
+        "accessed": "2020-05-06 20:41:12",
         "source": "LOV"
     },
     "https://w3id.org/example": {
-        "accessed": "2020.05.07; 15:34:36",
+        "accessed": "2020-05-07 15:34:36",
         "source": "prefix.cc"
     },
     "https://w3id.org/fog": {
-        "accessed": "2020.05.06; 20:56:14",
+        "accessed": "2020-05-06 20:56:14",
         "source": "LOV"
     },
     "https://w3id.org/fr/def/core#": {
-        "accessed": "2020.05.07; 14:34:18",
+        "accessed": "2020-05-07 14:34:18",
         "source": "prefix.cc"
     },
     "https://w3id.org/gom": {
-        "accessed": "2020.05.06; 21:16:28",
+        "accessed": "2020-05-06 21:16:28",
         "source": "LOV"
     },
     "https://w3id.org/i40/aml#": {
-        "accessed": "2020.05.06; 18:37:50",
+        "accessed": "2020-05-06 18:37:50",
         "source": "LOV"
     },
     "https://w3id.org/i40/sto/iot/concerns/": {
-        "accessed": "2020.07.10; 22:20:30",
+        "accessed": "2020-07-10 22:20:30",
         "source": "LOV"
     },
     "https://w3id.org/ibp/CTRLont": {
-        "accessed": "2020.05.06; 19:50:33",
+        "accessed": "2020-05-06 19:50:33",
         "source": "LOV"
     },
     "https://w3id.org/idsa/core": {
-        "accessed": "2020.05.07; 16:56:43",
+        "accessed": "2020-05-07 16:56:43",
         "source": "prefix.cc"
     },
     "https://w3id.org/idsa/core%20Projekte/IDS/IM/Widoco/InformationModel/codes/OfferTemplate.ttl": {
-        "accessed": "2020.07.11; 14:29:41",
+        "accessed": "2020-07-11 14:29:41",
         "source": "prefix.cc"
     },
     "https://w3id.org/ifc/IFC4_ADD1": {
-        "accessed": "2020.07.09; 17:29:31",
+        "accessed": "2020-07-09 17:29:31",
         "source": "LOV"
     },
     "https://w3id.org/lio/v1": {
-        "accessed": "2020.05.06; 21:58:55",
+        "accessed": "2020-05-06 21:58:55",
         "source": "LOV"
     },
     "https://w3id.org/ln#": {
-        "accessed": "2020.05.07; 11:39:28",
+        "accessed": "2020-05-07 11:39:28",
         "source": "prefix.cc"
     },
     "https://w3id.org/multidimensional-interface/ontology": {
-        "accessed": "2020.05.06; 22:22:08",
+        "accessed": "2020-05-06 22:22:08",
         "source": "LOV"
     },
     "https://w3id.org/nno/ontology": {
-        "accessed": "2020.05.06; 22:42:51",
+        "accessed": "2020-05-06 22:42:51",
         "source": "LOV"
     },
     "https://w3id.org/okn/o/sdm": {
-        "accessed": "2020.05.07; 05:46:56",
+        "accessed": "2020-05-07 05:46:56",
         "source": "prefix.cc"
     },
     "https://w3id.org/omg": {
-        "accessed": "2020.05.07; 00:20:07",
+        "accessed": "2020-05-07 00:20:07",
         "source": "LOV"
     },
     "https://w3id.org/opentrafficlights#Ontology": {
-        "accessed": "2020.05.07; 00:43:27",
+        "accessed": "2020-05-07 00:43:27",
         "source": "LOV"
     },
     "https://w3id.org/opm#": {
-        "accessed": "2020.05.07; 00:30:39",
+        "accessed": "2020-05-07 00:30:39",
         "source": "LOV"
     },
     "https://w3id.org/ops": {
-        "accessed": "2020.05.07; 18:51:59",
+        "accessed": "2020-05-07 18:51:59",
         "source": "prefix.cc"
     },
     "https://w3id.org/pep/": {
-        "accessed": "2020.05.07; 00:52:50",
+        "accessed": "2020-05-07 00:52:50",
         "source": "LOV"
     },
     "https://w3id.org/pfeepsa#": {
-        "accessed": "2020.05.07; 09:06:02",
+        "accessed": "2020-05-07 09:06:02",
         "source": "prefix.cc"
     },
     "https://w3id.org/pnv": {
-        "accessed": "2020.05.07; 09:14:33",
+        "accessed": "2020-05-07 09:14:33",
         "source": "prefix.cc"
     },
     "https://w3id.org/rc": {
-        "accessed": "2020.05.07; 05:08:27",
+        "accessed": "2020-05-07 05:08:27",
         "source": "spoHashUris"
     },
     "https://w3id.org/rdfp/": {
-        "accessed": "2020.05.07; 01:28:52",
+        "accessed": "2020-05-07 01:28:52",
         "source": "LOV"
     },
     "https://w3id.org/roar": {
-        "accessed": "2020.05.07; 13:52:52",
+        "accessed": "2020-05-07 13:52:52",
         "source": "prefix.cc"
     },
     "https://w3id.org/saref": {
-        "accessed": "2020.05.07; 01:43:49",
+        "accessed": "2020-05-07 01:43:49",
         "source": "LOV"
     },
     "https://w3id.org/scholarlydata/ontology/conference-ontology.owl": {
-        "accessed": "2020.05.07; 05:09:11",
+        "accessed": "2020-05-07 05:09:11",
         "source": "spoHashUris"
     },
     "https://w3id.org/seas/": {
-        "accessed": "2020.05.07; 01:50:01",
+        "accessed": "2020-05-07 01:50:01",
         "source": "LOV"
     },
     "https://w3id.org/seas/BatteryOntology": {
-        "accessed": "2020.05.07; 01:55:49",
+        "accessed": "2020-05-07 01:55:49",
         "source": "LOV"
     },
     "https://w3id.org/seas/BuildingOntology": {
-        "accessed": "2020.05.07; 01:56:48",
+        "accessed": "2020-05-07 01:56:48",
         "source": "LOV"
     },
     "https://w3id.org/seas/DeviceOntology": {
-        "accessed": "2020.05.07; 01:57:50",
+        "accessed": "2020-05-07 01:57:50",
         "source": "LOV"
     },
     "https://w3id.org/seas/EvaluationOntology": {
-        "accessed": "2020.05.07; 01:52:11",
+        "accessed": "2020-05-07 01:52:11",
         "source": "LOV"
     },
     "https://w3id.org/seas/FeatureOfInterestOntology": {
-        "accessed": "2020.05.06; 20:57:00",
+        "accessed": "2020-05-06 20:57:00",
         "source": "LOV"
     },
     "https://w3id.org/seas/ForecastingOntology": {
-        "accessed": "2020.05.07; 01:58:43",
+        "accessed": "2020-05-07 01:58:43",
         "source": "LOV"
     },
     "https://w3id.org/seas/OperatingOntology": {
-        "accessed": "2020.05.07; 01:52:29",
+        "accessed": "2020-05-07 01:52:29",
         "source": "LOV"
     },
     "https://w3id.org/seas/QUDTAlignment": {
-        "accessed": "2020.05.07; 01:53:18",
+        "accessed": "2020-05-07 01:53:18",
         "source": "LOV"
     },
     "https://w3id.org/seas/StatisticsOntology": {
-        "accessed": "2020.05.07; 01:54:08",
+        "accessed": "2020-05-07 01:54:08",
         "source": "LOV"
     },
     "https://w3id.org/seas/SystemOntology": {
-        "accessed": "2020.05.07; 01:54:58",
+        "accessed": "2020-05-07 01:54:58",
         "source": "LOV"
     },
     "https://w3id.org/seas/TimeOntology": {
-        "accessed": "2020.05.07; 01:59:32",
+        "accessed": "2020-05-07 01:59:32",
         "source": "LOV"
     },
     "https://w3id.org/seas/TradingOntology": {
-        "accessed": "2020.05.07; 02:00:25",
+        "accessed": "2020-05-07 02:00:25",
         "source": "LOV"
     },
     "https://w3id.org/seo#": {
-        "accessed": "2020.05.07; 02:02:10",
+        "accessed": "2020-05-07 02:02:10",
         "source": "LOV"
     },
     "https://w3id.org/timebank": {
-        "accessed": "2020.05.07; 02:38:14",
+        "accessed": "2020-05-07 02:38:14",
         "source": "LOV"
     },
     "https://w3id.org/tree#Ontology": {
-        "accessed": "2020.05.07; 12:31:26",
+        "accessed": "2020-05-07 12:31:26",
         "source": "prefix.cc"
     },
     "https://w3id.org/usability": {
-        "accessed": "2020.05.07; 03:00:11",
+        "accessed": "2020-05-07 03:00:11",
         "source": "LOV"
     },
     "https://w3id.org/valueflows/": {
-        "accessed": "2020.05.07; 11:47:18",
+        "accessed": "2020-05-07 11:47:18",
         "source": "prefix.cc"
     },
     "https://w3id.org/vocab/lingvoj": {
-        "accessed": "2020.07.09; 17:43:42",
+        "accessed": "2020-07-09 17:43:42",
         "source": "LOV"
     },
     "https://w3id.org/vocab/olca": {
-        "accessed": "2020.07.09; 18:03:48",
+        "accessed": "2020-07-09 18:03:48",
         "source": "LOV"
     },
     "https://w3id.org/vocab/xbrll": {
-        "accessed": "2020.05.07; 03:32:24",
+        "accessed": "2020-05-07 03:32:24",
         "source": "LOV"
     },
     "https://w3id.org/won/core": {
-        "accessed": "2020.05.07; 18:18:31",
+        "accessed": "2020-05-07 18:18:31",
         "source": "prefix.cc"
     },
     "https://w3id.org/xapi/ontology#": {
-        "accessed": "2020.05.07; 03:32:02",
+        "accessed": "2020-05-07 03:32:02",
         "source": "LOV"
     },
     "https://www.auto.tuwien.ac.at/downloads/thinkhome/ontology/WeatherOntology.owl": {
-        "accessed": "2020.05.06; 21:28:55",
+        "accessed": "2020-05-06 21:28:55",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/Base/": {
-        "accessed": "2020.05.06; 23:24:43",
+        "accessed": "2020-05-06 23:24:43",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/EntityLegalForm/": {
-        "accessed": "2020.05.06; 23:25:39",
+        "accessed": "2020-05-06 23:25:39",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/Geocoding/": {
-        "accessed": "2020.05.06; 23:26:35",
+        "accessed": "2020-05-06 23:26:35",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/L1/": {
-        "accessed": "2020.05.06; 23:23:17",
+        "accessed": "2020-05-06 23:23:17",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/L2/": {
-        "accessed": "2020.05.06; 23:24:16",
+        "accessed": "2020-05-06 23:24:16",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/RegistrationAuthority/": {
-        "accessed": "2020.05.06; 23:27:31",
+        "accessed": "2020-05-06 23:27:31",
         "source": "LOV"
     },
     "https://www.gleif.org/ontology/ReportingException/": {
-        "accessed": "2020.05.06; 23:28:27",
+        "accessed": "2020-05-06 23:28:27",
         "source": "LOV"
     },
     "https://www.omg.org/spec/CTS2/About-CTS2/": {
-        "accessed": "2020.05.07; 11:28:41",
+        "accessed": "2020-05-07 11:28:41",
         "source": "prefix.cc"
     },
     "https://www.w3.org/2019/wot/hypermedia#": {
-        "accessed": "2020.05.07; 05:18:37",
+        "accessed": "2020-05-07 05:18:37",
         "source": "spoHashUris"
     },
     "https://www.w3.org/2019/wot/json-schema#": {
-        "accessed": "2020.05.07; 18:53:22",
+        "accessed": "2020-05-07 18:53:22",
         "source": "prefix.cc"
     },
     "https://www.w3.org/2019/wot/security#": {
-        "accessed": "2020.05.07; 11:13:45",
+        "accessed": "2020-05-07 11:13:45",
         "source": "prefix.cc"
     },
     "https://www.w3.org/2019/wot/td#": {
-        "accessed": "2020.05.07; 02:39:16",
+        "accessed": "2020-05-07 02:39:16",
         "source": "LOV"
     },
     "https://www.w3.org/TR/ldn/#ldn-tests-sender": {
-        "accessed": "2020.07.17; 07:57:17",
+        "accessed": "2020-07-17 07:57:17",
         "source": "prefix.cc"
     },
     "https://www.w3.org/ns/ldt#": {
-        "accessed": "2020.05.07; 12:53:49",
+        "accessed": "2020-05-07 12:53:49",
         "source": "prefix.cc"
     }
 }
