@@ -329,7 +329,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"ERROR: {headerErrorsString}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,f"There was an error accessing {vocab_uri}:\n" + "\n".join(headerErrors)
-  accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
+  accessDate = str(datetime.now())
 
 
   # downloading and parsing
