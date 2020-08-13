@@ -25,7 +25,7 @@ oopsServiceUrl=" http://oops.linkeddata.es/rest"
 
 # possible headers for rdf-data
 rdfHeaders=["application/rdf+xml", "application/ntriples", "text/turtle", "application/html"]
-rdfHeadersMapping = {"application/rdf+xml":"rdfxml", "application/ntriples":"ntriples", "text/turtle":"turtle", "application/html":"rdfa"}
+rdfHeadersMapping = {"application/rdf+xml":"rdfxml", "application/ntriples":"ntriples", "text/turtle":"turtle", "application/html":"rdfa", "*/*":None}
 
 def getLodeDocuFile(vocab_uri, logger):
   try:
