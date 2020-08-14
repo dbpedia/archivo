@@ -108,12 +108,10 @@ def ontoList():
             downloadURIs = {"ttl":infoDict.get("ttlFile", ""), "owl":infoDict.get("owlFile", ""), "nt":infoDict.get("ntFile", "")}
             title = infoDict.get("title", uri)
             available = (False, latestFallout[uri]) if uri in latestFallout else (True, None)
+            ontos.append(({"title":title, "uri":uri}, databus_uri, downloadURIs, available))
         except KeyError:
             webservice_logger.warning(f"Could't find databus artifact for {uri}")
-            downloadUri = None
-            
-
-        ontos.append(({"title":title, "uri":uri}, databus_uri, downloadURIs, available))
+        
     return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontoIndex))
 
 

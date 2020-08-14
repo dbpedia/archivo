@@ -282,15 +282,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, origFileUrl, lastVersion, fallo
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
-  match = semanticVersionRegex.match(oldSemanticVersion)
-  if match == None:
-    diff_logger.error(f"Bad format of semantic version: {oldSemanticVersion}")
-    return "ERROR: old semantic version corrupted", None, None
   
-  major = int(match.group(1))
-  minor = int(match.group(2))
-  patch = int(match.group(3))
-
   both = oldAxiomSet.intersection(newAxiomSet)
   old = oldAxiomSet - newAxiomSet
   new = newAxiomSet - oldAxiomSet
@@ -298,6 +290,14 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
   diff_logger.info("Old:\n"+"\n".join(old))
   diff_logger.info("New:\n"+"\n".join(new))
 
+  match = semanticVersionRegex.match(oldSemanticVersion)
+  if match == None:
+    diff_logger.error(f"Bad format of semantic version: {oldSemanticVersion}")
+    return "ERROR: Can't build new semantic version because last is broken", old, new
+  
+  major = int(match.group(1))
+  minor = int(match.group(2))
+  patch = int(match.group(3))
 
   if old == set() and new == set():
     return f"{str(major)}.{str(minor)}.{str(patch+1)}", old, new
