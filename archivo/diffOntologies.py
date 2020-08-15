@@ -157,9 +157,9 @@ def localDiffAndRelease(uri, localDiffDir, oldOriginal, bestHeader, fallout_inde
           newSemVersion = "ERROR: No Axioms for new version"
 
       fileExt = os.path.splitext(sourcePath)[1]
-      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=old.nt"), "w+") as oldAxiomsFile:
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=old.dl"), "w+") as oldAxiomsFile:
         print("\n".join(oldAxioms), file=oldAxiomsFile)
-      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.nt"), "w+") as newAxiomsFile:
+      with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.dl"), "w+") as newAxiomsFile:
         print("\n".join(newAxioms), file=newAxiomsFile) 
       crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
