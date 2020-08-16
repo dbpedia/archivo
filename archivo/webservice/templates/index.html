@@ -50,8 +50,8 @@
     
     
     <body style="margin:1em 5% 19em 5%;box-shadow:0 .3em 1em #000;padding:5em 9em 9em 10em;" >
-		<h1 style="font-family:Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; font-weight: 550;"><img src="https://upload.wikimedia.org/wikipedia/commons/7/73/DBpediaLogo.svg" height=90 style="position: relative ; top: -23px;"> Archivo</h1>
-		<div class="w3-bar w3-border-bottom w3-light-grey intronav">
+    <h1 style="font-family:Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; font-weight: 550;"><img src="https://upload.wikimedia.org/wikipedia/commons/7/73/DBpediaLogo.svg" height=90 style="position: relative ; top: -23px;"> Archivo</h1>
+    <div class="w3-bar w3-border-bottom w3-light-grey intronav">
             <a class="w3-bar-item w3-button testbtn" href="/home">home</a>
             <a class="w3-bar-item w3-button testbtn" href="/list">list</a>
             <a class="w3-bar-item w3-button testbtn" href="/info">info</a>
@@ -63,17 +63,6 @@
 <div>
         {% block content %}{% endblock %}
 </div>
-
-<script>
-function openTab(linkName) {
-  var i;
-  var x = document.getElementsByClassName("w3-bar-item w3-button");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  document.getElementById(cityName).style.display = "block";
-}
-</script>
 
     </body>
 </html>

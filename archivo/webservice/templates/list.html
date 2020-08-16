@@ -24,9 +24,9 @@
     <td><a href=/info?o={{Ontologies[i][0].uri}}>{{Ontologies[i][0].title}}</a></td>
     <td><a href="{{Ontologies[i][1]}}">{{Ontologies[i][1]}}</a></td>
     <td>
-        <a href="{{Ontologies[i][2].owl}}">owl</a>,
-        <a href="{{Ontologies[i][2].ttl}}">ttl</a>,
-        <a href="{{Ontologies[i][2].nt}}">nt</a>
+        <a href="/download?o={{Ontologies[i][0].uri}}&f=owl">owl</a>,
+        <a href="/download?o={{Ontologies[i][0].uri}}&f=ttl">ttl</a>,
+        <a href="/download?o={{Ontologies[i][0].uri}}&f=nt">nt</a>
     </td>
     <td>
         {% if Ontologies[i][3][0] %}

@@ -95,7 +95,6 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
-@app.route("/", methods=["GET"])
 def ontoList():
     ontos = []
     allOntosInfo = queryDatabus.allLatestParsedTurtleFiles()
@@ -239,6 +238,7 @@ def ntriplesDownload():
         abort(status=404)
 
 @app.route("/home")
+@app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
 
