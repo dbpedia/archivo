@@ -114,6 +114,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_inde
     if newBestHeader == None:
       diff_logger.warning("Couldn't parse new version")
       diff_logger.warning(headerErrors)
+      fallout_index.append((uri, str(datetime.now()), source, True, "\n".join(headerErrors)))
       return
     success, sourcePath, response = crawlURIs.downloadSource(uri, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
