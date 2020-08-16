@@ -101,7 +101,7 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None, "Unknown error"
 
 
-def localDiffAndRelease(uri, localDiffDir, oldOriginal, bestHeader, fallout_index, latestVersionDir, lastSemVersion, testSuite, source):
+def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_index, latestVersionDir, lastSemVersion, testSuite, source):
   try:
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
@@ -129,7 +129,7 @@ def localDiffAndRelease(uri, localDiffDir, oldOriginal, bestHeader, fallout_inde
       fallout_index.append((uri, str(datetime.now()), source, True, f"Couldn't parse File: {errors}"))
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       return
-    getSortedNtriples(oldOriginal, os.path.join(localDiffDir, "oldVersionSorted.nt"), uri)
+    getSortedNtriples(oldNtriples, os.path.join(localDiffDir, "oldVersionSorted.nt"), uri, inputType="ntriples")
     isEqual, oldTriples, newTriples = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
     diff_logger.debug("Old Triples:" + "\n".join(oldTriples))
     diff_logger.debug("New Triples:" + "\n".join(newTriples))
@@ -228,13 +228,13 @@ def handleDiffForUri_old(uri, rootdir, fallout_index, testSuite, source):
     diff_logger.info(f"No different version for {uri}")
 
 
-def handleDiffForUri(uri, localDir, metafileUrl, origFileUrl, lastVersion, fallout, testSuite, source):
+def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, fallout, testSuite, source):
 
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
   artifactPath = os.path.join(localDir, groupId, artifact)
   lastVersionPath = os.path.join(artifactPath, lastVersion)
   lastMetaFile = os.path.join(lastVersionPath, artifact + "_type=meta.json")
-  lastOrigFile = os.path.join(lastVersionPath, origFileUrl.rpartition("/")[2])
+  lastNtFile = os.path.join(lastVersionPath, lastNtURL.rpartition("/")[2])
   if not os.path.isfile(lastMetaFile):
     os.makedirs(lastVersionPath, exist_ok=True)
     try:
@@ -249,10 +249,10 @@ def handleDiffForUri(uri, localDir, metafileUrl, origFileUrl, lastVersion, fallo
     with open(lastMetaFile, "r") as latestMetaFile:
       metadata = json.load(latestMetaFile)
 
-  if not os.path.isfile(lastOrigFile):
-    oldOntologyResponse = requests.get(origFileUrl)
+  if not os.path.isfile(lastNtFile):
+    oldOntologyResponse = requests.get(lastNtURL)
     oldOntologyResponse.encoding = "utf-8"
-    with open(lastOrigFile, "w") as origFile:
+    with open(lastNtFile, "w") as origFile:
       print(oldOntologyResponse.text, file=origFile)
   
   oldETag = metadata["http-data"]["e-tag"]
@@ -274,7 +274,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, origFileUrl, lastVersion, fallo
     return
   if isDiff:
     diff_logger.info(f"Fond potential different version for {uri}")
-    localDiffAndRelease(uri, localDiffDir, lastOrigFile, bestHeader, fallout, lastVersionPath, semVersion, testSuite, source)
+    localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, fallout, lastVersionPath, semVersion, testSuite, source)
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
@@ -305,3 +305,9 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
     return f"{str(major)}.{str(minor+1)}.{str(0)}", old, new
   else:
     return f"{str(major+1)}.{str(0)}.{str(0)}", old, new
+
+
+if __name__ == "__main__":
+  success, sourcePath, response = crawlURIs.downloadSource("http://www.georss.org/georss/", ".", "georss", "application/rdf+xml", encoding="utf-8")
+  print(success)
+  print(response)

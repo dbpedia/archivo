@@ -295,7 +295,7 @@ def allLatestParsedTurtleFiles():
 
     return result
 
-def latestOriginalOntlogies():
+def latestNtriples():
     query = "\n".join((
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
         "PREFIX dct:    <http://purl.org/dc/terms/>",
@@ -306,12 +306,13 @@ def latestOriginalOntlogies():
         "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
 
-        "SELECT DISTINCT ?art ?latestVersion ?origFile ?metafile WHERE {",
+        "SELECT DISTINCT ?art ?latestVersion ?ntFile ?metafile WHERE {",
             "?dataset dataid:account db:ontologies .", 
             "?dataset dataid:artifact ?art .",
             "?dataset dcat:distribution ?parsedDst .",
-            "?parsedDst dataid-cv:type 'orig'^^xsd:string .",      
-            "?parsedDst dcat:downloadURL ?origFile .",
+            "?parsedDst dataid-cv:type 'parsed'^^xsd:string .",
+            "?parsedDst dataid:formatExtension 'nt'^^xsd:string .",
+            "?parsedDst dcat:downloadURL ?ntFile .",
         
             "?dataset dcat:distribution ?metaDst .",
             "?metaDst dataid-cv:type 'meta'^^xsd:string .",
@@ -339,12 +340,8 @@ def latestOriginalOntlogies():
         try:
             databusUri = binding["art"]["value"]
             if not databusUri in result:
-                result[databusUri] = {"origFile":binding["origFile"]["value"], "meta":binding["metafile"]["value"], "version":binding["latestVersion"]["value"]}
+                result[databusUri] = {"ntFile":binding["ntFile"]["value"], "meta":binding["metafile"]["value"], "version":binding["latestVersion"]["value"]}
         except KeyError:
             continue
 
     return result
-
-
-if __name__ == "__main__":
-    print(getSymbol(False))
