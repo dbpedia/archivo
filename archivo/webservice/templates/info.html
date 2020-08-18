@@ -78,10 +78,10 @@
                 <td>{{version.stars}}</td>
                 <td>{{version.semversion}}</td>
                 <td>
-                    {% if version.parsing %}
+                    {% if version.parsing.conforms %}
                         <span class="check">✔</span>
                     {% else %}
-                        <span class="x">✘</span>
+                        <span title="{{version.parsing.errors}}" class="x">✘</span>
                     {% endif %}
                 </td>
                 <td>

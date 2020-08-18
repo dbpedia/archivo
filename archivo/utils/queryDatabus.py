@@ -128,10 +128,8 @@ def getInfoForArtifact(group, artifact):
             metadata = requests.get(metafile).json()
         except URLError:
             metadata = {}
-        if metadata["logs"]["rapper-errors"] == "":
-            parsing = True
-        else:
-            parsing = False
+
+        parsing = True if metadata["logs"]["rapper-errors"] == "" else False
         stars = ontoFiles.measureStars(metadata["logs"]["rapper-errors"], 
                                         metadata["test-results"]["License-I"], 
                                         metadata["test-results"]["consistent"], 
@@ -145,7 +143,7 @@ def getInfoForArtifact(group, artifact):
                                   "version":{"label":datetime.strptime(version[version.rfind("/")+1:-1], "%Y.%m.%d-%H%M%S"), "url":version},
                                   "consistent":{"conforms":isConsistent(metadata["test-results"]["consistent"]), "url":consistencyURL},
                                   "triples":metadata["ontology-info"]["triples"],
-                                  "parsing":parsing,
+                                  "parsing":{"conforms":parsing, "errors":metadata["logs"]["rapper-errors"]},
                                   "semversion":metadata["ontology-info"]["semantic-version"],
                                   "stars":stars,
                                   "docuURL":docuURL})

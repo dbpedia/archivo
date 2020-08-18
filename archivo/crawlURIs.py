@@ -319,7 +319,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     logger.warning(f"Malformed Uri {vocab_uri}")
     user_output.append(f"ERROR: Malformed URI {vocab_uri}")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed Uri"))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"Malformed Uri {vocab_uri}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"<br>".join(map(str, user_output))
   if checkIndexForUri(vocab_uri, index) != None:
@@ -335,7 +335,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     logger.warning(f"{archivoConfig.archivo_agent} not allowed")
     user_output.append(f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output))
   
@@ -347,11 +347,11 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Determinig the best header: {failed_symbol}")
     logger.error(f"Error in parsing: {headerErrors}")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, f"ERROR: {headerErrors}"))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"ERROR: {headerErrors}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output))
 
-  accessDate = str(datetime.now())
+  accessDate = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
   user_output.append(f"Found best header: {bestHeader}")
 
   # downloading and parsing
@@ -361,7 +361,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Accessing URI {vocab_uri}: {failed_symbol}")
     user_output.append(response)
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, str(response)))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, str(response)))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR,"<br>".join(map(str, user_output))
   
@@ -372,7 +372,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Parse downloaded File: {failed_symbol}")
     user_output.append(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "INTERNAL ERROR: Couldn't parse file."))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "INTERNAL ERROR: Couldn't parse file."))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output))
 
@@ -382,7 +382,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     logger.error(f"RDFlib couldn't parse the file of {vocab_uri}")
     user_output.append(f"Loading Graph in RDFlib: {failed_symbol}")
     if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Error in rdflib parsing"))
+      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Error in rdflib parsing"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output))
   
@@ -393,7 +393,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Finding Ontology URI: {failed_symbol}")
     user_output.append(traceback.format_exc())
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Error at querying with rdflib"))
+    fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Error at querying with rdflib"))
     return False, isNIR, "<br>".join(map(str, user_output))
 
   if real_ont_uri == None:
@@ -406,7 +406,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       user_output.append(f"Finding isDefinedBy: {failed_symbol}")
       user_output.append("The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple")
       if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Neither a Vocab nor a link to one"))
+        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Neither a Vocab nor a link to one"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "<br>".join(map(str, user_output))
     
@@ -420,7 +420,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       user_output.append(f"Found isDefinedBy or skos uri {real_ont_uri}")
       user_output.append("Self-defining non-ontology.")
       if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Self defining non-ontology"))
+        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Self defining non-ontology"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "<br>".join(map(str, user_output))
   
@@ -435,7 +435,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       logger.warning(f"Malformed Uri {vocab_uri}")
       user_output.append(f"Malformed Uri {str(real_ont_uri)}")
       if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed Uri"))
+        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Malformed Uri"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
       return False, isNIR, "<br>".join(map(str, user_output))
     else:
@@ -453,7 +453,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if groupId == None or artifact == None:
     logger.warning(f"Malformed Uri {vocab_uri}")
     user_output.append(f"Malformed Uri {str(real_ont_uri)}")
-    fallout_index.append((vocab_uri, str(datetime.now()), source, False, "Malformed non-information uri"))
+    fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Malformed non-information uri"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, str("<br>".join(map(str, user_output)))
 
