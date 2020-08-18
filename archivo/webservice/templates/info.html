@@ -68,7 +68,12 @@
             </tr>
             {% for version in versions_info %}
             <tr>
-                <td><a href="{{version.version.url}}">{{version.version.label}}</a></td>
+                <td>
+                    <a href="{{version.version.url}}">{{version.version.label}}</a>
+                    {% if version.docuURL %}
+                        <a href="{{version.docuURL}}">📰</a>
+                    {% endif %}
+                </td>
                 <td>{{version.triples}}</td>
                 <td>{{version.stars}}</td>
                 <td>{{version.semversion}}</td>

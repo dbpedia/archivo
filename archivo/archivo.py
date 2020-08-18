@@ -54,10 +54,9 @@ def ontology_discovery():
 
 @cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_update():
-    index = ontoFiles.loadIndexJsonFromFile(indexFilePath)
-    fallout = ontoFiles.loadFalloutIndexFromFile(falloutFilePath)
+    index = ontoIndex
     dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestOriginalOntlogies()
+    allOntologiesInfo = queryDatabus.latestNtriples()
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for uri in index:
@@ -70,7 +69,7 @@ def ontology_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {uri}")
             continue
-        diffOntologies.handleDiffForUri(uri, dataPath, urlInfo["meta"], urlInfo["origFile"], urlInfo["version"], fallout, testSuite, source)
+        diffOntologies.handleDiffForUri(uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], fallout, testSuite, source)
         ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
@@ -78,4 +77,4 @@ def ontology_update():
 atexit.register(lambda: cron.shutdown(wait=False))
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

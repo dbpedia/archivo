@@ -32,7 +32,7 @@ class InfoForm(FlaskForm):
 
 
 @app.route('/add', methods=['GET', 'POST'])
-def index():
+def addOntology():
     form = SuggestionForm()
     if form.validate_on_submit():
         success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, archivoConfig.localPath, fallout, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)

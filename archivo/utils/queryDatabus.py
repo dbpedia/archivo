@@ -66,7 +66,7 @@ def getInfoForArtifact(group, artifact):
         "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
 
-        "SELECT DISTINCT ?title ?comment ?version ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile WHERE {",
+        "SELECT DISTINCT ?title ?comment ?version ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
         "VALUES ?art { <%s> } ." % databusLink,
         "?dataset dataid:account db:ontologies .", 
         "?dataset dataid:artifact ?art .",
@@ -89,6 +89,11 @@ def getInfoForArtifact(group, artifact):
         "?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .",
         "?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .",
         "?shaclLode dcat:downloadURL ?lode .",
+        "OPTIONAL {"
+        "?dataset dcat:distribution ?docuDst .",
+        "?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .",
+        "?docuDst dcat:downloadURL ?docuURL .",
+        "}",
         "?dataset dataid:version ?version .",
         "?dataset dct:title ?title .",
         "?dataset rdfs:comment ?comment .",
@@ -115,6 +120,11 @@ def getInfoForArtifact(group, artifact):
         lodeShaclURL =  binding.get("lode", {"value":""})["value"]
         consistencyURL = binding["consistencyFile"]["value"]
         try:
+            docuURL = binding["docuURL"]["value"]
+        except KeyError:
+            print(f"No docu for {minLicenseURL}")
+            docuURL = None
+        try:
             metadata = requests.get(metafile).json()
         except URLError:
             metadata = {}
@@ -137,7 +147,8 @@ def getInfoForArtifact(group, artifact):
                                   "triples":metadata["ontology-info"]["triples"],
                                   "parsing":parsing,
                                   "semversion":metadata["ontology-info"]["semantic-version"],
-                                  "stars":stars})
+                                  "stars":stars,
+                                  "docuURL":docuURL})
     return title, comment, version_infos
     
 
