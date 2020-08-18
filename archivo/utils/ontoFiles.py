@@ -134,8 +134,8 @@ def getParsedTriples(filepath, inputFormat=None):
   try:
     stderr = process.communicate()[1].decode("utf-8")
   except UnicodeDecodeError:
-    return None
-  return getTripleNumberFromRapperLog(stderr)
+    return None, None
+  return getTripleNumberFromRapperLog(stderr), returnRapperErrors(stderr)[0]
 
 def loadIndexJson():
   with open(os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "indices", "vocab_index.json"), "r") as indexfile:
