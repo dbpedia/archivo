@@ -176,12 +176,15 @@ def downloadOntology():
     args = request.args
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "")
+    version = args.get("v", "")
     if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
     if rdfFormat == "":
         rdfFormat = "owl"
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
+    if version == "":
+        version = None
+    downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
 
     if downloadLink != None:
         return redirect(downloadLink, code=307)

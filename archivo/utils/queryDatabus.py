@@ -140,7 +140,7 @@ def getInfoForArtifact(group, artifact):
         version_infos.append({"minLicense":{"conforms":metadata["test-results"]["License-I"], "url":minLicenseURL}, 
                                   "goodLicense":{"conforms":metadata["test-results"]["License-II"], "url":goodLicenseURL},
                                   "lode":{"conforms":metadata["test-results"]["lode-conform"], "url":lodeShaclURL},
-                                  "version":{"label":datetime.strptime(version[version.rfind("/")+1:-1], "%Y.%m.%d-%H%M%S"), "url":version},
+                                  "version":{"label":version[version.rfind("/")+1:-1], "url":version},
                                   "consistent":{"conforms":isConsistent(metadata["test-results"]["consistent"]), "url":consistencyURL},
                                   "triples":metadata["ontology-info"]["triples"],
                                   "parsing":{"conforms":parsing, "errors":metadata["logs"]["rapper-errors"]},
@@ -198,9 +198,9 @@ def getLatestParsedOntology(group, artifact):
         traceback.print_exc(file=sys.stdout)
 
 
-def getLatestTurtleURL(group, artifact, fileExt="owl"):
+def getDownloadURL(group, artifact, fileExt="owl", version=None):
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-    query = "\n".join((
+    queryString = [
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
         "PREFIX dct:    <http://purl.org/dc/terms/>",
         "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
@@ -218,6 +218,9 @@ def getLatestTurtleURL(group, artifact, fileExt="owl"):
         "   ?distribution dataid-cv:type 'parsed'^^xsd:string .",
         "   ?distribution dataid:formatExtension '%s'^^xsd:string ." % fileExt,
         "   ?distribution dcat:downloadURL ?file .",
+    ]
+    if version == None:
+        queryString.extend([
         "   ?dataset dct:hasVersion ?latestVersion .",
         "{",
         "   SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
@@ -226,10 +229,14 @@ def getLatestTurtleURL(group, artifact, fileExt="owl"):
         "    ?dataset dct:hasVersion ?v .",
             "}",
             "}",
-        "}",
-    ))
+        ])
+    else:
+        queryString.append(
+            "   ?dataset dct:hasVersion '%s'^^xsd:string ." % version
+        )
+    queryString.append("}")
     sparql = SPARQLWrapper(databusRepoUrl)
-    sparql.setQuery(query)
+    sparql.setQuery("\n".join(queryString))
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
     try:
@@ -354,3 +361,6 @@ def latestNtriples():
             continue
 
     return result
+
+if __name__ == "__main__":
+    getDownloadURL("datashapes.org", "dash", fileExt="ttl", version="2020.07.16-115603")
