@@ -25,17 +25,18 @@ Check out the <a href="/info">info-page</a> for a detailed view of the versions 
 <p>The easiest way to access an ontology is by using the Archivo webservice to get redirected to the latest version of an ontology in your desired format (currently supported: rdf+xml, turtle and n-triples).<br>
 Just use:
 <pre><code>http://archivo.dbpedia.org/download?o={ontology-URI}&f={file-extension}&v={timestamp}</code></pre>
-where ontology-URI is the URI of your ontology (e.g <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>) and file-extension is the desired extension (supported: owl, ttl and nt; default: owl).</p>
 with:
 <ul>
     <li><i>ontology-uri</i> being the URI of your desired ontology (e.g <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>)</li>
     <li><i>file-extension</i> (optional) being the desired extension (currently supported: owl, ttl and nt; default: owl)</li>
-    <li><i>timestamp</i> (optional; default: latest) being the timestamp of the ontology (to see what timestamps are available check out the <a href="/info">info-page</a> of your ontology)</li>
+    <li><i>timestamp</i> (optional; default: latest) being the timestamp of the ontology (to see what timestamps are available check out the <a href="/info">info-page</a> of your ontology and copy it from the Version column)</li>
 </ul>
-<p><strong>Example:</strong> Download the latest version of the Cinelab ontology as Turtle file
-    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&amp;f=ttl"</pre>
+<p><strong>Examples:</strong> Download the latest version of the Cinelab ontology as Turtle file
+    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&f=ttl"</pre>
+    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&v=2020.07.16-115638"</pre>
     </p>
 
+<p><strong></strong></p>
 <p>Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a> which also provides the latest download links.</p>
 
 <br>

@@ -66,7 +66,7 @@ def getInfoForArtifact(group, artifact):
         "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
 
-        "SELECT DISTINCT ?title ?comment ?version ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
+        "SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
         "VALUES ?art { <%s> } ." % databusLink,
         "?dataset dataid:account db:ontologies .", 
         "?dataset dataid:artifact ?art .",
@@ -94,7 +94,8 @@ def getInfoForArtifact(group, artifact):
         "?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .",
         "?docuDst dcat:downloadURL ?docuURL .",
         "}",
-        "?dataset dataid:version ?version .",
+        "?dataset dataid:version ?versionURL .",
+        "?dataset dct:hasVersion ?version ."
         "?dataset dct:title ?title .",
         "?dataset rdfs:comment ?comment .",
         "}",
@@ -114,6 +115,7 @@ def getInfoForArtifact(group, artifact):
 
     for binding in results:
         version = binding.get("version", {"value":""})["value"]
+        versionURL = binding.get("versionURL", {"value":""})["value"]
         metafile = binding.get("metafile", {"value":""})["value"]
         minLicenseURL = binding.get("minLicense", {"value":""})["value"]
         goodLicenseURL = binding.get("goodLicense", {"value":""})["value"]
@@ -140,7 +142,7 @@ def getInfoForArtifact(group, artifact):
         version_infos.append({"minLicense":{"conforms":metadata["test-results"]["License-I"], "url":minLicenseURL}, 
                                   "goodLicense":{"conforms":metadata["test-results"]["License-II"], "url":goodLicenseURL},
                                   "lode":{"conforms":metadata["test-results"]["lode-conform"], "url":lodeShaclURL},
-                                  "version":{"label":version[version.rfind("/")+1:-1], "url":version},
+                                  "version":{"label":version, "url":versionURL},
                                   "consistent":{"conforms":isConsistent(metadata["test-results"]["consistent"]), "url":consistencyURL},
                                   "triples":metadata["ontology-info"]["triples"],
                                   "parsing":{"conforms":parsing, "errors":metadata["logs"]["rapper-errors"]},
