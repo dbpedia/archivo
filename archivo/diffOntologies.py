@@ -269,8 +269,8 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, fallout
     os.mkdir(localDiffDir)
 
   if isDiff == None:
-    fallout.append((uri, str(datetime.now()), source, False, error))
-    diff_logger.warning(error)
+    fallout.append((uri, str(datetime.now()), source, False, "Header Error: " + error))
+    diff_logger.warning("Header Error: " + error)
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     return
   if isDiff:
@@ -309,6 +309,7 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
 
 
 if __name__ == "__main__":
-  success, sourcePath, response = crawlURIs.downloadSource("http://www.georss.org/georss/", ".", "georss", "application/rdf+xml", encoding="utf-8")
-  print(success)
-  print(response)
+  #success, sourcePath, response = crawlURIs.downloadSource("http://www.georss.org/georss/", ".", "georss", "application/rdf+xml", encoding="utf-8")
+  isDiff, errors = checkForNewVersion("http://bag.basisregistraties.overheid.nl/def/bag", "vdnuisb", "", "", "application/rdf+xml")
+  print(isDiff)
+  print(errors)
