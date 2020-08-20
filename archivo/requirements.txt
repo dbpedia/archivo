@@ -9,3 +9,6 @@ SPARQLWrapper
 flask_accept
 gunicorn
 APScheduler
+flask-sqlalchemy
+flask_migrate
+requests
