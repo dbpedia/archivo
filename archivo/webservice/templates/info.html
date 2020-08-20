@@ -50,6 +50,7 @@
             <tr>
                 <th>Version</th>
                 <th>Triples</th>
+                <th>Download</th>
                 <th><a href="https://github.com/dbpedia/Archivo#stars">Stars</a></th>
                 <th>Semantic Version</th>
                 <th><span title="All of the following criteria have to be fulfilled:1) The non-information URI resolves to a machine readable format or a machine readable version of the ontology is deterministically discoverable by other common means. 2) download was successful 3) uses a common format implemented by Archivo 4) at least one format was found that parses with no or few (negligible) syntactical warnings">
@@ -75,6 +76,11 @@
                     {% endif %}
                 </td>
                 <td>{{version.triples}}</td>
+                <td>
+                    <a href="/download?o={{general_info.nir}}&f=owl&v={{version.version.label}}">owl</a>,
+                    <a href="/download?o={{general_info.nir}}&f=ttl&v={{version.version.label}}">ttl</a>,
+                    <a href="/download?o={{general_info.nir}}&f=nt&v={{version.version.label}}">nt</a>
+                </td>
                 <td>{{version.stars}}</td>
                 <td>{{version.semversion}}</td>
                 <td>
