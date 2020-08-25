@@ -1,5 +1,4 @@
 from webservice import app, db, dbModels
-from webservice.routes import ontoIndex, fallout
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit, os, crawlURIs, diffOntologies
 from utils import ontoFiles, archivoConfig, stringTools, queryDatabus
@@ -16,9 +15,8 @@ cron.start()
 indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vocab_index.json")
 falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
 
-
 # This is the discovery process
-@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="1", day_of_week="sun")
+#@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="12", minute="57")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -31,9 +29,21 @@ def ontology_discovery():
     #prefixUris = ontoFiles.secondColumnOfTSV(archivoConfig.prefixUrisPath)
 
     for uri in crawlURIs.getLovUrls():
-        crawlURIs.handleNewUri(uri, ontoIndex, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
-        ontoFiles.writeIndexJsonToFile(ontoIndex, indexFilePath)
-        ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
+        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, ontoIndex, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
+        if success:
+            db.session.add(dbOnt)
+            db.session.add(dbVersion)
+            db.session.commit()
+        elif not success and isNir:
+            fallout = dbModels.Fallout(
+                uri=uri,
+                source="user-suggestion",
+                inArchivo=False,
+                error = message
+            )
+            db.session.add(fallout)
+            db.session.commit()
+
 
     #for uri in hashUris:
         #crawlURIs.handleNewUri(uri, ontoIndex, dataPath, fallout, "spoHashUris", False, testSuite=testSuite, logger=discovery_logger)
@@ -51,7 +61,7 @@ def ontology_discovery():
         #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
-@cron.scheduled_job("cron", id="archivo_ontology_update", hour="15", minute="40", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -114,6 +124,7 @@ def updateDatabase():
                 version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
                 semanticVersion=info_dict["semversion"],
                 stars=info_dict["stars"],
+                triples=info_dict["triples"],
                 parsing=info_dict["parsing"]["conforms"],
                 licenseI=info_dict["minLicense"]["conforms"],
                 licenseII=info_dict["goodLicense"]["conforms"],
