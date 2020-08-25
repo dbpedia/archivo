@@ -128,7 +128,7 @@ def getInfoForArtifact(group, artifact):
         try:
             docuURL = binding["docuURL"]["value"]
         except KeyError:
-            print(f"No docu for {minLicenseURL}")
+            print(f"No docu for {group}, {artifact}")
             docuURL = None
         try:
             metadata = requests.get(metafile).json()
@@ -445,7 +445,6 @@ def getLatestInfoForAll():
         try:
             docuURL = binding["docuURL"]["value"]
         except KeyError:
-            print(f"No docu for {minLicenseURL}")
             docuURL = None
         
 

@@ -106,10 +106,14 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if version.lode.conforms %}
+                    {% if version.lode.severity == 'OK' %}
                         <a href="{{version.lode.url}}" class="check">✔</a>
+                    {% elif version.lode.severity == 'INFO' %}
+                        <a href="{{version.lode.url}}" class="check"><strong>!</strong></a>
+                    {% elif version.lode.severity == 'WARNING' %}
+                        <a href="{{version.lode.url}}" class="yellow"><strong>!</strong></a>
                     {% else %}
-                        <a href="{{version.lode.url}}" class="x">✘</a>
+                    <a href="{{version.lode.url}}" class="x">✘</a>
                     {% endif %}
                 </td>
             </tr>

@@ -27,7 +27,7 @@ class SuggestionForm(FlaskForm):
     submit = SubmitField(label="Suggest")
 
 class InfoForm(FlaskForm):
-    uris = SelectField("Enter a URI", choices=[("","")]+[(uri,uri) for uri in db.session.query(dbModels.Ontology.uri).all()], validators=[validators.InputRequired()])
+    uris = SelectField("Enter a URI", choices=[("","")]+[(ont.uri,ont.uri) for ont in db.session.query(dbModels.Ontology).all()], validators=[validators.InputRequired()])
     submit = SubmitField(label="Get Info")
 
 
@@ -49,6 +49,8 @@ def addOntology():
                 inArchivo=False,
                 error = message
             )
+            db.session.add(fallout)
+            db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         return render_template("add.html", responseText=message, form=form)
     return render_template('add.html', responseText="",form=form)
@@ -60,7 +62,7 @@ def vocabInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     form = InfoForm()
-    allOntos = db.session.query(dbModels.Ontology.uri).all()
+    allOntos = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
@@ -111,13 +113,14 @@ def newOntologiesList():
     for ont in ontologies:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        v = db.session.query(dbModels.Version).filter_by(ontology=ont).order_by(dbModels.Version.version.desc()).first()
+        v = db.session.query(dbModels.Version).filter_by(ontology=ont.uri).order_by(dbModels.Version.version.desc()).first()
         if v == None:
             webservice_logger.error(f"No version for {ont.uri}")
             continue
         result = {"ontology":{"label":ont.title, "URL":ont.uri},
                     "databusURI":databus_uri, 
                     "source":ont.source, 
+                    "triples":v.triples,
                     "crawling":{"status":ont.crawlingStatus, "error":ont.crawlingError},
                     "stars":stringTools.generateStarString(v.stars),
                     "semVersion":v.semanticVersion,

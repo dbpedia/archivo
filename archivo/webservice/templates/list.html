@@ -4,7 +4,42 @@
 <h2>List of all discovered ontologies</h2>
 <br>
 <!--TODO: if possible include how many stars there are and other critical info in the table-->
-<p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br>
+<p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br></p>
+<p>
+    Select the Tables columns:
+
+    <input type="checkbox" name="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
+    <label for="databus_uri">Databus URI</label>
+
+    <input type="checkbox" name="source" class="column_selector" value=2 onclick="show_hide_column(2, checked)">
+    <label for="source">Source</label>
+
+    <input type="checkbox" name="download" class="column_selector" value=3 checked onclick="show_hide_column(3, checked)">
+    <label for="download">Download</label>
+
+    <input type="checkbox" name="triples" class="column_selector" value=4 checked onclick="show_hide_column(4, checked)">
+    <label for="triples">Triples</label>
+
+    <input type="checkbox" name="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
+    <label for="stars">Stars</label>
+
+    <input type="checkbox" name="parsing" class="column_selector" value=6 onclick="show_hide_column(6, checked)">
+    <label for="parsing">Parsing</label>
+
+    <input type="checkbox" name="min_license" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
+    <label for="min_license">Min.License</label>
+
+    <input type="checkbox" name="good_license" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
+    <label for="good_license">Good License</label>
+
+    <input type="checkbox" name="consistency" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
+    <label for="consistency">consistency</label>
+
+    <input type="checkbox" name="lode" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
+    <label for="lode">Lode-Status</label>
+
+    <input type="checkbox" name="crawling" class="column_selector" value=11 checked onclick="show_hide_column(11, checked)">
+    <label for="crawling">Crawling-Status</label>
 </p>
 <table
  id="ontologies-table"
@@ -21,12 +56,14 @@
     <col class="col9"/>
     <col class="col10"/>
     <col class="col11"/>
+    <col class="col12"/>
 <thead>
 <tr>
  <th data-sortable="true" data-field="non-information-uri"><span title="Click for more information about this ontology!">Ontology</span></th>
  <th data-sortable="true" data-field="databus-link"><span title="">Databus URI</span></th>
  <th data-sortable="true" data-field="source">Source</th>
  <th data-sortable="true" data-field="download-latest">Download Latest</th>
+ <th data-sortable="true" data-field="Triples">Triples</th>
  <th data-sortable="true" data-field="stars">Stars</th>
  <th data-sortable="true" data-field="parsing">Parsing</th>
  <th data-sortable="true" data-field="min-license">Min. License</th>
@@ -47,6 +84,7 @@
         <a href="/download?o={{Ontologies[i].ontology.URL}}&f=ttl">ttl</a>,
         <a href="/download?o={{Ontologies[i].ontology.URL}}&f=nt">nt</a>
     </td>
+    <td>{{Ontologies[i].triples}}</td>
     <td>{{Ontologies[i].stars}}</td>
     <td>
         {% if Ontologies[i].parsing %}
@@ -99,8 +137,15 @@
 
 </tbody>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<!--script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script-->
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 <script>
+    setInterval(function update_columns() {
+        var checkboxes = document.getElementsByClassName('column_selector')
+        for (var i=0, n=checkboxes.length;i<n;i++) {
+            show_hide_column(checkboxes[i].value, checkboxes[i].checked)
+        }
+    }, 100)
+
     function show_hide_column(col_no, do_show) {
         var rows = document.getElementById('ontologies-table').rows;
         

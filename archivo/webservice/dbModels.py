@@ -7,8 +7,8 @@ class Ontology(db.Model):
     source = db.Column(db.String(64))
     accessDate = db.Column(db.DateTime)
     versions = db.relationship('Version', backref='vocab', lazy='dynamic')
-    crawlingStatus = db.Column(db.Boolean)
-    crawlingError = db.Column(db.String(120))
+    crawlingStatus = db.Column(db.Boolean, default=True)
+    crawlingError = db.Column(db.String(120), default="")
 
     def __repr__(self):
         return '<Ontology {}>'.format(self.uri)
@@ -18,7 +18,7 @@ class Fallout(db.Model):
     _id = db.Column(db.Integer, primary_key=True)
     uri = db.Column(db.String(120), index=True)
     source = db.Column(db.String(64), index=True)
-    date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    date = db.Column(db.DateTime, index=True, default=datetime.now)
     inArchivo = db.Column(db.Boolean, index=True)
     error = db.Column(db.String(250))
     
@@ -27,6 +27,7 @@ class Version(db.Model):
     _id = db.Column(db.Integer, primary_key=True)
     version = db.Column(db.DateTime, index=True)
     semanticVersion = db.Column(db.String(64))
+    triples = db.Column(db.Integer)
     stars = db.Column(db.Integer)
     parsing = db.Column(db.Boolean)
     licenseI = db.Column(db.Boolean)
