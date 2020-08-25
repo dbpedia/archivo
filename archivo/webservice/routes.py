@@ -17,8 +17,6 @@ from utils.archivoLogs import webservice_logger
 from datetime import datetime
 
 
-ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
-fallout = ontoFiles.loadFalloutIndexFromFile(archivoConfig.falloutIndexPath)
 archivoPath = os.path.split(app.instance_path)[0]
 testingSuite = TestSuite(archivoPath)
 
@@ -70,11 +68,12 @@ def vocabInfo():
         if crawlURIs.checkIndexForUri(ontoUri, allOntos) == None:
             abort(status=404)
         indexUri = crawlURIs.checkIndexForUri(ontoUri, allOntos)
+        ont = db.session.query(dbModels.Ontology).filter_by(uri=indexUri).first()
         group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
         title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
         general_info = {}
-        general_info["source"] = ontoIndex[indexUri]["source"]
-        general_info["archivement"] = ontoIndex[indexUri]["accessed"]
+        general_info["source"] = ont.source
+        general_info["archivement"] = ont.accessDate
         general_info["title"] = title
         general_info["comment"] = comment
         general_info["databusArtifact"] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -86,7 +85,7 @@ def vocabInfo():
 def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
 
@@ -94,7 +93,7 @@ def turtleInfo():
 def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
 
@@ -102,7 +101,7 @@ def rdfxmlInfo():
 def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
@@ -130,29 +129,9 @@ def newOntologiesList():
                     "consistency":v.consistency,
                     "lodeSeverity":v.lodeSeverity}
         ontos.append(result)
-    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontoIndex))
+    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontos))
 
 
-def ontoList():
-    ontos = []
-    allOntosInfo = queryDatabus.allLatestParsedTurtleFiles()
-    for uri in ontoIndex:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        latestFallout = getLatestFallout()
-        try:
-            infoDict = allOntosInfo[databus_uri]
-            downloadURIs = {"ttl":infoDict.get("ttlFile", ""), "owl":infoDict.get("owlFile", ""), "nt":infoDict.get("ntFile", "")}
-            title = infoDict.get("title", uri)
-            available = (False, latestFallout[uri]) if uri in latestFallout else (True, None)
-            ontos.append(({"title":title, "uri":uri}, databus_uri, downloadURIs, available))
-        except KeyError:
-            webservice_logger.warning(f"Could't find databus artifact for {uri}")
-        
-    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontoIndex))
-
-
-        
 def generateInfoDict(metadata, source, databusLink, latestReleaseLink):
     info = {}
     info["parseable"] = True if metadata["ontology-info"]["triples"] > 0 else False
@@ -215,7 +194,7 @@ def downloadOntology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "")
     version = args.get("v", "")
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
     if rdfFormat == "":
@@ -235,7 +214,7 @@ def turtleDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
     if rdfFormat == "":
@@ -251,7 +230,7 @@ def rdfxmlDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
     if rdfFormat == "":
@@ -267,7 +246,7 @@ def ntriplesDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, ontoIndex):
+    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
     if rdfFormat == "":
@@ -282,17 +261,3 @@ def ntriplesDownload():
 @app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
-
-def getLatestFallout():
-    falloutOntos = {}
-    lastTime = datetime.strptime(fallout[-1][1], "%Y-%m-%d %H:%M:%S.%f")
-    for t in fallout[::-1]:
-        try:
-            distance = lastTime - datetime.strptime(t[1], "%Y-%m-%d %H:%M:%S.%f")
-            if distance.seconds > 10800:
-                break
-            if not t[0] in falloutOntos: 
-                falloutOntos[t[0]] = str(t[1]) + " : " + t[4]
-        except IndexError:
-            break
-    return falloutOntos
