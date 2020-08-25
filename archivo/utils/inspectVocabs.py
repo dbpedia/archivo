@@ -1,6 +1,7 @@
 import os
 import sys
 import rdflib
+import requests
 from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 import json
@@ -19,7 +20,8 @@ def getGraphOfVocabFile(filepath, logger=None):
         graph = rdflib.Graph()
         graph.parse(filepath, format=rdfFormat)
         return graph
-    except Exception:
+    except Exception as e:
+        print(str(e))
         if logger != None:
             logger.error("Exception in rdflib parsing", exc_info=True)
         return None
@@ -220,11 +222,13 @@ def changeMetadata(rootdir):
                 json.dump(metadata, jsonFile, indent=4, sort_keys=True)
 
 
-def checkShaclReport(shaclReportGraph):
+def checkShaclReport(reportURL):
+    shaclReportGraph = getGraphOfVocabFile(reportURL)
     if shaclReportGraph == None:
-        return "Error, no graph available"
+        return "ERROR"
     violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
     warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
+    infoRef = URIRef("http://www.w3.org/ns/shacl#Info")
     queryString=(
         "SELECT DISTINCT ?severity \n"
         "WHERE {\n"
@@ -235,8 +239,36 @@ def checkShaclReport(shaclReportGraph):
 
     resultValues = [row[0] for row in result if row != None]
     if violationRef in resultValues:
-        return "Violation"
+        return "VIOLATION"
     elif warningRef in resultValues:
-        return "Warning"
+        return "WARNING"
+    elif infoRef in resultValues:
+        return "INFO"
+    else:
+        return "OK"
+
+def hackyShaclStringInpection(text):
+    if "sh:resultSeverity sh:Violation" in text:
+        return "VIOLATION"
+    elif "sh:resultSeverity sh:Warning" in text:
+        return "WARNING"
+    elif "sh:resultSeverity sh:Info" in text:
+        return "INFO"
+    else:
+        return "OK"
+
+def hackyShaclInspection(shaclURL):
+    
+    try:
+        shaclString = requests.get(shaclURL).text
+    except Exception as e:
+        return "ERROR"
+
+    if "sh:resultSeverity sh:Violation" in shaclString:
+        return "VIOLATION"
+    elif "sh:resultSeverity sh:Warning" in shaclString:
+        return "WARNING"
+    elif "sh:resultSeverity sh:Info" in shaclString:
+        return "INFO"
     else:
         return "OK"

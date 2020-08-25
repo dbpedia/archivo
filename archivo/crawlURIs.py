@@ -10,6 +10,7 @@ from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
+from webservice.dbModels import Ontology, Version
 import uuid
 from string import Template
 import logging
@@ -254,6 +255,19 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
       user_output.append(f"Generating OOPS-report: {failed_symbol}")
       user_output.append(oops_error)
   generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url)
+  consistencyCheck=lambda s: True if s == "Yes" else False
+  dbVersion = Version(
+            version=datetime.strptime(version, "%Y.%m.%d-%H%M%S"),
+            semanticVersion=semVersion,
+            stars=ontoFiles.measureStars(rapperErrors, conformsLicense, isConsistent, isConsistentNoImports, conformsLicense2),
+            parsing=True if rapperErrors == "" else False,
+            licenseI=conformsLicense,
+            licenseII=conformsLicense2,
+            consistency=consistencyCheck(isConsistent),
+            lodeSeverity=inspectVocabs.hackyShaclStringInpection(inspectVocabs.getTurtleGraph(reportGraphLode)),
+            ontology=vocab_uri,
+            )
+  return dbVersion
 
 def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph, location_url):
   datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
@@ -305,7 +319,7 @@ def checkUriEquality(uri1, uri2):
   else:
     return False
 
-def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testSuite, logger, user_output=[]):
+def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=[]):
   # remove fragment
   vocab_uri = urldefrag(vocab_uri)[0]
   localDir = os.path.join(dataPath, "." + uuid.uuid4().hex)
@@ -318,15 +332,13 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if groupId == None or artifact == None:
     logger.warning(f"Malformed Uri {vocab_uri}")
     user_output.append(f"ERROR: Malformed URI {vocab_uri}")
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"Malformed Uri {vocab_uri}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR,"<br>".join(map(str, user_output))
+    return False, isNIR,"<br>".join(map(str, user_output)), None, None
   if checkIndexForUri(vocab_uri, index) != None:
     logger.info("Already known uri, skipping...")
     stringTools.deleteAllFilesInDirAndDir(localDir)
     user_output.append(f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>")
-    return True, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
   # check robots.txt access
   allowed, message = checkRobot(vocab_uri)
@@ -334,10 +346,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if not allowed:
     logger.warning(f"{archivoConfig.archivo_agent} not allowed")
     user_output.append(f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>")
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at {vocab_uri}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
   user_output.append(f"Allowed Robot {archivoConfig.archivo_agent}: {success_symbol}")
   bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath, user_output=user_output)
@@ -346,12 +356,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if bestHeader == None:
     user_output.append(f"Determinig the best header: {failed_symbol}")
     logger.error(f"Error in parsing: {headerErrors}")
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, f"ERROR: {headerErrors}"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
 
-  accessDate = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+  accessDate = datetime.now()
   user_output.append(f"Found best header: {bestHeader}")
 
   # downloading and parsing
@@ -360,10 +368,8 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     logger.warning(f"Ontology {vocab_uri} is not accessible after best header was determined")
     user_output.append(f"Accessing URI {vocab_uri}: {failed_symbol}")
     user_output.append(response)
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, str(response)))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR,"<br>".join(map(str, user_output))
+    return False, isNIR,"<br>".join(map(str, user_output)), None, None
   
   user_output.append(f"Accessing URI {vocab_uri}: {success_symbol}")
   rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
@@ -371,20 +377,16 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     logger.error(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
     user_output.append(f"Parse downloaded File: {failed_symbol}")
     user_output.append(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "INTERNAL ERROR: Couldn't parse file."))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
 
   
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     logger.error(f"RDFlib couldn't parse the file of {vocab_uri}")
     user_output.append(f"Loading Graph in RDFlib: {failed_symbol}")
-    if isNIR:
-      fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Error in rdflib parsing"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
   try:
     real_ont_uri=inspectVocabs.getNIRUri(graph)
@@ -393,8 +395,7 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Finding Ontology URI: {failed_symbol}")
     user_output.append(traceback.format_exc())
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Error at querying with rdflib"))
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
 
   if real_ont_uri == None:
     logger.info("Couldn't find ontology uri, trying isDefinedBy and inScheme...")
@@ -405,24 +406,20 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
       logger.info("No Ontology discoverable")
       user_output.append(f"Finding isDefinedBy: {failed_symbol}")
       user_output.append("The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple")
-      if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Neither a Vocab nor a link to one"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return False, isNIR, "<br>".join(map(str, user_output))
+      return False, isNIR, "<br>".join(map(str, user_output)), None, None
     
     if not checkUriEquality(vocab_uri, str(real_ont_uri)):
       logger.info(f"Found isDefinedBy or skos uri {real_ont_uri}")
       user_output.append(f"Found isDefinedBy or skos uri {real_ont_uri}")
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, testSuite=testSuite,source=source, isNIR=True, logger=logger, user_output=user_output) 
+      return handleNewUri(str(real_ont_uri), index, dataPath, testSuite=testSuite,source=source, isNIR=True, logger=logger, user_output=user_output) 
     else:
       logger.info("Uri already in index or self-defining non-ontology")
       user_output.append(f"Found isDefinedBy or skos uri {real_ont_uri}")
       user_output.append("Self-defining non-ontology.")
-      if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Self defining non-ontology"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return False, isNIR, "<br>".join(map(str, user_output))
+      return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
   user_output.append(f"Found ontology URI: {str(real_ont_uri)} {success_symbol}")
   isNIR=True
@@ -434,12 +431,10 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     if groupId == None or artifact == None:
       logger.warning(f"Malformed Uri {vocab_uri}")
       user_output.append(f"Malformed Uri {str(real_ont_uri)}")
-      if isNIR:
-        fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Malformed Uri"))
       stringTools.deleteAllFilesInDirAndDir(localDir)
-      return False, isNIR, "<br>".join(map(str, user_output))
+      return False, isNIR, "<br>".join(map(str, user_output)), None, None
     else:
-      return handleNewUri(str(real_ont_uri), index, dataPath, fallout_index, source, True, testSuite=testSuite, logger=logger, user_output=user_output)
+      return handleNewUri(str(real_ont_uri), index, dataPath, source, True, testSuite=testSuite, logger=logger, user_output=user_output)
  
 
   # here we go if the uri is NIR and  its resolveable
@@ -453,19 +448,18 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   if groupId == None or artifact == None:
     logger.warning(f"Malformed Uri {vocab_uri}")
     user_output.append(f"Malformed Uri {str(real_ont_uri)}")
-    fallout_index.append((vocab_uri, str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")), source, False, "Malformed non-information uri"))
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, isNIR, str("<br>".join(map(str, user_output)))
+    return False, isNIR, str("<br>".join(map(str, user_output))), None, None
 
 
   if checkIndexForUri(real_ont_uri, index) != None:
     logger.info(f"Already known uri {real_ont_uri}")
     user_output.append(f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>")
     stringTools.deleteAllFilesInDirAndDir(localDir)
-    return True, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
   
-  index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
+  #index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
   # generate parent pom
@@ -484,10 +478,15 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
   # prepare new release
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
+  # Generate database obj
+  dbOntology = Ontology(
+    uri = real_ont_uri,
+    source=source,
+    accessDate=accessDate,
+  )
   # new release
-  generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
+  dbVersion = generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
   # index writing
-  #ontoFiles.writeFalloutIndex(fallout_index)
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
   
@@ -498,12 +497,12 @@ def handleNewUri(vocab_uri, index, dataPath, fallout_index, source, isNIR, testS
     user_output.append(f"Deploying to Databus: {failed_symbol}")
     user_output.append(deployLog)
     logger.error(deployLog)
-    return False, isNIR, "<br>".join(map(str, user_output))
+    return False, isNIR, "<br>".join(map(str, user_output)), None, None
   else:
     logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
-  return True, isNIR, "<br>".join(map(str, user_output))
+  return True, isNIR, "<br>".join(map(str, user_output)), dbOntology, dbVersion
 
 
 def getLovUrls():

@@ -60,7 +60,7 @@ def altWriteVocabInformation(pathToFile, definedByUri, lastModified, rapperError
   vocabinfo = {"test-results":{}, "http-data":{}, "ontology-info":{}, "logs":{}}
   vocabinfo["ontology-info"] = {"non-information-uri":definedByUri, "snapshot-url":snapshot_url,"semantic-version":semVersion, "triples":tripleSize, "stars":measureStars(rapperErrors, licenseViolationsBool, consistentWithImports, consistentWithoutImports, licenseWarningsBool)}
   vocabinfo["test-results"] = {"consistent":consistentWithImports, "consistent-without-imports":consistentWithoutImports, "License-I":licenseViolationsBool, "License-II":licenseWarningsBool, "lode-conform":lodeConform}
-  vocabinfo["http-data"] = {"accessed":accessed, "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
+  vocabinfo["http-data"] = {"accessed":str(accessed), "lastModified":lastModified, "best-header":bestHeader, "content-length":contentLenght, "e-tag":etag}
   vocabinfo["logs"] = {"rapper-errors":rapperErrors, "rapper-warnings":rapperWarnings, "nir-header":nirHeader, "resource-header":headerString}
   
   with open(pathToFile, "w+") as outfile:

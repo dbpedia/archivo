@@ -101,7 +101,7 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None, "Unknown error"
 
 
-def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_index, latestVersionDir, lastSemVersion, testSuite, source):
+def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersionDir, lastSemVersion, testSuite):
   try:
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
@@ -114,22 +114,19 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_inde
     if newBestHeader == None:
       diff_logger.warning("Couldn't parse new version")
       diff_logger.warning(headerErrors)
-      fallout_index.append((uri, str(datetime.now()), source, True, "\n".join(headerErrors)))
-      return
+      return None, "\n".join(headerErrors), None
     success, sourcePath, response = crawlURIs.downloadSource(uri, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
       diff_logger.warning("Uri not reachable")
-      fallout_index.append((uri, str(datetime.now()), source, True, response))
       stringTools.deleteAllFilesInDirAndDir(newVersionPath)
-      return
+      return None, response, None
     #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
     errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[newBestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
       diff_logger.error("File not parseable")
-      fallout_index.append((uri, str(datetime.now()), source, True, f"Couldn't parse File: {errors}"))
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
-      return
+      return None, f"Couldn't parse File: {errors}", None
     getSortedNtriples(oldNtriples, os.path.join(localDiffDir, "oldVersionSorted.nt"), uri, inputType="ntriples")
     isEqual, oldTriples, newTriples = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
     diff_logger.debug("Old Triples:" + "\n".join(oldTriples))
@@ -139,6 +136,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_inde
       diff_logger.info("No new version")
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       stringTools.deleteAllFilesInDirAndDir(newVersionPath)
+      return False, "No new Version", None
     else:
       diff_logger.info("New Version!")
       # generating new semantic version
@@ -162,7 +160,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_inde
         print("\n".join(oldAxioms), file=oldAxiomsFile)
       with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.dl"), "w+") as newAxiomsFile:
         print("\n".join(newAxioms), file=newAxiomsFile) 
-      crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger)
+      dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       if not os.path.isfile(os.path.join(groupDir, "pom.xml")):
         with open(os.path.join(groupDir, "pom.xml"), "w+") as parentPomFile:
@@ -180,56 +178,17 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, fallout_inde
       if status > 0:
         diff_logger.critical("Couldn't deploy new diff version")
         diff_logger.info(log)
+        return None, "ERROR: Couldn't deploy to databus!", dbVersion
+      else:
+        return True, "OK", dbVersion
   except FileNotFoundError:
     diff_logger.critical(f"Couldn't find file for {uri}")
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
+    return None, f"INTERNAL ERROR: Couldn't find file for {uri}"
 
 
 
-def handleDiffForUri_old(uri, rootdir, fallout_index, testSuite, source):
-  localDiffDir = os.path.join(rootdir, ".tmpDiffDir")
-  if not os.path.isdir(localDiffDir):
-    os.mkdir(localDiffDir)
-  groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-  artifactDir = os.path.join(rootdir, groupId, artifact)
-  if not os.path.isdir(artifactDir):
-    diff_logger.critical(f"No data for this uri {uri}")
-    return
-  versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
-  versionDirs.sort(reverse=True)
-  latestVersion = versionDirs[0]
-  latestVersionDir = os.path.join(artifactDir, latestVersion)
-  if os.path.isfile(os.path.join(latestVersionDir, artifact + "_type=meta.json")):
-    with open(os.path.join(latestVersionDir, artifact + "_type=meta.json"), "r")as jsonFile:
-      metadata = json.load(jsonFile)
-  else:
-    diff_logger.critical(f"No metadata for {groupId}; {artifact}")
-    return
-
-  oldETag = metadata["http-data"]["e-tag"]
-  oldLastMod = metadata["http-data"]["lastModified"]
-  bestHeader = metadata["http-data"]["best-header"]
-  contentLength = metadata["http-data"]["content-length"]
-  semVersion = metadata["ontology-info"]["semantic-version"]
-
-  if bestHeader == "":
-    return
-
-  isDiff, errors = checkForNewVersion(uri, oldETag, oldLastMod, contentLength, bestHeader)
-  #isDiff = True
-
-  if isDiff == None:
-    fallout_index.append((uri, str(datetime.now()), source, True, errors))
-    diff_logger.warning(f"Couldnt access ontology {uri}")
-    return
-  if isDiff:
-    diff_logger.info(f"Fond potential different version for {uri}")
-    #localDiffAndRelease(uri, localDiffDir, bestHeader, fallout_index, latestVersionDir, semVersion, testSuite, source)
-  else:
-    diff_logger.info(f"No different version for {uri}")
-
-
-def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, fallout, testSuite, source):
+def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite):
 
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
   artifactPath = os.path.join(localDir, groupId, artifact)
@@ -242,7 +201,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, fallout
       metadata = requests.get(metafileUrl).json()
     except requests.exceptions.RequestException:
       diff_logger.error("There was an error downloading the latest metadata-file, skipping this ontology...")
-      return
+      return None, "There was an error downloading the latest metadata-file, skipping this ontology...", None
 
     with open(lastMetaFile, "w+") as latestMetaFile:
       json.dump(metadata, latestMetaFile, indent=4, sort_keys=True)
@@ -269,17 +228,16 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, fallout
     os.mkdir(localDiffDir)
 
   if isDiff == None:
-    fallout.append((uri, str(datetime.now()), source, False, "Header Error: " + error))
-    diff_logger.warning("Header Error: " + error)
+    diff_logger.warning("Header Access: "+error)
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
-    return
+    return None, "Header Access: "+error, None
   if isDiff:
     diff_logger.info(f"Fond potential different version for {uri}")
-    localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, fallout, lastVersionPath, semVersion, testSuite, source)
-    stringTools.deleteAllFilesInDirAndDir(localDiffDir)
+    return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     diff_logger.info(f"No different version for {uri}")
+    return False, f"No different version for {uri}", None
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):

@@ -2,7 +2,7 @@ import requests, sys, requests, traceback, rdflib
 from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
-from utils import ontoFiles
+from utils import ontoFiles, inspectVocabs
 from utils.stringTools import generateStarString
 from datetime import datetime
 
@@ -109,9 +109,13 @@ def getInfoForArtifact(group, artifact):
         results = results["results"]["bindings"]
     except KeyError:
         return False, version_infos, f"No data found for {databusLink}"
-    
-    title = sorted(results, key=lambda binding: binding["version"]["value"])[0]["title"]["value"]
-    comment = sorted(results, key=lambda binding: binding["version"]["value"])[0]["comment"]["value"]
+    try:
+        title = sorted(results, key=lambda binding: binding["version"]["value"])[0]["title"]["value"]
+        comment = sorted(results, key=lambda binding: binding["version"]["value"])[0]["comment"]["value"]
+    except Exception as e:
+        print(str(e))
+        title = ""
+        comment = ""
 
     for binding in results:
         version = binding.get("version", {"value":""})["value"]
@@ -124,7 +128,7 @@ def getInfoForArtifact(group, artifact):
         try:
             docuURL = binding["docuURL"]["value"]
         except KeyError:
-            print(f"No docu for {minLicenseURL}")
+            print(f"No docu for {group}, {artifact}")
             docuURL = None
         try:
             metadata = requests.get(metafile).json()
@@ -136,12 +140,11 @@ def getInfoForArtifact(group, artifact):
                                         metadata["test-results"]["License-I"], 
                                         metadata["test-results"]["consistent"], 
                                         metadata["test-results"]["consistent-without-imports"],
-                                        metadata["test-results"]["License-II"])
-        stars = generateStarString(stars)
+                                        metadata["test-results"]["License-II"]) 
         isConsistent=lambda s: True if s == "Yes" else False
         version_infos.append({"minLicense":{"conforms":metadata["test-results"]["License-I"], "url":minLicenseURL}, 
                                   "goodLicense":{"conforms":metadata["test-results"]["License-II"], "url":goodLicenseURL},
-                                  "lode":{"conforms":metadata["test-results"]["lode-conform"], "url":lodeShaclURL},
+                                  "lode":{"severity":inspectVocabs.hackyShaclInspection(lodeShaclURL), "url":lodeShaclURL},
                                   "version":{"label":version, "url":versionURL},
                                   "consistent":{"conforms":isConsistent(metadata["test-results"]["consistent"]), "url":consistencyURL},
                                   "triples":metadata["ontology-info"]["triples"],
@@ -363,6 +366,107 @@ def latestNtriples():
             continue
 
     return result
+
+def getLatestInfoForAll():
+    query = "\n".join((
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+        "PREFIX dct:    <http://purl.org/dc/terms/>",
+        "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+        "PREFIX db:     <https://databus.dbpedia.org/>",
+        "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+        "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
+
+        "SELECT DISTINCT ?art ?title ?comment ?latestVersion ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
+        "?dataset dataid:account db:ontologies .", 
+        "?dataset dataid:artifact ?art .",
+        "?dataset dcat:distribution ?metaDst .",
+        "?metaDst dataid-cv:type 'meta'^^xsd:string .",
+        "?metaDst dcat:downloadURL ?metafile .",
+        "?dataset dcat:distribution ?shaclMinLicense .",
+        "?dataset dcat:distribution ?consistencyReport .",
+        "?consistencyReport dataid-cv:type 'pelletConsistency'^^xsd:string .", 	
+        "?consistencyReport dataid-cv:imports 'FULL'^^xsd:string .",
+        "?consistencyReport dcat:downloadURL ?consistencyFile .",
+        "?shaclMinLicense dataid-cv:type 'shaclReport'^^xsd:string .", 
+        "?shaclMinLicense dataid-cv:validates 'minLicense'^^xsd:string .",
+        "?shaclMinLicense dcat:downloadURL ?minLicense .",
+        "?dataset dcat:distribution ?shaclGoodLicense .",
+        "?shaclGoodLicense dataid-cv:type 'shaclReport'^^xsd:string .", 	
+        "?shaclGoodLicense dataid-cv:validates 'goodLicense'^^xsd:string .",
+        "?shaclGoodLicense dcat:downloadURL ?goodLicense .",
+        "?dataset dcat:distribution ?shaclLode ." ,
+        "?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .",
+        "?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .",
+        "?shaclLode dcat:downloadURL ?lode .",
+        "OPTIONAL {"
+        "?dataset dcat:distribution ?docuDst .",
+        "?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .",
+        "?docuDst dcat:downloadURL ?docuURL .",
+        "}",
+        "{",
+                "SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
+                    "?dataset dataid:account db:ontologies .",
+                    "?dataset dataid:artifact ?art .",
+                    "?dataset dct:hasVersion ?v .",
+                    "}",
+                "}",
+        "?dataset dct:hasVersion ?latestVersion.",
+        "?dataset dct:title ?title .",
+        "?dataset rdfs:comment ?comment .",
+        "}",
+    ))
+    sparql = SPARQLWrapper(databusRepoUrl)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    
+    info_dict = {}
+
+    try:
+        results = results["results"]["bindings"]
+    except KeyError:
+        return False, version_infos, f"No data found for {databusLink}"
+    
+
+    for binding in results:
+        
+        artifactURL = binding.get("art", {"value":""})["value"]
+        info_dict[artifactURL] = {}
+
+        info_dict[artifactURL]["title"] = binding.get("title", {"value":""})["value"]
+        info_dict[artifactURL]["version"] = binding.get("latestVersion", {"value":""})["value"]
+        info_dict[artifactURL]["metafile"] = binding.get("metafile", {"value":""})["value"]
+        info_dict[artifactURL]["minLicenseURL"] = binding.get("minLicense", {"value":""})["value"]
+        info_dict[artifactURL]["goodLicenseURL"] = binding.get("goodLicense", {"value":""})["value"]
+        lodeShaclURL =  binding.get("lode", {"value":""})["value"]
+        consistencyURL = binding["consistencyFile"]["value"]
+        try:
+            docuURL = binding["docuURL"]["value"]
+        except KeyError:
+            docuURL = None
+        
+
+        parsing = True if metadata["logs"]["rapper-errors"] == "" else False
+        stars = ontoFiles.measureStars(metadata["logs"]["rapper-errors"], 
+                                        metadata["test-results"]["License-I"], 
+                                        metadata["test-results"]["consistent"], 
+                                        metadata["test-results"]["consistent-without-imports"],
+                                        metadata["test-results"]["License-II"]) 
+        isConsistent=lambda s: True if s == "Yes" else False
+        version_infos.append({"minLicense":{"conforms":metadata["test-results"]["License-I"], "url":minLicenseURL}, 
+                                  "goodLicense":{"conforms":metadata["test-results"]["License-II"], "url":goodLicenseURL},
+                                  "lode":{"severity":inspectVocabs.hackyShaclInspection(lodeShaclURL), "url":lodeShaclURL},
+                                  "version":{"label":version, "url":versionURL},
+                                  "consistent":{"conforms":isConsistent(metadata["test-results"]["consistent"]), "url":consistencyURL},
+                                  "triples":metadata["ontology-info"]["triples"],
+                                  "parsing":{"conforms":parsing, "errors":metadata["logs"]["rapper-errors"]},
+                                  "semversion":metadata["ontology-info"]["semantic-version"],
+                                  "stars":stars,
+                                  "docuURL":docuURL})
+    return title, comment, version_infos
+
 
 if __name__ == "__main__":
     getDownloadURL("datashapes.org", "dash", fileExt="ttl", version="2020.07.16-115603")
