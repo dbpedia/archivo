@@ -3,48 +3,8 @@
 {% block content %}
 <h2>List of all discovered ontologies</h2>
 <br>
-<!--TODO: if possible include how many stars there are and oter critical info in the table-->
+<!--TODO: if possible include how many stars there are and other critical info in the table-->
 <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(1, checked)">
-        <label>Databus URI</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(2, checked)">
-        <label>Source</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(3, checked)">
-        <label>Download</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(4, checked)">
-        <label>Stars</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(5, checked)">
-        <label for="englisch">Parsing</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(6, checked)">
-        <label for="englisch">Min.License</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(7, checked)">
-        <label for="englisch">Good License</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(8, checked)">
-        <label for="englisch">consistency</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(9, checked)">
-        <label for="englisch">Lode-Status</label>
-    </div>
-    <div>
-        <input type="checkbox" checked onclick="show_hide_column(10, checked)">
-        <label for="englisch">Crawling-Status</label>
-    </div>
 </p>
 <table
  id="ontologies-table"
@@ -117,7 +77,15 @@
         {% endif %}
     </td>
     <td>
-        {{Ontologies[i].lodeSeverity}}
+        {% if Ontologies[i].lodeSeverity == 'OK' %}
+            <a href="" class="check">✔</a>
+        {% elif Ontologies[i].lodeSeverity == 'INFO' %}
+            <a href="" class="check"><strong>!</strong></a>
+        {% elif Ontologies[i].lodeSeverity == 'WARNING' %}
+            <a href="" class="yellow"><strong>!</strong></a>
+        {% else %}
+            <a href="" class="x">✘</a>
+        {% endif %}
     </td>
     <td>
         {% if Ontologies[i].crawling.status %}
@@ -131,7 +99,7 @@
 
 </tbody>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<!--script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script-->
 <script>
     function show_hide_column(col_no, do_show) {
         var rows = document.getElementById('ontologies-table').rows;
