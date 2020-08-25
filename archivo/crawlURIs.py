@@ -260,6 +260,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
             version=datetime.strptime(version, "%Y.%m.%d-%H%M%S"),
             semanticVersion=semVersion,
             stars=ontoFiles.measureStars(rapperErrors, conformsLicense, isConsistent, isConsistentNoImports, conformsLicense2),
+            triples=triples,
             parsing=True if rapperErrors == "" else False,
             licenseI=conformsLicense,
             licenseII=conformsLicense2,
