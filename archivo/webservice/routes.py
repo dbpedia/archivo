@@ -1,4 +1,4 @@
-from webservice import app
+from webservice import app, db, dbModels
 from flask import render_template, flash, redirect, request, abort
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
@@ -27,19 +27,28 @@ class SuggestionForm(FlaskForm):
     submit = SubmitField(label="Suggest")
 
 class InfoForm(FlaskForm):
-    uris = SelectField("Enter a URI", choices=[("","")]+[(uri,uri) for uri in ontoIndex], validators=[validators.InputRequired()])
+    uris = SelectField("Enter a URI", choices=[("","")]+[(uri,uri) for uri in db.session.query(dbModels.Ontology.uri).all()], validators=[validators.InputRequired()])
     submit = SubmitField(label="Get Info")
 
 
 @app.route('/add', methods=['GET', 'POST'])
 def addOntology():
     form = SuggestionForm()
+    allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     if form.validate_on_submit():
-        success, isNir, message = crawlURIs.handleNewUri(form.suggestUrl.data.strip(), ontoIndex, archivoConfig.localPath, fallout, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
+        uri = form.suggestUrl.data.strip()
+        success, isNir, message, dbOnt, dbVersion = crawlURI.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
         if success:
-            ontoFiles.writeIndexJsonToFile(ontoIndex, archivoConfig.ontoIndexPath)
+            db.session.add(dbOnt)
+            db.session.add(dbVersion)
+            db.session.commit()
         elif not success and isNir:
-            ontoFiles.writeFalloutIndexToFile(archivoConfig.falloutIndexPath, fallout)
+            fallout = dbModels.Fallout(
+                uri=uri,
+                source="user-suggestion",
+                inArchivo=False,
+                error = message
+            )
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         return render_template("add.html", responseText=message, form=form)
     return render_template('add.html', responseText="",form=form)
@@ -51,13 +60,14 @@ def vocabInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     form = InfoForm()
+    allOntos = db.session.query(dbModels.Ontology.uri).all()
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        if crawlURIs.checkIndexForUri(ontoUri, ontoIndex) == None:
+        if crawlURIs.checkIndexForUri(ontoUri, allOntos) == None:
             abort(status=404)
-        indexUri = crawlURIs.checkIndexForUri(ontoUri, ontoIndex)
+        indexUri = crawlURIs.checkIndexForUri(ontoUri, allOntos)
         group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
         title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
         general_info = {}
@@ -95,6 +105,31 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
+def newOntologiesList():
+    ontologies = db.session.query(dbModels.Ontology).all()
+    ontos = []
+    for ont in ontologies:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        v = db.session.query(dbModels.Version).filter_by(ontology=ont).order_by(dbModels.Version.version.desc()).first()
+        if v == None:
+            webservice_logger.error(f"No version for {ont.uri}")
+            continue
+        result = {"ontology":{"label":ont.title, "URL":ont.uri},
+                    "databusURI":databus_uri, 
+                    "source":ont.source, 
+                    "crawling":{"status":ont.crawlingStatus, "error":ont.crawlingError},
+                    "stars":stringTools.generateStarString(v.stars),
+                    "semVersion":v.semanticVersion,
+                    "parsing":v.parsing,
+                    "minLicense":v.licenseI,
+                    "goodLicense":v.licenseII,
+                    "consistency":v.consistency,
+                    "lodeSeverity":v.lodeSeverity}
+        ontos.append(result)
+    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontoIndex))
+
+
 def ontoList():
     ontos = []
     allOntosInfo = queryDatabus.allLatestParsedTurtleFiles()

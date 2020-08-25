@@ -5,34 +5,125 @@
 <br>
 <!--TODO: if possible include how many stars there are and oter critical info in the table-->
 <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br>
-
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(1, checked)">
+        <label>Databus URI</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(2, checked)">
+        <label>Source</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(3, checked)">
+        <label>Download</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(4, checked)">
+        <label>Stars</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(5, checked)">
+        <label for="englisch">Parsing</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(6, checked)">
+        <label for="englisch">Min.License</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(7, checked)">
+        <label for="englisch">Good License</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(8, checked)">
+        <label for="englisch">consistency</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(9, checked)">
+        <label for="englisch">Lode-Status</label>
+    </div>
+    <div>
+        <input type="checkbox" checked onclick="show_hide_column(10, checked)">
+        <label for="englisch">Crawling-Status</label>
+    </div>
 </p>
 <table
+ id="ontologies-table"
  data-toggle="table"
  data-search="true">
+    <col class="col1"/>
+    <col class="col2"/>
+    <col class="col3"/>
+    <col class="col4"/>
+    <col class="col5"/>
+    <col class="col6"/>
+    <col class="col7"/>
+    <col class="col8"/>
+    <col class="col9"/>
+    <col class="col10"/>
+    <col class="col11"/>
 <thead>
 <tr>
  <th data-sortable="true" data-field="non-information-uri"><span title="Click for more information about this ontology!">Ontology</span></th>
  <th data-sortable="true" data-field="databus-link"><span title="">Databus URI</span></th>
+ <th data-sortable="true" data-field="source">Source</th>
  <th data-sortable="true" data-field="download-latest">Download Latest</th>
- <th data-sortable="true" data-field="availablity">Crawling Status</th>
+ <th data-sortable="true" data-field="stars">Stars</th>
+ <th data-sortable="true" data-field="parsing">Parsing</th>
+ <th data-sortable="true" data-field="min-license">Min. License</th>
+ <th data-sortable="true" data-field="good-license">Good License</th>
+ <th data-sortable="true" data-field="consistency">consistency</th>
+ <th data-sortable="true" data-field="lode">Lode-Status</th>
+ <th data-sortable="true" data-field="crawling-status">Crawling Status</th>
 </tr>
 </thead>
 <tbody>
 {% for i in range(0, len) %}
 <tr>
-    <td><a href=/info?o={{Ontologies[i][0].uri}}>{{Ontologies[i][0].title}}</a></td>
-    <td><a href="{{Ontologies[i][1]}}">{{Ontologies[i][1]}}</a></td>
+    <td><a href=/info?o={{Ontologies[i].ontology.URL}}>{{Ontologies[i].ontology.label}}</a></td>
+    <td><a href="{{Ontologies[i].databusURI}}">{{Ontologies[i].databusURI}}</a></td>
+    <td>{{Ontologies[i].source}}</td>
     <td>
-        <a href="/download?o={{Ontologies[i][0].uri}}&f=owl">owl</a>,
-        <a href="/download?o={{Ontologies[i][0].uri}}&f=ttl">ttl</a>,
-        <a href="/download?o={{Ontologies[i][0].uri}}&f=nt">nt</a>
+        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=owl">owl</a>,
+        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=ttl">ttl</a>,
+        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=nt">nt</a>
+    </td>
+    <td>{{Ontologies[i].stars}}</td>
+    <td>
+        {% if Ontologies[i].parsing %}
+            <div class="check">✔</div>
+        {% else %}
+            <div class="x">✘</div>
+        {% endif %}
     </td>
     <td>
-        {% if Ontologies[i][3][0] %}
+        {% if Ontologies[i].minLicense %}
+            <div class="check">✔</div>
+        {% else %}
+            <div class="x">✘</div>
+        {% endif %}
+    </td>
+    <td>
+        {% if Ontologies[i].goodLicense %}
+            <div class="check">✔</div>
+        {% else %}
+            <div class="x">✘</div>
+        {% endif %}
+    </td>
+    <td>
+        {% if Ontologies[i].consistency %}
+            <div class="check">✔</div>
+        {% else %}
+            <div class="x">✘</div>
+        {% endif %}
+    </td>
+    <td>
+        {{Ontologies[i].lodeSeverity}}
+    </td>
+    <td>
+        {% if Ontologies[i].crawling.status %}
             <span class="check">✔</span>
         {% else %}
-            <span title="{{Ontologies[i][3][1]}}" class="x">✘</span>
+            <span title="{{Ontologies[i].crawling.error}}" class="x">✘</span>
         {% endif %}
     </td>
 </tr>
@@ -41,5 +132,17 @@
 </tbody>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script>
+    function show_hide_column(col_no, do_show) {
+        var rows = document.getElementById('ontologies-table').rows;
+        
+        for (var row = 0; row < rows.length; row++) {
+            var cols = rows[row].cells;
+            if (col_no >= 0 && col_no < cols.length) {
+                cols[col_no].style.display = do_show ? '' : 'none';
+            }
+        }
+    }
+</script>
 <style> .float-right { float: left !important; } </style>
 {% endblock %}
