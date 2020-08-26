@@ -480,17 +480,21 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   fileExt = os.path.splitext(pathToFile)[1]
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # Generate database obj
+  ontTitle = inspectVocabs.getLabel(graph)
   dbOntology = Ontology(
     uri = real_ont_uri,
     source=source,
     accessDate=accessDate,
+    title=ontTitle if ontTitle != None else real_ont_uri
   )
   # new release
+  logger.info("Generate new release files...")
   dbVersion = generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
   # index writing
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
   
+  logger.info("Deploying the data to the databus...")
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
   
   if returncode > 0:

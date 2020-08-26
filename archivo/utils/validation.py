@@ -97,4 +97,4 @@ class TestSuite:
             return success, set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
         else:
             success = False
-            return success, stderr.decode("utf-8")
+            return success, stderr.decode("utf-8").split("\n")

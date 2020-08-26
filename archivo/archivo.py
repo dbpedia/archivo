@@ -1,7 +1,7 @@
 from webservice import app, db, dbModels
 from apscheduler.schedulers.background import BackgroundScheduler
-import atexit, os, crawlURIs, diffOntologies
-from utils import ontoFiles, archivoConfig, stringTools, queryDatabus
+import atexit, os, crawlURIs, diffOntologies, dbUtils
+from utils import ontoFiles, archivoConfig, stringTools, queryDatabus, generatePoms
 from utils.validation import TestSuite
 from utils.archivoLogs import discovery_logger, diff_logger
 from datetime import datetime
@@ -16,7 +16,7 @@ indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vo
 falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
 
 # This is the discovery process
-#@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="12", minute="57")
+@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -29,7 +29,8 @@ def ontology_discovery():
     #prefixUris = ontoFiles.secondColumnOfTSV(archivoConfig.prefixUrisPath)
 
     for uri in crawlURIs.getLovUrls():
-        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, ontoIndex, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
+        allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, allOnts, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
         if success:
             db.session.add(dbOnt)
             db.session.add(dbVersion)
@@ -138,6 +139,34 @@ def updateDatabase():
             print(str(e))
             db.session.rollback() 
         print(len(Ontology.query.all()))
+
+@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
+def updateOntologyIndex():
+    oldOntoIndex = queryDatabus.loadLastIndex()
+    newOntoIndex = db.session.query(dbModels.Ontology).all()
+    print("Length old Index:", len(oldOntoIndex))
+    print("Length new index:", len(newOntoIndex))
+    diff = [onto.uri for onto in newOntoIndex if onto.uri not in [uri for uri, src, date in oldOntoIndex]]
+    print(diff)
+    if len(oldOntoIndex) != len(newOntoIndex):
+        newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+        artifactPath = os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies")
+        indexpath = os.path.join(artifactPath, newVersionString)
+        os.makedirs(indexpath, exist_ok=True)
+        # update pom
+        with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:
+            pomstring = generatePoms.generateChildPom(
+                groupId="archivo-indices",
+                artifactId="ontologies",
+                version=newVersionString,
+                license="http://creativecommons.org/licenses/by-sa/3.0/",
+                packaging="jar",
+            )
+            print(pomstring, file=pomfile)
+        # write new index
+        dbUtils.writeIndexAsCSV(os.path.join(indexpath, "ontologies.csv"))
+        # deploy
+        status, log = generatePoms.callMaven(os.path.join(artifactPath, "pom.xml"), "deploy")
 
 
 if __name__ == "__main__":
