@@ -2,6 +2,7 @@ from webservice import db
 from webservice.dbModels import Ontology, Version
 from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
 from datetime import datetime
+import csv
 
 
 ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
@@ -55,3 +56,9 @@ def generateEntryForUri(uri, source=None, accessDate=None):
             ontology=ontology.uri,
             ))
     return ontology, versions
+
+def writeIndexAsCSV(filepath):
+    with open(filepath, "w+") as csvIndex:
+        writer = csv.writer(csvIndex)
+        for uri, source, accessDate in db.session.query(Ontology.uri, Ontology.source, Ontology.accessDate):
+            writer.writerow((uri, source, accessDate))
