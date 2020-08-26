@@ -204,9 +204,9 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
       print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
     # profile check for ontology
-    stdout, stderr = testSuite.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
-      print(stderr + "\n" + stdout, file=profileCheckFile)
+    #stdout, stderr = testSuite.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
+    #with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
+      #print(stderr + "\n" + stdout, file=profileCheckFile)
   else:
     conformsLicense = "Error - No turtle file available"
     conformsLicense2 = "Error - No turtle file available"
@@ -246,14 +246,15 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
     else:
       user_output.append(f"Generating LODE-Docu: {failed_symbol}")
       user_output.append(lode_error)
-    oopsReport, oops_error = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile, logger=logger), logger=logger)
-    if oopsReport != None:
-      user_output.append(f"Generating OOPS-report: {success_symbol}")
-      with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
-        print(oopsReport, file=oopsFile)
-    else:
-      user_output.append(f"Generating OOPS-report: {failed_symbol}")
-      user_output.append(oops_error)
+    #oopsReport, oops_error = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile, logger=logger), logger=logger)
+    #if oopsReport != None:
+      #user_output.append(f"Generating OOPS-report: {success_symbol}")
+      #with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
+        #print(oopsReport, file=oopsFile)
+    #else:
+      #oops_error = "Switched off because it took to long"
+      #user_output.append(f"Generating OOPS-report: {failed_symbol}")
+      #user_output.append(oops_error)
   generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url)
   consistencyCheck=lambda s: True if s == "Yes" else False
   dbVersion = Version(
