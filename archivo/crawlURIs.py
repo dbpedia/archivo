@@ -18,6 +18,9 @@ import logging
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
 
+# prefix.cc complete urls
+prefixccURLs = "http://prefix.cc/context"
+
 # url for the lodo docu service
 lodeServiceUrl="https://w3id.org/lode/owlapi/"
 
@@ -182,31 +185,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   # no empty parsed files since shacl is valid on empty files.
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    conformsLicense, reportGraphLicense, reportTextLicense = testSuite.licenseViolationValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
-      print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
-    conformsLode, reportGraphLode, reportTextLode = testSuite.lodeReadyValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
-      print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
-    conformsLicense2, reportGraphLicense2, reportTextLicense2 = testSuite.licenseWarningValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
-      print(inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile) 
-    # checks consistency with and without imports
-    isConsistent, output = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
-    isConsistentNoImports, outputNoImports = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
-    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
-      print(output, file=consistencyReport)
-    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
-      print(outputNoImports, file=consistencyReportNoImports)
-    # print pellet info files
-    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
-      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
-    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
-      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
-    # profile check for ontology
-    #stdout, stderr = testSuite.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    #with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
-      #print(stderr + "\n" + stdout, file=profileCheckFile)
+    testSuite.runAllTests(filePath, artifact, ontoGraph)
   else:
     conformsLicense = "Error - No turtle file available"
     conformsLicense2 = "Error - No turtle file available"
@@ -515,6 +494,13 @@ def getLovUrls():
   req = requests.get(lovOntologiesURL)
   json_data=req.json()
   return [dataObj["uri"] for dataObj in json_data]
+
+
+def getPrefixURLs():
+  req = requests.get(prefixccURLs)
+  json_data = req.json()
+  prefixOntoDict = json_data["@context"]
+  return [prefixOntoDict[prefix] for prefix in prefixOntoDict]
 
 def testLOVInfo():
   req = requests.get("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=schema")

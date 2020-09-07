@@ -98,3 +98,31 @@ class TestSuite:
         else:
             success = False
             return success, stderr.decode("utf-8").split("\n")
+
+
+    def runAllTests(self, filePath, artifact, ontoGraph):
+        conformsLicense, reportGraphLicense, reportTextLicense = self.licenseViolationValidation(ontoGraph)
+        with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
+            print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
+        conformsLode, reportGraphLode, reportTextLode = self.lodeReadyValidation(ontoGraph)
+        with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
+            print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
+        conformsLicense2, reportGraphLicense2, reportTextLicense2 = self.licenseWarningValidation(ontoGraph)
+        with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
+            print(inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile) 
+        # checks consistency with and without imports
+        isConsistent, output = self.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
+        isConsistentNoImports, outputNoImports = self.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
+        with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
+            print(output, file=consistencyReport)
+        with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
+            print(outputNoImports, file=consistencyReportNoImports)
+        # print pellet info files
+        with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
+            print(self.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
+        with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
+            print(self.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
+        # profile check for ontology
+        #stdout, stderr = self.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
+        #with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
+        #print(stderr + "\n" + stdout, file=profileCheckFile)

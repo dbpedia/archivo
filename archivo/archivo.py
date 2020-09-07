@@ -38,7 +38,24 @@ def ontology_discovery():
         elif not success and isNir:
             fallout = dbModels.Fallout(
                 uri=uri,
-                source="user-suggestion",
+                source="LOV",
+                inArchivo=False,
+                error = message
+            )
+            db.session.add(fallout)
+            db.session.commit()
+
+    for uri in crawlURIs.getPrefixURLs():
+        allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, allOnts, dataPath, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
+        if success:
+            db.session.add(dbOnt)
+            db.session.add(dbVersion)
+            db.session.commit()
+        elif not success and isNir:
+            fallout = dbModels.Fallout(
+                uri=uri,
+                source="prefix.cc",
                 inArchivo=False,
                 error = message
             )
@@ -103,25 +120,31 @@ def ontology_update():
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
 
-def updateDatabase():
-    urisInDatabase = db.session.query(Ontology.uri).all()
-    urisInDatabase = [t[0] for t in urisInDatabase]
-    for uri in ontoIndex:
+def rebuildDatabase():
+    db.create_all()
+    urisInDatabase = db.session.query(dbModels.Ontology).all()
+    urisInDatabase = [ont.uri for ont in urisInDatabase]
+    oldIndex = queryDatabus.loadLastIndex()
+    for uri, source, date in oldIndex:
         if uri in urisInDatabase:
             print(f"Already listed: {uri}")
             continue
+        try:
+            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
+        except ValueError:
+            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
         print("Handling URI "+ uri)
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-        ontology = Ontology(
+        ontology = dbModels.Ontology(
             uri=uri,
             title=title,
-            source=ontoIndex[uri]["source"],
-            accessDate=datetime.strptime(ontoIndex[uri]["accessed"], "%Y-%m-%d %H:%M:%S"),
+            source=source,
+            accessDate=timestamp,
         )
         db.session.add(ontology)
         for info_dict in versions_info:
-            db.session.add(Version(
+            db.session.add(dbModels.Version(
                 version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
                 semanticVersion=info_dict["semversion"],
                 stars=info_dict["stars"],
@@ -144,8 +167,6 @@ def updateDatabase():
 def updateOntologyIndex():
     oldOntoIndex = queryDatabus.loadLastIndex()
     newOntoIndex = db.session.query(dbModels.Ontology).all()
-    print("Length old Index:", len(oldOntoIndex))
-    print("Length new index:", len(newOntoIndex))
     diff = [onto.uri for onto in newOntoIndex if onto.uri not in [uri for uri, src, date in oldOntoIndex]]
     print(diff)
     if len(oldOntoIndex) != len(newOntoIndex):

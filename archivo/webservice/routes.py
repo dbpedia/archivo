@@ -15,6 +15,7 @@ from flask_accept import accept, accept_fallback
 from urllib.parse import quote
 from utils.archivoLogs import webservice_logger
 from datetime import datetime
+import dbUtils
 
 
 archivoPath = os.path.split(app.instance_path)[0]
@@ -114,7 +115,10 @@ def newOntologiesList():
         databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         v = db.session.query(dbModels.Version).filter_by(ontology=ont.uri).order_by(dbModels.Version.version.desc()).first()
         if v == None:
-            webservice_logger.error(f"No version for {ont.uri}")
+            webservice_logger.warning(f"No version for {ont.uri}, try updating...")
+            dbUtils.updateInfoForOntology(ont.uri)
+        if v == None:
+            webservice_logger.critical(f"Couldn't find any data for {ont.uri}")
             continue
         result = {"ontology":{"label":ont.title, "URL":ont.uri},
                     "databusURI":databus_uri, 

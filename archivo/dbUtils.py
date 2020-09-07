@@ -61,4 +61,33 @@ def writeIndexAsCSV(filepath):
     with open(filepath, "w+") as csvIndex:
         writer = csv.writer(csvIndex)
         for uri, source, accessDate in db.session.query(Ontology.uri, Ontology.source, Ontology.accessDate):
-            writer.writerow((uri, source, accessDate))
+            writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
+
+def updateInfoForOntology(uri):
+    urisInDatabase = db.session.query(dbModels.Ontology.uri).all()
+    urisInDatabase = [t[0] for t in urisInDatabase]
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+    if not uri in urisInDatabase:
+        webservice_logger.error("Not in database")
+        return
+    else:
+        ontology = db.session.query(dbModels.Ontology).filter_by(uri=uri).first()
+    for info_dict in versions_info:
+        db.session.add(dbModels.Version(
+                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
+                semanticVersion=info_dict["semversion"],
+                stars=info_dict["stars"],
+                triples=info_dict["triples"],
+                parsing=info_dict["parsing"]["conforms"],
+                licenseI=info_dict["minLicense"]["conforms"],
+                licenseII=info_dict["goodLicense"]["conforms"],
+                consistency=info_dict["consistent"]["conforms"],
+                lodeSeverity=str(info_dict["lode"]["severity"]),
+                ontology=ontology.uri,
+        ))
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        print(str(e))
+        db.session.rollback() 
