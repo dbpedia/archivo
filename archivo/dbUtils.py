@@ -64,7 +64,7 @@ def writeIndexAsCSV(filepath):
             writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
 
 def updateInfoForOntology(uri):
-    urisInDatabase = db.session.query(dbModels.Ontology.uri).all()
+    urisInDatabase = db.session.query(Ontology.uri).all()
     urisInDatabase = [t[0] for t in urisInDatabase]
     group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
@@ -72,9 +72,9 @@ def updateInfoForOntology(uri):
         webservice_logger.error("Not in database")
         return
     else:
-        ontology = db.session.query(dbModels.Ontology).filter_by(uri=uri).first()
+        ontology = db.session.query(Ontology).filter_by(uri=uri).first()
     for info_dict in versions_info:
-        db.session.add(dbModels.Version(
+        db.session.add(Version(
                 version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
                 semanticVersion=info_dict["semversion"],
                 stars=info_dict["stars"],

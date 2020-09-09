@@ -198,9 +198,10 @@ def downloadOntology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "")
     version = args.get("v", "")
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
+    if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
     if rdfFormat == "":
         rdfFormat = "owl"
     if version == "":
@@ -218,9 +219,10 @@ def turtleDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
+    if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
     if rdfFormat == "":
         rdfFormat = "ttl"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
@@ -234,9 +236,10 @@ def rdfxmlDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
+    if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
     if rdfFormat == "":
         rdfFormat = "owl"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
@@ -250,9 +253,10 @@ def ntriplesDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
+    if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontoUri)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
     if rdfFormat == "":
         rdfFormat = "nt"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
