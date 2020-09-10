@@ -27,18 +27,25 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
   try:
     if inputType == None:
       rapperProcess = subprocess.run(["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+      nTriples = rapperProcess.stdout
+    elif inputType == "ntriples":
+      with open(sourceFile, "rb") as ntriplesFile:
+        nTriples = ntriplesFile.read()
     else:
       rapperProcess = subprocess.run(["rapper", "-i", inputType, "-I", vocab_uri, sourceFile, "-o", "ntriples"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+      nTriples = rapperProcess.stdout
     with open(targetPath, "w+") as sortedNtriples:
-      sortProcess = subprocess.run(["sort", "-u"], input=rapperProcess.stdout, stdout=sortedNtriples, stderr=subprocess.PIPE, env=myenv)
+      sortProcess = subprocess.run(["sort", "-u"], input=nTriples, stdout=sortedNtriples, stderr=subprocess.PIPE, env=myenv)
       sortErrors = sortProcess.stderr.decode("utf-8")
     if os.stat(targetPath).st_size == 0:
       diff_logger.error("Error in parsing file, no triples returned")
       os.remove(targetPath)
     if sortErrors != "":
       diff_logger.error(f"An error in sorting triples occured: {sortErrors}")
-    
-    return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
+    if inputType != "ntriples":
+      return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
+    else:
+      return None, None
   except Exception as e:
     diff_logger.error("Exeption during parsing and sorting", exc_info=True)
     return str(e), None
