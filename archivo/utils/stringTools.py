@@ -18,7 +18,7 @@ contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
 sentenceRegex = re.compile(r"(.*?\.) [A-Z]")
 
 
-def generateGroupAndArtifactFromUri(url):
+def generateGroupAndArtifactFromUri(url, dev=False):
   parsedObj = urlparse(url)
   # replacing the port with --
   group = parsedObj.netloc.replace(":", "--")
@@ -33,6 +33,9 @@ def generateGroupAndArtifactFromUri(url):
   # none of them can be the empty string or all breaks
   if group == "" or artifact == "":
     return None, None
+
+  if dev:
+    artifact = artifact + "--DEV"
 
   return group, artifact
 

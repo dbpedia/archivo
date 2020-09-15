@@ -26,7 +26,7 @@ class SuggestionForm(FlaskForm):
     submit = SubmitField(label="Suggest")
 
 class InfoForm(FlaskForm):
-    uris = SelectField("Enter a URI", choices=[("","")]+[(ont.uri,ont.uri) for ont in db.session.query(dbModels.Ontology).all()], validators=[validators.InputRequired()])
+    uris = SelectField("Enter a URI", choices=[("","")]+[(ont.uri,ont.uri) for ont in db.session.query(dbModels.OfficialOntology).all()], validators=[validators.InputRequired()])
     submit = SubmitField(label="Get Info")
 
 
@@ -60,25 +60,28 @@ def addOntology():
 def vocabInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    isDev = True if "dev" in args else False
     form = InfoForm()
-    allOntos = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+    allOntos = [ont.uri for ont in db.session.query(dbModels.OfficialOntology).all()]
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        if crawlURIs.checkIndexForUri(ontoUri, allOntos) == None:
+        foundUri =crawlURIs.checkIndexForUri(ontoUri, allOntos)
+        if foundUri == None:
             abort(status=404)
-        indexUri = crawlURIs.checkIndexForUri(ontoUri, allOntos)
-        ont = db.session.query(dbModels.Ontology).filter_by(uri=indexUri).first()
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(indexUri)
+        ont = db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(foundUri, dev=isDev)
         title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+        if isDev:
+            ont = ont.devel
         general_info = {}
         general_info["source"] = ont.source
         general_info["archivement"] = ont.accessDate
         general_info["title"] = title
         general_info["comment"] = comment
         general_info["databusArtifact"] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        general_info["nir"] = ontoUri
+        general_info["nir"] = foundUri
         return render_template("info.html", versions_info=sorted(versions_info, key=lambda d: d["version"]["label"], reverse=True), general_info=general_info, form=form)
     return render_template("info.html", general_info={"message":"Enter an ontology URI!"}, form=form)
 
@@ -108,7 +111,13 @@ def ntriplesInfo():
 
 @app.route("/list", methods=["GET"])
 def newOntologiesList():
-    ontologies = db.session.query(dbModels.Ontology).all()
+    args = request.args
+    isDev = True if "dev" in args else False
+    if isDev:
+        ontoType = dbModels.DevelopOntology
+    else:
+        ontoType = dbModels.OfficialOntology
+    ontologies = db.session.query(ontoType).all()
     ontos = []
     for ont in ontologies:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
@@ -120,11 +129,18 @@ def newOntologiesList():
         if v == None:
             webservice_logger.critical(f"Couldn't find any data for {ont.uri}")
             continue
+        if ont.crawling_status or ont.crawling_status == None:
+            crawlStatus = True
+            crawlError = ""
+        else:
+            crawlStatus = False
+            latestFallout = db.session.query(dbModels.Fallout).filter_by(ontology=ont.uri).order_by(dbModels.Fallout.date.desc()).first()
+            crawlError = f"{str(latestFallout.date)} : {latestFallout.error}"
         result = {"ontology":{"label":ont.title, "URL":ont.uri},
                     "databusURI":databus_uri, 
                     "source":ont.source, 
                     "triples":v.triples,
-                    "crawling":{"status":ont.crawlingStatus, "error":ont.crawlingError},
+                    "crawling":{"status":crawlStatus, "error":crawlError},
                     "stars":stringTools.generateStarString(v.stars),
                     "semVersion":v.semanticVersion,
                     "parsing":v.parsing,

@@ -15,6 +15,12 @@
 </form>
 <br>
 {% if general_info.title %}
+
+<p style="text-align:center;">
+    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}">Official</a>
+    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}&dev">Develop</a>
+</p>
+
 <h2>{{general_info.title}}</h2>
 <p>{{general_info.comment}}</p>
 

@@ -1,5 +1,5 @@
 from pyshacl import validate
-from rdflib import Graph
+from rdflib import Graph, URIRef
 from utils import inspectVocabs, archivoConfig
 import os
 import sys
@@ -37,14 +37,17 @@ class TestSuite:
         self.displayAxiomsPath = os.path.join(archivoPath, "helpingBinaries", "DisplayAxioms.jar")
 
     def licenseViolationValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.licenseViolationGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
-        return r
+        success, report_graph, report_text = validate(ontograph, shacl_graph=self.licenseViolationGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
+        report_graph.namespace_manager.bind('sh', URIRef('http://www.w3.org/ns/shacl#'))
+        return success, report_graph, report_text
     def licenseWarningValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.licenseWarningGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
-        return r
+        success, report_graph, report_text = validate(ontograph, shacl_graph=self.licenseWarningGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
+        report_graph.namespace_manager.bind('sh', URIRef('http://www.w3.org/ns/shacl#'))
+        return success, report_graph, report_text
     def lodeReadyValidation(self, ontograph):
-        r = validate(ontograph, shacl_graph=self.lodeTestGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
-        return r
+        success, report_graph, report_text = validate(ontograph, shacl_graph=self.lodeTestGraph, ont_graph=None, inference='none', abort_on_error=False, meta_shacl=False, debug=False, advanced=True)
+        report_graph.namespace_manager.bind('sh', URIRef('http://www.w3.org/ns/shacl#'))
+        return success, report_graph, report_text
     def getProfileCheck(self, ontofile):
         process = subprocess.run(["java", "-jar", self.profileCheckerJar, ontofile, "--all"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.stdout.decode("utf-8"), process.stderr.decode("utf-8")

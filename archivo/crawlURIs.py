@@ -10,7 +10,7 @@ from utils.validation import TestSuite
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
-from webservice.dbModels import Ontology, Version
+from webservice.dbModels import OfficialOntology, DevelopOntology, Version
 import uuid
 from string import Template
 import logging
@@ -485,7 +485,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # Generate database obj
   ontTitle = inspectVocabs.getLabel(graph)
-  dbOntology = Ontology(
+  dbOntology = OfficialOntology(
     uri = real_ont_uri,
     source=source,
     accessDate=accessDate,
@@ -512,6 +512,145 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
   return True, isNIR, "<br>".join(map(str, user_output)), dbOntology, dbVersion
+
+
+def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=[]):
+  # remove fragment
+  vocab_uri = urldefrag(vocab_uri)[0]
+  localDir = os.path.join(dataPath, "." + uuid.uuid4().hex)
+  if not os.path.isdir(localDir):
+    os.mkdir(localDir)
+  # testing uri validity
+  logger.info(f"Trying to validate {vocab_uri}")
+
+  # check robots.txt access
+  allowed, message = checkRobot(sourceURI)
+  logger.info(f"Robot allowed: {allowed}")
+  if not allowed:
+    logger.warning(f"{archivoConfig.archivo_agent} not allowed")
+    user_output.append(f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={sourceURI}>{sourceURI}</a>")
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+  
+  user_output.append(f"Allowed Robot {archivoConfig.archivo_agent}: {success_symbol}")
+  bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath, user_output=user_output)
+
+  version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+  if bestHeader == None:
+    user_output.append(f"Determinig the best header: {failed_symbol}")
+    logger.error(f"Error in parsing: {headerErrors}")
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+
+  accessDate = datetime.now()
+  user_output.append(f"Found best header: {bestHeader}")
+
+  # downloading and parsing
+  success, pathToFile, response = downloadSource(vocab_uri, localDir, "tmpOnt", bestHeader)
+  if not success:
+    logger.warning(f"Ontology {vocab_uri} is not accessible after best header was determined")
+    user_output.append(f"Accessing URI {vocab_uri}: {failed_symbol}")
+    user_output.append(response)
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+  
+  user_output.append(f"Accessing URI {vocab_uri}: {success_symbol}")
+  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
+  if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
+    logger.error(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
+    user_output.append(f"Parse downloaded File: {failed_symbol}")
+    user_output.append(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+
+  
+  graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
+  if graph == None:
+    logger.error(f"RDFlib couldn't parse the file of {vocab_uri}")
+    user_output.append(f"Loading Graph in RDFlib: {failed_symbol}")
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+  
+  try:
+    real_ont_uri=inspectVocabs.getNIRUri(graph)
+  except Exception:
+    traceback.print_exc(file=sys.stderr)
+    user_output.append(f"Finding Ontology URI: {failed_symbol}")
+    user_output.append(traceback.format_exc())
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, "<br>".join(map(str, user_output)), None, None
+
+  if real_ont_uri == None:
+    logger.info("Couldn't find ontology uri, trying isDefinedBy and inScheme...")
+    user_output.append(f"Finding ontology URI: {failed_symbol}")
+    return False, "<br>".join(map(str, user_output)), None, None
+  
+  user_output.append(f"Found ontology URI: {str(real_ont_uri)} {success_symbol}")
+ 
+
+  # here we go if the uri is NIR and  its resolveable
+  real_ont_uri = str(real_ont_uri)
+
+  logger.info(f"Found non-information URI: {real_ont_uri}")
+  groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
+  if groupId == None or artifact == None:
+    logger.warning(f"Malformed Uri {vocab_uri}")
+    user_output.append(f"Malformed Uri {str(real_ont_uri)}")
+    stringTools.deleteAllFilesInDirAndDir(localDir)
+    return False, str("<br>".join(map(str, user_output))), None, None
+  # make dev artifact
+  artifact = artifact + "--DEV"
+  
+  
+  #index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
+  newVersionPath=os.path.join(dataPath, groupId, artifact, version)
+  os.makedirs(newVersionPath, exist_ok=True)
+  # generate parent pom
+  if not os.path.isfile(os.path.join(dataPath, groupId, "pom.xml")):
+    pomString=generatePoms.generateParentPom(groupId=groupId,
+                                            packaging="pom",
+                                            modules=[],
+                                            packageDirectory=archivoConfig.packDir,
+                                            downloadUrlPath=archivoConfig.downloadUrl,
+                                            publisher=archivoConfig.pub,
+                                            maintainer=archivoConfig.pub,
+                                            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=groupId),
+                                            )
+    with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
+      print(pomString, file=parentPomFile)
+  # prepare new release
+  fileExt = os.path.splitext(pathToFile)[1]
+  os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
+  # Generate database obj
+  ontTitle = inspectVocabs.getLabel(graph)
+  dbOntology = DevelopOntology(
+    uri = sourceURI,
+    source="DEV",
+    accessDate=accessDate,
+    title=ontTitle + " DEV" if ontTitle != None else real_ont_uri + " DEV",
+    official=vocab_uri,
+  )
+  # new release
+  logger.info("Generate new release files...")
+  dbVersion = generateNewRelease(sourceURI, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
+  # index writing
+  #ontoFiles.writeIndexJson(index)
+  stringTools.deleteAllFilesInDirAndDir(localDir)
+  
+  logger.info("Deploying the data to the databus...")
+  returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
+  
+  if returncode > 0:
+    logger.error("There was an Error deploying to the databus")
+    user_output.append(f"Deploying to Databus: {failed_symbol}")
+    user_output.append(deployLog)
+    logger.error(deployLog)
+    return False, "<br>".join(map(str, user_output)), dbOntology, dbVersion
+  else:
+    logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
+    user_output.append(f"Deploying to Databus: {success_symbol}")
+    user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
+  return True, "<br>".join(map(str, user_output)), dbOntology, dbVersion
 
 
 def getLovUrls():

@@ -82,10 +82,10 @@ def ontology_discovery():
 @cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_update():
     dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestNtriples()
+    allOntologiesInfo = queryuriDatabus.latestNtriples()
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
-    for ont in db.session.query(dbModels.Ontology).all():
+    for ont in db.session.query(dbModels.OfficialOntology).all():
         diff_logger.info(f"Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -100,7 +100,8 @@ def ontology_update():
                 uri=ont.uri,
                 source=ont.source,
                 inArchivo=True,
-                error=message
+                error=message,
+                ontology=ont.uri
             )
             ont.crawlingStatus = False
             ont.crawlingError = message
@@ -117,8 +118,30 @@ def ontology_update():
 
 
 
-# Shutdown your cron thread if the web process is stopped
-atexit.register(lambda: cron.shutdown(wait=False))
+def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp):
+    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+    ontology = dbModels.OfficialOntology(
+        uri=uri,
+        title=title,
+        source=source,
+        accessDate=timestamp,
+    )
+    versions = []
+    for info_dict in versions_info:
+        versions.append(dbModels.Version(
+                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
+                semanticVersion=info_dict["semversion"],
+                stars=info_dict["stars"],
+                triples=info_dict["triples"],
+                parsing=info_dict["parsing"]["conforms"],
+                licenseI=info_dict["minLicense"]["conforms"],
+                licenseII=info_dict["goodLicense"]["conforms"],
+                consistency=info_dict["consistent"]["conforms"],
+                lodeSeverity=str(info_dict["lode"]["severity"]),
+                ontology=ontology.uri,
+        ))
+    return ontology, versions
+
 
 def rebuildDatabase():
     db.create_all()
@@ -135,27 +158,10 @@ def rebuildDatabase():
             timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
         print("Handling URI "+ uri)
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-        ontology = dbModels.Ontology(
-            uri=uri,
-            title=title,
-            source=source,
-            accessDate=timestamp,
-        )
+        ontology, versions = buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp)
         db.session.add(ontology)
-        for info_dict in versions_info:
-            db.session.add(dbModels.Version(
-                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
-                semanticVersion=info_dict["semversion"],
-                stars=info_dict["stars"],
-                triples=info_dict["triples"],
-                parsing=info_dict["parsing"]["conforms"],
-                licenseI=info_dict["minLicense"]["conforms"],
-                licenseII=info_dict["goodLicense"]["conforms"],
-                consistency=info_dict["consistent"]["conforms"],
-                lodeSeverity=str(info_dict["lode"]["severity"]),
-                ontology=ontology.uri,
-            ))
+        for v in versions:
+            db.session.add(v)
         try:
             db.session.commit()
         except IntegrityError as e:
@@ -168,7 +174,7 @@ def updateOntologyIndex():
     oldOntoIndex = queryDatabus.loadLastIndex()
     newOntoIndex = db.session.query(dbModels.Ontology).all()
     diff = [onto.uri for onto in newOntoIndex if onto.uri not in [uri for uri, src, date in oldOntoIndex]]
-    print(diff)
+    discovery_logger.info("New Ontologies:" + "\n".join(diff))
     if len(oldOntoIndex) != len(newOntoIndex):
         newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
         artifactPath = os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies")
@@ -189,6 +195,9 @@ def updateOntologyIndex():
         # deploy
         status, log = generatePoms.callMaven(os.path.join(artifactPath, "pom.xml"), "deploy")
 
+
+# Shutdown your cron thread if the web process is stopped
+atexit.register(lambda: cron.shutdown(wait=False))
 
 if __name__ == "__main__":
     db.create_all()

@@ -79,6 +79,13 @@
 </tr>
 </thead>
 <tbody>
+
+    <p style="text-align:center;">
+        <a class="btn" style="font-size:15px" href="/list">Official</a>
+        <a class="btn" style="font-size:15px" href="/list?dev">Develop</a>
+    </p>
+
+
 {% for i in range(0, len) %}
 <tr>
     <td><a href="/info?o={{Ontologies[i].ontology.URL}}">{{Ontologies[i].ontology.label}}</a></td>

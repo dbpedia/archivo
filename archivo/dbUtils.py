@@ -5,8 +5,6 @@ from datetime import datetime
 import csv
 
 
-ontoIndex = ontoFiles.loadIndexJsonFromFile(archivoConfig.ontoIndexPath)
-
 def updateDatabase():
     urisInDatabase = db.session.query(Ontology.uri).all()
     urisInDatabase = [t[0] for t in urisInDatabase]
@@ -28,11 +26,10 @@ def updateDatabase():
 
 
 
-def generateEntryForUri(uri, source=None, accessDate=None):
+def generateEntryForUri(uri, source, accessDate):
     group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     versions = []
-    source = source if source != None else ontoIndex[uri]["source"]
     accessDate = datetime.strptime(accessDate, "%Y-%m-%d %H:%M:%S") if accessDate != None else datetime.strptime(ontoIndex[uri]["accessed"], "%Y-%m-%d %H:%M:%S")
 
     ontology = Ontology(
