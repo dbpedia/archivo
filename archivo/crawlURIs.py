@@ -160,7 +160,12 @@ def downloadSource(uri, path, name, accHeader, encoding=None):
     return False, "", str(e)
 
 
-def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, testSuite, logger, semVersion="1.0.0", user_output=[]):
+def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, testSuite, logger, semVersion="1.0.0", user_output=[], devURI=""):
+  if devURI == "":
+    locURI = vocab_uri
+  else:
+    locURI = devURI
+
   artifactPath, version = os.path.split(filePath)
   groupPath = os.path.split(artifactPath)[0]
   groupId = os.path.split(groupPath)[1]
@@ -178,7 +183,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
   user_output.append(f"Generating OWL File: {success_symbol}") if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.owl")) else user_output.append(f"Generating OWL File: {failed_symbol}")
   triples = ontoFiles.getParsedTriples(pathToOrigFile, inputFormat=rdfHeadersMapping[bestHeader])[0]
   if triples == None:
-    logger.critical(f"There was an error parsing the file for URI {vocab_uri}")
+    logger.critical(f"There was an error parsing the file for URI {locURI}")
     triples = 0
   if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
     ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
@@ -221,7 +226,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
 
   # write the metadata json file
   ontoFiles.altWriteVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
-                                  definedByUri=vocab_uri,
+                                  definedByUri=locURI,
                                   lastModified=stringTools.getLastModifiedFromResponse(response),
                                   rapperErrors=rapperErrors,
                                   rapperWarnings=rapperWarnings,
@@ -241,7 +246,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
                                   snapshot_url=location_url
                                   )
   if triples > 0:                                                                
-    docustring, lode_error = getLodeDocuFile(vocab_uri, logger=logger)
+    docustring, lode_error = getLodeDocuFile(locURI, logger=logger)
     if docustring != None:
       user_output.append(f"Generating LODE-Docu: {success_symbol}")
       with open(filePath + os.sep + artifact + "_type=generatedDocu.html", "w+") as docufile:
@@ -258,7 +263,7 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
       #oops_error = "Switched off because it took to long"
       #user_output.append(f"Generating OOPS-report: {failed_symbol}")
       #user_output.append(oops_error)
-  generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url)
+  generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url, isDev=True if devURI != "" else False)
   consistencyCheck=lambda s: True if s == "Yes" else False
   dbVersion = Version(
             version=datetime.strptime(version, "%Y.%m.%d-%H%M%S"),
@@ -270,15 +275,15 @@ def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader
             licenseII=conformsLicense2,
             consistency=consistencyCheck(isConsistent),
             lodeSeverity=inspectVocabs.hackyShaclStringInpection(inspectVocabs.getTurtleGraph(reportGraphLode)),
-            ontology=vocab_uri,
+            ontology=locURI,
             )
   return dbVersion
 
-def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph, location_url):
+def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph, location_url, isDev=False):
   datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
   versionIRI = str(None) 
-  md_label=uri
-  md_description=Template(docTemplates.description)
+  md_label=uri if not isDev else uri + " DEV"
+  md_description=Template(docTemplates.description) if not isDev else Template(docTemplates.description_dev)
   md_comment=Template(docTemplates.default_explaination).safe_substitute(non_information_uri=uri)
   license=None
   if ontograph != None:
@@ -287,7 +292,7 @@ def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograp
     comment = inspectVocabs.getComment(ontograph)
     versionIRI = inspectVocabs.getOwlVersionIRI(ontograph)
     if label != None:
-      md_label = label
+      md_label = label if not isDev else label + " DEV"
 
     if comment != None:
       md_comment = comment
@@ -632,7 +637,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
   )
   # new release
   logger.info("Generate new release files...")
-  dbVersion = generateNewRelease(sourceURI, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
+  dbVersion = generateNewRelease(sourceURI, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output, devURI=sourceURI)
   # index writing
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)

@@ -7,6 +7,10 @@ default_version="0.0.0-notRelevant"
 # agent name for crawling
 archivo_agent = "dbpedia-archivo-robot"
 
+ignore_props = [
+    "http://purl.org/dc/terms/modified"
+]
+
 # edit for your dataset
 downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
 packDir="/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"

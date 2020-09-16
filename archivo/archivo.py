@@ -79,8 +79,8 @@ def ontology_discovery():
         #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
-@cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
-def ontology_update():
+@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
+def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
@@ -113,7 +113,39 @@ def ontology_update():
         # commit changes to database
         db.session.commit()
 
-
+@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/5", day_of_week="mon-sun")
+def ontology_dev_update():
+    dataPath = archivoConfig.localPath
+    allOntologiesInfo = queryDatabus.latestNtriples()
+    diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
+    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    for ont in db.session.query(dbModels.DevelopOntology).all():
+        diff_logger.info(f"Handling ontology: {ont.uri}")
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.official, dev=True)
+        databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        try:
+            urlInfo = allOntologiesInfo[databusURL]
+        except KeyError:
+            diff_logger.error(f"Could't find databus artifact for {ont.uri}")
+            continue
+        success, message, dbVersion = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
+        if success == None:
+            dbFallout = dbModels.Fallout(
+                uri=ont.uri,
+                source=ont.source,
+                inArchivo=True,
+                error=message,
+                ontology=ont.uri
+            )
+            ont.crawling_status = False
+            db.session.add(dbFallout)
+        elif success:
+            ont.crawling_status = True
+            db.session.add(dbVersion)
+        else:
+            ont.crawling_status = True
+        # commit changes to database
+        db.session.commit()
 
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)

@@ -17,6 +17,19 @@ description = (
     "The [DBpedia Archivo Databus agent](https://databus.dbpedia.org/ontologies) generates only basic, static documentation for the archived snapshots of the ontologies."
 )
 
+description_dev = (
+    "## DBpedia Archivo Ontology Snapshot (DEV)\n\n"
+    "| Attribute |  Value |\n"
+    "| - | - |\n" 
+    "| Ontology URI | <$non_information_uri>\n"
+    "| Archivo Ontology Factsheet| [Link](http://archivo.dbpedia.org/info?o=$non_information_uri&dev)\n"
+    "| Snapshot File URL | <$snapshot_url>\n"
+    "| Snapshot OWL Version IRI | <$owl_version_iri>\n"
+    "| Snapshot Time | $date\n"
+    "\n"
+    "The [DBpedia Archivo Databus agent](https://databus.dbpedia.org/ontologies) generates only basic, static documentation for the archived snapshots of the ontologies."
+)
+
 description_intro = (
     "## Ontology Metadata\n\n"
     "DBpedia Archivo extracts metadata from the ontology for well known properties (e.g. dct:description). This subsection shows the content of every property individually using a separate heading."

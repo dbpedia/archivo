@@ -51,6 +51,12 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
     return str(e), None
 
 
+def containsIgnoredProps(line):
+  for prop in archivoConfig.ignore_props:
+    if prop in line:
+      return True
+  return False
+
 def commDiff(oldFile, newFile):
   command = ["comm", "-3", oldFile, newFile]
   try:
@@ -61,12 +67,16 @@ def commDiff(oldFile, newFile):
     commOutput = process.stdout.decode("utf-8")
     if diffErrors != "":
       diff_logger.error(f"Error in diffing with comm: {diffErrors}")
-    for line in commOutput.split("\n"):
-      if line.startswith("\t"):
+    commLines = commOutput.split("\n")
+    for line in commLines:
+      if line.strip() == "":
+        continue
+      if line.startswith("\t") and not containsIgnoredProps(line):
         newTriples.append(line)
-      else:
+      elif not containsIgnoredProps(line):
         oldTriples.append(line)
-    if commOutput.strip() == "":
+
+    if oldTriples == [] and newTriples == []:
       return True, oldTriples, newTriples
     else:
       return False, [line.strip() for line in oldTriples if line.strip() != ""], [line.strip() for line in newTriples if line != ""]
@@ -108,21 +118,27 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None, "Unknown error"
 
 
-def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersionDir, lastSemVersion, testSuite):
+def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersionDir, lastSemVersion, testSuite, devURI=""):
   try:
+    if devURI == "":
+      isDev = False
+      locURI = uri
+    else:
+      isDev = True
+      locURI = devURI
     artifactDir, latestVersion = os.path.split(latestVersionDir)
     groupDir, artifactName = os.path.split(artifactDir)
-    group = stringTools.generateGroupAndArtifactFromUri(uri)[0]
+    _, group = os.path.split(groupDir)
     diff_logger.info("Found different headers, downloading and parsing to compare...")
     new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     newVersionPath = os.path.join(artifactDir, new_version)
     os.makedirs(newVersionPath, exist_ok=True)
-    newBestHeader, headerErrors = crawlURIs.determineBestAccHeader(uri, localDiffDir)
+    newBestHeader, headerErrors = crawlURIs.determineBestAccHeader(locURI, localDiffDir)
     if newBestHeader == None:
-      diff_logger.warning("Couldn't parse new version")
+      diff_logger.warning(f" {locURI} Couldn't parse new version")
       diff_logger.warning(headerErrors)
       return None, "\n".join(headerErrors), None
-    success, sourcePath, response = crawlURIs.downloadSource(uri, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
+    success, sourcePath, response = crawlURIs.downloadSource(locURI, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
       diff_logger.warning("Uri not reachable")
@@ -195,9 +211,11 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
 
 
 
-def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite):
-
-  groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, devURI=""):
+  if devURI != "":
+    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
+  else:
+    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
   artifactPath = os.path.join(localDir, groupId, artifact)
   lastVersionPath = os.path.join(artifactPath, lastVersion)
   lastMetaFile = os.path.join(lastVersionPath, artifact + "_type=meta.json")
@@ -228,7 +246,10 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
   contentLength = metadata["http-data"]["content-length"]
   semVersion = metadata["ontology-info"]["semantic-version"]
 
-  isDiff, error = checkForNewVersion(uri, oldETag, oldLastMod, contentLength, bestHeader)
+  if devURI == "":
+    isDiff, error = checkForNewVersion(uri, oldETag, oldLastMod, contentLength, bestHeader)
+  else:
+    isDiff, error = checkForNewVersion(devURI, oldETag, oldLastMod, contentLength, bestHeader)
   #isDiff = True
   localDiffDir = os.path.join(localDir, "." + uuid.uuid4().hex)
   if not os.path.isdir(localDiffDir):
@@ -240,7 +261,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
     return None, "Header Access: "+error, None
   if isDiff:
     diff_logger.info(f"Fond potential different version for {uri}")
-    return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite)
+    return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite, devURI=devURI)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     diff_logger.info(f"No different version for {uri}")
