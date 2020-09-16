@@ -71,11 +71,12 @@ def vocabInfo():
         if foundUri == None:
             abort(status=404)
         ont = db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
+        general_info = {}
+        general_info["hasDev"] = True if ont.devel != None else False
         group, artifact = stringTools.generateGroupAndArtifactFromUri(foundUri, dev=isDev)
         title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
         if isDev:
             ont = ont.devel
-        general_info = {}
         general_info["source"] = ont.source
         general_info["archivement"] = ont.accessDate
         general_info["title"] = title

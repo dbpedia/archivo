@@ -82,7 +82,7 @@ def ontology_discovery():
 @cron.scheduled_job("cron", id="archivo_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_update():
     dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryuriDatabus.latestNtriples()
+    allOntologiesInfo = queryDatabus.latestNtriples()
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.OfficialOntology).all():
@@ -103,29 +103,36 @@ def ontology_update():
                 error=message,
                 ontology=ont.uri
             )
-            ont.crawlingStatus = False
-            ont.crawlingError = message
+            ont.crawling_status = False
             db.session.add(dbFallout)
         elif success:
-            ont.crawlingStatus = True
-            ont.crawlingError = message
+            ont.crawling_status = True
             db.session.add(dbVersion)
         else:
-            ont.crawlingStatus = True
-            ont.crawlingError = message
+            ont.crawling_status = True
         # commit changes to database
         db.session.commit()
 
 
 
-def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp):
+def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-    ontology = dbModels.OfficialOntology(
+    if dev != "":
+        ontology = dbModels.DevelopOntology(
+        uri=dev,
+        title=title,
+        source=source,
+        accessDate=timestamp,
+        official=uri,
+        )
+    else:
+        ontology = dbModels.OfficialOntology(
         uri=uri,
         title=title,
         source=source,
         accessDate=timestamp,
-    )
+        )
+    
     versions = []
     for info_dict in versions_info:
         versions.append(dbModels.Version(
@@ -145,8 +152,7 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp):
 
 def rebuildDatabase():
     db.create_all()
-    urisInDatabase = db.session.query(dbModels.Ontology).all()
-    urisInDatabase = [ont.uri for ont in urisInDatabase]
+    urisInDatabase = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
     oldIndex = queryDatabus.loadLastIndex()
     for uri, source, date in oldIndex:
         if uri in urisInDatabase:

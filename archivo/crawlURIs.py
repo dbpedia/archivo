@@ -514,14 +514,14 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   return True, isNIR, "<br>".join(map(str, user_output)), dbOntology, dbVersion
 
 
-def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=[]):
+def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
   # remove fragment
-  vocab_uri = urldefrag(vocab_uri)[0]
+  sourceURI = urldefrag(sourceURI)[0]
   localDir = os.path.join(dataPath, "." + uuid.uuid4().hex)
   if not os.path.isdir(localDir):
     os.mkdir(localDir)
   # testing uri validity
-  logger.info(f"Trying to validate {vocab_uri}")
+  logger.info(f"Trying to validate {sourceURI}")
 
   # check robots.txt access
   allowed, message = checkRobot(sourceURI)
@@ -533,7 +533,7 @@ def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=
     return False, "<br>".join(map(str, user_output)), None, None
   
   user_output.append(f"Allowed Robot {archivoConfig.archivo_agent}: {success_symbol}")
-  bestHeader, headerErrors = determineBestAccHeader(vocab_uri, dataPath, user_output=user_output)
+  bestHeader, headerErrors = determineBestAccHeader(sourceURI, dataPath, user_output=user_output)
 
   version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
   if bestHeader == None:
@@ -546,27 +546,27 @@ def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=
   user_output.append(f"Found best header: {bestHeader}")
 
   # downloading and parsing
-  success, pathToFile, response = downloadSource(vocab_uri, localDir, "tmpOnt", bestHeader)
+  success, pathToFile, response = downloadSource(sourceURI, localDir, "tmpOnt", bestHeader)
   if not success:
-    logger.warning(f"Ontology {vocab_uri} is not accessible after best header was determined")
-    user_output.append(f"Accessing URI {vocab_uri}: {failed_symbol}")
+    logger.warning(f"Ontology {sourceURI} is not accessible after best header was determined")
+    user_output.append(f"Accessing URI {sourceURI}: {failed_symbol}")
     user_output.append(response)
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, "<br>".join(map(str, user_output)), None, None
   
-  user_output.append(f"Accessing URI {vocab_uri}: {success_symbol}")
-  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
+  user_output.append(f"Accessing URI {sourceURI}: {success_symbol}")
+  rapperErrors, rapperWarnings = ontoFiles.parseRDFSource(pathToFile, os.path.join(localDir, "parsedSource.ttl"), "turtle", deleteEmpty=True, sourceUri=nir, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
   if not os.path.isfile(os.path.join(localDir, "parsedSource.ttl")):
-    logger.error(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
+    logger.error(f"There was an error in parsing ontology of {sourceURI} even though triples could be found")
     user_output.append(f"Parse downloaded File: {failed_symbol}")
-    user_output.append(f"There was an error in parsing ontology of {vocab_uri} even though triples could be found")
+    user_output.append(f"There was an error in parsing ontology of {sourceURI} even though triples could be found")
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, "<br>".join(map(str, user_output)), None, None
 
   
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
-    logger.error(f"RDFlib couldn't parse the file of {vocab_uri}")
+    logger.error(f"RDFlib couldn't parse the file of {sourceURI}")
     user_output.append(f"Loading Graph in RDFlib: {failed_symbol}")
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, "<br>".join(map(str, user_output)), None, None
@@ -594,7 +594,7 @@ def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=
   logger.info(f"Found non-information URI: {real_ont_uri}")
   groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
   if groupId == None or artifact == None:
-    logger.warning(f"Malformed Uri {vocab_uri}")
+    logger.warning(f"Malformed Uri {sourceURI}")
     user_output.append(f"Malformed Uri {str(real_ont_uri)}")
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, str("<br>".join(map(str, user_output))), None, None
@@ -628,7 +628,7 @@ def handleDevURI(vocab_uri, sourceURI, dataPath, testSuite, logger, user_output=
     source="DEV",
     accessDate=accessDate,
     title=ontTitle + " DEV" if ontTitle != None else real_ont_uri + " DEV",
-    official=vocab_uri,
+    official=nir,
   )
   # new release
   logger.info("Generate new release files...")

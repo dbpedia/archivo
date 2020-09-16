@@ -16,10 +16,13 @@
 <br>
 {% if general_info.title %}
 
+{% if general_info.hasDev %}
 <p style="text-align:center;">
     <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}">Official</a>
     <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}&dev">Develop</a>
 </p>
+{% endif %}
+
 
 <h2>{{general_info.title}}</h2>
 <p>{{general_info.comment}}</p>
