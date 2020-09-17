@@ -1,19 +1,62 @@
 from webservice import db
-from webservice.dbModels import Ontology, Version
+from webservice.dbModels import OfficialOntology, DevelopOntology, Version
 from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
 from datetime import datetime
 import csv
 
 
-def updateDatabase():
-    urisInDatabase = db.session.query(Ontology.uri).all()
-    urisInDatabase = [t[0] for t in urisInDatabase]
-    for uri in ontoIndex:
+def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
+    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+    if title == None:
+        return None, None
+    if dev != "":
+        ontology = DevelopOntology(
+        uri=dev,
+        title=title,
+        source=source,
+        accessDate=timestamp,
+        official=uri,
+        )
+    else:
+        ontology = OfficialOntology(
+        uri=uri,
+        title=title,
+        source=source,
+        accessDate=timestamp,
+        )
+    
+    versions = []
+    for info_dict in versions_info:
+        versions.append(Version(
+                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
+                semanticVersion=info_dict["semversion"],
+                stars=info_dict["stars"],
+                triples=info_dict["triples"],
+                parsing=info_dict["parsing"]["conforms"],
+                licenseI=info_dict["minLicense"]["conforms"],
+                licenseII=info_dict["goodLicense"]["conforms"],
+                consistency=info_dict["consistent"]["conforms"],
+                lodeSeverity=str(info_dict["lode"]["severity"]),
+                ontology=ontology.uri,
+        ))
+    return ontology, versions
+
+
+def rebuildDatabase():
+    db.create_all()
+    urisInDatabase = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+    oldIndex = queryDatabus.loadLastIndex()
+    for uri, source, date in oldIndex:
         if uri in urisInDatabase:
             print(f"Already listed: {uri}")
             continue
+        try:
+            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
+        except ValueError:
+            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
         print("Handling URI "+ uri)
-        ontology, versions = generateEntryForUri(uri)
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        ontology, versions = buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp)
         db.session.add(ontology)
         for v in versions:
             db.session.add(v)
@@ -23,36 +66,6 @@ def updateDatabase():
             print(str(e))
             db.session.rollback() 
         print(len(Ontology.query.all()))
-
-
-
-def generateEntryForUri(uri, source, accessDate):
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-    versions = []
-    accessDate = datetime.strptime(accessDate, "%Y-%m-%d %H:%M:%S") if accessDate != None else datetime.strptime(ontoIndex[uri]["accessed"], "%Y-%m-%d %H:%M:%S")
-
-    ontology = Ontology(
-            uri=uri,
-            title=title,
-            source=source,
-            accessDate=accessDate,
-        )
-    db.session.add(ontology)
-    for info_dict in versions_info:
-        versions.append(Version(
-            version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
-            semanticVersion=info_dict["semversion"],
-            stars=info_dict["stars"],
-            triples=info_dict["triples"],
-            parsing=info_dict["parsing"]["conforms"],
-            licenseI=info_dict["minLicense"]["conforms"],
-            licenseII=info_dict["goodLicense"]["conforms"],
-            consistency=info_dict["consistent"]["conforms"],
-            lodeSeverity=str(info_dict["lode"]["severity"]),
-            ontology=ontology.uri,
-            ))
-    return ontology, versions
 
 def writeIndexAsCSV(filepath):
     with open(filepath, "w+") as csvIndex:

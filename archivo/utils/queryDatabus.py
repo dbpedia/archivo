@@ -114,9 +114,7 @@ def getInfoForArtifact(group, artifact):
         title = sorted(results, key=lambda binding: binding["version"]["value"])[0]["title"]["value"]
         comment = sorted(results, key=lambda binding: binding["version"]["value"])[0]["comment"]["value"]
     except Exception as e:
-        print(str(e))
-        title = ""
-        comment = ""
+        return None, None, None
 
     for binding in results:
         version = binding.get("version", {"value":""})["value"]

@@ -147,65 +147,7 @@ def ontology_dev_update():
         # commit changes to database
         db.session.commit()
 
-def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
-    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-    if dev != "":
-        ontology = dbModels.DevelopOntology(
-        uri=dev,
-        title=title,
-        source=source,
-        accessDate=timestamp,
-        official=uri,
-        )
-    else:
-        ontology = dbModels.OfficialOntology(
-        uri=uri,
-        title=title,
-        source=source,
-        accessDate=timestamp,
-        )
-    
-    versions = []
-    for info_dict in versions_info:
-        versions.append(dbModels.Version(
-                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
-                semanticVersion=info_dict["semversion"],
-                stars=info_dict["stars"],
-                triples=info_dict["triples"],
-                parsing=info_dict["parsing"]["conforms"],
-                licenseI=info_dict["minLicense"]["conforms"],
-                licenseII=info_dict["goodLicense"]["conforms"],
-                consistency=info_dict["consistent"]["conforms"],
-                lodeSeverity=str(info_dict["lode"]["severity"]),
-                ontology=ontology.uri,
-        ))
-    return ontology, versions
 
-
-def rebuildDatabase():
-    db.create_all()
-    urisInDatabase = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
-    oldIndex = queryDatabus.loadLastIndex()
-    for uri, source, date in oldIndex:
-        if uri in urisInDatabase:
-            print(f"Already listed: {uri}")
-            continue
-        try:
-            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
-        except ValueError:
-            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-        print("Handling URI "+ uri)
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        ontology, versions = buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp)
-        db.session.add(ontology)
-        for v in versions:
-            db.session.add(v)
-        try:
-            db.session.commit()
-        except IntegrityError as e:
-            print(str(e))
-            db.session.rollback() 
-        print(len(Ontology.query.all()))
 
 @cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
