@@ -183,7 +183,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
         print("\n".join(oldAxioms), file=oldAxiomsFile)
       with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.dl"), "w+") as newAxiomsFile:
         print("\n".join(newAxioms), file=newAxiomsFile) 
-      dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger)
+      dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger, devURI=devURI)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       if not os.path.isfile(os.path.join(groupDir, "pom.xml")):
         with open(os.path.join(groupDir, "pom.xml"), "w+") as parentPomFile:
