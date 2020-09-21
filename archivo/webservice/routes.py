@@ -16,7 +16,7 @@ from urllib.parse import quote
 from utils.archivoLogs import webservice_logger
 from datetime import datetime
 import dbUtils
-
+from urllib.error import HTTPError
 
 archivoPath = os.path.split(app.instance_path)[0]
 testingSuite = TestSuite(archivoPath)
@@ -74,7 +74,11 @@ def vocabInfo():
         general_info = {}
         general_info["hasDev"] = True if ont.devel != None else False
         group, artifact = stringTools.generateGroupAndArtifactFromUri(foundUri, dev=isDev)
-        title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+        try:
+            title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+        except HTTPError as e:
+            general_info['message'] = f"There seems to be a problem with the databus, please try it again later! {str(e)}"
+            return render_template("info.html", general_info=general_info, form=form)
         if isDev:
             ont = ont.devel
         general_info["source"] = ont.source
