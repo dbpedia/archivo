@@ -85,6 +85,7 @@ def ontology_official_update():
     allOntologiesInfo = queryDatabus.latestNtriples()
     if allOntologiesInfo == None:
         diff_logger.warning("There seems to be an error with the databus, no official diff possible")
+        return
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.OfficialOntology).all():
@@ -121,6 +122,7 @@ def ontology_dev_update():
     allOntologiesInfo = queryDatabus.latestNtriples()
     if allOntologiesInfo == None:
         diff_logger.warning("There seems to be an error with the databus, no dev diff possible")
+        return
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.DevelopOntology).all():
