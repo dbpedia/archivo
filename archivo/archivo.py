@@ -120,7 +120,7 @@ def ontology_dev_update():
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.DevelopOntology).all():
-        diff_logger.info(f"Handling ontology: {ont.uri}")
+        diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.official, dev=True)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         try:
@@ -181,4 +181,4 @@ atexit.register(lambda: cron.shutdown(wait=False))
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug=True)
+    app.run(debug=False)

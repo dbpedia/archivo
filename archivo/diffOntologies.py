@@ -214,8 +214,10 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
 def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, devURI=""):
   if devURI != "":
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
+    ontoLocationURI = devURI
   else:
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+    ontoLocationURI = uri
   artifactPath = os.path.join(localDir, groupId, artifact)
   lastVersionPath = os.path.join(artifactPath, lastVersion)
   lastMetaFile = os.path.join(lastVersionPath, artifact + "_type=meta.json")
@@ -246,10 +248,8 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
   contentLength = metadata["http-data"]["content-length"]
   semVersion = metadata["ontology-info"]["semantic-version"]
 
-  if devURI == "":
-    isDiff, error = checkForNewVersion(uri, oldETag, oldLastMod, contentLength, bestHeader)
-  else:
-    isDiff, error = checkForNewVersion(devURI, oldETag, oldLastMod, contentLength, bestHeader)
+  
+  isDiff, error = checkForNewVersion(ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader)
   #isDiff = True
   localDiffDir = os.path.join(localDir, "." + uuid.uuid4().hex)
   if not os.path.isdir(localDiffDir):
@@ -260,7 +260,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     return None, "Header Access: "+error, None
   if isDiff:
-    diff_logger.info(f"Fond potential different version for {uri}")
+    diff_logger.info(f"Fond potential different version for {ontoLocationURI}")
     return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite, devURI=devURI)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
@@ -274,8 +274,8 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
   old = oldAxiomSet - newAxiomSet
   new = newAxiomSet - oldAxiomSet
 
-  diff_logger.info("Old:\n"+"\n".join(old))
-  diff_logger.info("New:\n"+"\n".join(new))
+  diff_logger.info("Old Axioms:\n"+"\n".join(old))
+  diff_logger.info("New Axioms:\n"+"\n".join(new))
 
   match = semanticVersionRegex.match(oldSemanticVersion)
   if match == None:
