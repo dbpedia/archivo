@@ -83,6 +83,8 @@ def ontology_discovery():
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
+    if allOntologiesInfo == None:
+        diff_logger.warning("There seems to be an error with the databus, no official diff possible")
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.OfficialOntology).all():
@@ -117,6 +119,8 @@ def ontology_official_update():
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
+    if allOntologiesInfo == None:
+        diff_logger.warning("There seems to be an error with the databus, no dev diff possible")
     diff_logger.info("Started diff at "+datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.DevelopOntology).all():
