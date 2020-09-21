@@ -113,7 +113,7 @@ def ontology_official_update():
         # commit changes to database
         db.session.commit()
 
-@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/5", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
