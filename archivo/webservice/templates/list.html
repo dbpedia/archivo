@@ -88,7 +88,7 @@
 
 {% for i in range(0, len) %}
 <tr>
-    <td><a href="/info?o={{Ontologies[i].ontology.URL}}">{{Ontologies[i].ontology.label}}</a></td>
+    <td><a href="{{Ontologies[i].ontology.infoURL}}">{{Ontologies[i].ontology.label}}</a></td>
     <td><a href="{{Ontologies[i].databusURI}}">{{Ontologies[i].databusURI}}</a></td>
     <td>{{Ontologies[i].source}}</td>
     <td>

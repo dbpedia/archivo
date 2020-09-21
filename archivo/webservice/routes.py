@@ -137,7 +137,9 @@ def newOntologiesList():
             crawlStatus = False
             latestFallout = db.session.query(dbModels.Fallout).filter_by(ontology=ont.uri).order_by(dbModels.Fallout.date.desc()).first()
             crawlError = f"{str(latestFallout.date)} : {latestFallout.error}"
-        result = {"ontology":{"label":ont.title, "URL":ont.uri},
+
+        infoURL = f'/info?o={ont.official}&dev' if isDev else f'/info?o={ont.uri}'
+        result = {"ontology":{"label":ont.title, "URL":ont.uri, "infoURL":infoURL},
                     "databusURI":databus_uri, 
                     "source":ont.source, 
                     "triples":v.triples,
