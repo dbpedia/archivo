@@ -16,7 +16,7 @@ indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vo
 falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
 
 # This is the discovery process
-#@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
+@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -79,7 +79,7 @@ def ontology_discovery():
         #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
-#@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -113,7 +113,7 @@ def ontology_official_update():
         # commit changes to database
         db.session.commit()
 
-#@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/5", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/5", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -149,7 +149,7 @@ def ontology_dev_update():
 
 
 
-#@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
     oldOntoIndex = queryDatabus.loadLastIndex()
     newOntoIndex = db.session.query(dbModels.Ontology).all()
