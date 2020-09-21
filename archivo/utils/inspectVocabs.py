@@ -272,3 +272,53 @@ def hackyShaclInspection(shaclURL):
         return "INFO"
     else:
         return "OK"
+
+
+def interpretShaclGraph(graph):
+    violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
+    warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
+    infoRef = URIRef("http://www.w3.org/ns/shacl#Info")
+
+    resultDict = {
+        "violations":None,
+        "warnings":None,
+        "infos":None
+    }
+
+    queryString=(
+        "SELECT DISTINCT ?node ?severity ?problem \n"
+        "WHERE {\n"
+        "?report a sh:ValidationReport .\n"
+        "?report sh:result ?result .\n"
+        "?result sh:focusNode ?node .\n"
+        "?result sh:resultMessage ?problem .\n"
+        "?result sh:resultSeverity ?severity .\n"
+        "}"
+        )
+
+    result=graph.query(queryString, initNs={"sh":URIRef("http://www.w3.org/ns/shacl#")})
+
+    for node, severity, problemText in result:
+        if severity == violationRef:
+            if resultDict["violations"] == None:
+                resultDict["violations"] = {}
+            if str(problemText) in resultDict["violations"]:
+                resultDict["violations"][str(problemText)].append(str(node))
+            else:
+                resultDict["violations"][str(problemText)] = [str(node)]
+        elif severity == warningRef:
+            if resultDict["warnings"] == None:
+                resultDict["warnings"] = {}
+            if str(problemText) in resultDict["warnings"]:
+                resultDict["warnings"][str(problemText)].append(str(node))
+            else:
+                resultDict["warnings"][str(problemText)] = [str(node)]
+        elif severity == infoRef:
+            if resultDict["infos"] == None:
+                resultDict["infos"] = {}
+            if str(problemText) in resultDict["infos"]:
+                resultDict["infos"][str(problemText)].append(str(node))
+            else:
+                resultDict["infos"][str(problemText)] = [str(node)]
+
+    return resultDict

@@ -101,16 +101,16 @@
                 </td>
                 <td>
                     {% if version.minLicense.conforms %}
-                        <a href="{{version.minLicense.url}}" class="check">✔</a>
+                        <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')" class="check">✔</a>
                     {% else %}
-                        <a href="{{version.minLicense.url}}" class="x">✘</a>
+                        <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')" class="x">✘</a>
                     {% endif %}
                 </td>
                 <td>
                     {% if version.goodLicense.conforms %}
-                        <a href="{{version.goodLicense.url}}" class="check">✔</a>
+                        <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')" class="check">✔</a>
                     {% else %}
-                        <a href="{{version.goodLicense.url}}" class="x">✘</a>
+                        <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')" class="x">✘</a>
                     {% endif %}
                 </td>
                 <td>
@@ -122,13 +122,13 @@
                 </td>
                 <td>
                     {% if version.lode.severity == 'OK' %}
-                        <a href="{{version.lode.url}}" class="check">✔</a>
+                        <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="check">✔</a>
                     {% elif version.lode.severity == 'INFO' %}
-                        <a href="{{version.lode.url}}" class="check"><strong>!</strong></a>
+                        <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="check"><strong>!</strong></a>
                     {% elif version.lode.severity == 'WARNING' %}
-                        <a href="{{version.lode.url}}" class="yellow"><strong>!</strong></a>
+                        <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="yellow"><strong>!</strong></a>
                     {% else %}
-                    <a href="{{version.lode.url}}" class="x">✘</a>
+                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="x">✘</a>
                     {% endif %}
                 </td>
             </tr>

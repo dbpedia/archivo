@@ -6,7 +6,7 @@ from wtforms import validators
 import os
 from utils.validation import TestSuite
 import crawlURIs
-from utils import ontoFiles, archivoConfig, queryDatabus, stringTools
+from utils import ontoFiles, archivoConfig, queryDatabus, stringTools, inspectVocabs
 import traceback
 import sys
 import requests
@@ -288,3 +288,12 @@ def ntriplesDownload():
 @app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
+
+@app.route("/shaclVisualisation")
+def shaclVisualisation():
+    args = request.args
+    shaclURI = args["r"] if "r" in args else None
+    if shaclURI != None:
+        g = inspectVocabs.getGraphOfVocabFile(shaclURI)
+        results = inspectVocabs.interpretShaclGraph(g)
+        return render_template("shaclReport.html", report=results)
