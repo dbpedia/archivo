@@ -103,7 +103,9 @@ class TestSuite:
             return success, stderr.decode("utf-8").split("\n")
 
 
-    def runAllTests(self, filePath, artifact, ontoGraph):
+    def runAllTests(self, pathToRdfFile, artifact):
+        ontoGraph = inspectVocabs.getGraphOfVocabFile(pathToRdfFile)
+        filePath, _ = os.path.split(pathToRdfFile)
         conformsLicense, reportGraphLicense, reportTextLicense = self.licenseViolationValidation(ontoGraph)
         with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
             print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
@@ -125,7 +127,3 @@ class TestSuite:
             print(self.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
         with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
             print(self.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
-        # profile check for ontology
-        #stdout, stderr = self.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-        #with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
-        #print(stderr + "\n" + stdout, file=profileCheckFile)
