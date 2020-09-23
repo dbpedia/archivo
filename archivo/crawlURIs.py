@@ -390,7 +390,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output)), None, None
 
-  
+  # generating the graph and runnning the queries
   graph = inspectVocabs.getGraphOfVocabFile(os.path.join(localDir, "parsedSource.ttl"))
   if graph == None:
     logger.error(f"RDFlib couldn't parse the file of {vocab_uri}")
@@ -468,7 +468,17 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, isNIR, "<br>".join(map(str, user_output)), None, None
   
-  
+  dbOntos = []
+  dbVersions = []
+  # check for trackthis links
+  trackThisURI = inspectVocabs.getTrackThisURI(graph)
+  if trackThisURI != None:
+    success, _,devOnt, devVersion = handleDevURI(real_ont_uri, trackThisURI, dataPath, testSuite, logger, user_output=user_output)
+    if success:
+      user_output.append(f"Added trackThis URI {trackThisURI}: {success_symbol}")
+      dbOntos.append(devOnt)
+      dbVersions.append(devVersion)
+
   #index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
@@ -516,7 +526,9 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
-  return True, isNIR, "<br>".join(map(str, user_output)), dbOntology, dbVersion
+    dbOntos.append(dbOntology)
+    dbVersions.append(dbVersion)
+    return True, isNIR, "<br>".join(map(str, user_output)), dbOntos, dbVersions
 
 
 def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
@@ -576,38 +588,15 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, "<br>".join(map(str, user_output)), None, None
   
-  try:
-    real_ont_uri=inspectVocabs.getNIRUri(graph)
-  except Exception:
-    traceback.print_exc(file=sys.stderr)
-    user_output.append(f"Finding Ontology URI: {failed_symbol}")
-    user_output.append(traceback.format_exc())
-    stringTools.deleteAllFilesInDirAndDir(localDir)
-    return False, "<br>".join(map(str, user_output)), None, None
-
-  if real_ont_uri == None:
-    logger.info("Couldn't find ontology uri, trying isDefinedBy and inScheme...")
-    user_output.append(f"Finding ontology URI: {failed_symbol}")
-    return False, "<br>".join(map(str, user_output)), None, None
-  
-  user_output.append(f"Found ontology URI: {str(real_ont_uri)} {success_symbol}")
- 
-
   # here we go if the uri is NIR and  its resolveable
-  real_ont_uri = str(real_ont_uri)
-
-  logger.info(f"Found non-information URI: {real_ont_uri}")
-  groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
+  
+  groupId, artifact = stringTools.generateGroupAndArtifactFromUri(nir, dev=True)
   if groupId == None or artifact == None:
     logger.warning(f"Malformed Uri {sourceURI}")
-    user_output.append(f"Malformed Uri {str(real_ont_uri)}")
+    user_output.append(f"Malformed Uri {str(nir)}")
     stringTools.deleteAllFilesInDirAndDir(localDir)
     return False, str("<br>".join(map(str, user_output))), None, None
-  # make dev artifact
-  artifact = artifact + "--DEV"
   
-  
-  #index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
   os.makedirs(newVersionPath, exist_ok=True)
   # generate parent pom
@@ -632,7 +621,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     uri = sourceURI,
     source="DEV",
     accessDate=accessDate,
-    title=ontTitle + " DEV" if ontTitle != None else real_ont_uri + " DEV",
+    title=ontTitle + " DEV" if ontTitle != None else nir + " DEV",
     official=nir,
   )
   # new release
@@ -652,7 +641,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     logger.error(deployLog)
     return False, "<br>".join(map(str, user_output)), dbOntology, dbVersion
   else:
-    logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
+    logger.info(f"Successfully deployed the new dev ontology {sourceURI}")
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
   return True, "<br>".join(map(str, user_output)), dbOntology, dbVersion

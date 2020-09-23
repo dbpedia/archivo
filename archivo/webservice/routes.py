@@ -36,10 +36,12 @@ def addOntology():
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     if form.validate_on_submit():
         uri = form.suggestUrl.data.strip()
-        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
+        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
         if success:
-            db.session.add(dbOnt)
-            db.session.add(dbVersion)
+            for ont in dbOnts:
+                db.session.add(ont)
+            for version in dbVersions:
+                db.session.add(version)
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(

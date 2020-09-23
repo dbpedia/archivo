@@ -142,7 +142,21 @@ def getDescription(graph):
     else:
         return None
 
-
+def getTrackThisURI(graph):
+    queryString=(
+        "SELECT DISTINCT ?trackURI\n"
+        "WHERE {\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
+        " ?uri <http://archivo.dbpedia.org/trackThis> ?trackURI ."
+        "}"
+        )
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
+    if result != None and len(result) > 0:
+        for row in result:
+            return str(row[0])
+    else:
+        return None
 # possible rdfs:comments for the databus
 
 def getComment(graph):

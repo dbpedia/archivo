@@ -20,20 +20,16 @@ falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
-
-
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
-    # load the other sources
-    #hashUris = ontoFiles.loadListFile(archivoConfig.hashUriPath)
-
-    #prefixUris = ontoFiles.secondColumnOfTSV(archivoConfig.prefixUrisPath)
 
     for uri in crawlURIs.getLovUrls():
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, allOnts, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
+        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
         if success:
-            db.session.add(dbOnt)
-            db.session.add(dbVersion)
+            for ont in dbOnts:
+                db.session.add(ont)
+            for version in dbVersions:
+                db.session.add(version)
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(
@@ -47,10 +43,12 @@ def ontology_discovery():
 
     for uri in crawlURIs.getPrefixURLs():
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-        success, isNir, message, dbOnt, dbVersion = crawlURIs.handleNewUri(uri, allOnts, dataPath, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
+        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
         if success:
-            db.session.add(dbOnt)
-            db.session.add(dbVersion)
+            for ont in dbOnts:
+                db.session.add(ont)
+            for version in dbVersions:
+                db.session.add(version)
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(
