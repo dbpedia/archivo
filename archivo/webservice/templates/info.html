@@ -18,8 +18,8 @@
 
 {% if general_info.hasDev %}
 <p style="text-align:center;">
-    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}">Official</a>
-    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir}}&dev">Develop</a>
+    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir.encoded}}">Official</a>
+    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir.encoded}}&dev">Develop</a>
 </p>
 {% endif %}
 
@@ -33,7 +33,7 @@
     <table style="width:400px; border: 1px solid black;">
         <tr>
             <td><b>Ontology URI</b></td>
-            <td><a href="{{general_info.nir}}">{{general_info.nir}}</a></td>
+            <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
         </tr>
         <tr>
             <td><b>First Discovery</b></td>
@@ -87,13 +87,13 @@
                 <td>{{version.triples}}</td>
                 <td>
                     {% if general_info.isDev %}
-                    <a href="/download?o={{general_info.nir}}&f=owl&v={{version.version.label}}&dev">owl</a>,
-                    <a href="/download?o={{general_info.nir}}&f=ttl&v={{version.version.label}}&dev">ttl</a>,
-                    <a href="/download?o={{general_info.nir}}&f=nt&v={{version.version.label}}&dev">nt</a>
+                    <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}&dev">owl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}&dev">ttl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}&dev">nt</a>
                     {% else %}
-                    <a href="/download?o={{general_info.nir}}&f=owl&v={{version.version.label}}">owl</a>,
-                    <a href="/download?o={{general_info.nir}}&f=ttl&v={{version.version.label}}">ttl</a>,
-                    <a href="/download?o={{general_info.nir}}&f=nt&v={{version.version.label}}">nt</a>
+                    <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}">owl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}">ttl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}">nt</a>
                     {% endif %}
                 </td>
                 <td>{{version.stars}}</td>

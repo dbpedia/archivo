@@ -12,7 +12,7 @@ import sys
 import requests
 import markdown
 from flask_accept import accept, accept_fallback
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 from utils.archivoLogs import webservice_logger
 from datetime import datetime
 import dbUtils
@@ -62,6 +62,7 @@ def addOntology():
 def vocabInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
     form = InfoForm()
     allOntos = [ont.uri for ont in db.session.query(dbModels.OfficialOntology).all()]
@@ -89,7 +90,7 @@ def vocabInfo():
         general_info["title"] = title
         general_info["comment"] = comment
         general_info["databusArtifact"] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        general_info["nir"] = foundUri
+        general_info["nir"] = {"regular":foundUri, "encoded":quote(foundUri)}
         return render_template("info.html", versions_info=sorted(versions_info, key=lambda d: d["version"]["label"], reverse=True), general_info=general_info, form=form)
     return render_template("info.html", general_info={"message":"Enter an ontology URI!"}, form=form)
 
@@ -97,6 +98,7 @@ def vocabInfo():
 def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    ontoUri = unquote(ontoUri)
     if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
@@ -105,6 +107,7 @@ def turtleInfo():
 def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    ontoUri = unquote(ontoUri)
     if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
@@ -113,6 +116,7 @@ def rdfxmlInfo():
 def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
+    ontoUri = unquote(ontoUri)
     if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
@@ -146,8 +150,7 @@ def newOntologiesList():
             crawlError = f"{str(latestFallout.date)} : {latestFallout.error}"
 
         infoURL = f'/info?o={ont.official}&dev' if isDev else f'/info?o={ont.uri}'
-        downloadURL = f'/download?o={ont.official}&dev' if isDev else f'/download?o={ont.uri}'
-        
+        downloadURL = f'/download?o={quote(ont.official)}&dev' if isDev else f'/download?o={quote(ont.uri)}'
         result = {"ontology":{"label":ont.title, "URL":ont.uri, "infoURL":infoURL, "downloadURL":downloadURL},
                     "databusURI":databus_uri, 
                     "source":ont.source, 
@@ -226,6 +229,7 @@ def downloadOntology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "")
     version = args.get("v", "")
+    ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
@@ -249,6 +253,7 @@ def turtleDownload():
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
     isDev = True if "dev" in args else False
+    ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
@@ -267,6 +272,7 @@ def rdfxmlDownload():
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
     isDev = True if "dev" in args else False
+    ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
@@ -285,6 +291,7 @@ def ntriplesDownload():
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
     isDev = True if "dev" in args else False
+    ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
