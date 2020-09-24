@@ -84,6 +84,7 @@ def vocabInfo():
         if isDev:
             ont = ont.devel
         general_info["source"] = ont.source
+        general_info["isDev"] = isDev
         general_info["archivement"] = ont.accessDate
         general_info["title"] = title
         general_info["comment"] = comment
@@ -145,7 +146,9 @@ def newOntologiesList():
             crawlError = f"{str(latestFallout.date)} : {latestFallout.error}"
 
         infoURL = f'/info?o={ont.official}&dev' if isDev else f'/info?o={ont.uri}'
-        result = {"ontology":{"label":ont.title, "URL":ont.uri, "infoURL":infoURL},
+        downloadURL = f'/download?o={ont.official}&dev' if isDev else f'/download?o={ont.uri}'
+        
+        result = {"ontology":{"label":ont.title, "URL":ont.uri, "infoURL":infoURL, "downloadURL":downloadURL},
                     "databusURI":databus_uri, 
                     "source":ont.source, 
                     "triples":v.triples,
@@ -158,7 +161,7 @@ def newOntologiesList():
                     "consistency":v.consistency,
                     "lodeSeverity":v.lodeSeverity}
         ontos.append(result)
-    return render_template("list.html", len=len(ontos), Ontologies=ontos, ontoNumber=len(ontos))
+    return render_template("list.html", isDev=isDev, Ontologies=ontos, ontoNumber=len(ontos))
 
 
 def generateInfoDict(metadata, source, databusLink, latestReleaseLink):
@@ -223,10 +226,11 @@ def downloadOntology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "")
     version = args.get("v", "")
+    isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
     if rdfFormat == "":
         rdfFormat = "owl"
     if version == "":
@@ -244,10 +248,11 @@ def turtleDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
+    isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
     if rdfFormat == "":
         rdfFormat = "ttl"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
@@ -261,10 +266,11 @@ def rdfxmlDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
+    isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
     if rdfFormat == "":
         rdfFormat = "owl"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
@@ -278,10 +284,11 @@ def ntriplesDownload():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     rdfFormat = args["f"] if "f" in args else ""
+    isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI)
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
     if rdfFormat == "":
         rdfFormat = "nt"
     downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)

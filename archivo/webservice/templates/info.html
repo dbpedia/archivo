@@ -86,9 +86,15 @@
                 </td>
                 <td>{{version.triples}}</td>
                 <td>
+                    {% if general_info.isDev %}
+                    <a href="/download?o={{general_info.nir}}&f=owl&v={{version.version.label}}&dev">owl</a>,
+                    <a href="/download?o={{general_info.nir}}&f=ttl&v={{version.version.label}}&dev">ttl</a>,
+                    <a href="/download?o={{general_info.nir}}&f=nt&v={{version.version.label}}&dev">nt</a>
+                    {% else %}
                     <a href="/download?o={{general_info.nir}}&f=owl&v={{version.version.label}}">owl</a>,
                     <a href="/download?o={{general_info.nir}}&f=ttl&v={{version.version.label}}">ttl</a>,
                     <a href="/download?o={{general_info.nir}}&f=nt&v={{version.version.label}}">nt</a>
+                    {% endif %}
                 </td>
                 <td>{{version.stars}}</td>
                 <td>{{version.semversion}}</td>

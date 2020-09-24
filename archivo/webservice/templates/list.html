@@ -86,63 +86,63 @@
     </p>
 
 
-{% for i in range(0, len) %}
+{% for onto in Ontologies %}
 <tr>
-    <td><a href="{{Ontologies[i].ontology.infoURL}}">{{Ontologies[i].ontology.label}}</a></td>
-    <td><a href="{{Ontologies[i].databusURI}}">{{Ontologies[i].databusURI}}</a></td>
-    <td>{{Ontologies[i].source}}</td>
+    <td><a href="{{onto.ontology.infoURL}}">{{onto.ontology.label}}</a></td>
+    <td><a href="{{onto.databusURI}}">Link</a></td>
+    <td>{{onto.source}}</td>
     <td>
-        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=owl">owl</a>,
-        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=ttl">ttl</a>,
-        <a href="/download?o={{Ontologies[i].ontology.URL}}&f=nt">nt</a>
+        <a href="{{onto.ontology.downloadURL}}&f=owl">owl</a>,
+        <a href="{{onto.ontology.downloadURL}}&f=ttl">ttl</a>,
+        <a href="{{onto.ontology.downlaodURL}}&f=nt">nt</a>
     </td>
-    <td>{{Ontologies[i].triples}}</td>
-    <td>{{Ontologies[i].stars}}</td>
-    <td>{{Ontologies[i].semVersion}}</td>
+    <td>{{onto.triples}}</td>
+    <td>{{onto.stars}}</td>
+    <td>{{onto.semVersion}}</td>
     <td>
-        {% if Ontologies[i].parsing %}
+        {% if onto.parsing %}
             <div class="check">✔</div>
         {% else %}
             <div class="x">✘</div>
         {% endif %}
     </td>
     <td>
-        {% if Ontologies[i].minLicense %}
+        {% if onto.minLicense %}
             <div class="check">✔</div>
         {% else %}
             <div class="x">✘</div>
         {% endif %}
     </td>
     <td>
-        {% if Ontologies[i].goodLicense %}
+        {% if onto.goodLicense %}
             <div class="check">✔</div>
         {% else %}
             <div class="x">✘</div>
         {% endif %}
     </td>
     <td>
-        {% if Ontologies[i].consistency %}
+        {% if onto.consistency %}
             <div class="check">✔</div>
         {% else %}
             <div class="x">✘</div>
         {% endif %}
     </td>
     <td>
-        {% if Ontologies[i].lodeSeverity == 'OK' %}
+        {% if onto.lodeSeverity == 'OK' %}
             <div href="" class="check">✔</div>
-        {% elif Ontologies[i].lodeSeverity == 'INFO' %}
+        {% elif onto.lodeSeverity == 'INFO' %}
             <div class="check"><strong>!</strong></div>
-        {% elif Ontologies[i].lodeSeverity == 'WARNING' %}
+        {% elif onto.lodeSeverity == 'WARNING' %}
             <div href="" class="yellow"><strong>!</strong></div>
         {% else %}
             <div href="" class="x">✘</div>
         {% endif %}
     </td>
     <td>
-        {% if Ontologies[i].crawling.status %}
+        {% if onto.crawling.status %}
             <span class="check">✔</span>
         {% else %}
-            <span title="{{Ontologies[i].crawling.error}}" class="x">✘</span>
+            <span title="{{onto.crawling.error}}" class="x">✘</span>
         {% endif %}
     </td>
 </tr>
