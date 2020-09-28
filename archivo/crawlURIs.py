@@ -88,6 +88,8 @@ def checkRobot(uri):
     return True, "SSL error"
   except requests.exceptions.ConnectionError:
     return True, "Connection Error"
+  except requests.exceptions.InvalidSchema:
+    return True, f'Invalid schema: {robotsUrl}'
   if req.status_code > 400:
     # if robots.txt is not accessible, we are allowed
     return True, None

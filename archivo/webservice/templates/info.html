@@ -35,6 +35,12 @@
             <td><b>Ontology URI</b></td>
             <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
         </tr>
+        {% if general_info.sourceURI %}
+        <tr>
+            <td><b>Source URI</b></td>
+            <td><a href="{{ general_info.sourceURI }}">{{ general_info.sourceURI }}</a></td>
+        </tr>
+        {% endif %}
         <tr>
             <td><b>First Discovery</b></td>
             <td>{{general_info.archivement}}</td>

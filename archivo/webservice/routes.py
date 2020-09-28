@@ -84,6 +84,7 @@ def vocabInfo():
             return render_template("info.html", general_info=general_info, form=form)
         if isDev:
             ont = ont.devel
+            general_info["sourceURI"] = ont.uri
         general_info["source"] = ont.source
         general_info["isDev"] = isDev
         general_info["archivement"] = ont.accessDate
