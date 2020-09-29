@@ -16,7 +16,7 @@ from urllib.parse import quote, unquote
 from utils.archivoLogs import webservice_logger
 from datetime import datetime
 import dbUtils
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 archivoPath = os.path.split(app.instance_path)[0]
 testingSuite = TestSuite(archivoPath)
@@ -228,19 +228,18 @@ def licensesPage():
 def downloadOntology():
     args = request.args
     ontoUri = args.get("o", "")
-    rdfFormat = args.get("f", "")
-    version = args.get("v", "")
+    rdfFormat = args.get("f", "owl")
+    version = args.get("v", None)
     ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    if rdfFormat == "":
-        rdfFormat = "owl"
-    if version == "":
-        version = None
-    downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
+    try:
+        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
+    except URLError as e:
+        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
 
     if downloadLink != None:
         return redirect(downloadLink, code=307)
@@ -251,17 +250,19 @@ def downloadOntology():
 @downloadOntology.support("text/turtle")
 def turtleDownload():
     args = request.args
-    ontoUri = args["o"] if "o" in args else ""
-    rdfFormat = args["f"] if "f" in args else ""
+    ontoUri = args.get('o', '')
+    rdfFormat = args.get('f', 'ttl')
     isDev = True if "dev" in args else False
+    version = args.get("v", None)
     ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    if rdfFormat == "":
-        rdfFormat = "ttl"
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
+    try:
+        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
+    except URLError as e:
+        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:
@@ -270,17 +271,19 @@ def turtleDownload():
 @downloadOntology.support("application/rdf+xml")
 def rdfxmlDownload():
     args = request.args
-    ontoUri = args["o"] if "o" in args else ""
-    rdfFormat = args["f"] if "f" in args else ""
+    ontoUri = args.get('o', '')
+    rdfFormat = args.get('f', 'owl')
     isDev = True if "dev" in args else False
+    version = args.get("v", None)
     ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    if rdfFormat == "":
-        rdfFormat = "owl"
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
+    try:
+        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
+    except URLError as e:
+        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:
@@ -289,17 +292,19 @@ def rdfxmlDownload():
 @downloadOntology.support("application/n-triples")
 def ntriplesDownload():
     args = request.args
-    ontoUri = args["o"] if "o" in args else ""
-    rdfFormat = args["f"] if "f" in args else ""
+    ontoUri = args.get('o', '')
+    rdfFormat = args.get('f', 'nt')
+    version = args.get("v", None)
     isDev = True if "dev" in args else False
     ontoUri = unquote(ontoUri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    if rdfFormat == "":
-        rdfFormat = "nt"
-    downloadLink =queryDatabus.getLatestTurtleURL(group, artifact, fileExt=rdfFormat)
+    try:
+        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
+    except URLError as e:
+        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
     if downloadLink != None:
         return redirect(downloadLink, code=307)
     else:

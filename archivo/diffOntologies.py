@@ -148,6 +148,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
     errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[newBestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
       diff_logger.error("File not parseable")
+      diff_logger.error(errors)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       return None, f"Couldn't parse File: {errors}", None
     getSortedNtriples(oldNtriples, os.path.join(localDiffDir, "oldVersionSorted.nt"), uri, inputType="ntriples")
