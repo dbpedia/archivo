@@ -11,6 +11,10 @@ ignore_props = [
     "http://purl.org/dc/terms/modified"
 ]
 
+# archivo trackthis uri
+track_this_uri = 'http://archivo.dbpedia.org/trackThis'
+
+
 # edit for your dataset
 downloadUrl="http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
 packDir="/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
