@@ -6,7 +6,7 @@ from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 import json
 import traceback
-from utils import stringTools
+from utils import stringTools, archivoConfig
 from urllib.parse import quote as urlQuote
 
 descriptionNamespaceGraph = Graph()
@@ -148,7 +148,7 @@ def getTrackThisURI(graph):
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
-        " ?uri <http://archivo.dbpedia.org/trackThis> ?trackURI ."
+        f" ?uri <{archivoConfig.track_this_uri}> ?trackURI ."
         "}"
         )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})

@@ -147,7 +147,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
     #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
     errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[newBestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
-      diff_logger.error("File not parseable")
+      diff_logger.error(f"File of {uri} not parseable")
       diff_logger.error(errors)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       return None, f"Couldn't parse File: {errors}", None
@@ -184,7 +184,19 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
         print("\n".join(oldAxioms), file=oldAxiomsFile)
       with open(os.path.join(newVersionPath, artifactName + "_type=diff_axioms=new.dl"), "w+") as newAxiomsFile:
         print("\n".join(newAxioms), file=newAxiomsFile) 
-      dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger, devURI=devURI)
+
+      dbVersions = []
+      #dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger, devURI=devURI)
+      new_version = crawlURIs.ArchivoVersion(uri, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, diff_logger, semanticVersion=newSemVersion, devURI=devURI)
+      new_version.generateFiles()
+      new_version.generatePomAndDoc()
+      if not new_version.isDev:
+        succ, _, trackOnt, trackVersion = new_version.handleTrackThis()
+        if succ:
+          dbVersions.append(trackVersion)
+      else:
+        trackOnt = None
+      dbVersions.append(new_version.getdbVersion())
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       if not os.path.isfile(os.path.join(groupDir, "pom.xml")):
         with open(os.path.join(groupDir, "pom.xml"), "w+") as parentPomFile:
@@ -202,13 +214,13 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
       if status > 0:
         diff_logger.critical("Couldn't deploy new diff version")
         diff_logger.info(log)
-        return None, "ERROR: Couldn't deploy to databus!", dbVersion
+        return None, "ERROR: Couldn't deploy to databus!", trackOnt, dbVersions
       else:
-        return True, "OK", dbVersion
+        return True, "OK", trackOnt, dbVersions
   except FileNotFoundError:
     diff_logger.critical(f"Couldn't find file for {uri}")
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
-    return None, f"INTERNAL ERROR: Couldn't find file for {uri}"
+    return None, f"INTERNAL ERROR: Couldn't find file for {uri}", None, None
 
 
 
@@ -259,14 +271,14 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
   if isDiff == None:
     diff_logger.warning("Header Access: "+error)
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
-    return None, "Header Access: "+error, None
+    return None, "Header Access: "+error, None, None
   if isDiff:
     diff_logger.info(f"Fond potential different version for {ontoLocationURI}")
     return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite, devURI=devURI)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     diff_logger.info(f"No different version for {uri}")
-    return False, f"No different version for {uri}", None
+    return False, f"No different version for {uri}", None, None
 
 
 def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):

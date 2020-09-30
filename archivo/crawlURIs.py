@@ -162,162 +162,181 @@ def downloadSource(uri, path, name, accHeader, encoding=None):
     return False, "", str(e)
 
 
-def generateNewRelease(vocab_uri, filePath, artifact, pathToOrigFile, bestHeader, response, accessDate, testSuite, logger, semVersion="1.0.0", user_output=[], devURI=""):
-  if devURI == "":
-    locURI = vocab_uri
-  else:
-    locURI = devURI
+class ArchivoVersion():
 
-  artifactPath, version = os.path.split(filePath)
-  groupPath = os.path.split(artifactPath)[0]
-  groupId = os.path.split(groupPath)[1]
-  if len(response.history) > 0:
-    nirHeader = str(response.history[0].headers)
-  else:
-    nirHeader = ""
-  location_url = response.url
-  # generate parsed variants of the ontology
-  rapperErrors, rapperWarnings=ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.ttl"), outputType="turtle", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
-  user_output.append(f"Generating Turtle File: {success_symbol}") if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")) else user_output.append(f"Generating Turtle File: {failed_symbol}")
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.nt"), outputType="ntriples", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
-  user_output.append(f"Generating N-Triples File: {success_symbol}") if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.nt")) else user_output.append(f"Generating N-Triples File: {failed_symbol}")
-  ontoFiles.parseRDFSource(pathToOrigFile, os.path.join(filePath, artifact+"_type=parsed.owl"), outputType="rdfxml", deleteEmpty=True, sourceUri=vocab_uri, inputFormat=rdfHeadersMapping[bestHeader], logger=logger)
-  user_output.append(f"Generating OWL File: {success_symbol}") if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.owl")) else user_output.append(f"Generating OWL File: {failed_symbol}")
-  triples = ontoFiles.getParsedTriples(pathToOrigFile, inputFormat=rdfHeadersMapping[bestHeader])[0]
-  if triples == None:
-    logger.critical(f"There was an error parsing the file for URI {locURI}")
-    triples = 0
-  if os.path.isfile(os.path.join(filePath, artifact+"_type=parsed.ttl")):
-    ontoGraph = inspectVocabs.getGraphOfVocabFile(os.path.join(filePath, artifact+"_type=parsed.ttl"))
+  def __init__(self, nir, pathToOrigFile, response, testSuite, accessDate, bestHeader, logger, semanticVersion='1.0.0',devURI='', user_output=[]):
+    self.nir = nir
+    self.isDev = False if devURI == '' else True
+    self.original_file = pathToOrigFile
+    self.file_path, _ = os.path.split(pathToOrigFile)
+    self.artifact_path, self.version = os.path.split(self.file_path)
+    self.group_path, self.artifact = os.path.split(self.artifact_path)
+    self.data_path, self.group = os.path.split(self.group_path)
+    self.location_uri = response.url if devURI == '' else devURI
+    self.reference_uri = devURI if self.isDev else nir
+    self.response = response
+    self.test_suite = testSuite
+    self.access_date = accessDate
+    self.best_header = bestHeader
+    self.semantic_version = semanticVersion
+    self.user_output = user_output
+    self.user_output.append(f'New Version for {self.reference_uri} ...')
+    self.logger = logger
+    if len(self.response.history) > 0:
+      self.nir_header = str(self.response.history[0].headers)
+    else:
+      self.nir_header = ""
+    self.location_url = self.response.url
+
+  def generateFiles(self):
+    raw_file_path = os.path.join(self.file_path, self.artifact)
+    self.rapper_errors, rapperWarnings=ontoFiles.parseRDFSource(self.original_file, raw_file_path+"_type=parsed.nt", outputType="ntriples", deleteEmpty=True, sourceUri=self.nir, inputFormat=rdfHeadersMapping[self.best_header], logger=self.logger)
+    self.user_output.append(f"Generating N-Triples File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.nt") else user_output.append(f"Generating N-Triples File: {failed_symbol}")
+
+    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.nt", raw_file_path+"_type=parsed.ttl", outputType="turtle", deleteEmpty=True, inputFormat='ntriples', logger=self.logger)
+    self.user_output.append(f"Generating Turtle File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.ttl") else user_output.append(f"Generating Turtle File: {failed_symbol}")
+    
+    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.nt", raw_file_path+"_type=parsed.owl", outputType="rdfxml", deleteEmpty=True, inputFormat='ntriples', logger=self.logger)
+    self.user_output.append(f"Generating OWL File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.owl") else user_output.append(f"Generating OWL File: {failed_symbol}")
+
+    self.triples = ontoFiles.getParsedTriples(self.original_file, inputFormat=rdfHeadersMapping[self.best_header])[0]
+    
+    self.graph = inspectVocabs.getGraphOfVocabFile(raw_file_path+"_type=parsed.ttl")
     # shacl-validation
     # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
     # no empty parsed files since shacl is valid on empty files.
-    conformsLicense, reportGraphLicense, reportTextLicense = testSuite.licenseViolationValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=minLicense.ttl"), "w+") as minLicenseFile:
+    self.conforms_licenseI, reportGraphLicense, reportTextLicense = self.test_suite.licenseViolationValidation(self.graph)
+    with open(raw_file_path+"_type=shaclReport_validates=minLicense.ttl", "w+") as minLicenseFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
-    conformsLode, reportGraphLode, reportTextLode = testSuite.lodeReadyValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=lodeMetadata.ttl"), "w+") as lodeMetaFile:
+
+    self.conforms_lode, reportGraphLode, reportTextLode = self.test_suite.lodeReadyValidation(self.graph)
+    self.lode_severity = inspectVocabs.hackyShaclStringInpection(inspectVocabs.getTurtleGraph(reportGraphLode))
+    with open(raw_file_path+"_type=shaclReport_validates=lodeMetadata.ttl", "w+") as lodeMetaFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
-    conformsLicense2, reportGraphLicense2, reportTextLicense2 = testSuite.licenseWarningValidation(ontoGraph)
-    with open(os.path.join(filePath, artifact+"_type=shaclReport_validates=goodLicense.ttl"), "w+") as advLicenseFile:
+    self.conforms_licenseII, reportGraphLicense2, reportTextLicense2 = self.test_suite.licenseWarningValidation(self.graph)
+    with open(raw_file_path+"_type=shaclReport_validates=goodLicense.ttl", "w+") as advLicenseFile:
       print(inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile) 
     # checks consistency with and without imports
-    isConsistent, output = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False)
-    isConsistentNoImports, outputNoImports = testSuite.getConsistency(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True)
-    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=FULL.txt"), "w+") as consistencyReport:
+    self.is_consistent, output = self.test_suite.getConsistency(raw_file_path+"_type=parsed.ttl", ignoreImports=False)
+    self.is_consistent_noimports, outputNoImports = self.test_suite.getConsistency(raw_file_path+"_type=parsed.ttl", ignoreImports=True)
+    with open(raw_file_path+"_type=pelletConsistency_imports=FULL.txt", "w+") as consistencyReport:
       print(output, file=consistencyReport)
-    with open(os.path.join(filePath, artifact+"_type=pelletConsistency_imports=NONE.txt"), "w+") as consistencyReportNoImports:
+    with open(raw_file_path+"_type=pelletConsistency_imports=NONE.txt", "w+") as consistencyReportNoImports:
       print(outputNoImports, file=consistencyReportNoImports)
     # print pellet info files
-    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=FULL.txt"), "w+") as pelletInfoFile:
-      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=False), file=pelletInfoFile)
-    with open(os.path.join(filePath, artifact+"_type=pelletInfo_imports=NONE.txt"), "w+") as pelletInfoFileNoImports:
-      print(testSuite.getPelletInfo(os.path.join(filePath, artifact+"_type=parsed.ttl"), ignoreImports=True), file=pelletInfoFileNoImports)
+    with open(raw_file_path+"_type=pelletInfo_imports=FULL.txt", "w+") as pelletInfoFile:
+      print(self.test_suite.getPelletInfo(raw_file_path+"_type=parsed.ttl", ignoreImports=False), file=pelletInfoFile)
+    with open(raw_file_path+"_type=pelletInfo_imports=NONE.txt", "w+") as pelletInfoFileNoImports:
+      print(self.test_suite.getPelletInfo(raw_file_path+"_type=parsed.ttl", ignoreImports=True), file=pelletInfoFileNoImports)
     # profile check for ontology
-    #stdout, stderr = self.getProfileCheck(os.path.join(filePath, artifact+"_type=parsed.ttl"))
-    #with open(os.path.join(filePath, artifact+"_type=profile.txt"), "w+") as profileCheckFile:
-    #print(stderr + "\n" + stdout, file=profileCheckFile)
-  else:
-    conformsLicense = "Error - No turtle file available"
-    conformsLicense2 = "Error - No turtle file available"
-    conformsLode = "Error - No turtle file available"
-    ontoGraph = None
-    parseable = False
-    isConsistent = "Error - No turtle file available"
-    isConsistentNoImports = "Error - No turtle file available"
+    stdout, stderr = self.test_suite.getProfileCheck(raw_file_path+"_type=parsed.ttl")
+    with open(raw_file_path+"_type=profile.txt", "w+") as profileCheckFile:
+      print(stderr + "\n" + stdout, file=profileCheckFile)
 
-  # write the metadata json file
-  ontoFiles.altWriteVocabInformation(pathToFile=os.path.join(filePath, artifact+"_type=meta.json"),
-                                  definedByUri=locURI,
-                                  lastModified=stringTools.getLastModifiedFromResponse(response),
-                                  rapperErrors=rapperErrors,
-                                  rapperWarnings=rapperWarnings,
-                                  etag=stringTools.getEtagFromResponse(response),
-                                  tripleSize=triples,
-                                  bestHeader=bestHeader,
-                                  licenseViolationsBool=conformsLicense,
-                                  licenseWarningsBool=conformsLicense2,
-                                  consistentWithImports=isConsistent,
-                                  consistentWithoutImports=isConsistentNoImports,
-                                  lodeConform=conformsLode,
-                                  accessed= accessDate,
-                                  headerString=str(response.headers),
-                                  nirHeader = nirHeader,
-                                  contentLenght=stringTools.getContentLengthFromResponse(response),
-                                  semVersion=semVersion,
-                                  snapshot_url=location_url
-                                  )
-  if triples > 0:                                                                
-    docustring, lode_error = getLodeDocuFile(locURI, logger=logger)
+    # write the metadata json file
+    ontoFiles.altWriteVocabInformation(pathToFile=raw_file_path+"_type=meta.json",
+                                      definedByUri=self.reference_uri,
+                                      lastModified=stringTools.getLastModifiedFromResponse(self.response),
+                                      rapperErrors=self.rapper_errors,
+                                      rapperWarnings=rapperWarnings,
+                                      etag=stringTools.getEtagFromResponse(self.response),
+                                      tripleSize=self.triples,
+                                      bestHeader=self.best_header,
+                                      licenseViolationsBool=self.conforms_licenseI,
+                                      licenseWarningsBool=self.conforms_licenseII,
+                                      consistentWithImports=self.is_consistent,
+                                      consistentWithoutImports=self.is_consistent_noimports,
+                                      lodeConform=self.conforms_lode,
+                                      accessed= self.access_date,
+                                      headerString=str(self.response.headers),
+                                      nirHeader = self.nir_header,
+                                      contentLenght=stringTools.getContentLengthFromResponse(self.response),
+                                      semVersion=self.semantic_version,
+                                      snapshot_url=self.location_url
+                                      )
+    # generate lode docu
+    docustring, lode_error = getLodeDocuFile(self.location_uri, logger=self.logger)
     if docustring != None:
-      user_output.append(f"Generating LODE-Docu: {success_symbol}")
-      with open(filePath + os.sep + artifact + "_type=generatedDocu.html", "w+") as docufile:
+      self.user_output.append(f"Generating LODE-Docu: {success_symbol}")
+      with open(raw_file_path+ "_type=generatedDocu.html", "w+") as docufile:
         print(docustring, file=docufile)
     else:
       user_output.append(f"Generating LODE-Docu: {failed_symbol}")
       user_output.append(lode_error)
-    #oopsReport, oops_error = getOOPSReport(ontoFiles.getParsedRdf(pathToOrigFile, logger=logger), logger=logger)
-    #if oopsReport != None:
-      #user_output.append(f"Generating OOPS-report: {success_symbol}")
-      #with open(os.path.join(filePath, artifact + "_type=OOPS.rdf"), "w+") as oopsFile:
-        #print(oopsReport, file=oopsFile)
-    #else:
-      #oops_error = "Switched off because it took to long"
-      #user_output.append(f"Generating OOPS-report: {failed_symbol}")
-      #user_output.append(oops_error)
-  generatePomAndMdFile(vocab_uri, os.path.split(filePath)[0], groupId, artifact, version, ontoGraph, location_url, isDev=True if devURI != "" else False)
-  consistencyCheck=lambda s: True if s == "Yes" else False
-  dbVersion = Version(
-            version=datetime.strptime(version, "%Y.%m.%d-%H%M%S"),
-            semanticVersion=semVersion,
-            stars=ontoFiles.measureStars(rapperErrors, conformsLicense, isConsistent, isConsistentNoImports, conformsLicense2),
-            triples=triples,
-            parsing=True if rapperErrors == "" else False,
-            licenseI=conformsLicense,
-            licenseII=conformsLicense2,
-            consistency=consistencyCheck(isConsistent),
-            lodeSeverity=inspectVocabs.hackyShaclStringInpection(inspectVocabs.getTurtleGraph(reportGraphLode)),
-            ontology=locURI,
-            )
-  return dbVersion
-
-def generatePomAndMdFile(uri, artifactPath, groupId, artifact, version, ontograph, location_url, isDev=False):
-  datetime_obj= datetime.strptime(version, "%Y.%m.%d-%H%M%S")
-  versionIRI = str(None) 
-  md_label=uri if not isDev else uri + " DEV"
-  md_description=Template(docTemplates.description) if not isDev else Template(docTemplates.description_dev)
-  md_comment=Template(docTemplates.default_explaination).safe_substitute(non_information_uri=uri)
-  license=None
-  if ontograph != None:
-    label = inspectVocabs.getLabel(ontograph)
-    description = inspectVocabs.getDescription(ontograph)
-    comment = inspectVocabs.getComment(ontograph)
-    versionIRI = inspectVocabs.getOwlVersionIRI(ontograph)
-    if label != None:
-      md_label = label if not isDev else label + " DEV"
-
-    if comment != None:
-      md_comment = comment
     
-    if description != None:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + docTemplates.description_intro + "\n\n" + description
-    else:
-      md_description = md_description.safe_substitute(non_information_uri=uri, snapshot_url=location_url, owl_version_iri=versionIRI, date=str(datetime_obj))
-    license =inspectVocabs.getLicense(ontograph)
-    if isinstance(license, URIRef):
-      license = str(license).strip("<>")
-    elif isinstance(license, Literal):
-      # if license is literal: error uri
-      license = docTemplates.license_literal_uri
+  def generatePomAndDoc(self):
+    datetime_obj= datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
+    versionIRI = str(None)
+    self.md_label=self.nir if not self.isDev else self.nir + " DEV"
+    md_description=Template(docTemplates.description) if not self.isDev else Template(docTemplates.description_dev)
+    md_comment=Template(docTemplates.default_explaination).safe_substitute(non_information_uri=self.reference_uri)
+    license=None
+    if self.graph != None:
+      label = inspectVocabs.getLabel(self.graph)
+      description = inspectVocabs.getDescription(self.graph)
+      comment = inspectVocabs.getComment(self.graph)
+      versionIRI = inspectVocabs.getOwlVersionIRI(self.graph)
+      if label != None:
+        self.md_label = label if not self.isDev else label + " DEV"
 
-  childpomString = generatePoms.generateChildPom(groupId=groupId,
-                                                  version=version,
-                                                  artifactId=artifact,
-                                                  packaging="jar",
-                                                  license=license)
-  with open(os.path.join(artifactPath, "pom.xml"), "w+") as childPomFile:
-    print(childpomString, file=childPomFile)
-  generatePoms.writeMarkdownDescription(artifactPath, artifact, md_label, md_comment, md_description)
+      if comment != None:
+        md_comment = comment
+      
+      if description != None:
+        md_description = md_description.safe_substitute(non_information_uri=self.nir, snapshot_url=self.location_uri, owl_version_iri=versionIRI, date=str(datetime_obj)) + "\n\n" + docTemplates.description_intro + "\n\n" + description
+      else:
+        md_description = md_description.safe_substitute(non_information_uri=self.nir, snapshot_url=self.location_url, owl_version_iri=versionIRI, date=str(datetime_obj))
+      license =inspectVocabs.getLicense(self.graph)
+      if isinstance(license, URIRef):
+        license = str(license).strip("<>")
+      elif isinstance(license, Literal):
+        # if license is literal: error uri
+        license = docTemplates.license_literal_uri
+
+    childpomString = generatePoms.generateChildPom(groupId=self.group,
+                                                    version=self.version,
+                                                    artifactId=self.artifact,
+                                                    packaging="jar",
+                                                    license=license)
+    with open(os.path.join(self.artifact_path, "pom.xml"), "w+") as childPomFile:
+      print(childpomString, file=childPomFile)
+    generatePoms.writeMarkdownDescription(self.artifact_path, self.artifact, self.md_label, md_comment, md_description)
+
+  def handleTrackThis(self):
+    if self.isDev:
+      return None, None, None, None
+    trackThisURI = inspectVocabs.getTrackThisURI(self.graph)
+    if trackThisURI != None and self.location_uri != trackThisURI:
+      self.user_output.append(f'Found a new develop stage URI: {trackThisURI}')
+      return handleDevURI(self.nir, trackThisURI, self.data_path, self.test_suite, self.logger, user_output=self.user_output)
+    else:
+      return False, None, None, None
+
+  def getdbVersion(self):
+    consistencyCheck=lambda s: True if s == "Yes" else False
+    return Version(
+            version=datetime.strptime(self.version, "%Y.%m.%d-%H%M%S"),
+            semanticVersion=self.semantic_version,
+            stars=ontoFiles.measureStars(self.rapper_errors, self.conforms_licenseI, self.is_consistent, self.is_consistent_noimports, self.conforms_licenseII),
+            triples=self.triples,
+            parsing=True if self.rapper_errors == "" else False,
+            licenseI=self.conforms_licenseI,
+            licenseII=self.conforms_licenseII,
+            consistency=consistencyCheck(self.is_consistent),
+            lodeSeverity=self.lode_severity,
+            ontology=self.reference_uri,
+            )
+  
+  def getDatabaseEntry(self):
+    dbOntology = DevelopOntology(
+      uri = self.reference_uri,
+      source="DEV",
+      accessDate=self.access_date,
+      title=self.md_label,
+      official=self.nir,
+    )
+    dbVersion = self.getdbVersion()
+    return dbOntology, dbVersion
 
 def checkIndexForUri(uri, index):
     for indexUri in index:
@@ -472,14 +491,6 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   
   dbOntos = []
   dbVersions = []
-  # check for trackthis links
-  trackThisURI = inspectVocabs.getTrackThisURI(graph)
-  if trackThisURI != None:
-    success, _,devOnt, devVersion = handleDevURI(real_ont_uri, trackThisURI, dataPath, testSuite, logger, user_output=user_output)
-    if success:
-      user_output.append(f"Added trackThis URI {trackThisURI}: {success_symbol}")
-      dbOntos.append(devOnt)
-      dbVersions.append(devVersion)
 
   #index[real_ont_uri] = {"source" : source, "accessed" : accessDate}
   newVersionPath=os.path.join(dataPath, groupId, artifact, version)
@@ -502,18 +513,19 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
   # Generate database obj
   ontTitle = inspectVocabs.getLabel(graph)
-  dbOntology = OfficialOntology(
-    uri = real_ont_uri,
-    source=source,
-    accessDate=accessDate,
-    title=ontTitle if ontTitle != None else real_ont_uri
-  )
   # new release
   logger.info("Generate new release files...")
-  dbVersion = generateNewRelease(urldefrag(real_ont_uri)[0], newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output)
-  # index writing
-  #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
+  new_version = ArchivoVersion(urldefrag(real_ont_uri)[0], newVersionPath, response, testSuite, accessDate, bestHeader, logger, user_output=user_output)
+  new_version.generateFiles()
+  new_version.generatePomAndDoc()
+  trackThisSuccess, message, dbO, dbV = new_version.handleTrackThis()
+  dbOntology, dbVersion = new_version.getDatabaseEntry()
+  dbOntos.append(dbOntology)
+  dbVersions.append(dbVersion)
+  if trackThisSuccess:
+    dbOntos.append(dbO)
+    dbVersions.append(dbV)
   
   logger.info("Deploying the data to the databus...")
   returncode, deployLog =generatePoms.callMaven(os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy")
@@ -628,7 +640,11 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
   )
   # new release
   logger.info("Generate new release files...")
-  dbVersion = generateNewRelease(sourceURI, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output, devURI=sourceURI)
+  new_version = ArchivoVersion(nir, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, logger, user_output=user_output, devURI=sourceURI)
+  new_version.generateFiles()
+  new_version.generatePomAndDoc()
+  dbVersion = new_version.getdbVersion()
+  #dbVersion = generateNewRelease(nir, newVersionPath, artifact, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), bestHeader, response, accessDate, testSuite, logger=logger, user_output=user_output, devURI=sourceURI)
   # index writing
   #ontoFiles.writeIndexJson(index)
   stringTools.deleteAllFilesInDirAndDir(localDir)
@@ -646,7 +662,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     logger.info(f"Successfully deployed the new dev ontology {sourceURI}")
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
-  return True, "<br>".join(map(str, user_output)), dbOntology, dbVersion
+    return True, "<br>".join(map(str, user_output)), dbOntology, dbVersion
 
 
 def getLovUrls():

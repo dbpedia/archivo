@@ -1,12 +1,14 @@
 from webservice import app, db, dbModels
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit, os, crawlURIs, diffOntologies, dbUtils
-from utils import ontoFiles, archivoConfig, stringTools, queryDatabus, generatePoms
+from utils import ontoFiles, archivoConfig, stringTools, queryDatabus, generatePoms, inspectVocabs
 from utils.validation import TestSuite
 from utils.archivoLogs import discovery_logger, diff_logger
 from datetime import datetime
 from webservice.dbModels import Ontology, Version
 from sqlalchemy.exc import IntegrityError
+from urllib.parse import urlparse
+import requests
 
 cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
@@ -16,7 +18,7 @@ indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vo
 falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
 
 # This is the discovery process
-@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
+#@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -77,7 +79,7 @@ def ontology_discovery():
         #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
-@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -95,7 +97,7 @@ def ontology_official_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbVersion = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
+        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
@@ -108,13 +110,98 @@ def ontology_official_update():
             db.session.add(dbFallout)
         elif success:
             ont.crawling_status = True
-            db.session.add(dbVersion)
+            if dbTrackOntology != None:
+                if ont.devel != None and ont.devel != dbTrackOntology.uri:
+                    old_dev_obj = db.session.query(dbModels.DevelopOntology).filter_by(uri=ont.devel)
+                    db.session.add(dbTrackOntology)
+                    for v in db.session.query(dbModels.Version).filter_by(ontology=ont.devel).all():
+                        v.ontology = dbTrackOntology.uri
+                    db.session.delete(old_dev_obj)
+                else:
+                    db.session.add(dbTrackOntology)
+            for dbV in dbVersions:
+                db.session.add(dbV)
         else:
             ont.crawling_status = True
         # commit changes to database
         db.session.commit()
 
-@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
+def makeDiffForURI(uri):
+    dataPath = archivoConfig.localPath
+    allOntologiesInfo = queryDatabus.latestNtriples()
+    ont = db.session.query(dbModels.OfficialOntology).filter_by(uri=uri).first()
+    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    diff_logger.info(f"Handling ontology: {ont.uri}")
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+    databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+    try:
+        urlInfo = allOntologiesInfo[databusURL]
+    except KeyError:
+        diff_logger.error(f"Could't find databus artifact for {ont.uri}")
+        return
+    success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
+    if success == None:
+        dbFallout = dbModels.Fallout(
+            uri=ont.uri,
+            source=ont.source,
+            inArchivo=True,
+            error=message,
+            ontology=ont.uri
+            ) 
+        ont.crawling_status = False
+        db.session.add(dbFallout)
+    elif success:
+        ont.crawling_status = True
+        if dbTrackOntology != None:
+            if ont.devel != None and ont.devel != dbTrackOntology.uri:
+                old_dev_obj = db.session.query(dbModels.DevelopOntology).filter_by(uri=ont.devel)
+                db.session.add(dbTrackOntology)
+                for v in db.session.query(dbModels.Version).filter_by(ontology=ont.devel).all():
+                    v.ontology = dbTrackOntology.uri
+                db.session.delete(old_dev_obj)
+            else:
+                db.session.add(dbTrackOntology)
+        for dbV in dbVersions:
+            db.session.add(dbV)
+    else:
+        ont.crawling_status = True
+        # commit changes to database
+    db.session.commit()
+
+def scanForTrackThisURIs():
+    dataPath = archivoConfig.localPath
+    allOntologiesInfo = queryDatabus.latestNtriples()
+    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    for ont in db.session.query(dbModels.OfficialOntology).all():
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+        databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        oldDevURI = ont.devel
+        try:
+            urlInfo = allOntologiesInfo[databusURL]
+        except KeyError:
+            diff_logger.error(f"Could't find databus artifact for {ont.uri}")
+            continue
+        filename = urlInfo['ntFile'].split('/')[-1]
+        latest_version_dir = os.path.join(dataPath, group, artifact, urlInfo['version'])
+        filepath = os.path.join(latest_version_dir, filename)
+        if not os.path.isfile(filepath):
+            os.makedirs(latest_version_dir, exist_ok=True)
+            oldOntologyResponse = requests.get(urlInfo['ntFile'])
+            oldOntologyResponse.encoding = "utf-8"
+            if oldOntologyResponse.status_code > 400:
+                print(f'Couldnt download ntriples file for {ont.uri}')
+            with open(filepath, "w") as latestNtriples:
+                print(oldOntologyResponse.text, file=latestNtriples)
+        graph = inspectVocabs.getGraphOfVocabFile(filepath)
+        if graph == None:
+            print(f'Error loading graph of {ont.uri}')
+        trackURI = inspectVocabs.getTrackThisURI(graph)
+        if trackURI != oldDevURI:
+            success, message, onto, version = crawlURIs.handleDevURI(ont.uri, trackURI, dataPath, testSuite, diff_logger)
+            
+
+
+#@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -146,14 +233,16 @@ def ontology_dev_update():
         elif success:
             ont.crawling_status = True
             db.session.add(dbVersion)
+            db.session.commit()
         else:
             ont.crawling_status = True
+            db.session.commit()
         # commit changes to database
-        db.session.commit()
+        
 
 
 
-@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
     oldOntoIndex = queryDatabus.loadLastIndex()
     newOntoIndex = db.session.query(dbModels.Ontology).all()
@@ -185,4 +274,4 @@ atexit.register(lambda: cron.shutdown(wait=False))
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug=False)
+    app.run(debug=True)
