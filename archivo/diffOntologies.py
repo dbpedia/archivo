@@ -137,20 +137,20 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
     if newBestHeader == None:
       diff_logger.warning(f" {locURI} Couldn't parse new version")
       diff_logger.warning(headerErrors)
-      return None, "\n".join(headerErrors), None
+      return None, "\n".join(headerErrors), None, None
     success, sourcePath, response = crawlURIs.downloadSource(locURI, newVersionPath, artifactName, newBestHeader, encoding="utf-8")
     accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     if not success:
       diff_logger.warning("Uri not reachable")
       stringTools.deleteAllFilesInDirAndDir(newVersionPath)
-      return None, response, None
+      return None, response, None, None
     #ontoFiles.parseRDFSource(sourcePath, os.path.join(localDiffDir, "tmpSourceParsed.nt"), "ntriples", deleteEmpty=True, silent=True, sourceUri=uri)
     errors, warnings = getSortedNtriples(sourcePath, os.path.join(localDiffDir, "newVersionSorted.nt"), uri, inputType=crawlURIs.rdfHeadersMapping[newBestHeader])
     if not os.path.isfile(os.path.join(localDiffDir, "newVersionSorted.nt")) or errors != "": 
       diff_logger.error(f"File of {uri} not parseable")
       diff_logger.error(errors)
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
-      return None, f"Couldn't parse File: {errors}", None
+      return None, f"Couldn't parse File: {errors}", None, None
     getSortedNtriples(oldNtriples, os.path.join(localDiffDir, "oldVersionSorted.nt"), uri, inputType="ntriples")
     isEqual, oldTriples, newTriples = commDiff(os.path.join(localDiffDir, "oldVersionSorted.nt"), os.path.join(localDiffDir, "newVersionSorted.nt"))
     diff_logger.debug("Old Triples:" + "\n".join(oldTriples))
@@ -160,7 +160,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
       diff_logger.info("No new version")
       stringTools.deleteAllFilesInDirAndDir(localDiffDir)
       stringTools.deleteAllFilesInDirAndDir(newVersionPath)
-      return False, "No new Version", None
+      return False, "No new Version", None, None
     else:
       diff_logger.info("New Version!")
       # generating new semantic version
