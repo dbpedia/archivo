@@ -219,7 +219,7 @@ def ontology_dev_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbVersion = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, devURI=ont.uri)
+        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, devURI=ont.uri)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
