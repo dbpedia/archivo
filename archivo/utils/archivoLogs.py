@@ -2,9 +2,9 @@ import logging
 
 
 
-discovery_log_path = "./logs/archivo-discovery.log"
-webservce_log_path = "./logs/archivo-webservice.log"
-diff_log_path = "./logs/archivo-diff.log"
+discovery_log_path = "/data/home/dstreitmatter/logs/archivo/discovery.log"
+webservce_log_path = "/data/home/dstreitmatter/logs/archivo/webservice.log"
+diff_log_path = "/data/home/dstreitmatter/logs/archivo/diff.log"
 
 
 webservice_logger = logging.getLogger("webservice")
@@ -30,7 +30,7 @@ file_format = logging.Formatter("[%(asctime)s]:[%(levelname)s]:%(message)s")
 for f_handler in [webservice_file_handler, discovery_file_handler, diff_file_handler]:
     f_handler.setLevel(logging.DEBUG)
     f_handler.setFormatter(file_format)
-console_handler.setLevel(logging.INFO)
+console_handler.setLevel(logging.ERROR)
 
 # add right handlers to the right logger
 

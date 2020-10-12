@@ -891,6 +891,10 @@
         "accessed": "2020-08-06 13:09:36",
         "source": "user-suggestion"
     },
+    "http://purl.obolibrary.org/obo/xao.owl": {
+        "accessed": "2020-08-18 13:26:23",
+        "source": "user-suggestion"
+    },
     "http://purl.oclc.org/NET/UNIS/fiware/iot-lite#": {
         "accessed": "2020-05-06 21:38:51",
         "source": "LOV"
