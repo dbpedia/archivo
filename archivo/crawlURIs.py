@@ -200,7 +200,6 @@ class ArchivoVersion():
     self.user_output.append(f"Generating OWL File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.owl") else self.user_output.append(f"Generating OWL File: {failed_symbol}")
 
     self.triples = ontoFiles.getParsedTriples(self.original_file, inputFormat=rdfHeadersMapping[self.best_header])[0]
-    
     self.graph = inspectVocabs.getGraphOfVocabFile(raw_file_path+"_type=parsed.ttl")
     # shacl-validation
     # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
@@ -510,13 +509,14 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
       print(pomString, file=parentPomFile)
   # prepare new release
   fileExt = os.path.splitext(pathToFile)[1]
-  os.rename(pathToFile, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt))
+  new_orig_file_path = os.path.join(newVersionPath, artifact+"_type=orig" + fileExt)
+  os.rename(pathToFile, new_orig_file_path)
   # Generate database obj
   ontTitle = inspectVocabs.getLabel(graph)
   # new release
   logger.info("Generate new release files...")
   stringTools.deleteAllFilesInDirAndDir(localDir)
-  new_version = ArchivoVersion(urldefrag(real_ont_uri)[0], newVersionPath, response, testSuite, accessDate, bestHeader, logger, user_output=user_output)
+  new_version = ArchivoVersion(urldefrag(real_ont_uri)[0], new_orig_file_path, response, testSuite, accessDate, bestHeader, logger, user_output=user_output)
   new_version.generateFiles()
   new_version.generatePomAndDoc()
   trackThisSuccess, message, dbO, dbV = new_version.handleTrackThis()
