@@ -14,6 +14,11 @@ from webservice.dbModels import OfficialOntology, DevelopOntology, Version
 import uuid
 from string import Template
 import logging
+from SPARQLWrapper import SPARQLWrapper, JSON
+
+
+# mod uris
+mod_endpoint = 'http://akswnc7.informatik.uni-leipzig.de:9062/sparql/'
 
 # url to get all vocabs and their resource
 lovOntologiesURL="https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
@@ -164,7 +169,7 @@ def downloadSource(uri, path, name, accHeader, encoding=None):
 
 class ArchivoVersion():
 
-  def __init__(self, nir, pathToOrigFile, response, testSuite, accessDate, bestHeader, logger, semanticVersion='1.0.0',devURI='', user_output=[]):
+  def __init__(self, nir, pathToOrigFile, response, testSuite, accessDate, bestHeader, logger, source, semanticVersion='1.0.0', devURI='', user_output=[]):
     self.nir = nir
     self.isDev = False if devURI == '' else True
     self.original_file = pathToOrigFile
@@ -178,6 +183,7 @@ class ArchivoVersion():
     self.test_suite = testSuite
     self.access_date = accessDate
     self.best_header = bestHeader
+    self.source = source
     self.semantic_version = semanticVersion
     self.user_output = user_output
     self.user_output.append(f'New Version for {self.reference_uri} ...')
@@ -327,13 +333,22 @@ class ArchivoVersion():
             )
   
   def getDatabaseEntry(self):
-    dbOntology = DevelopOntology(
-      uri = self.reference_uri,
-      source="DEV",
-      accessDate=self.access_date,
-      title=self.md_label,
-      official=self.nir,
-    )
+    if self.isDev:
+      dbOntology = DevelopOntology(
+        uri = self.reference_uri,
+        source="DEV",
+        accessDate=self.access_date,
+        title=self.md_label,
+        official=self.nir,
+      )
+    else:
+      dbOntology = OfficialOntology(
+        uri = self.reference_uri,
+        source = self.source,
+        accessDate = self.access_date,
+        title = self.md_label,
+        devel = None
+      )
     dbVersion = self.getdbVersion()
     return dbOntology, dbVersion
 
@@ -516,7 +531,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   # new release
   logger.info("Generate new release files...")
   stringTools.deleteAllFilesInDirAndDir(localDir)
-  new_version = ArchivoVersion(urldefrag(real_ont_uri)[0], new_orig_file_path, response, testSuite, accessDate, bestHeader, logger, user_output=user_output)
+  new_version = ArchivoVersion(urldefrag(real_ont_uri)[0], new_orig_file_path, response, testSuite, accessDate, bestHeader, logger, source, user_output=user_output)
   new_version.generateFiles()
   new_version.generatePomAndDoc()
   trackThisSuccess, message, dbO, dbV = new_version.handleTrackThis()
@@ -640,7 +655,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
   )
   # new release
   logger.info("Generate new release files...")
-  new_version = ArchivoVersion(nir, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, logger, user_output=user_output, devURI=sourceURI)
+  new_version = ArchivoVersion(nir, os.path.join(newVersionPath, artifact+"_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, logger, 'DEV', user_output=user_output, devURI=sourceURI)
   new_version.generateFiles()
   new_version.generatePomAndDoc()
   dbVersion = new_version.getdbVersion()
@@ -676,6 +691,43 @@ def getPrefixURLs():
   json_data = req.json()
   prefixOntoDict = json_data["@context"]
   return [prefixOntoDict[prefix] for prefix in prefixOntoDict]
+
+# returns a distinct list of VOID classes and properties
+def get_VOID_URIs():
+  query = "\n".join((
+        "PREFIX prov: <http://www.w3.org/ns/prov#>",
+        "PREFIX void: <http://rdfs.org/ns/void#>",
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+        "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+        "PREFIX dct:    <http://purl.org/dc/terms/>",
+        "SELECT DISTINCT ?URI {",
+        "?mod prov:generated ?generated .",
+        "{ SELECT ?URI WHERE {",
+        "?generated void:propertyPartition [",
+        "void:property ?URI",
+        "] .",
+        "}",
+        "}",
+        "UNION",
+        "{ SELECT DISTINCT ?URI WHERE {",
+        "?generated void:classPartition [",
+        "void:class ?URI",
+        "] .",
+        "}",
+        "}",
+        "}",
+        )
+    )
+  try:
+    sparql = SPARQLWrapper(mod_endpoint)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+  except e:
+    return None
+  return [binding['results']['bindings'] for binding in results['results']['bindings']]
+
+
 
 def testLOVInfo():
   req = requests.get("https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=schema")

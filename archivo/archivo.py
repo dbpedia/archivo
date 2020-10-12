@@ -24,9 +24,17 @@ def ontology_discovery():
     dataPath = archivoConfig.localPath
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
 
-    for uri in crawlURIs.getLovUrls():
+    discovery_logger.info('Started discovery of LOV URIs...')
+    run_discovery(crawlURIs.getLovUrls(), 'LOV', dataPath, testSuite)
+    discovery_logger.info('Started discovery of prefix.cc URIs...')
+    run_discovery(crawlURIs.getPrefixURLs(), 'prefix.cc', dataPath, testSuite)
+    discovery_logger.info('Started discovery of VOID URIs...')
+    run_discovery(crawlURIs.get_VOID_URIs(), 'VOID mod', dataPath, testSuite)
+
+def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
+    for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, "LOV", False, testSuite=testSuite, logger=discovery_logger)
+        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, source, False, testSuite=testSuite, logger=logger)
         if success:
             for ont in dbOnts:
                 db.session.add(ont)
@@ -36,47 +44,12 @@ def ontology_discovery():
         elif not success and isNir:
             fallout = dbModels.Fallout(
                 uri=uri,
-                source="LOV",
+                source=source,
                 inArchivo=False,
                 error = message
             )
             db.session.add(fallout)
             db.session.commit()
-
-    for uri in crawlURIs.getPrefixURLs():
-        allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
-        if success:
-            for ont in dbOnts:
-                db.session.add(ont)
-            for version in dbVersions:
-                db.session.add(version)
-            db.session.commit()
-        elif not success and isNir:
-            fallout = dbModels.Fallout(
-                uri=uri,
-                source="prefix.cc",
-                inArchivo=False,
-                error = message
-            )
-            db.session.add(fallout)
-            db.session.commit()
-
-
-    #for uri in hashUris:
-        #crawlURIs.handleNewUri(uri, ontoIndex, dataPath, fallout, "spoHashUris", False, testSuite=testSuite, logger=discovery_logger)
-        #ontoFiles.writeIndexJsonToFile(ontoIndex, indexFilePath)
-        #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
-
-    #for uri in prefixUris:
-        #crawlURIs.handleNewUri(uri, ontoIndex, dataPath, fallout, "prefix.cc", False, testSuite=testSuite, logger=discovery_logger)
-        #ontoFiles.writeIndexJsonToFile(ontoIndex, indexFilePath)
-        #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
-
-    #for uri in getVoidUris(voidPath):
-        #crawlURIs.handleNewUri(uri, index, dataPath, fallout, "voidUris", False, testSuite=testSuite)
-        #ontoFiles.writeIndexJsonToFile(index, indexFilePath)
-        #ontoFiles.writeFalloutIndexToFile(falloutFilePath, fallout)
 
 
 @cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
@@ -201,7 +174,7 @@ def scanForTrackThisURIs():
             
 
 
-@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
