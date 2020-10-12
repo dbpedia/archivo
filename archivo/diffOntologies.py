@@ -241,7 +241,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
       metadata = requests.get(metafileUrl).json()
     except requests.exceptions.RequestException:
       diff_logger.error("There was an error downloading the latest metadata-file, skipping this ontology...")
-      return None, "There was an error downloading the latest metadata-file, skipping this ontology...", None
+      return None, "There was an error downloading the latest metadata-file, skipping this ontology...", None, None
 
     with open(lastMetaFile, "w+") as latestMetaFile:
       json.dump(metadata, latestMetaFile, indent=4, sort_keys=True)

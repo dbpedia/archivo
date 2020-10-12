@@ -38,8 +38,8 @@ def addOntology():
         uri = form.suggestUrl.data.strip()
         success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
         if success:
-            for ont in dbOnts:
-                db.session.add(ont)
+            for dbOnt in dbOnts:
+                db.session.add(dbOnt)
             for version in dbVersions:
                 db.session.add(version)
             db.session.commit()
