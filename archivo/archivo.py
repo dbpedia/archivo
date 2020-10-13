@@ -14,8 +14,6 @@ cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
 cron.start()
 
-indexFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "vocab_index.json")
-falloutFilePath = os.path.join(os.path.split(app.instance_path)[0], "indices", "fallout_index.csv")
 
 # This is the discovery process
 @cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
@@ -223,7 +221,7 @@ def updateOntologyIndex():
     newOntoIndex = db.session.query(dbModels.OfficialOntology).all()
     diff = [onto.uri for onto in newOntoIndex if onto.uri not in [uri for uri, src, date in oldOntoIndex]]
     discovery_logger.info("New Ontologies:" + "\n".join(diff))
-    if len(oldOntoIndex) != len(newOntoIndex):
+    if len(diff) > 0:
         newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
         artifactPath = os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies")
         indexpath = os.path.join(artifactPath, newVersionString)
