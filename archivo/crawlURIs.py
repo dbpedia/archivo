@@ -725,7 +725,10 @@ def get_VOID_URIs():
     results = sparql.query().convert()
   except e:
     return None
-  return [binding['results']['bindings'] for binding in results['results']['bindings']]
+  print(results)
+  if not 'results' in results:
+    return None
+  return [binding['URI']['value'] for binding in results['results']['bindings']]
 
 
 

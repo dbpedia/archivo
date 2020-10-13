@@ -118,7 +118,7 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         return None, "Unknown error"
 
 
-def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersionDir, lastSemVersion, testSuite, devURI=""):
+def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersionDir, lastSemVersion, testSuite, source, devURI=""):
   try:
     if devURI == "":
       isDev = False
@@ -187,7 +187,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
 
       dbVersions = []
       #dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger, devURI=devURI)
-      new_version = crawlURIs.ArchivoVersion(uri, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, diff_logger, semanticVersion=newSemVersion, devURI=devURI)
+      new_version = crawlURIs.ArchivoVersion(uri, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, diff_logger, source, semanticVersion=newSemVersion, devURI=devURI)
       new_version.generateFiles()
       new_version.generatePomAndDoc()
       if not new_version.isDev:
@@ -224,7 +224,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
 
 
 
-def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, devURI=""):
+def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, source, devURI=""):
   if devURI != "":
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
     ontoLocationURI = devURI
@@ -274,7 +274,7 @@ def handleDiffForUri(uri, localDir, metafileUrl, lastNtURL, lastVersion, testSui
     return None, "Header Access: "+error, None, None
   if isDiff:
     diff_logger.info(f"Fond potential different version for {ontoLocationURI}")
-    return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite, devURI=devURI)
+    return localDiffAndRelease(uri, localDiffDir, lastNtFile, bestHeader, lastVersionPath, semVersion, testSuite, source, devURI=devURI)
   else:
     stringTools.deleteAllFilesInDirAndDir(localDiffDir)
     diff_logger.info(f"No different version for {uri}")
