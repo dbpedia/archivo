@@ -32,6 +32,8 @@ def ontology_discovery():
     run_discovery(crawlURIs.get_VOID_URIs(), 'VOID mod', dataPath, testSuite)
 
 def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
+    if lst == None:
+        return
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
         success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, source, False, testSuite=testSuite, logger=logger)
@@ -70,7 +72,7 @@ def ontology_official_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
+        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
