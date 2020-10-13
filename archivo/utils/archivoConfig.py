@@ -7,6 +7,8 @@ default_version="0.0.0-notRelevant"
 # agent name for crawling
 archivo_agent = "dbpedia-archivo-robot"
 
+# add here properties that should be ignored
+# pls use the full URI and no prefixes since the diff takes place as ntriples
 ignore_props = [
     "http://purl.org/dc/terms/modified"
 ]
@@ -24,14 +26,6 @@ pub="https://yum-yab.github.io/webid.ttl#onto"
 pelletPath = "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
 profileCheckerJar="/data/home/dstreitmatter/profilechecker-1.1.0.jar"
 
-# iri sources
-voidResults = "/home/denis/Downloads/voidResults"
-
-
-
-# indices
-ontoIndexPath = "./indices/vocab_index.json"
-falloutIndexPath = "./indices/fallout_index.csv"
 
 # local paths
 localPath = "/data/home/dstreitmatter/data/archivo-init-release"
