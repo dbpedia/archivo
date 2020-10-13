@@ -174,7 +174,7 @@ def scanForTrackThisURIs():
             
 
 
-#@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
+@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -192,7 +192,7 @@ def ontology_dev_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, devURI=ont.uri)
+        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source, devURI=ont.uri)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
