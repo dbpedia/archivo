@@ -206,7 +206,7 @@ def getRDFInfoLink(ontologyUrl, mimeType):
     encodedString= quote(queryString, safe="&=")
     return f"https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query={encodedString}"
 
-@app.route("/doc", methods=["GET"])
+#@app.route("/doc", methods=["GET"])
 def docPage():
     req = requests.get("https://raw.githubusercontent.com/dbpedia/Archivo/master/README.md")
     

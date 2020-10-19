@@ -4,18 +4,20 @@
 
 
 <h2>What is DBpedia Archivo?</h2>
-<p>DBpedia Archivo (backronym for Ontology Archive) is an online ontology interface and augmented archive that discovers, crawls, versions and archives ontologies on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a>. 
-    Based on daily crawls, different features, quality measures and, if possible, fixes are deployed to handle and stabilize the changes in the found ontologies at web-scale. Read the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
+<p>
+    DBpedia Archivo is an online interface and augmented archive for all kinds of vocabularies. It automatically crawls for new ontologies, updates the already enlisted ontologies regularly and performs some useful tests to check the fitness of the vocabulary for the semantic web. 
+
+The ontologies and all additional data, are deployed on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a> for easy access, the webservice provides some useful help for evaluation and usage. For a more specific explanation check out the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
 </p>
 
 <h2>Features</h2>
 <p>
     <b>Ontology-Backup:</b> From time to time ontologies are unavailable at their usual location in the web or in unpredictable formats. Archivo provides stable backup for ontologies in the most used formats Turtle, RDF+XML and N-Triples to prevent services from failing.
-    Check out the <a href="/list">complete list of ontologies in archivo</a>.
+    Check out the <a href="/list">complete list of ontologies in archivo</a> and the Access section here for more info about browser/fully automated access.
 </p>
 <p>
     <b>Testing & Rating:</b> Archivo runs some test to check the usability of a ontology, for example parsing, licenses or consistency. For this Archivo introduced a <a href="/#Stars">star-rating</a>.
-Check out the <a href="/info">info-page</a> for a detailed view of the versions of each ontology with the test results. To see the rating of your ontology add it at the <a href="/add">suggestion service</a>.
+Check out the <a href="/info">info-page</a> for a detailed view of the versions of each ontology with the test results, or the <a href="/list">overview</a> of all ontologies and their latest test results. To see the rating of your ontology add it at the <a href="/add">suggestion service</a>.
 </p>
 
 <h2>Ontology Access</h2>
@@ -28,8 +30,9 @@ Just use:
 with:
 <ul>
     <li><i>ontology-uri</i> being the URI of your desired ontology (e.g <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>)</li>
-    <li><i>file-extension</i> (optional) being the desired extension (currently supported: owl, ttl and nt; default: owl)</li>
-    <li><i>timestamp</i> (optional; default: latest) being the timestamp of the ontology (to see what timestamps are available check out the <a href="/info">info-page</a> of your ontology and copy it from the Version column)</li>
+    <li><b>Optional:</b> <i>file-extension</i> being the desired extension (currently supported: owl, ttl and nt; default: owl)</li>
+    <li><b>Optional:</b> <i>timestamp</i> (default: latest) being the timestamp of the ontology (to see what timestamps are available check out the <a href="/info">info-page</a> of your ontology and copy it from the Version column)</li>
+    <li><b>Optional:</b> Add <i>&dev</i> to the uri to access the dev version of the ontlogy (only works if there is a dev version; to see what dev versions are available check out the <a href="/list?dev">dev-list</a>) </li>
 </ul>
 <p><strong>Examples:</strong> Download the latest version of the Cinelab ontology as Turtle file
     <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&f=ttl"</pre>
@@ -82,17 +85,12 @@ with:
 <p>Baseline: The minimum requirements a Ontology should fulfill.</p>
 <ul>
 <li>
-<p>All  of  the  following  criteria  have  to  be  fulfilled:
-    <ol>
-        <li>The non-information URI resolves to a machine readable format or a machine readable version of the ontology is deterministically discoverable by other common means. </li>
-        <li>Download was successful </li>
-        <li>Uses a common format implemented by Archivo (rdf+xml, turtle or n-triples)</li>
-        <li>At least one format was found that parses with no or few (negligible) syntactical warnings</li>
-    </ol>
+<p>
+    The RDF representation of the ontology needs to be accessible at the non-information-IRI via content negotiation and be accessible in at least one of the implemented formats (owl, ttl and nt).
 </p>
 </li>
 <li>
-<p>A proper ontology declaration was found using <code>rdf:type owl:Ontology</code> and some form of license could be detected. A high degree of heterogeneity is permissible for this star regarding the used property/subproperty as well as object:license URI (resolvable linked data or web link), <code>xsd:string</code> or <code>xsd:anyURI</code></p>
+<p>Some kind of license regarding the ontology could be detected in the triples. A high degree of heterogeneity is permissible for this star regarding the used property/subproperty as well as object:license URI (resolvable linked data or web link), <code>xsd:string</code> or <code>xsd:anyURI</code></p>
 </li>
 </ul>
 <p>If the ontology fulfills the baseline, it can earn two further stars by using good practises:</p>
@@ -101,7 +99,7 @@ with:
 <p>We require a homogenized license declaration using <code>dct:license</code> as object property with a URI (not string or anyURI). </p>
 </li>
 <li>
-<p>We measure the compatibility with currently available reasoners such as Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.</p>
+<p>We measure the consitency with currently available reasoners such as Pellet/Stardog (more to follow). </p>
 </li>
 </ul>
 
