@@ -196,13 +196,13 @@ class ArchivoVersion():
 
   def generateFiles(self):
     raw_file_path = os.path.join(self.file_path, self.artifact)
-    self.rapper_errors, rapperWarnings=ontoFiles.parseRDFSource(self.original_file, raw_file_path+"_type=parsed.nt", outputType="ntriples", deleteEmpty=True, sourceUri=self.nir, inputFormat=rdfHeadersMapping[self.best_header], logger=self.logger)
+    self.rapper_errors, rapperWarnings=ontoFiles.parseRDFSource(self.original_file, raw_file_path+"_type=parsed.owl", outputType="rdfxml", deleteEmpty=True, sourceUri=self.nir, inputFormat=rdfHeadersMapping[self.best_header], logger=self.logger)
     self.user_output.append(f"Generating N-Triples File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.nt") else self.user_output.append(f"Generating N-Triples File: {failed_symbol}")
 
-    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.nt", raw_file_path+"_type=parsed.ttl", outputType="turtle", deleteEmpty=True, inputFormat='ntriples', logger=self.logger)
+    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.owl", raw_file_path+"_type=parsed.ttl", outputType="turtle", deleteEmpty=True, inputFormat='rdfxml', logger=self.logger)
     self.user_output.append(f"Generating Turtle File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.ttl") else self.user_output.append(f"Generating Turtle File: {failed_symbol}")
     
-    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.nt", raw_file_path+"_type=parsed.owl", outputType="rdfxml", deleteEmpty=True, inputFormat='ntriples', logger=self.logger)
+    ontoFiles.parseRDFSource(raw_file_path+"_type=parsed.owl", raw_file_path+"_type=parsed.nt", outputType="ntriples", deleteEmpty=True, inputFormat='rdfxml', logger=self.logger)
     self.user_output.append(f"Generating OWL File: {success_symbol}") if os.path.isfile(raw_file_path+"_type=parsed.owl") else self.user_output.append(f"Generating OWL File: {failed_symbol}")
 
     self.triples = ontoFiles.getParsedTriples(self.original_file, inputFormat=rdfHeadersMapping[self.best_header])[0]

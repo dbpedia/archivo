@@ -12,7 +12,7 @@ import sys
 import requests
 import markdown
 from flask_accept import accept, accept_fallback
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlparse
 from utils.archivoLogs import webservice_logger
 from datetime import datetime
 import dbUtils
@@ -232,19 +232,7 @@ def downloadOntology():
     version = args.get("v", None)
     ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
-    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
-    if foundURI == None:
-        abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    try:
-        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
-    except URLError as e:
-        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
-
-    if downloadLink != None:
-        return redirect(downloadLink, code=307)
-    else:
-        abort(status=404)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
 
 
 @downloadOntology.support("text/turtle")
@@ -254,19 +242,7 @@ def turtleDownload():
     rdfFormat = args.get('f', 'ttl')
     isDev = True if "dev" in args else False
     version = args.get("v", None)
-    ontoUri = unquote(ontoUri)
-    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
-    if foundURI == None:
-        abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    try:
-        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
-    except URLError as e:
-        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
-    if downloadLink != None:
-        return redirect(downloadLink, code=307)
-    else:
-        abort(status=404)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
 
 @downloadOntology.support("application/rdf+xml")
 def rdfxmlDownload():
@@ -275,19 +251,7 @@ def rdfxmlDownload():
     rdfFormat = args.get('f', 'owl')
     isDev = True if "dev" in args else False
     version = args.get("v", None)
-    ontoUri = unquote(ontoUri)
-    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
-    if foundURI == None:
-        abort(status=404)
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
-    try:
-        downloadLink =queryDatabus.getDownloadURL(group, artifact, fileExt=rdfFormat, version=version)
-    except URLError as e:
-        abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
-    if downloadLink != None:
-        return redirect(downloadLink, code=307)
-    else:
-        abort(status=404)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
 
 @downloadOntology.support("application/n-triples")
 def ntriplesDownload():
@@ -296,7 +260,10 @@ def ntriplesDownload():
     rdfFormat = args.get('f', 'nt')
     version = args.get("v", None)
     isDev = True if "dev" in args else False
-    ontoUri = unquote(ontoUri)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
+
+def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema='http'):
+    ontoUri = unquote(uri)
     foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
@@ -306,7 +273,8 @@ def ntriplesDownload():
     except URLError as e:
         abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
     if downloadLink != None:
-        return redirect(downloadLink, code=307)
+        correctUrl = sourceSchema + '://' + downloadLink.split('://')[1]
+        return redirect(correctUrl, code=307)
     else:
         abort(status=404)
 
