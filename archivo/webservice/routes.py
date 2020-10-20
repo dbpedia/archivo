@@ -232,7 +232,7 @@ def downloadOntology():
     version = args.get("v", None)
     ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
 
 
 @downloadOntology.support("text/turtle")
@@ -242,7 +242,7 @@ def turtleDownload():
     rdfFormat = args.get('f', 'ttl')
     isDev = True if "dev" in args else False
     version = args.get("v", None)
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
 
 @downloadOntology.support("application/rdf+xml")
 def rdfxmlDownload():
@@ -251,7 +251,7 @@ def rdfxmlDownload():
     rdfFormat = args.get('f', 'owl')
     isDev = True if "dev" in args else False
     version = args.get("v", None)
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
 
 @downloadOntology.support("application/n-triples")
 def ntriplesDownload():
