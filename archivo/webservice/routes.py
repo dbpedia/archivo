@@ -231,8 +231,10 @@ def downloadOntology():
     rdfFormat = args.get("f", "owl")
     version = args.get("v", None)
     ontoUri = unquote(ontoUri)
+    referrer = request.headers.get("Referer", request.url)
+    scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=scheme)
 
 
 @downloadOntology.support("text/turtle")
@@ -241,8 +243,10 @@ def turtleDownload():
     ontoUri = args.get('o', '')
     rdfFormat = args.get('f', 'ttl')
     isDev = True if "dev" in args else False
+    scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
+    referrer = request.headers.get("Referer", request.url)
     version = args.get("v", None)
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=scheme)
 
 @downloadOntology.support("application/rdf+xml")
 def rdfxmlDownload():
@@ -250,8 +254,10 @@ def rdfxmlDownload():
     ontoUri = args.get('o', '')
     rdfFormat = args.get('f', 'owl')
     isDev = True if "dev" in args else False
+    scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
+    referrer = request.headers.get("Referer", request.url)
     version = args.get("v", None)
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=scheme)
 
 @downloadOntology.support("application/n-triples")
 def ntriplesDownload():
@@ -259,8 +265,17 @@ def ntriplesDownload():
     ontoUri = args.get('o', '')
     rdfFormat = args.get('f', 'nt')
     version = args.get("v", None)
+    scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
-    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=urlparse(request.url).scheme)
+    return downloadHandling(uri=ontoUri, isDev=isDev, version=version, rdfFormat=rdfFormat, sourceSchema=scheme)
+
+
+def getCorrectScheme(scheme):
+    if scheme == 'http' or scheme == 'https':
+        return scheme
+    else:
+        return 'https'
+
 
 def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema='http'):
     ontoUri = unquote(uri)
@@ -273,7 +288,7 @@ def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema
     except URLError as e:
         abort(500, f'There seems to be an error with the DBpedia Databus. Try again later. {str(e)}')
     if downloadLink != None:
-        correctUrl = sourceSchema + '://' + downloadLink.split('://')[1]
+        correctUrl = str(sourceSchema) + '://' + str(downloadLink.split('://')[1])
         return redirect(correctUrl, code=307)
     else:
         abort(status=404)
