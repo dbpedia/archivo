@@ -187,7 +187,7 @@ def localDiffAndRelease(uri, localDiffDir, oldNtriples, bestHeader, latestVersio
 
       dbVersions = []
       #dbVersion = crawlURIs.generateNewRelease(uri, newVersionPath, artifactName, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), newBestHeader, response, accessDate, semVersion=newSemVersion, testSuite=testSuite, logger=diff_logger, devURI=devURI)
-      new_version = crawlURIs.ArchivoVersion(uri, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), response, testSuite, accessDate, bestHeader, diff_logger, source, semanticVersion=newSemVersion, devURI=devURI)
+      new_version = crawlURIs.ArchivoVersion(uri, os.path.join(newVersionPath, artifactName + "_type=orig" + fileExt), response, testSuite, accessDate, newBestHeader, diff_logger, source, semanticVersion=newSemVersion, devURI=devURI)
       new_version.generateFiles()
       new_version.generatePomAndDoc()
       if not new_version.isDev:
@@ -308,7 +308,16 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
 
 
 if __name__ == "__main__":
-  #success, sourcePath, response = crawlURIs.downloadSource("http://www.georss.org/georss/", ".", "georss", "application/rdf+xml", encoding="utf-8")
-  isDiff, errors = checkForNewVersion("http://bag.basisregistraties.overheid.nl/def/bag", "vdnuisb", "", "", "application/rdf+xml")
-  print(isDiff)
-  print(errors)
+  from utils.validation import TestSuite
+  import traceback
+  ts = TestSuite('.')
+  try:
+    success, msg, dbOnts, dbVersions = handleDiffForUri('http://purl.allotrope.org/voc/afo/REC/2019/09/aft', 
+                                        '.', 
+                                        'http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=meta.json', 
+                                        'http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=parsed.nt',
+                                        '2020.06.10-201508',
+                                        ts,
+                                        'prefix.cc')
+  except:
+    traceback.print_exc()
