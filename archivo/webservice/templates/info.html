@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-
+<div class="container">
 <h3>Ontology Info Service</h3>
 <p>Select an ontology to see information about all versions deployed:</p>
 <form action="" method="POST" novalidate>
@@ -61,7 +61,12 @@
 <p>Click the version-link to check out the release on the databus for further information!</p>
 <div class="content">
     <p>
-        <table>
+        <table id="table">
+            <tr>
+                <th colspan="3"></th>
+                <th colspan="5">Archivo-Stars</th>
+                <th colspan="1">Metadata-Badges</th>
+            </tr>
             <tr>
                 <th>Version</th>
                 <th>Triples</th>
@@ -160,5 +165,5 @@
         });
     });
 </script>
-
+</div>
 {% endblock %}
