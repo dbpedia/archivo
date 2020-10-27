@@ -266,8 +266,8 @@ class ArchivoVersion():
       with open(raw_file_path+ "_type=generatedDocu.html", "w+") as docufile:
         print(docustring, file=docufile)
     else:
-      user_output.append(f"Generating LODE-Docu: {failed_symbol}")
-      user_output.append(lode_error)
+      self.user_output.append(f"Generating LODE-Docu: {failed_symbol}")
+      self.user_output.append(lode_error)
     
   def generatePomAndDoc(self):
     datetime_obj= datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
