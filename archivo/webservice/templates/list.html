@@ -47,10 +47,17 @@
     <label for="crawling">Crawling-Status</label>
 </p>
 
-<p style="text-align:center;">
-    <a class="btn" style="font-size:15px" href="/list">Official</a>
-    <a class="btn" style="font-size:15px" href="/list?dev">Develop</a>
-</p>
+<div class="container text-center">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons" style="text-align:center;">
+        <label class="btn btn-secondary">
+          <a class="btn" href="/list" style="color:white">Official</a>
+        </label>
+        <label class="btn btn-secondary">
+          <a class="btn" href="/list?dev" style="color:white"> Develop </a>
+        </label>
+    </div>
+</div>
+
 </div>
 <div class="container-fluid">
 <table
@@ -152,8 +159,7 @@
 {%endfor%}
 
 </tbody>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+
 <script>
     setInterval(function update_columns() {
         var checkboxes = document.getElementsByClassName('column_selector')
@@ -172,6 +178,12 @@
             }
         }
     }
+    $(document).ready(function () {
+        $('#dtBasicExample').DataTable({
+        "ordering": true // false to disable sorting (or any other option)
+        });
+        $('.dataTables_length').addClass('bs-select');
+        });
 </script>
 <style> .float-right { float: left !important; } </style>
 </div>

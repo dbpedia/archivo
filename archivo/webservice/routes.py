@@ -123,7 +123,7 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
-def newOntologiesList():
+def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
     if isDev:
@@ -306,3 +306,9 @@ def shaclVisualisation():
         g = inspectVocabs.getGraphOfVocabFile(shaclURI)
         results = inspectVocabs.interpretShaclGraph(g)
         return render_template("shaclReport.html", report=results)
+    else:
+        return abort(status=404)
+
+@app.route('/faq')
+def faq():
+    return render_template("faq.html")

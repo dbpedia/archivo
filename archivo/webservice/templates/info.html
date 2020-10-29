@@ -17,10 +17,17 @@
 {% if general_info.title %}
 
 {% if general_info.hasDev %}
-<p style="text-align:center;">
-    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir.encoded}}">Official</a>
-    <a class="btn" style="font-size:15px" href="/info?o={{general_info.nir.encoded}}&dev">Develop</a>
-</p>
+<div class="container text-center">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons" style="text-align:center;">
+        <label class="btn btn-secondary">
+          <a class="btn" href="/info?o={{general_info.nir.encoded}}" style="color:white">Official</a>
+        </label>
+        <label class="btn btn-secondary">
+          <a class="btn" href="/info?o={{general_info.nir.encoded}}&dev" style="color:white"> Develop </a>
+        </label>
+    </div>
+</div>
+
 {% endif %}
 
 
@@ -63,7 +70,7 @@
     <p>
         <table id="table">
             <tr>
-                <th colspan="3"></th>
+                <th colspan="4">Version Info</th>
                 <th colspan="5">Archivo-Stars</th>
                 <th colspan="1">Metadata-Badges</th>
             </tr>
@@ -71,8 +78,8 @@
                 <th>Version</th>
                 <th>Triples</th>
                 <th>Download</th>
-                <th><a href="https://github.com/dbpedia/Archivo#stars">Stars</a></th>
                 <th>Semantic Version</th>
+                <th><a href="https://github.com/dbpedia/Archivo#stars">Stars</a></th>
                 <th><span title="All of the following criteria have to be fulfilled:1) The non-information URI resolves to a machine readable format or a machine readable version of the ontology is deterministically discoverable by other common means. 2) download was successful 3) uses a common format implemented by Archivo 4) at least one format was found that parses with no or few (negligible) syntactical warnings">
                     ★ Retrieval & Parsing
                 </span></th>
@@ -107,8 +114,8 @@
                     <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}">nt</a>
                     {% endif %}
                 </td>
-                <td>{{version.stars}}</td>
                 <td>{{version.semversion}}</td>
+                <td>{{version.stars}}</td>
                 <td>
                     {% if version.parsing.conforms %}
                         <span class="check">✔</span>
@@ -145,7 +152,7 @@
                     {% elif version.lode.severity == 'WARNING' %}
                         <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="yellow"><strong>!</strong></a>
                     {% else %}
-                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="x">✘</a>
+                        <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="x">✘</a>
                     {% endif %}
                 </td>
             </tr>
@@ -156,6 +163,7 @@
 {% else %}
 <p>{{general_info.message}}</p>
 {% endif %}
+</div>
 <script>
     $(document).ready(function() {
         $('#uris').select2({  // init Select2 on form's uris field
@@ -164,6 +172,5 @@
             "width": 500
         });
     });
-</script>
-</div>
+  </script>
 {% endblock %}
