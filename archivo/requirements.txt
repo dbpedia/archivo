@@ -12,4 +12,4 @@ APScheduler
 flask-sqlalchemy
 flask_migrate
 requests
-Flask-BS4
+Flask-Bootstrap4
