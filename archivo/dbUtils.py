@@ -73,16 +73,19 @@ def writeIndexAsCSV(filepath):
         for uri, source, accessDate in db.session.query(Ontology.uri, Ontology.source, Ontology.accessDate):
             writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
 
-def updateInfoForOntology(uri):
-    urisInDatabase = db.session.query(OfficialOntology.uri).all()
+def updateInfoForOntology(uri, orig_uri=None):
+    urisInDatabase = db.session.query(Ontology.uri).all()
     urisInDatabase = [t[0] for t in urisInDatabase]
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+    if orig_uri == None:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+    else:
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(orig_uri, dev=True)
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if not uri in urisInDatabase:
         webservice_logger.error("Not in database")
         return
     else:
-        ontology = db.session.query(OfficialOntology).filter_by(uri=uri).first()
+        ontology = db.session.query(Ontology).filter_by(uri=uri).first()
     for info_dict in versions_info:
         db.session.add(Version(
                 version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
