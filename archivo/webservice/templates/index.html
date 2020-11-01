@@ -1,109 +1,79 @@
-<!doctype html>
-<html lang="en">
-    <head>
-      <title>DBpedia Archivo</title>
-      <meta charset="UTF-8"/>
-      <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/theme.css') }}">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-      <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% extends 'bootstrap/base.html' %}
 
-		  <script
+{% block styles %}
+{{super()}}
+<!--link rel="stylesheet"
+      href="{{url_for('.static', filename='styles/table.css')}}"-->
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles/custom.css')}}">
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles/faq-theme.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<!--script
 			src="https://code.jquery.com/jquery-3.4.1.min.js"
 			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-			crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
-      <style>
-        .btn {
-          border: 2px solid black;
-          border-color: blue;
-          background-color: white;
-          color: black;
-          padding: 10px 20px;
-          font-size: 16px;
-          cursor: pointer;
-        }
-        .btn:hover{
-          background-color: blue;
-          color: white;
-        }
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-        }
-        
-        td, th {
-          border: 1px solid #dddddd;
-          text-align: center;
-          padding: 8px;
-        }
-        .x {
-          color: red;
-        }
-        .check {
-          color: green;
-        }
-        .yellow {
-          color: darkorange;
-        }
-        .active, .collapsible:hover {
-          background-color: rgb(185, 185, 185);
-        }
-        .collapsible:after {
-          content: '\02795'; /* Unicode character for "plus" sign (+) */
-          font-size: 13px;
-          color: white;
-          float: left;
-          margin-left: 5px;
-        }
+			crossorigin="anonymous"></script-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+{% endblock %}
 
-        .active:after {
-          content: "\2796"; /* Unicode character for "minus" sign (-) */
-        }
-        pre {
-          background: #f4f4f4;
-          border: 1px solid #ddd;
-          border-left: 3px solid blue;
-          color: #666;
-          page-break-inside: avoid;
-          font-family: monospace;
-          font-size: 15px;
-          line-height: 1.6;
-          margin-bottom: 1.6em;
-          max-width: 100%;
-          overflow: auto;
-          padding: 1em 1.5em;
-          display: block;
-          word-wrap: break-word;
-      }
-      p {
-        font-size: 1.2em; /* 14px/16=0.875em */
-      }
+{% block title %}
+      DBpedia Archivo
+{% endblock %}
 
-      h2 {
-        font-size: 2.3em;
-        text-decoration: underline;
-      }
-        </style>
-    </head>
-    
-    
-    <body style="margin:1em 5% 19em 5%;box-shadow:0 .3em 1em #000;padding:5em 9em 9em 10em;" >
-    <h1 style="font-family:Impact,Haettenschweiler,Franklin Gothic Bold,Charcoal,Helvetica Inserat,Bitstream Vera Sans Bold,Arial Black,sans serif; font-weight: 550;"><img src="https://upload.wikimedia.org/wikipedia/commons/7/73/DBpediaLogo.svg" height=90 style="position: relative ; top: -23px;"> Archivo</h1>
-    <div class="w3-bar w3-border-bottom w3-light-grey intronav">
-            <a class="w3-bar-item w3-button testbtn" style="font-size:15px" href="/home">home</a>
-            <a class="w3-bar-item w3-button testbtn" style="font-size:15px" href="/list">list</a>
-            <a class="w3-bar-item w3-button testbtn" style="font-size:15px" href="/info">info</a>
-            <a class="w3-bar-item w3-button testbtn" style="font-size:15px" href="/add">add</a>
-            <!--a class="w3-bar-item w3-button testbtn" style="font-size:15px" href="/doc">about</a-->
-        </div>
+{% block navbar%}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/home">
+      <img src="{{url_for('.static', filename='archivo_logo_alt.png')}}" height=100>
+        </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/add">Suggestion</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/list">All Ontologies</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/info">Info</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/faq">FAQ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/dbpedia/Archivo/issues">Report Issue</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/dbpedia/Archivo">
+            <img src="{{url_for('.static', filename='github-logo.svg')}}" width="30" height="30" class="d-inline-block align-top" alt="">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %}
 
-<br>
-<div>
-        {% block content %}{% endblock %}
-</div>
+  {% block content %}
+  
+  {%endblock %}
 
-    </body>
-</html>
+<script>
+  $(document).ready(function() {
+    $('li.active').removeClass('active');
+    $('a[href="' + location.pathname + '"]').closest('li').addClass('active'); 
+  });  
+</script>

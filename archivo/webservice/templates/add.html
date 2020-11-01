@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-
+<div class="container">
 <h2>Add a new ontology to Archivo</h2>
 
 An ontology has to fulfill some requirements to be part of Archivo:
@@ -22,4 +22,5 @@ Paste the URL of an OWL ontology here, Archivo will download and parse it and if
 </form>
 <br><br>
 {{ responseText|safe }}
+</div>
 {% endblock %}

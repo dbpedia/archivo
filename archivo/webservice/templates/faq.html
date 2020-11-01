@@ -1,0 +1,152 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<section class="accordion-section clearfix mt-3" aria-label="Question Accordions">
+    <div class="container">
+    
+        <h2>Frequently Asked Questions </h2>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading p-3 mb-3" role="tab" id="heading0">
+              <h3 class="panel-title">
+                <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#collapse0" aria-expanded="true" aria-controls="collapse0">
+                  What is DBpedia Archivo?
+                </a>
+              </h3>
+            </div>
+            <div id="collapse0" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading0">
+              <div class="panel-body px-3 mb-4">
+                <p>
+                  DBpedia Archivo is an online interface and augmented archive for all kinds of vocabularies. It automatically crawls for new ontologies, updates the already enlisted ontologies regularly and performs some useful tests to check the fitness of the vocabulary for the semantic web. 
+              
+              The ontologies and all additional data, are deployed on the <a title="DBpedia Databus" href="https://databus.dbpedia.org/ontologies/">DBpedia Databus</a> for easy access, the webservice provides some useful help for evaluation and usage. For a more specific explanation check out the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
+              </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel panel-default">
+            <div class="panel-heading p-3 mb-3" role="tab" id="heading1">
+              <h3 class="panel-title">
+                <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                  What are the Archivo Stars?
+                </a>
+              </h3>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+              <div class="panel-body px-3 mb-4">
+                <p>Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).</p>
+<p>Baseline: The minimum requirements a Ontology should fulfill.</p>
+<ul>
+<li>
+<p>
+    The RDF representation of the ontology needs to be accessible at the non-information-IRI via content negotiation and be accessible in at least one of the implemented formats (owl, ttl and nt).
+</p>
+</li>
+<li>
+<p>Some kind of license regarding the ontology could be detected in the triples. A high degree of heterogeneity is permissible for this star regarding the used property/subproperty as well as object:license URI (resolvable linked data or web link), <code>xsd:string</code> or <code>xsd:anyURI</code></p>
+</li>
+</ul>
+<p>If the ontology fulfills the baseline, it can earn two further stars by using good practises:</p>
+<ul>
+<li>
+<p>We require a homogenized license declaration using <code>dct:license</code> as object property with a URI (not string or anyURI). </p>
+</li>
+<li>
+<p>We measure the consitency with currently available reasoners such as Pellet/Stardog (more to follow). </p>
+</li>
+</ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel panel-default">
+            <div class="panel-heading p-3 mb-3" role="tab" id="heading2">
+              <h3 class="panel-title">
+                <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                  How can I access Archivo's ontologies?
+                </a>
+              </h3>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+              <div class="panel-body px-3 mb-4">
+
+<h3>Simple Download:</h3>
+
+<p>The easiest way to access an ontology is by using the Archivo webservice to get redirected to the latest version of an ontology in your desired format (currently supported: rdf+xml, turtle and n-triples).<br>
+Just use:
+<div class="highlight">
+  <pre><code>http://archivo.dbpedia.org/download?o={ontology-URI}&f={file-extension}&v={timestamp}</code></pre>
+</div>
+with:
+<ul>
+    <li><i>ontology-uri</i> being the URI of your desired ontology (e.g <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>)</li>
+    <li><b>Optional:</b> <i>file-extension</i> being the desired extension (currently supported: owl, ttl and nt; default: owl)</li>
+    <li><b>Optional:</b> <i>timestamp</i> (default: latest) being the timestamp of the ontology (to see what timestamps are available check out the <a href="/info">info-page</a> of your ontology and copy it from the Version column)</li>
+    <li><b>Optional:</b> Add <i>&dev</i> to the uri to access the dev version of the ontlogy (only works if there is a dev version; to see what dev versions are available check out the <a href="/list?dev">dev-list</a>) </li>
+</ul>
+<p><strong>Examples:</strong> Download the latest version of the Cinelab ontology as Turtle file
+    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&f=ttl"</pre>
+    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&v=2020.07.16-115638"</pre>
+    </p>
+
+<p><strong></strong></p>
+<p>Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a> which also provides the latest download links.</p>
+
+<br>
+<h3>SPARQL:</h3>
+
+<p>If you are familiar with SPARQL and the DBpedia Databus architecture you can try using the Databus SPARQL endpoint, a good start for a query would be something like <a href="https://databus.dbpedia.org/yasgui/#query=PREFIX+dataid%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcore%23%3E%0APREFIX+dct%3A++++%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+dcat%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0APREFIX+db%3A+++++%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2F%3E%0APREFIX+rdf%3A++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dataid-cv%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcv%23%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0A%0ASELECT+DISTINCT+%3Fart+%3Fversion+%3Ffile+WHERE+%7B%0A++VALUES+%3Fart+%7B+%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2Fontologies%2Fxmlns.com%2Ffoaf--0--1%3E+%7D+.%0A++%09%3Fdataset+dataid%3Aaccount+db%3Aontologies+.+%0A++%09%3Fdataset+dataid%3Aartifact+%3Fart+.%0A++%09%3Fdataset+dcat%3Adistribution+%3Fdistribution+.%0A++%09%3Fdistribution+dataid-cv%3Atype+'parsed'%5E%5Exsd%3Astring+.+%09%0A++%09%3Fdistribution+dataid%3AformatExtension+'owl'%5E%5Exsd%3Astring+.+%0A++%09%3Fdistribution+dcat%3AdownloadURL+%3Ffile+.%0A++%09%3Fdataset+dct%3AhasVersion+%3Fversion+.%0A%7D&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fdatabus.dbpedia.org%2Frepo%2Fsparql&requestMethod=POST&tabTitle=Example+Ontology+Query&headers=%7B%7D&outputFormat=table">this</a>.
+    This requires you to use the Databus Artifact of each ontology, which can be found in the <a href="/list">complete list</a> of ontologies.
+</p>
+<br>
+
+<h4>Complete Dump:</h4>
+<p>For research purposes it can be useful to download a complete dump of all ontologies. The easiest way would be using the <a href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">collection on the databus</a>: 
+<ul>
+    <li><p>Using the <a href="https://github.com/dbpedia/databus-client">Databus Client</a>: Generates a local file dump of a SPARQL query<br>
+        <strong>Example:</strong> <pre>bin/DatabusClient -f nt -s https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots/</pre></p>
+    </li>
+    <li>
+        <p>Using <a href="https://github.com/dbpedia/Dockerized-DBpedia">Dockerized-DBpedia</a>: Starts a Virtuoso Instance and all latest ontologies will be deployed automagically with a few simple steps. 
+            <ul>
+                <li>Set COLLECTION_URI=https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots/</li>
+                <li>Set up the local parameters like TARGET_DIR and Virtuoso parameters (if needed)</li>
+                <li>run <code>docker compose up</code></li>
+            </ul> 
+        </p>
+    </li>
+</ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="panel panel-default">
+            <div class="panel-heading p-3 mb-3" role="tab" id="heading3">
+              <h3 class="panel-title">
+                <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                  Where can I find the test results for my ontology?
+                </a>
+              </h3>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+              <div class="panel-body px-3 mb-4">
+                <p>
+                  The test-results of on ontology (and all it's versions) can be accessed at the <a href="/info">info</a> page of the ontology.
+                  <strong>Example:</strong>
+                  <pre>http://archivo.dbpedia.org/info?o=http://datashapes.org/dash</pre>
+              </p>
+              <p>This URI also works by requesting RDF content types (currently supported: RDF+XML, Turtle and N-Triples). This redirects to a SPARQL-query an the databus regarding all information/files available for this ontology</p>
+              <p>
+                  <strong>Example:</strong>
+                  <pre>curl -L -H "Accept: text/turtle" "http://archivo.dbpedia.org/info?o=http://datashapes.org/dash"</pre>
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+    </div>
+  </section>
+{% endblock %}

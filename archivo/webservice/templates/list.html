@@ -1,10 +1,12 @@
 {% extends "index.html" %}
 
 {% block content %}
+<div class="container">
 <h2>List of all discovered ontologies</h2>
 <br>
 <!--TODO: if possible include how many stars there are and other critical info in the table-->
 <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.<br></p>
+
 <p>
     Select the Tables columns:<br>
 
@@ -44,6 +46,14 @@
     <input type="checkbox" name="crawling" class="column_selector" value=12 checked onclick="show_hide_column(12, checked)">
     <label for="crawling">Crawling-Status</label>
 </p>
+
+<div class="container text-center">
+          <a class="btn btn-primary btn-lg" href="/list" style="color:white">Official</a>
+          <a class="btn btn-primary btn-lg" href="/list?dev" style="color:white"> Develop </a>
+</div>
+
+</div>
+<div class="container-fluid">
 <table
  id="ontologies-table"
  data-toggle="table"
@@ -63,7 +73,7 @@
     <col class="col13"/>
 <thead>
 <tr>
- <th data-sortable="true" data-field="non-information-uri"><span title="Click for more information about this ontology!">Ontology</span></th>
+ <th data-sortable="true" data-field="non-information-uri" style="width:30%;"><span title="Click for more information about this ontology!">Ontology</span></th>
  <th data-sortable="true" data-field="databus-link"><span title="">Databus URI</span></th>
  <th data-sortable="true" data-field="source">Source</th>
  <th data-sortable="true" data-field="download-latest">Download Latest</th>
@@ -79,12 +89,6 @@
 </tr>
 </thead>
 <tbody>
-
-    <p style="text-align:center;">
-        <a class="btn" style="font-size:15px" href="/list">Official</a>
-        <a class="btn" style="font-size:15px" href="/list?dev">Develop</a>
-    </p>
-
 
 {% for onto in Ontologies %}
 <tr>
@@ -149,8 +153,7 @@
 {%endfor%}
 
 </tbody>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+
 <script>
     setInterval(function update_columns() {
         var checkboxes = document.getElementsByClassName('column_selector')
@@ -169,6 +172,13 @@
             }
         }
     }
+    $(document).ready(function () {
+        $('#dtBasicExample').DataTable({
+        "ordering": true // false to disable sorting (or any other option)
+        });
+        $('.dataTables_length').addClass('bs-select');
+        });
 </script>
 <style> .float-right { float: left !important; } </style>
+</div>
 {% endblock %}

@@ -1,0 +1,52 @@
+.shaclTable {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  width: 400px;
+  display: inline-block;
+  border-collapse: collapse;
+  vertical-align: top;
+}
+
+.shaclTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.shaclTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  color: white;
+}
+
+.violations th {
+  background-color: #DC143C;
+}
+
+.warnings th {
+  background-color: #FFA500;
+}
+
+.infos th {
+  background-color: #696969;
+}
+
+.shaclTable tr:hover {background-color: #ddd;}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+.x {
+  color: red;
+}
+.check {
+  color: green;
+}

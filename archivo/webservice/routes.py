@@ -36,24 +36,30 @@ def addOntology():
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     if form.validate_on_submit():
         uri = form.suggestUrl.data.strip()
-        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger)
+        output = []
+        success, isNir, message, archivo_version = crawlURIs.handleNewUri(uri, allOnts, archivoConfig.localPath, "user-suggestion", False, testSuite=testingSuite, logger=webservice_logger, user_output=output)
         if success:
-            for dbOnt in dbOnts:
-                db.session.add(dbOnt)
-            for version in dbVersions:
-                db.session.add(version)
+            succ, dev_message, dev_version = archivo_version.handleTrackThis()
+            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            if succ:
+                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+                db.session.add(dev_ont)
+                db.session.add(dev_version)
+                dbOnt.devel = dev_ont.uri
+            db.session.add(dbOnt)
+            db.session.add(dbVersion)
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(
                 uri=uri,
                 source="user-suggestion",
                 inArchivo=False,
-                error = message
+                error = "\n".join(map(str, user_output))
             )
             db.session.add(fallout)
             db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        return render_template("add.html", responseText=message, form=form)
+        return render_template("add.html", responseText="<br>".join(map(str, output)), form=form)
     return render_template('add.html', responseText="",form=form)
 
 @app.route("/info/", methods=["GET", "POST"])
@@ -123,7 +129,7 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
-def newOntologiesList():
+def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
     if isDev:
@@ -306,3 +312,9 @@ def shaclVisualisation():
         g = inspectVocabs.getGraphOfVocabFile(shaclURI)
         results = inspectVocabs.interpretShaclGraph(g)
         return render_template("shaclReport.html", report=results)
+    else:
+        return abort(status=404)
+
+@app.route('/faq')
+def faq():
+    return render_template("faq.html")

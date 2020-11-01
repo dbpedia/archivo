@@ -30,6 +30,28 @@ def getTripleNumberFromRapperLog(rapperlog):
   else:
     return None
 
+def parse_rdf_from_string(rdf_string, base_uri, input_type=None, output_type="ntriples"):
+  if input_type == None:
+    command = ['rapper', '-I', base_uri, '-g', '-', '-o', output_type]
+  else:
+    command = ['rapper', '-I', base_uri, '-i', input_type, '-', '-o', output_type]
+
+  process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=bytes(rdf_string, 'utf-8'))
+  triples = getTripleNumberFromRapperLog(process.stderr.decode('utf-8'))
+  errors, warnings = returnRapperErrors(process.stderr.decode('utf-8'))
+  return process.stdout.decode('utf-8'), triples, errors, warnings
+
+def get_triples_from_rdf_string(rdf_string, base_uri, input_type=None):
+  if input_type == None:
+    command = ['rapper', '-I', base_uri, '-g', '-']
+  else:
+    command = ['rapper', '-I', base_uri, '-i', input_type, '-']
+
+  process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, input=bytes(rdf_string, 'utf-8'))
+  triples = getTripleNumberFromRapperLog(process.stderr.decode('utf-8'))
+  errors, _ = returnRapperErrors(process.stderr.decode('utf-8'))
+  return triples, errors
+
 def getLatestVersionFromArtifactDir(artifactDir):
   try:
     versionDirs = [dir for dir in os.listdir(artifactDir) if os.path.isdir(os.path.join(artifactDir, dir)) and dir != "target"]
@@ -401,4 +423,4 @@ def genStats(rootdir):
 
   print(json.dumps(resultData, indent=1, sort_keys=True))
      
-    
+      

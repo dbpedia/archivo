@@ -16,7 +16,7 @@ cron.start()
 
 
 # This is the discovery process
-@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="11", minute="11", day_of_week="sun")
+#@cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="15", minute="48", day_of_week="sat")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -34,12 +34,18 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
         return
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-        success, isNir, message, dbOnts, dbVersions = crawlURIs.handleNewUri(uri, allOnts, dataPath, source, False, testSuite=testSuite, logger=logger)
+        output = []
+        success, isNir, message, archivo_version = crawlURIs.handleNewUri(uri, allOnts, dataPath, source, False, testSuite=testSuite, logger=logger, user_output=output)
         if success:
-            for ont in dbOnts:
-                db.session.add(ont)
-            for version in dbVersions:
-                db.session.add(version)
+            succ, message, dev_version = archivo_version.handleTrackThis()
+            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            if succ:
+                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+                db.session.add(dev_ont)
+                db.session.add(dev_version)
+                dbOnt.devel = dev_ont.uri
+            db.session.add(dbOnt)
+            db.session.add(dbVersion)
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(
@@ -50,9 +56,10 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             )
             db.session.add(fallout)
             db.session.commit()
+        
 
 
-@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -70,7 +77,7 @@ def ontology_official_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source)
+        success, message, archivo_version = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
@@ -83,63 +90,33 @@ def ontology_official_update():
             db.session.add(dbFallout)
         elif success:
             ont.crawling_status = True
-            if dbTrackOntology != None:
-                if ont.devel != None and ont.devel != dbTrackOntology.uri:
-                    old_dev_obj = db.session.query(dbModels.DevelopOntology).filter_by(uri=ont.devel)
-                    db.session.add(dbTrackOntology)
+
+            # check for new trackThis URI
+            succ, message, dev_version = archivo_version.handleTrackThis()
+            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            if succ:
+                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+                # update with new trackThis URI
+                if ont.devel != None and ont.devel != dev_ont.uri:
+                    old_dev_obj = db.session.query(dbModels.DevelopOntology).filter_by(uri=ont.devel).first()
+                    db.session.add(dev_ont)
+                    db.session.add(dev_version)
+                    # change old dev versions to new one
                     for v in db.session.query(dbModels.Version).filter_by(ontology=ont.devel).all():
-                        v.ontology = dbTrackOntology.uri
+                        v.ontology = dev_ont.uri
+                    # 
+                    ont.devel = dev_ont.uri
                     db.session.delete(old_dev_obj)
+                # when new trackThis was found
                 else:
-                    db.session.add(dbTrackOntology)
-            for dbV in dbVersions:
-                db.session.add(dbV)
+                    db.session.add(dev_ont)
+                    db.session.add(dev_version)
+                    ont.devel = dev_ont.uri
         else:
             ont.crawling_status = True
         # commit changes to database
         db.session.commit()
 
-def makeDiffForURI(uri):
-    dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestNtriples()
-    ont = db.session.query(dbModels.OfficialOntology).filter_by(uri=uri).first()
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
-    diff_logger.info(f"Handling ontology: {ont.uri}")
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
-    databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-    try:
-        urlInfo = allOntologiesInfo[databusURL]
-    except KeyError:
-        diff_logger.error(f"Could't find databus artifact for {ont.uri}")
-        return
-    success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.uri, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite)
-    if success == None:
-        dbFallout = dbModels.Fallout(
-            uri=ont.uri,
-            source=ont.source,
-            inArchivo=True,
-            error=message,
-            ontology=ont.uri
-            ) 
-        ont.crawling_status = False
-        db.session.add(dbFallout)
-    elif success:
-        ont.crawling_status = True
-        if dbTrackOntology != None:
-            if ont.devel != None and ont.devel != dbTrackOntology.uri:
-                old_dev_obj = db.session.query(dbModels.DevelopOntology).filter_by(uri=ont.devel)
-                db.session.add(dbTrackOntology)
-                for v in db.session.query(dbModels.Version).filter_by(ontology=ont.devel).all():
-                    v.ontology = dbTrackOntology.uri
-                db.session.delete(old_dev_obj)
-            else:
-                db.session.add(dbTrackOntology)
-        for dbV in dbVersions:
-            db.session.add(dbV)
-    else:
-        ont.crawling_status = True
-        # commit changes to database
-    db.session.commit()
 
 def scanForTrackThisURIs():
     dataPath = archivoConfig.localPath
@@ -174,7 +151,7 @@ def scanForTrackThisURIs():
             
 
 
-@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -192,7 +169,7 @@ def ontology_dev_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, dbTrackOntology, dbVersions = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source, devURI=ont.uri)
+        success, message, archivo_version = diffOntologies.handleDiffForUri(ont.official, dataPath, urlInfo["meta"], urlInfo["ntFile"], urlInfo["version"], testSuite, ont.source, devURI=ont.uri)
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
@@ -205,7 +182,8 @@ def ontology_dev_update():
             db.session.add(dbFallout)
         elif success:
             ont.crawling_status = True
-            db.session.add(dbVersion)
+            _, dev_version = dbUtils.getDatabaseEntry(archivo_version)
+            db.session.add(dev_version)
             db.session.commit()
         else:
             ont.crawling_status = True
@@ -215,31 +193,32 @@ def ontology_dev_update():
 
 
 
-@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
+#@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
     oldOntoIndex = queryDatabus.loadLastIndex()
     newOntoIndex = db.session.query(dbModels.OfficialOntology).all()
     diff = [onto.uri for onto in newOntoIndex if onto.uri not in [uri for uri, src, date in oldOntoIndex]]
     discovery_logger.info("New Ontologies:" + "\n".join(diff))
-    if len(diff) > 0:
-        newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-        artifactPath = os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies")
-        indexpath = os.path.join(artifactPath, newVersionString)
-        os.makedirs(indexpath, exist_ok=True)
-        # update pom
-        with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:
-            pomstring = generatePoms.generateChildPom(
+    if len(diff) <= 0:
+        return
+    newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+    artifactPath = os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies")
+    indexpath = os.path.join(artifactPath, newVersionString)
+    os.makedirs(indexpath, exist_ok=True)
+    # update pom
+    with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:
+        pomstring = generatePoms.generateChildPom(
                 groupId="archivo-indices",
                 artifactId="ontologies",
                 version=newVersionString,
                 license="http://creativecommons.org/licenses/by-sa/3.0/",
                 packaging="jar",
             )
-            print(pomstring, file=pomfile)
-        # write new index
-        dbUtils.writeIndexAsCSV(os.path.join(indexpath, "ontologies.csv"))
-        # deploy
-        status, log = generatePoms.callMaven(os.path.join(artifactPath, "pom.xml"), "deploy")
+        print(pomstring, file=pomfile)
+    # write new index
+    dbUtils.writeIndexAsCSV(os.path.join(indexpath, "ontologies.csv"))
+    # deploy
+    status, log = generatePoms.callMaven(os.path.join(artifactPath, "pom.xml"), "deploy")
 
 
 # Shutdown your cron thread if the web process is stopped
