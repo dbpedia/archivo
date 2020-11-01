@@ -3,7 +3,7 @@ from webservice.dbModels import OfficialOntology, DevelopOntology, Version, Onto
 from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
 from datetime import datetime
 import csv
-
+from crawlURIs import ArchivoVersion
 
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
@@ -104,3 +104,36 @@ def updateInfoForOntology(uri, orig_uri=None):
     except IntegrityError as e:
         print(str(e))
         db.session.rollback() 
+
+
+def getDatabaseEntry(archivo_version : ArchivoVersion):
+    if archivo_version.isDev:
+      dbOntology = DevelopOntology(
+        uri = archivo_version.reference_uri,
+        source="DEV",
+        accessDate=archivo_version.access_date,
+        title=archivo_version.md_label,
+        official=archivo_version.nir,
+      )
+    else:
+      dbOntology = OfficialOntology(
+        uri = archivo_version.reference_uri,
+        source = archivo_version.source,
+        accessDate = archivo_version.access_date,
+        title = archivo_version.md_label,
+        devel = None
+      )
+    consistencyCheck=lambda s: True if s == "Yes" else False
+    dbVersion = Version(
+            version=datetime.strptime(archivo_version.version, "%Y.%m.%d-%H%M%S"),
+            semanticVersion=archivo_version.semantic_version,
+            stars=ontoFiles.measureStars(archivo_version.rapper_errors, archivo_version.conforms_licenseI, archivo_version.is_consistent, archivo_version.is_consistent_noimports, archivo_version.conforms_licenseII),
+            triples=archivo_version.triples,
+            parsing=True if archivo_version.rapper_errors == "" else False,
+            licenseI=archivo_version.conforms_licenseI,
+            licenseII=archivo_version.conforms_licenseII,
+            consistency=consistencyCheck(archivo_version.is_consistent),
+            lodeSeverity=archivo_version.lode_severity,
+            ontology=archivo_version.reference_uri,
+            )
+    return dbOntology, dbVersion

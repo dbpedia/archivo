@@ -8,6 +8,7 @@ import json
 import traceback
 from utils import stringTools, archivoConfig
 from urllib.parse import quote as urlQuote
+from io import StringIO
 
 descriptionNamespaceGraph = Graph()
 descriptionNamespaceGraph.bind("dct", DCTERMS)
@@ -25,6 +26,18 @@ def getGraphOfVocabFile(filepath, logger=None):
         if logger != None:
             logger.error("Exception in rdflib parsing", exc_info=True)
         return None
+
+def get_graph_of_string(rdf_string, format, logger=None):
+    try:
+        graph = rdflib.Graph()
+        graph.parse(StringIO(rdf_string), format=format)
+        return graph
+    except Exception as e:
+        print(str(e))
+        if logger != None:
+            logger.error("Exception in rdflib parsing", exc_info=True)
+        return None
+
 
 def getTurtleGraph(graph, base=None):    
     return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
