@@ -40,6 +40,61 @@ file_ending_mapping = {"application/rdf+xml":"owl", "application/ntriples":"nt",
 success_symbol = "<span class=\"check\">✔</span>"
 failed_symbol = "<span class=\"x\">✘</span>"
 
+
+# determine_best_content_type
+# function used by 
+# 
+def determine_best_content_type(uri, user_output=[]):
+  header_dict = {}
+  for header in rdfHeadersMapping:
+    response, error = download_rdf_string(uri, acc_header=header)
+    if error == None:
+      try:
+        triple_number, rapper_errors = ontoFiles.get_triples_from_rdf_string(response.text, uri, input_type=rdfHeadersMapping[header])
+      except Exception as e:
+        print(f'There was an error parsing {uri} with header {header}: {str(e)}')
+        continue
+      if triple_number != None and triple_number > 0:
+        user_output.append(f"Testing header {header}: {success_symbol}; Triples: {str(triple_number)}")
+        header_dict[header] = (response, triple_number)
+      else:
+        user_output.append(f"Testing header {header}: Access {failed_symbol}; Triples: {str(triple_number)}")
+        user_output.append(rapper_errors)
+    else:
+      user_output.append(f"Testing header {header}: Access {failed_symbol}")
+      user_output.append(error)
+  if header_dict == {}:
+    return None, None, None
+  best_header = [k for k,v in sorted(header_dict.items(), key=lambda item: item[1][1], reverse=True)][0]
+  rdf_string, triple_number = header_dict[best_header]
+  return best_header, rdf_string, triple_number
+
+def download_rdf_string(uri, acc_header, encoding='utf-8'):
+  try:
+    headers = {'Accept': acc_header}
+    response=requests.get(uri, headers=headers, timeout=30, allow_redirects=True)
+    if encoding != None:
+      response.encoding = encoding
+    if response.status_code < 400:
+      return response, None
+    else:
+      return response, "Not Accessible - Status " + str(response.status_code)
+  except requests.exceptions.TooManyRedirects as e:
+    return None, str(e)
+  except TimeoutError as e:
+    return None, str(e)
+  except requests.exceptions.ConnectionError as e:
+    return None, str(e)
+  except requests.exceptions.ReadTimeout as e:
+    return None, str(e)
+  except KeyboardInterrupt:
+    sys.exit(19)
+  except Exception as e:
+    traceback.print_exc(file=sys.stdout)
+    return None, str(e)
+
+
+
 def getLodeDocuFile(vocab_uri, logger):
   try:
     response = requests.get(lodeServiceUrl + vocab_uri)
@@ -139,55 +194,9 @@ def determineBestAccHeader(vocab_uri, localDir, user_output=[]):
     return [k for k, v in sorted(headerDict.items(), key=lambda item: item[1], reverse=True)][0], errors
 
 
-def determine_best_content_type(uri, user_output=[]):
-  header_dict = {}
-  for header in rdfHeadersMapping:
-    response, error = download_rdf_string(uri, acc_header=header)
-    if error == None:
-      try:
-        triple_number, rapper_errors = ontoFiles.get_triples_from_rdf_string(response.text, uri, input_type=rdfHeadersMapping[header])
-      except Exception as e:
-        print(f'There was an error parsing {uri} with header {header}: {str(e)}')
-        continue
-      if triple_number != None and triple_number > 0:
-        user_output.append(f"Testing header {header}: {success_symbol}; Triples: {str(triple_number)}")
-        header_dict[header] = (response, triple_number)
-      else:
-        user_output.append(f"Testing header {header}: Access {failed_symbol}; Triples: {str(triple_number)}")
-        user_output.append(rapper_errors)
-    else:
-      user_output.append(f"Testing header {header}: Access {failed_symbol}")
-      user_output.append(error)
-  if header_dict == {}:
-    return None, None, None
-  best_header = [k for k,v in sorted(header_dict.items(), key=lambda item: item[1][1], reverse=True)][0]
-  rdf_string, triple_number = header_dict[best_header]
-  return best_header, rdf_string, triple_number
 
 
-def download_rdf_string(uri, acc_header, encoding='utf-8'):
-  try:
-    headers = {'Accept': acc_header}
-    response=requests.get(uri, headers=headers, timeout=30, allow_redirects=True)
-    if encoding != None:
-      response.encoding = encoding
-    if response.status_code < 400:
-      return response, None
-    else:
-      return response, "Not Accessible - Status " + str(response.status_code)
-  except requests.exceptions.TooManyRedirects as e:
-    return None, str(e)
-  except TimeoutError as e:
-    return None, str(e)
-  except requests.exceptions.ConnectionError as e:
-    return None, str(e)
-  except requests.exceptions.ReadTimeout as e:
-    return None, str(e)
-  except KeyboardInterrupt:
-    sys.exit(19)
-  except Exception as e:
-    traceback.print_exc(file=sys.stdout)
-    return None, str(e)
+
 
 def downloadSource(uri, path, name, accHeader, encoding='utf-8'):
   try:
