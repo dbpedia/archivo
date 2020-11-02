@@ -54,7 +54,7 @@ def addOntology():
                 uri=uri,
                 source="user-suggestion",
                 inArchivo=False,
-                error = "\n".join(map(str, user_output))
+                error = "\n".join(map(str, output))
             )
             db.session.add(fallout)
             db.session.commit()
