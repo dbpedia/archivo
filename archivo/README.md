@@ -11,6 +11,7 @@ sudo apt-get install python3-venv virtualenv
 cd Archivo
 # Create virtualenv and activate it:
 virtualenv venv
+# or python3 -m venv
 source venv/bin/activate
 # Change directory:
 cd archivo
