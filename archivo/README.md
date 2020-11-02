@@ -2,33 +2,22 @@
 
 ## Setup
 
-Clone the repository:
 ```
+# Clone the repository:
 git clone https://github.com/dbpedia/Archivo.git
-```
-Install python virtualenv:
-```
-sudo apt-get install python3-venv
-```
-Change directory:
-```
+# Install python virtualenv:
+sudo apt-get install python3-venv virtualenv
+# Change directory:
 cd Archivo
-```
-Create virtualenv and activate it:
-```
+# Create virtualenv and activate it:
 virtualenv venv
+# or python3 -m venv
 source venv/bin/activate
-```
-Change directory:
-```
+# Change directory:
 cd archivo
-```
-Install requirements:
-```
+# Install requirements:
 pip install -r requirements.txt
-```
-Run the dev server:
-Note: comment the cronjob decorators in archivo.py to NOT run the cronjobs fro development
-```
+# Run the dev server:
+# Note: comment the cronjob decorators in archivo.py to NOT run the cronjobs fro development
 python archivo.py
 ```
