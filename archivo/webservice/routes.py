@@ -129,6 +129,8 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 @app.route("/list", methods=["GET"])
+@app.route("/", methods=["GET"])
+
 def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
@@ -300,7 +302,6 @@ def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema
         abort(status=404)
 
 @app.route("/home")
-@app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
 
