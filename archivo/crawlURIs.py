@@ -540,8 +540,6 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
     user_output.append(f"Deploying to Databus: {success_symbol}")
     user_output.append(f"Added the Ontology to Archivo, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon")
-    dbOntos.append(dbOntology)
-    dbVersions.append(dbVersion)
     return True, isNIR, "<br>".join(map(str, user_output)), new_version
 
 
