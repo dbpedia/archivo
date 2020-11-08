@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-<h3>Ontology Info Service</h3>
+<h2>Ontology Snapshots</h2>
 <p>Select an ontology to see information about all versions deployed:</p>
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
@@ -21,7 +21,6 @@
           <a class="btn btn-primary btn-lg" href="/info?o={{general_info.nir.encoded}}" style="color:white">Official</a>
           <a class="btn btn-primary btn-lg" href="/info?o={{general_info.nir.encoded}}&dev" style="color:white"> Develop </a>
 </div>
-
 {% endif %}
 
 
@@ -31,45 +30,40 @@
 <h4>General Information:</h4>
 
 <p>
-    <table style="width:400px; border: 1px solid black;">
+    <table>
         <tr>
             <td><b>Ontology URI</b></td>
-            <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
-        </tr>
-        {% if general_info.sourceURI %}
-        <tr>
+            {% if general_info.sourceURI %}
             <td><b>Source URI</b></td>
-            <td><a href="{{ general_info.sourceURI }}">{{ general_info.sourceURI }}</a></td>
-        </tr>
-        {% endif %}
-        <tr>
+            {% endif %}
             <td><b>First Discovery</b></td>
-            <td>{{general_info.archivement}}</td>
-        </tr>
-        <tr>
             <td><b>Discovery Source</b></td>
-            <td>{{general_info.source}}</td>
+            <td><b>Databus-Artifact</b></td>
         </tr>
         <tr>
-            <td><b>Databus-Artifact</b></td>
+            <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
+            {% if general_info.sourceURI %}
+            <td><a href="{{ general_info.sourceURI }}">{{ general_info.sourceURI }}</a></td>
+            {% endif %}
+            <td>{{general_info.archivement}}</td>
+            <td>{{general_info.source}}</td>
             <td><a href="{{ general_info.databusArtifact }}">Link</a></td>
-        </tr>
     </table>
 </p>
 <br>
 
-<h4>Versions:</h4>
+<h4>Version-Snapshots:</h4>
 <p>Click the version-link to check out the release on the databus for further information!</p>
-<div class="content">
+<div class="container">
     <p>
         <table id="table">
             <tr>
-                <th colspan="4">Version Info</th>
-                <th colspan="5">Archivo-Stars</th>
-                <th colspan="1">Metadata-Badges</th>
+                <th colspan="5" style="text-align: center;">Snapshot Info</th>
+                <th colspan="2" style="text-align: center;">Archivo Stars Baseline</th>
+                <th colspan="2" style="text-align: center;">Good Practise Stars</th>
             </tr>
             <tr>
-                <th>Version</th>
+                <th><span title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span></th>
                 <th>Triples</th>
                 <th>Download</th>
                 <th>Semantic Version</th>
@@ -86,7 +80,6 @@
                 <th><span title="We measure the compatibility with currently available reasoners such as Pellet/Stardog (more to follow) and run available tasks such as consistency checks and classification.">
                     ★ Consistency</span>
                 </th>
-                <th>&#x1F396;&#xFE0E; Lode-Conform</th>
             </tr>
             {% for version in versions_info %}
             <tr>
@@ -136,6 +129,29 @@
                         <a href="{{version.consistent.url}}" class="check">✔</a>
                     {% else %}
                         <a href="{{version.consistent.url}}" class="x">✘</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </p>
+</div>
+<h4>Feature Badges</h4>
+<p>Feature badges are additional tests on ontologies, as an example Archivo provides a LODE conformity test.</p>
+<div class="container">
+    <p>
+        <table style="width:400px">
+            <tr>
+                <th><span title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span></th>
+                <th>&#x1F396;&#xFE0E; Lode-Conform</th>
+                <th><a href="https://github.com/dbpedia/Archivo">Write another badge with SHACL!</a></th>
+            </tr>
+            {% for version in versions_info %}
+            <tr>
+                <td>
+                    <a href="{{version.version.url}}">{{version.version.label}}</a>
+                    {% if version.docuURL %}
+                        <a href="{{version.docuURL}}">📰</a>
                     {% endif %}
                 </td>
                 <td>

@@ -145,8 +145,44 @@ with:
               </div>
             </div>
           </div>
+          <div class="panel panel-default">
+            <div class="panel-heading p-3 mb-3" role="tab" id="heading4">
+              <h3 class="panel-title">
+                <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                  What is a develop stage version?
+                </a>
+              </h3>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+              <div class="panel-body px-3 mb-4">
+                <h3>What is a develop stage version?</h3>
+                <p>
+                  The develop stage version is an alternative URI (for example to a file on raw.github.com) which represents the latest, not offically released version.
+                  This feature should help debugging ontologies during development and grant consumers access to the latest (even if unstable) version of the ontology.
+                  An example can be seen at the <a href="/info?o=http://dbpedia.org/ontology/">DBpedia ontology</a>.
+                </p>
+                <h3>How can I add a develop stage version of my ontology to Archivo?</h3>
+                <p>A develop stage version can be added to Archivo by adding a triple in the form of
+                  <pre><code>&ltNIR&gt &lthttps://archivo.dbpedia.org/trackThis&gt &ltURI of dev file&gt .</code></pre>
+                  to your ontology with NIR being the non information URI of your ontology (the URI which represents your ontology) and &ltURI of dev file b&gt being an URI of a file (for example from raw.github.com).
+                </p>
+              <p>This URI also works by requesting RDF content types (currently supported: RDF+XML, Turtle and N-Triples). This redirects to a SPARQL-query an the databus regarding all information/files available for this ontology</p>
+              <p>
+                  <strong>Example:</strong>
+                  <pre>curl -L -H "Accept: text/turtle" "http://archivo.dbpedia.org/info?o=http://datashapes.org/dash"</pre>
+              </p>
+              </div>
+            </div>
+          </div>
         </div>
     
     </div>
   </section>
+  <script>
+    $(document).ready(function() {
+      var anchor = window.location.hash;
+      $(".collapse").collapse('hide');
+      $(anchor).collapse('show');
+  });  
+  </script>
 {% endblock %}
