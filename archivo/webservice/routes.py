@@ -99,7 +99,7 @@ def vocabInfo():
         general_info["databusArtifact"] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         general_info["nir"] = {"regular":foundUri, "encoded":quote(foundUri)}
         return render_template("info.html", versions_info=sorted(versions_info, key=lambda d: d["version"]["label"], reverse=True), general_info=general_info, form=form)
-    return render_template("info.html", general_info={"message":"Enter an ontology URI!"}, form=form)
+    return render_template("info.html", general_info={"message":"Enter an ontology URI"}, form=form)
 
 @vocabInfo.support("text/turtle")
 def turtleInfo():
