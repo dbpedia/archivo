@@ -1,4 +1,9 @@
 
+.th:hover, th:hover span {
+  text-decoration: underline;
+  color: hotpink;
+}
+
 .container {
   padding-top:15px;
 }
