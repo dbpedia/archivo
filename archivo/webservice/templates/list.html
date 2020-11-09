@@ -13,15 +13,14 @@
   <!--TODO: if possible include how many stars there are and other critical info in the table-->
   <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.</p>
     
- <h3>Ontologies</h3>
-    
-    <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>!<br><br>
-Switch: <a href="/list" >Published Web Versions</a> |
-<a  href="/list?dev"> Developer Versions</a>
- <br>
-
-
-       <input type="checkbox" name="download" class="column_selector" value=3 checked onclick="show_hide_column(3, checked)">
+  <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>!<br><br>
+  
+    </div>
+<!-- begin table --> 
+  <div class="container-fluid">
+	  <hr>
+<h3>List of all available ontologies</h3> 
+      <input type="checkbox" name="download" class="column_selector" value=3 checked onclick="show_hide_column(3, checked)">
       <label for="download">Download</label>
 
       <input type="checkbox" name="triples" class="column_selector" value=4 checked onclick="show_hide_column(4, checked)">
@@ -31,7 +30,9 @@ Switch: <a href="/list" >Published Web Versions</a> |
       <label for="stars">Archivo Star Rating</label>
       <input type="checkbox" name="crawling" class="column_selector" value=12 checked onclick="show_hide_column(12, checked)">
       <label for="crawling">Crawling-Status</label>
-    <br>Additional columns: 
+      Switch: <a href="/list" >Published Web Versions</a> |
+      <a  href="/list?dev"> Developer Versions</a>
+      <br>Additional columns: 
       <input type="checkbox" name="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
       <label for="databus_uri">Databus URI</label>
 
@@ -54,9 +55,6 @@ Switch: <a href="/list" >Published Web Versions</a> |
       <input type="checkbox" name="lode" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
       <label for="lode">Lode-Status</label>
 
-   <!-- begin table --> 
-  </div>
-  <div class="container-fluid">
   <table
    id="ontologies-table"
    data-toggle="table"

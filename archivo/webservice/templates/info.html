@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-<h2>Ontology Snapshots</h2>
+<h2>Inspect an archived ontology</h2>
 <p>Select an ontology to see information about all versions deployed:</p>
 <form action="" method="POST" novalidate>
     {{ form.hidden_tag() }}
@@ -16,18 +16,17 @@
 <br>
 {% if general_info.title %}
 
+
+
+
+<h2>{{general_info.title}} (title)</h2>
+<p>{{general_info.comment}} (comment)
 {% if general_info.hasDev %}
-<div class="container text-center">
-          <a class="btn btn-primary btn-lg" href="/info?o={{general_info.nir.encoded}}" style="color:white">Official</a>
-          <a class="btn btn-primary btn-lg" href="/info?o={{general_info.nir.encoded}}&dev" style="color:white"> Develop </a>
-</div>
+          Swtich: 
+          <a  href="/info?o={{general_info.nir.encoded}}" >Official</a>
+          <a  href="/info?o={{general_info.nir.encoded}}&dev" > Develop </a>
 {% endif %}
-
-
-<h2>{{general_info.title}}</h2>
-<p>{{general_info.comment}}</p>
-
-<h4>General Information:</h4>
+</p>
 
 <p>
     <table>
@@ -60,7 +59,7 @@
             <tr>
                 <th colspan="5" style="text-align: center;">Snapshot Info</th>
                 <th colspan="2" style="text-align: center;">Archivo Stars Baseline</th>
-                <th colspan="2" style="text-align: center;">Good Practise Stars</th>
+                <th colspan="2" style="text-align: center;">Good Practice Stars</th>
             </tr>
             <tr>
                 <th><span title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span></th>

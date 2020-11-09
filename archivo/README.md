@@ -4,14 +4,14 @@
 
 ```
 # Clone the repository:
-git clone https://github.com/dbpedia/Archivo.git
+git clone https://github.com/dbpedia/archivo.git
 # Install python virtualenv:
 sudo apt-get install python3-venv virtualenv
 # Change directory:
-cd Archivo
+cd archivo
 # Create virtualenv and activate it:
-virtualenv venv
-# or python3 -m venv
+python3 -m venv venv
+# or virtualenv venv
 source venv/bin/activate
 # Change directory:
 cd archivo
