@@ -18,9 +18,10 @@
 
 
 
-
-<h2>{{general_info.title}} (given title)</h2>
-<p>{{general_info.comment}} (given comment)
+<p style="color: darkgray;">given title:</p>
+<h2>{{general_info.title}}</h2>
+<p style="color: darkgray;">given comment:</p>
+<p>{{general_info.comment}}
 {% if general_info.hasDev %}
           Switch: 
           <a  href="/info?o={{general_info.nir.encoded}}" >Official</a>
