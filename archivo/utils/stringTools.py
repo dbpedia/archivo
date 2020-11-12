@@ -1,6 +1,6 @@
 import re
 import os
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urldefrag
 import sys
 
 urlRegex=r"https?://(?:www\.)?(.+?)/(.*)"
@@ -144,3 +144,15 @@ def deleteAllFilesInDir(directory):
 
 def generateStarString(number):
   return "★" * number + "☆" * (4-number)
+
+def check_uri_equality(uri1, uri2):
+  if urldefrag(uri1)[0] == urldefrag(uri2)[0]:
+    return True
+  else:
+    return False
+
+def get_uri_from_index(uri, index):
+  for indexUri in index:
+    if check_uri_equality(uri, indexUri):
+      return indexUri
+  return None

@@ -2,13 +2,14 @@ import requests, sys, requests, traceback, rdflib
 from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
-from utils import ontoFiles, inspectVocabs
+from utils import ontoFiles, inspectVocabs, stringTools
 from utils.stringTools import generateStarString
 from datetime import datetime
 import csv
 
 databusRepoUrl = "https://databus.dbpedia.org/repo/sparql"
 
+mods_uri  = 'https://akswnc7.informatik.uni-leipzig.de/mods/sparql'
 
 def getLatestMetaFile(group, artifact):
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -505,6 +506,53 @@ def loadLastIndex():
     csvIO = StringIO(csvString)
     
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
+
+def get_SPOs():
+    query = "\n".join((
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+        "PREFIX dct:    <http://purl.org/dc/terms/>",
+        "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+        "PREFIX prov: <http://www.w3.org/ns/prov#>"
+
+        "SELECT DISTINCT ?used ?generated {",
+        "SERVICE <https://databus.dbpedia.org/repo/sparql> {",
+        "?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto> .",
+        "?s dcat:distribution/dataid:file ?used .",
+        "}",
+        "?mod prov:generated ?generated .",
+        "?mod prov:used ?used .",
+        "}",
+        )
+        )
+    sparql = SPARQLWrapper(mods_uri)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    print("Query got called!")
+    results = sparql.query().convert()
+
+    try:
+        results = results["results"]["bindings"]
+    except KeyError:
+        return None
+
+    for binding in results:
+        spo_csv_uri = binding['generated']['value']
+        print(binding['used']['value'])
+        try:
+            csv_doc = requests.get(spo_csv_uri).text
+        except Exception:
+            continue
+        csv_IO = StringIO(csv_doc)
+        distinct_spo_uris = []
+        for tp in csv.reader(csv_IO, delimiter=";"):
+            try:
+                uri = tp[0]
+            except Exception:
+                continue
+            if stringTools.get_uri_from_index(uri, distinct_spo_uris) == None:
+                distinct_spo_uris.append(uri)
+        yield distinct_spo_uris
 
 if __name__ == "__main__":
     getDownloadURL("datashapes.org", "dash", fileExt="ttl", version="2020.07.16-115603")

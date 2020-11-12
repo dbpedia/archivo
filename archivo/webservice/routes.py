@@ -76,7 +76,7 @@ def vocabInfo():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        foundUri =crawlURIs.checkIndexForUri(ontoUri, allOntos)
+        foundUri =stringTools.get_uri_from_index(ontoUri, allOntos)
         if foundUri == None:
             abort(status=404)
         ont = db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
@@ -106,7 +106,7 @@ def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    if not stringTools.get_uri_from_index(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
 
@@ -115,7 +115,7 @@ def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    if not stringTools.get_uri_from_index(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
 
@@ -124,7 +124,7 @@ def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
+    if not stringTools.get_uri_from_index(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]):
         abort(status=404) 
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
@@ -287,7 +287,7 @@ def getCorrectScheme(scheme):
 
 def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema='http'):
     ontoUri = unquote(uri)
-    foundURI = crawlURIs.checkIndexForUri(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
+    foundURI = stringTools.get_uri_from_index(ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()])
     if foundURI == None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)

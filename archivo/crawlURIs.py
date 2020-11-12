@@ -162,39 +162,6 @@ def checkRobot(uri):
   else:
     return False, "Not allowed"
 
-def determineBestAccHeader(vocab_uri, localDir, user_output=[]):
-  localTestDir = os.path.join(localDir,".tmpTestTriples")
-  errors = set()
-  if not os.path.isdir(localTestDir):
-    os.mkdir(localTestDir)
-  headerDict = {}
-  for header in rdfHeadersMapping:
-    success, filePath, response = downloadSource(vocab_uri, localTestDir, "testTriples", header)
-    if success:
-      tripleNumber, rapperErrors = ontoFiles.getParsedTriples(filePath, inputFormat=rdfHeadersMapping[header])
-      if tripleNumber != None and tripleNumber > 0:
-        user_output.append(f"Testing header {header}: {success_symbol}; Triples: {str(tripleNumber)}")
-        headerDict[header] = tripleNumber
-      else:
-        user_output.append(f"Testing header {header}: Access {success_symbol}; Triples: {str(tripleNumber)}")
-        if tripleNumber == None:
-          user_output.append(rapperErrors)
-    else:
-      user_output.append(f"Testing header {header}: Access {failed_symbol}")
-      user_output.append(response)
-      errors.add(response)
-  generatedFiles = [f for f in os.listdir(localTestDir) if os.path.isfile(localTestDir + os.sep + f)]
-  for filename in generatedFiles:
-    os.remove(os.path.join(localTestDir, filename))
-  # return the header with the most triples
-  stringTools.deleteAllFilesInDirAndDir(localTestDir)
-  if headerDict == {}:
-    return None, errors
-  else:
-    return [k for k, v in sorted(headerDict.items(), key=lambda item: item[1], reverse=True)][0], errors
-
-
-
 
 
 
@@ -379,18 +346,6 @@ class ArchivoVersion():
 
 ####### END OF CLASS #################
 
-def checkIndexForUri(uri, index):
-    for indexUri in index:
-        if urldefrag(uri)[0] == urldefrag(indexUri)[0]:
-            return indexUri
-    return None
-
-def checkUriEquality(uri1, uri2):
-  if urldefrag(uri1)[0] == urldefrag(uri2)[0]:
-    return True
-  else:
-    return False
-
 def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=[]):
   # remove fragment
   vocab_uri = urldefrag(vocab_uri)[0]
@@ -402,7 +357,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     logger.warning(f"Malformed Uri {vocab_uri}")
     user_output.append(f"ERROR: Malformed URI {vocab_uri}")
     return False, isNIR,"<br>".join(map(str, user_output)), None
-  if checkIndexForUri(vocab_uri, index) != None:
+  if stringTools.get_uri_from_index(vocab_uri, index) != None:
     logger.info("Already known uri, skipping...")
     user_output.append(f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>")
     return False, isNIR, "<br>".join(map(str, user_output)), None
@@ -455,7 +410,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
       user_output.append("The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple")
       return False, isNIR, "<br>".join(map(str, user_output)), None
     
-    if not checkUriEquality(vocab_uri, str(real_ont_uri)):
+    if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
       logger.info(f"Found isDefinedBy or skos uri {real_ont_uri}")
       user_output.append(f"Found isDefinedBy or skos uri {real_ont_uri}")
       return handleNewUri(str(real_ont_uri), index, dataPath, testSuite=testSuite,source=source, isNIR=True, logger=logger, user_output=user_output) 
@@ -467,7 +422,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
   
   user_output.append(f"Found ontology URI: {str(real_ont_uri)} {success_symbol}")
   isNIR=True
-  if not checkUriEquality(vocab_uri, str(real_ont_uri)):
+  if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
     logger.info(f"Non information uri differs from source uri, revalidate {str(real_ont_uri)}")
     user_output.append(f"Non information uri differs from source uri, revalidate {str(real_ont_uri)}")
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(str(real_ont_uri))
@@ -493,7 +448,7 @@ def handleNewUri(vocab_uri, index, dataPath, source, isNIR, testSuite, logger, u
     return False, isNIR, str("<br>".join(map(str, user_output))), None
 
 
-  if checkIndexForUri(real_ont_uri, index) != None:
+  if stringTools.get_uri_from_index(real_ont_uri, index) != None:
     logger.info(f"Already known uri {real_ont_uri}")
     user_output.append(f"This Ontology is already in the Archivo index and can be found at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a>")
     return False, isNIR, "<br>".join(map(str, user_output)), None

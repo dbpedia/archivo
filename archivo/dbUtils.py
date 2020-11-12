@@ -9,6 +9,8 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if title == None:
         return None, None
+    if type(timestamp) != datetime.datetime and type(timestamp) == str:
+        timestamp = datetime.strptime(timestamp, "%Y.%m.%d-%H%M%S")
     if dev != "":
         ontology = DevelopOntology(
         uri=dev,
@@ -24,7 +26,6 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
         source=source,
         accessDate=timestamp,
         )
-    
     versions = []
     for info_dict in versions_info:
         versions.append(Version(
