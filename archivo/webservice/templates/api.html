@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-
+<div class="container">
 <h2>API</h2>
 
 <h4>Simple Download:</h4>
@@ -47,6 +47,11 @@ with:
             </ul> 
         </p>
     </li>
+    <li>
+        Using the raw databus to download all files:<br>
+        <strong>Example:</strong><br>
+        <pre>wget --no-parent --mirror https://raw.databus.dbpedia.org/ontologies/</pre>
+    </li>
 </ul>
-
+</div>
 {% endblock %}
