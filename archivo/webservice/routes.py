@@ -305,6 +305,10 @@ def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema
 def about():
     return render_template("about.html")
 
+@app.route("/api")
+def api_page():
+    return render_template('api.html')
+
 @app.route("/shaclVisualisation")
 def shaclVisualisation():
     args = request.args
