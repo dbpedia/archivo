@@ -301,9 +301,9 @@ def downloadHandling(uri, isDev=False, version='', rdfFormat='owl', sourceSchema
     else:
         abort(status=404)
 
-@app.route("/home")
-def home():
-    return render_template("home.html")
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 @app.route("/shaclVisualisation")
 def shaclVisualisation():

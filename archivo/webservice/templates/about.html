@@ -20,9 +20,9 @@ The ontologies and all additional data, are deployed on the <a title="DBpedia Da
 Check out the <a href="/info">info-page</a> for a detailed view of the versions of each ontology with the test results, or the <a href="/list">overview</a> of all ontologies and their latest test results. To see the rating of your ontology add it at the <a href="/add">suggestion service</a>.
 </p>
 
-<h2>Ontology Access</h2>
+<h2>API</h2>
 
-<h3>Simple Download:</h3>
+<h4>Simple Download:</h4>
 
 <p>The easiest way to access an ontology is by using the Archivo webservice to get redirected to the latest version of an ontology in your desired format (currently supported: rdf+xml, turtle and n-triples).<br>
 Just use:
@@ -43,14 +43,14 @@ with:
 <p>Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a> which also provides the latest download links.</p>
 
 <br>
-<h3>SPARQL:</h3>
+<h4>SPARQL:</h4>
 
 <p>If you are familiar with SPARQL and the DBpedia Databus architecture you can try using the Databus SPARQL endpoint, a good start for a query would be something like <a href="https://databus.dbpedia.org/yasgui/#query=PREFIX+dataid%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcore%23%3E%0APREFIX+dct%3A++++%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+dcat%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0APREFIX+db%3A+++++%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2F%3E%0APREFIX+rdf%3A++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dataid-cv%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcv%23%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0A%0ASELECT+DISTINCT+%3Fart+%3Fversion+%3Ffile+WHERE+%7B%0A++VALUES+%3Fart+%7B+%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2Fontologies%2Fxmlns.com%2Ffoaf--0--1%3E+%7D+.%0A++%09%3Fdataset+dataid%3Aaccount+db%3Aontologies+.+%0A++%09%3Fdataset+dataid%3Aartifact+%3Fart+.%0A++%09%3Fdataset+dcat%3Adistribution+%3Fdistribution+.%0A++%09%3Fdistribution+dataid-cv%3Atype+'parsed'%5E%5Exsd%3Astring+.+%09%0A++%09%3Fdistribution+dataid%3AformatExtension+'owl'%5E%5Exsd%3Astring+.+%0A++%09%3Fdistribution+dcat%3AdownloadURL+%3Ffile+.%0A++%09%3Fdataset+dct%3AhasVersion+%3Fversion+.%0A%7D&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fdatabus.dbpedia.org%2Frepo%2Fsparql&requestMethod=POST&tabTitle=Example+Ontology+Query&headers=%7B%7D&outputFormat=table">this</a>.
     This requires you to use the Databus Artifact of each ontology, which can be found in the <a href="/list">complete list</a> of ontologies.
 </p>
 <br>
 
-<h4>Complete Dump:</h4>
+<h4>Download ontology dump:</h4>
 <p>For research purposes it can be useful to download a complete dump of all ontologies. The easiest way would be using the <a href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">collection on the databus</a>: 
 <ul>
     <li><p>Using the <a href="https://github.com/dbpedia/databus-client">Databus Client</a>: Generates a local file dump of a SPARQL query<br>
@@ -69,17 +69,6 @@ with:
 
 <h2>Testing & Rating</h2>
 <br>
-<h3>Rating Overview</h3>
-<p>
-    The test-results of on ontology (and all it's versions) can be accessed at the <a href="/info">info</a> page of the ontology.
-    <strong>Example:</strong>
-    <pre>http://archivo.dbpedia.org/info?o=http://datashapes.org/dash</pre>
-</p>
-<p>This URI also works by requesting RDF content types (currently supported: RDF+XML, Turtle and N-Triples). This redirects to a SPARQL-query an the databus regarding all information/files available for this ontology</p>
-<p>
-    <strong>Example:</strong>
-    <pre>curl -L -H "Accept: text/turtle" "http://archivo.dbpedia.org/info?o=http://datashapes.org/dash"</pre>
-</p>
 <h3>Stars</h3>
 <p>Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).</p>
 <p>Baseline: The minimum requirements a Ontology should fulfill.</p>
