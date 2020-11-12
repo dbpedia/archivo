@@ -87,7 +87,7 @@ Alternativley a machine readable version of the ontology is deterministically di
 1) A proper ontology declaration was found using 'rdf:type owl:Ontology'
 
 2) some form of license could be detected:
-   a) any property allowed: dct:license, creativecommons or todo)
+   a) any property allowed such as dct:license, xhv:license nor cc:license
    b) any object allowed: xsd:string or xsd:anyURI, license URI (resolvable linked data or web link)
 ">
                     ★ License I (?)
@@ -96,7 +96,10 @@ Alternativley a machine readable version of the ontology is deterministically di
                 
 1) dct:license as property
 
-2) object is a proper URI (not xsd:string or xsd:anyURI)">
+2) object is a proper URI (not xsd:string or xsd:anyURI)
+
+3) not implemented yet: license URL resolves to machine readable format
+">
                     ★ License II (?)
                 </span></th>
                 <th><span title="Reasoner compliance:
