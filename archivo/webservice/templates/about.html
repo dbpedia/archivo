@@ -3,49 +3,105 @@
 {% block content %}
 
 <div class="container">
-<h1>What is DBpedia Archivo?</h1>
 <p>
+
+<h1>What is DBpedia Archivo?</h1>
     DBpedia Archivo is an online interface and augmented archive for all kinds of vocabularies. It automatically crawls for new ontologies, updates the already enlisted ontologies regularly and performs some useful tests to check the fitness of the vocabulary for the semantic web. 
 </p>
-
+<p>
 <h2>Archivo's mission</h2>
-<p>Archivo's mission is to improve <b>FAIR</b>ness (findability, accessibility, interoperability, and reusability) of all available ontologies on the Semantic Web. Archivo is not a guideline, it is fully automated, machine-readable and enforces interoperability with its star rating. Ontology developers can implement against Archivo until they reach more stars. Ontology users can better find, access and re-use ontologies.     
+Archivo's mission is to improve <b>FAIR</b>ness (findability, accessibility, interoperability, and reusability) of all available ontologies on the Semantic Web. Archivo is not a guideline, it is fully automated, machine-readable and enforces interoperability with its star rating. Ontology developers can implement against Archivo until they reach more stars. Ontology users can better find, access and re-use ontologies.     
 </p>
 <p>DBpedia Archivo was created as a scientific proof-of-concept and is currently being developed into a full platform. </p>
 
+<p>
 <h2>Community Contact</h2>
 
 <ul>
-	<li>For general feedback, please use the Github Issue Tracker or http://forum.dbpedia.org</li>
-	<li>For academic discussion, please contact the authors of the Achivo Paper, see below</li>
+    <li>For general feedback, please use the <a href="https://github.com/dbpedia/archivo/issues" target="_blank">Github Issue Tracker</a> or <a href="https://forum.dbpedia.org" target="_blank">the DBpedia forum</a></li>
+    <li>For academic discussion, please contact the authors of the Achivo Paper, see below</li> 
 </ul>
-
-
+</p>
+</div>
+<div class="container">
+<p>
 <h2>Collaboration and business inquiries</h2>
 DBpedia Archivo was developed at the Institute for Applied Informatics (InfAI) 
 
-	
+</p>
+<p>
 
 <h2>Scientific Publication</h2>
 
-TODO embed semantics video
-
+<iframe width="600" height="400"
+src="https://www.youtube.com/embed/CV97TyzxU6o">
+</iframe> <br>
 For a more specific explanation check out the <a title="DBpedia Archivo Paper" href="https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf" target="_blank">DBpedia Archivo Paper</a>.
 
+<br>
+Cite:
 
+<input type="text" name="Element To Be Copied" id="copy-me" value="@inproceedings{freydbpedia,&#13;&#10;
+    author = {Frey, Johannes and Streitmatter, Denis and G{\&quot;o}tz, Fabian and Hellmann, Sebastian and Arndt, Natanael},&#13;&#10;
+    booktitle = {Semantic Systems. The Power of AI and Knowledge Graphs},&#13;&#10;
+    publisher = {Springer},&#13;&#10;
+    series = {Lecture Notes in Computer Science},&#13;&#10;
+    title = {DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects},&#13;&#10;
+    url = {https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf},&#13;&#10;
+    volume = 16,&#13;&#10;
+    year = 2020&#13;&#10;
+}"/>
+<button id="copy-btn">bibtex</button><br/><br/>
+</p>
+</div>
 
-TODO bibtex
-@inproceedings{freydbpedia,
-  author = {Frey, Johannes and Streitmatter, Denis and G{\"o}tz, Fabian and Hellmann, Sebastian and Arndt, Natanael},
-  booktitle = {Semantic Systems. The Power of AI and Knowledge Graphs},
-  publisher = {Springer},
-  series = {Lecture Notes in Computer Science},
-  title = {DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects},
-  url = {https://svn.aksw.org/papers/2020/semantics_archivo/public.pdf},
-  volume = 16,
-  year = 2020
+<script>
+    var copyBtn   = $("#copy-btn"),
+    input     = $("#copy-me");
+
+function copyToClipboardFF(text) {
+  window.prompt ("Copy to clipboard: Ctrl C, Enter", text);
 }
 
+function copyToClipboard() {
+  var success   = true,
+      range     = document.createRange(),
+      selection;
 
-</div>
+  // For IE.
+  if (window.clipboardData) {
+    window.clipboardData.setData("Text", input.val());        
+  } else {
+    // Create a temporary element off screen.
+    var tmpElem = $('<div>');
+    tmpElem.css({
+      position: "absolute",
+      left:     "-1000px",
+      top:      "-1000px",
+    });
+    // Add the input value to the temp element.
+    tmpElem.text(input.val());
+    $("body").append(tmpElem);
+    // Select temp element.
+    range.selectNodeContents(tmpElem.get(0));
+    selection = window.getSelection ();
+    selection.removeAllRanges ();
+    selection.addRange (range);
+    // Lets copy.
+    try { 
+      success = document.execCommand ("copy", false, null);
+    }
+    catch (e) {
+      copyToClipboardFF(input.val());
+    }
+    if (success) {
+      alert ("Copied bibtex reference to clipboard.");
+      // remove temp element.
+      tmpElem.remove();
+    }
+  }
+}
+
+copyBtn.on('click', copyToClipboard);
+</script>
 {% endblock %}

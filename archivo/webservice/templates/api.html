@@ -2,11 +2,14 @@
 
 {% block content %}
 <div class="container">
+
+
+<p>
 <h2>API</h2>
 
 <h4>Simple Download:</h4>
-
-<p>The easiest way to access an ontology is by using the Archivo webservice to get redirected to the latest version of an ontology in your desired format (currently supported: rdf+xml, turtle and n-triples).<br>
+    
+    The easiest way to access an ontology is by using the Archivo webservice to get redirected to the latest version of an ontology in your desired format (currently supported: rdf+xml, turtle and n-triples).<br>
 Just use:
 <pre><code>http://archivo.dbpedia.org/download?o={ontology-URI}&f={file-extension}&v={timestamp}</code></pre>
 with:
@@ -19,10 +22,9 @@ with:
 <p><strong>Examples:</strong> Download the latest version of the Cinelab ontology as Turtle file
     <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&f=ttl"</pre>
     <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&v=2020.07.16-115638"</pre>
-    </p>
+    
 
-<p><strong></strong></p>
-<p>Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a> which also provides the latest download links.</p>
+Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a> which also provides the latest download links.</p>
 
 <br>
 <h4>SPARQL:</h4>
@@ -48,9 +50,9 @@ with:
         </p>
     </li>
     <li>
-        Using the raw databus to download all files:<br>
+        <p>Using the raw databus to download all files:<br>
         <strong>Example:</strong><br>
-        <pre>wget --no-parent --mirror https://raw.databus.dbpedia.org/ontologies/</pre>
+        <pre>wget --no-parent --mirror https://raw.databus.dbpedia.org/ontologies/</pre></p>
     </li>
 </ul>
 </div>
