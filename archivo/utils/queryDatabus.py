@@ -150,7 +150,7 @@ def getInfoForArtifact(group, artifact):
                                   "triples":metadata["ontology-info"]["triples"],
                                   "parsing":{"conforms":parsing, "errors":metadata["logs"]["rapper-errors"]},
                                   "semversion":metadata["ontology-info"]["semantic-version"],
-                                  "stars":stars,
+                                  "stars":generateStarString(stars),
                                   "docuURL":docuURL})
     return title, comment, version_infos
     
