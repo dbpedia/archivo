@@ -52,7 +52,9 @@
 }
 
 .container-fluid {
-  padding-bottom: 30px;
+  padding-bottom: 300px;
+  padding-left: 150px;
+  padding-right: 150px;
 }
 
 .shaclTable {
