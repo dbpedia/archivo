@@ -42,12 +42,26 @@ def generate_dates():
     dates.reverse()
     return dates
 
+def get_average_stars_from_dict(x_vals, results):
+    average_star_values = []
+    for day in x_vals:
+        all_ont_count = sum([star_count for star_count in results[day].values()])
+        denom = 0
+        for stars, count in results[day].items():
+            denom = denom + (stars*count)
+        if all_ont_count > 0:
+            average_star_values.append(denom/all_ont_count)
+        else:
+            average_star_values.append(0)
+    return average_star_values
+
+
 def generate_star_graph():
     x_vals, results = group_by_stars()
-    traces = []
+    figure = go.Figure()
 
     # zero stars:
-    traces.append(
+    figure.add_trace(
             go.Scatter(
                 x=x_vals,
                 y=[results[d][0] for d in x_vals],
@@ -57,7 +71,7 @@ def generate_star_graph():
             )
         )
     # one star:
-    traces.append(
+    figure.add_trace(
             go.Scatter(
                 x=x_vals,
                 y=[results[d][1] for d in x_vals],
@@ -67,7 +81,7 @@ def generate_star_graph():
             )
         )
     # two stars:
-    traces.append(
+    figure.add_trace(
             go.Scatter(
                 x=x_vals,
                 y=[results[d][2] for d in x_vals],
@@ -77,7 +91,7 @@ def generate_star_graph():
             )
         )
     # three stars:
-    traces.append(
+    figure.add_trace(
             go.Scatter(
                 x=x_vals,
                 y=[results[d][3] for d in x_vals],
@@ -87,7 +101,7 @@ def generate_star_graph():
             )
         )
     # four stars:
-    traces.append(
+    figure.add_trace(
             go.Scatter(
                 x=x_vals,
                 y=[results[d][4] for d in x_vals],
@@ -97,7 +111,7 @@ def generate_star_graph():
             )
         )
     # All onts
-    traces.append(
+    figure.add_trace(
         go.Scatter(
             x=x_vals,
             y=[sum([star_count for star_count in results[d].values()]) for d in x_vals],
@@ -105,6 +119,34 @@ def generate_star_graph():
             line=dict(width=0.5, color='rgb(0, 0, 0)'),
         )
     )
+    figure.add_trace(go.Scatter(
+        x=x_vals,
+        y=get_average_stars_from_dict(x_vals, results),
+        name="Average Stars",
+        yaxis="y2",
+        line=dict(width=0.5, color='rgb(0, 0, 128)')
+    ))
+    figure.update_layout(
+        yaxis=dict(
+            title="Number of ontologies",
+        ),
+        yaxis2=dict(
+            title="Avg. Stars",
+            anchor="x",
+            overlaying="y",
+            side="right",
+            range=[0, 4]
+        ),
+    )
+    figure.update_layout(
+        title_text="Archivo Stars Distribution",
+        legend=dict(
+            yanchor="top",
+            x=1.3,
+            xanchor="right",
+            y=0.99,
+        )
+    )
     with open('./stats/stars_over_time.json', 'w+') as json_file:
-        json.dump(traces , json_file, cls=PlotlyJSONEncoder, indent=4)
+        json.dump(figure , json_file, cls=PlotlyJSONEncoder, indent=4)
 
