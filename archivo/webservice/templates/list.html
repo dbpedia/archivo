@@ -11,8 +11,9 @@
     In particular, Archivo analyses: <a href='http://prefix.cc'>prefix.cc</a>, <a href='http://lov.okfn.org'>http://lov.okfn.org</a>, <a href='https://www.w3.org/TR/void/'>VoID</a> data from Databus artifacts, outgoing links (e.g. owl:import, owl:equivalentClasses|Properties) from archived ontologies.</p>
     
    <h3>Status</h3> 
-  <!--TODO: if possible include how many stars there are and other critical info in the table-->
   <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.</p>
+  <div id="chart" class="chart" style="width: 800px;">
+</div>
     
   <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>!<br><br>
   
@@ -163,6 +164,19 @@
   </table>
 
 </div>
+
+<!-- D3.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script type="text/javascript">
+     
+    var graphs = {{ graphJSON | safe }};
+    
+    Plotly.plot('chart',graphs,{});
+
+</script>
 
   <script>
       setInterval(function update_columns() {

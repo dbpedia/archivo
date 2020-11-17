@@ -17,6 +17,7 @@ from utils.archivoLogs import webservice_logger
 from datetime import datetime
 import dbUtils
 from urllib.error import HTTPError, URLError
+import json
 
 archivoPath = os.path.split(app.instance_path)[0]
 testingSuite = TestSuite(archivoPath)
@@ -130,7 +131,6 @@ def ntriplesInfo():
 
 @app.route("/list", methods=["GET"])
 @app.route("/", methods=["GET"])
-
 def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
@@ -173,7 +173,7 @@ def onto_list():
                     "consistency":v.consistency,
                     "lodeSeverity":v.lodeSeverity}
         ontos.append(result)
-    return render_template("list.html", isDev=isDev, Ontologies=ontos, ontoNumber=len(ontos))
+    return render_template("list.html", isDev=isDev, Ontologies=ontos, ontoNumber=len(ontos), graphJSON=get_star_stats())
 
 
 def generateInfoDict(metadata, source, databusLink, latestReleaseLink):
@@ -323,3 +323,15 @@ def shaclVisualisation():
 @app.route('/faq')
 def faq():
     return render_template("faq.html")
+
+
+@app.route('/testgraph')
+def testgraph():
+    json_string = graphing.generate_star_graph()
+    return render_template('testgraph.html', graphJSON=json_string)
+
+
+def get_star_stats():
+    with open(os.path.join(archivoPath, 'stats', 'stars_over_time.json'), 'r') as json_file:
+        json_data = json.load(json_file)
+    return json.dumps(json_data)
