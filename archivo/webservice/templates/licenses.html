@@ -5,20 +5,27 @@
 <h2>Archivo Licenses</h2>
 
 <p>
-    To publish data on the DBpedia Databus the publisher is required to provide a license in form of an IRI for the data. 
-    Archivo tries to use the licenses provided in the ontologies, but since many ontologies fail to provide it correctly, Archivo substitutes unuseable licenses with these placeholders.
-    Since a proper license declaration is crucial for the usability of an ontology, vocabularies with an improper license declaration will not be updated after 2020 and after that no ontologies without license will be accepted.
+    To publish data on the DBpedia Databus the publisher is required to provide a license in form of an IRI for the
+    data.
+    Archivo tries to use the licenses provided in the ontologies, but since many ontologies fail to provide it
+    correctly, Archivo substitutes unuseable licenses with these placeholders.
+    Since a proper license declaration is crucial for the usability of an ontology, vocabularies with an improper
+    license declaration will not be updated after 2020 and after that no ontologies without license will be accepted.
 </p>
 
 <h3 id="notSpecified">Not Specified</h3>
 
 <p>
-    The most common error is not specifying the license at all, or by rather unpopular properties. In both cases Archivo will use the URI <a href="http://archivo.dbpedia.org/sys/licenses#notSpecified">http://archivo.dbpedia.org/sys/licenses#notSpecified</a>.
+    The most common error is not specifying the license at all, or by rather unpopular properties. In both cases Archivo
+    will use the URI <a
+        href="http://archivo.dbpedia.org/sys/licenses#notSpecified">http://archivo.dbpedia.org/sys/licenses#notSpecified</a>.
 </p>
 
 <h3 id="notAnIRI"> Not an IRI</h3>
 <p>
-    Another Problem are unresolveable licenses, for example being provided as Literal or something similar. Those can't be machine-readable and since DBpedia Databus doesn't allow Literals in the license, these will be substituted with <a href="http://archivo.dbpedia.org/sys/licenses#notAnIRI">http://archivo.dbpedia.org/sys/licenses#notAnIRI</a>.
+    Another Problem are unresolveable licenses, for example being provided as Literal or something similar. Those can't
+    be machine-readable and since DBpedia Databus doesn't allow Literals in the license, these will be substituted with
+    <a href="http://archivo.dbpedia.org/sys/licenses#notAnIRI">http://archivo.dbpedia.org/sys/licenses#notAnIRI</a>.
 </p>
 
 {% endblock %}

@@ -1,167 +1,171 @@
-  {% extends "index.html" %}
+{% extends "index.html" %}
 
-  {% block content %}
-  <div class="container">
+{% block content %}
+<div class="container">
     <p>
-  <h2><b>A</b>rchiv<b>o</b> - <b>O</b>ntology <b>A</b>rchive</h2>
- 
+    <h2><b>A</b>rchiv<b>o</b> - <b>O</b>ntology <b>A</b>rchive</h2>
 
-  
-    <b>Auto discovery:</b> Each week DBpedia Archivo follows links from the known part of the Semantic Web to discover more ontologies. 
-    In particular, Archivo analyses: <a href='http://prefix.cc'>prefix.cc</a>, <a href='http://lov.okfn.org'>http://lov.okfn.org</a>, <a href='https://www.w3.org/TR/void/'>VoID</a> data from Databus artifacts, outgoing links (e.g. owl:import, owl:equivalentClasses|Properties) from archived ontologies.</p>
-    
-   <h3>Status</h3> 
-  <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.</p>
-  <div id="chart" class="chart">
-</div>
-    
-  <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>!<br><br>
-  
+
+
+    <b>Auto discovery:</b> Each week DBpedia Archivo follows links from the known part of the Semantic Web to discover
+    more ontologies.
+    In particular, Archivo analyses: <a href='http://prefix.cc'>prefix.cc</a>, <a
+        href='http://lov.okfn.org'>http://lov.okfn.org</a>, <a href='https://www.w3.org/TR/void/'>VoID</a> data from
+    Databus artifacts, outgoing links (e.g. owl:import, owl:equivalentClasses|Properties) from archived ontologies.</p>
+
+    <h3>Status</h3>
+    <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.</p>
+    <div id="chart" class="chart">
     </div>
-<!-- begin table --> 
-  <div class="container-fluid">
-	  <hr>
-<h3>List of all available ontologies</h3> 
-      <input type="checkbox" name="download" class="column_selector" value=3 checked onclick="show_hide_column(3, checked)">
-      <label for="download">Download</label>
 
-      <input type="checkbox" name="triples" class="column_selector" value=4 checked onclick="show_hide_column(4, checked)">
-      <label for="triples">Triples</label>
+    <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>!<br><br>
 
-      <input type="checkbox" name="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
-      <label for="stars">Archivo Star Rating</label>
-      <input type="checkbox" name="crawling" class="column_selector" value=12 checked onclick="show_hide_column(12, checked)">
-      <label for="crawling">Crawling-Status</label>
-      Switch: <a href="/list" >Published Web Versions</a> |
-      <a  href="/list?dev"> Developer Versions</a>
-      <br>Additional columns: 
-      <input type="checkbox" name="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
-      <label for="databus_uri">Databus URI</label>
+</div>
+<!-- begin table -->
+<div class="container-fluid">
+    <hr>
+    <h3>List of all available ontologies</h3>
+    <input type="checkbox" name="download" class="column_selector" value=3 checked
+        onclick="show_hide_column(3, checked)">
+    <label for="download">Download</label>
 
-      <input type="checkbox" name="source" class="column_selector" value=2 onclick="show_hide_column(2, checked)">
-      <label for="source">Source</label>
-      <input type="checkbox" name="semantic_version" class="column_selector" value=6 onclick="show_hide_column(6, checked)">
-      <label for="semantic_version">Semantic Version</label>
-      <input type="checkbox" name="parsing" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
-      <label for="parsing">Parsing</label>
+    <input type="checkbox" name="triples" class="column_selector" value=4 checked
+        onclick="show_hide_column(4, checked)">
+    <label for="triples">Triples</label>
 
-      <input type="checkbox" name="min_license" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
-      <label for="min_license">Min.License</label>
+    <input type="checkbox" name="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
+    <label for="stars">Archivo Star Rating</label>
+    <input type="checkbox" name="crawling" class="column_selector" value=12 checked
+        onclick="show_hide_column(12, checked)">
+    <label for="crawling">Crawling-Status</label>
+    Switch: <a href="/list">Published Web Versions</a> |
+    <a href="/list?dev"> Developer Versions</a>
+    <br>Additional columns:
+    <input type="checkbox" name="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
+    <label for="databus_uri">Databus URI</label>
 
-      <input type="checkbox" name="good_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
-      <label for="good_license">Good License</label>
+    <input type="checkbox" name="source" class="column_selector" value=2 onclick="show_hide_column(2, checked)">
+    <label for="source">Source</label>
+    <input type="checkbox" name="semantic_version" class="column_selector" value=6
+        onclick="show_hide_column(6, checked)">
+    <label for="semantic_version">Semantic Version</label>
+    <input type="checkbox" name="parsing" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
+    <label for="parsing">Parsing</label>
 
-      <input type="checkbox" name="consistency" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
-      <label for="consistency">Consistency</label>
+    <input type="checkbox" name="min_license" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
+    <label for="min_license">Min.License</label>
 
-      <input type="checkbox" name="lode" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
-      <label for="lode">Lode-Status</label>
+    <input type="checkbox" name="good_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
+    <label for="good_license">Good License</label>
 
-  <table
-   id="ontologies-table"
-   data-toggle="table"
-   data-search="true">
-      <col class="col1"/>
-      <col class="col2"/>
-      <col class="col3"/>
-      <col class="col4"/>
-      <col class="col5"/>
-      <col class="col6"/>
-      <col class="col7"/>
-      <col class="col8"/>
-      <col class="col9"/>
-      <col class="col10"/>
-      <col class="col11"/>
-      <col class="col12"/>
-      <col class="col13"/>
-  <thead>
-  <tr>
-   <th data-sortable="true" data-field="non-information-uri" style="width:30%;">View Archived Ontology</th>
-   <th data-sortable="true" data-field="databus-link">Databus URI</th>
-   <th data-sortable="true" data-field="source">Source</th>
-   <th data-sortable="true" data-field="download-latest">Download Latest</th>
-   <th data-sortable="true" data-field="Triples">Triples</th>
-   <th data-sortable="true" data-field="stars">Stars</th>
-   <th data-sortable="true" data-field="semVersion">Latest Semantic Version</th>
-   <th data-sortable="true" data-field="parsing">Parsing</th>
-   <th data-sortable="true" data-field="min-license">Min. License</th>
-   <th data-sortable="true" data-field="good-license">Good License</th>
-   <th data-sortable="true" data-field="consistency">consistency</th>
-   <th data-sortable="true" data-field="lode">Lode-Status</th>
-   <th data-sortable="true" data-field="crawling-status">Crawling Status</th>
-  </tr>
-  </thead>
-  <tbody>
+    <input type="checkbox" name="consistency" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
+    <label for="consistency">Consistency</label>
 
+    <input type="checkbox" name="lode" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
+    <label for="lode">Lode-Status</label>
 
-
-  {% for onto in Ontologies %}
-  <tr>
-      <td><a href="{{onto.ontology.infoURL}}">{{onto.ontology.label}}</a></td>
-      <td><a href="{{onto.databusURI}}">Link</a></td>
-      <td>{{onto.source}}</td>
-      <td>
-          <a href="{{onto.ontology.downloadURL}}&f=owl">owl</a>,
-          <a href="{{onto.ontology.downloadURL}}&f=ttl">ttl</a>,
-          <a href="{{onto.ontology.downloadURL}}&f=nt">nt</a>
-      </td>
-      <td>{{onto.triples}}</td>
-      <td>{{onto.stars}}</td>
-      <td>{{onto.semVersion}}</td>
-      <td>
-          {% if onto.parsing %}
-              <div class="check">✔</div>
-          {% else %}
-              <div class="x">✘</div>
-          {% endif %}
-      </td>
-      <td>
-          {% if onto.minLicense %}
-              <div class="check">✔</div>
-          {% else %}
-              <div class="x">✘</div>
-          {% endif %}
-      </td>
-      <td>
-          {% if onto.goodLicense %}
-              <div class="check">✔</div>
-          {% else %}
-              <div class="x">✘</div>
-          {% endif %}
-      </td>
-      <td>
-          {% if onto.consistency %}
-              <div class="check">✔</div>
-          {% else %}
-              <div class="x">✘</div>
-          {% endif %}
-      </td>
-      <td>
-          {% if onto.lodeSeverity == 'OK' %}
-              <div href="" class="check">✔</div>
-          {% elif onto.lodeSeverity == 'INFO' %}
-              <div class="check"><strong>!</strong></div>
-          {% elif onto.lodeSeverity == 'WARNING' %}
-              <div href="" class="yellow"><strong>!</strong></div>
-          {% else %}
-              <div href="" class="x">✘</div>
-          {% endif %}
-      </td>
-      <td>
-          {% if onto.crawling.status %}
-              <span class="check">✔</span>
-          {% else %}
-              <span title="{{onto.crawling.error}}" class="x">✘</span>
-          {% endif %}
-      </td>
-  </tr>
-  {%endfor%}
+    <table id="ontologies-table" data-toggle="table" data-search="true">
+        <col class="col1" />
+        <col class="col2" />
+        <col class="col3" />
+        <col class="col4" />
+        <col class="col5" />
+        <col class="col6" />
+        <col class="col7" />
+        <col class="col8" />
+        <col class="col9" />
+        <col class="col10" />
+        <col class="col11" />
+        <col class="col12" />
+        <col class="col13" />
+        <thead>
+            <tr>
+                <th data-sortable="true" data-field="non-information-uri" style="width:30%;">View Archived Ontology</th>
+                <th data-sortable="true" data-field="databus-link">Databus URI</th>
+                <th data-sortable="true" data-field="source">Source</th>
+                <th data-sortable="true" data-field="download-latest">Download Latest</th>
+                <th data-sortable="true" data-field="Triples">Triples</th>
+                <th data-sortable="true" data-field="stars">Stars</th>
+                <th data-sortable="true" data-field="semVersion">Latest Semantic Version</th>
+                <th data-sortable="true" data-field="parsing">Parsing</th>
+                <th data-sortable="true" data-field="min-license">Min. License</th>
+                <th data-sortable="true" data-field="good-license">Good License</th>
+                <th data-sortable="true" data-field="consistency">consistency</th>
+                <th data-sortable="true" data-field="lode">Lode-Status</th>
+                <th data-sortable="true" data-field="crawling-status">Crawling Status</th>
+            </tr>
+        </thead>
+        <tbody>
 
 
 
-  </tbody>
+            {% for onto in Ontologies %}
+            <tr>
+                <td><a href="{{onto.ontology.infoURL}}">{{onto.ontology.label}}</a></td>
+                <td><a href="{{onto.databusURI}}">Link</a></td>
+                <td>{{onto.source}}</td>
+                <td>
+                    <a href="{{onto.ontology.downloadURL}}&f=owl">owl</a>,
+                    <a href="{{onto.ontology.downloadURL}}&f=ttl">ttl</a>,
+                    <a href="{{onto.ontology.downloadURL}}&f=nt">nt</a>
+                </td>
+                <td>{{onto.triples}}</td>
+                <td>{{onto.stars}}</td>
+                <td>{{onto.semVersion}}</td>
+                <td>
+                    {% if onto.parsing %}
+                    <div class="check">✔</div>
+                    {% else %}
+                    <div class="x">✘</div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if onto.minLicense %}
+                    <div class="check">✔</div>
+                    {% else %}
+                    <div class="x">✘</div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if onto.goodLicense %}
+                    <div class="check">✔</div>
+                    {% else %}
+                    <div class="x">✘</div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if onto.consistency %}
+                    <div class="check">✔</div>
+                    {% else %}
+                    <div class="x">✘</div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if onto.lodeSeverity == 'OK' %}
+                    <div href="" class="check">✔</div>
+                    {% elif onto.lodeSeverity == 'INFO' %}
+                    <div class="check"><strong>!</strong></div>
+                    {% elif onto.lodeSeverity == 'WARNING' %}
+                    <div href="" class="yellow"><strong>!</strong></div>
+                    {% else %}
+                    <div href="" class="x">✘</div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if onto.crawling.status %}
+                    <span class="check">✔</span>
+                    {% else %}
+                    <span title="{{onto.crawling.error}}" class="x">✘</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {%endfor%}
 
-  </table>
+
+
+        </tbody>
+
+    </table>
 
 </div>
 
@@ -171,32 +175,36 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script type="text/javascript">
-     
+
     var graphs = {{ graphJSON | safe }};
-    
-    Plotly.plot('chart',graphs,{});
+
+    Plotly.plot('chart', graphs, {});
 
 </script>
 
-  <script>
-      setInterval(function update_columns() {
-          var checkboxes = document.getElementsByClassName('column_selector')
-          for (var i=0, n=checkboxes.length;i<n;i++) {
-              show_hide_column(checkboxes[i].value, checkboxes[i].checked)
-          }
-      }, 100)
+<script>
+    setInterval(function update_columns() {
+        var checkboxes = document.getElementsByClassName('column_selector')
+        for (var i = 0, n = checkboxes.length; i < n; i++) {
+            show_hide_column(checkboxes[i].value, checkboxes[i].checked)
+        }
+    }, 100)
 
-      function show_hide_column(col_no, do_show) {
-          var rows = document.getElementById('ontologies-table').rows;
+    function show_hide_column(col_no, do_show) {
+        var rows = document.getElementById('ontologies-table').rows;
 
-          for (var row = 0; row < rows.length; row++) {
-              var cols = rows[row].cells;
-              if (col_no >= 0 && col_no < cols.length) {
-                  cols[col_no].style.display = do_show ? '' : 'none';
-              }
-          }
-      }
-  </script>
-  <style> .float-right { float: left !important; } </style>
+        for (var row = 0; row < rows.length; row++) {
+            var cols = rows[row].cells;
+            if (col_no >= 0 && col_no < cols.length) {
+                cols[col_no].style.display = do_show ? '' : 'none';
+            }
+        }
+    }
+</script>
+<style>
+    .float-right {
+        float: left !important;
+    }
+</style>
 
-  {% endblock %}
+{% endblock %}

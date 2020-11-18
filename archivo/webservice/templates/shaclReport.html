@@ -1,115 +1,124 @@
 <!DOCTYPE html>
 <html lang='en'>
+
 <head>
   <title>Archivo SHACL Visualisation</title>
   <!--link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/collapsible.css') }}"-->
   <style>
-     /* Style the button that is used to open and close the collapsible content */
- .collapsible {
-  background-color: #eee;
-  color: #eee;
-  cursor: pointer;
-  padding: 25px;
-  width: 700px;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-  border-radius: 4px;
-}
+    /* Style the button that is used to open and close the collapsible content */
+    .collapsible {
+      background-color: #eee;
+      color: #eee;
+      cursor: pointer;
+      padding: 25px;
+      width: 700px;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      border-radius: 4px;
+    }
 
-.violations {
-  background-color: #DC143C;
-}
+    .violations {
+      background-color: #DC143C;
+    }
 
-.warnings {
-  background-color: #FFA500;
-}
+    .warnings {
+      background-color: #FFA500;
+    }
 
-.infos {
-  background-color: #696969;
-}
+    .infos {
+      background-color: #696969;
+    }
 
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .collapsible:hover {
-  background-color:#DCDCDC;
-  color: black;
-}
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    .active,
+    .collapsible:hover {
+      background-color: #DCDCDC;
+      color: black;
+    }
 
-/* Style the collapsible content. Note: hidden by default */
-.content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-  background-color: #f1f1f1;
-  width: auto;
-} 
-.collapsible:after {
-  content: '\02795'; /* Unicode character for "plus" sign (+) */
-  font-size: 13px;
-  color: white;
-  float: right;
-  margin-left: 5px;
-}
+    /* Style the collapsible content. Note: hidden by default */
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: #f1f1f1;
+      width: auto;
+    }
 
-.active:after {
-  content: "\2796"; /* Unicode character for "minus" sign (-) */
-}
+    .collapsible:after {
+      content: '\02795';
+      /* Unicode character for "plus" sign (+) */
+      font-size: 13px;
+      color: white;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .active:after {
+      content: "\2796";
+      /* Unicode character for "minus" sign (-) */
+    }
   </style>
 </head>
+
 <body>
   {% if report.violations %}
   {% for problem, nodes in report.violations.items() %}
   <div>
-    <button type="button" class="collapsible violations">Problem: {{problem}}<br> <small>Conflicting nodes: {{nodes|length}}</small></button>
-  <div class="content">
-    <p>
-      <strong>Conflicting Nodes:</strong>
+    <button type="button" class="collapsible violations">Problem: {{problem}}<br> <small>Conflicting nodes:
+        {{nodes|length}}</small></button>
+    <div class="content">
+      <p>
+        <strong>Conflicting Nodes:</strong>
       <ul>
         {% for node in nodes %}
         <li>{{node}}</li>
         {% endfor %}
       </ul>
-    </p>
-  </div> 
-</div>
-<br>
-  {% endfor %}
-  {% endif %}
-  
-  {% if report.warnings %}
-  {% for problem, nodes in report.warnings.items() %}
-  <div>
-    <button type="button" class="collapsible warnings">Problem: {{problem}}<br> <small>Conflicting nodes: {{nodes|length}}</small></button>
-    <div class="content">
-      <p>
-        <strong>Conflicting Nodes:</strong>
-        <ul>
-          {% for node in nodes %}
-          <li>{{node}}</li>
-          {% endfor %}
-        </ul>
       </p>
-    </div> 
+    </div>
   </div>
   <br>
   {% endfor %}
   {% endif %}
-  
-  {% if report.infos %}
-  {% for problem, nodes in report.infos.items() %}
+
+  {% if report.warnings %}
+  {% for problem, nodes in report.warnings.items() %}
   <div>
-    <button type="button" class="collapsible infos">Problem: {{problem}} <br> <small>Conflicting nodes: {{nodes|length}}</small></button>
+    <button type="button" class="collapsible warnings">Problem: {{problem}}<br> <small>Conflicting nodes:
+        {{nodes|length}}</small></button>
     <div class="content">
       <p>
         <strong>Conflicting Nodes:</strong>
-        <ul>
-          {% for node in nodes %}
-          <li>{{node}}</li>
-          {% endfor %}
-        </ul>
+      <ul>
+        {% for node in nodes %}
+        <li>{{node}}</li>
+        {% endfor %}
+      </ul>
       </p>
-    </div> 
+    </div>
+  </div>
+  <br>
+  {% endfor %}
+  {% endif %}
+
+  {% if report.infos %}
+  {% for problem, nodes in report.infos.items() %}
+  <div>
+    <button type="button" class="collapsible infos">Problem: {{problem}} <br> <small>Conflicting nodes:
+        {{nodes|length}}</small></button>
+    <div class="content">
+      <p>
+        <strong>Conflicting Nodes:</strong>
+      <ul>
+        {% for node in nodes %}
+        <li>{{node}}</li>
+        {% endfor %}
+      </ul>
+      </p>
+    </div>
   </div>
   <br>
   {% endfor %}
@@ -118,19 +127,19 @@
 <script>
 
   var coll = document.getElementsByClassName("collapsible");
-var i;
+  var i;
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-} 
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    });
+  } 
 </script>
 
 </html>
