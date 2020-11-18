@@ -29,6 +29,10 @@ def ontology_discovery():
     run_discovery(crawlURIs.getPrefixURLs(), 'prefix.cc', dataPath, testSuite)
     discovery_logger.info('Started discovery of VOID URIs...')
     run_discovery(crawlURIs.get_VOID_URIs(), 'VOID mod', dataPath, testSuite)
+    discovery_logger.info('Started discovery of Databus SPOs...')
+    for uri_list in queryDatabus.get_SPOs():
+        run_discovery(uri_list, 'SPOs', dataPath, testSuite)
+
 
 def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     if lst == None:
