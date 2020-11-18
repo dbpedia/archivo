@@ -1,13 +1,13 @@
 from plotly.utils import PlotlyJSONEncoder
 import plotly.graph_objects as go
-from webservice import db, dbModels
 from utils import stringTools
 import datetime
 import json
+import os
 
 timedelta = datetime.timedelta(weeks=4)
 
-def get_latest_stars_before_deadline(ont : dbModels.Ontology, deadline):
+def get_latest_stars_before_deadline(ont, deadline):
     sorted_versions = sorted([v for v in ont.versions], key=lambda v: v.version, reverse=True)
     for version in sorted_versions:
         if version.version < deadline:
@@ -15,7 +15,7 @@ def get_latest_stars_before_deadline(ont : dbModels.Ontology, deadline):
 
     return None
 
-def group_by_stars():
+def group_by_stars(ontologies):
     dates = generate_dates()
     results = {}
     
@@ -25,7 +25,7 @@ def group_by_stars():
         # start with 0 stars each
         for i in range(5):
             y_vals[i] = 0
-        for ont in db.session.query(dbModels.OfficialOntology).all():
+        for ont in ontologies:
             stars = get_latest_stars_before_deadline(ont, deadline)
             if stars != None:
                 y_vals[stars] = y_vals.get(stars, 0) + 1
@@ -35,6 +35,7 @@ def group_by_stars():
 def generate_dates():
     day = datetime.datetime.now()
     dates = []
+    # with timedelta 4 weeks -> 6 months in the past
     for i in range(7):
         dates.append(day)
         day = day - timedelta
@@ -56,8 +57,8 @@ def get_average_stars_from_dict(x_vals, results):
     return average_star_values
 
 
-def generate_star_graph():
-    x_vals, results = group_by_stars()
+def generate_star_graph(ontologies, stats_path):
+    x_vals, results = group_by_stars(ontologies)
     figure = go.Figure()
 
     # zero stars:
@@ -129,6 +130,8 @@ def generate_star_graph():
     figure.update_layout(
         yaxis=dict(
             title="Number of ontologies",
+            # set range 50 more than latest number of ontologies (assumed that ontologies on archivo never decrease)
+            range=[0,sum([star_count for star_count in results[x_vals[-1]].values()])+50]
         ),
         yaxis2=dict(
             title="Avg. Stars",
@@ -147,6 +150,6 @@ def generate_star_graph():
             y=0.99,
         )
     )
-    with open('./stats/stars_over_time.json', 'w+') as json_file:
+    with open(os.path.join(stats_path, 'stars_over_time.json'), 'w+') as json_file:
         json.dump(figure , json_file, cls=PlotlyJSONEncoder, indent=4)
 

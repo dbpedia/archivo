@@ -9,6 +9,7 @@ from webservice.dbModels import Ontology, Version
 from sqlalchemy.exc import IntegrityError
 from urllib.parse import urlparse
 import requests
+import graphing
 
 cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
@@ -191,7 +192,11 @@ def ontology_dev_update():
         # commit changes to database
         
 
-
+# updates the star grapf json every midnight
+#@cron.scheduled_job("cron", id="update_archivo_star_graph", hour="0", day_of_week="mon-sun")
+def update_star_graph():
+    stats_path = os.path.join(os.path.split(app.instance_path)[0], 'stats')
+    graphing.generate_star_graph(db.session.query(dbModels.OfficialOntology).all(), stats_path)
 
 #@cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
