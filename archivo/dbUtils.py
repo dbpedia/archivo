@@ -5,6 +5,7 @@ from datetime import datetime
 import csv
 from crawlURIs import ArchivoVersion
 
+
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if title == None:
@@ -13,23 +14,26 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
         timestamp = datetime.strptime(timestamp, "%Y.%m.%d-%H%M%S")
     if dev != "":
         ontology = DevelopOntology(
-        uri=dev,
-        title=title,
-        source=source,
-        accessDate=timestamp,
-        official=uri,
+            uri=dev,
+            title=title,
+            source=source,
+            accessDate=timestamp,
+            official=uri,
         )
     else:
         ontology = OfficialOntology(
-        uri=uri,
-        title=title,
-        source=source,
-        accessDate=timestamp,
+            uri=uri,
+            title=title,
+            source=source,
+            accessDate=timestamp,
         )
     versions = []
     for info_dict in versions_info:
-        versions.append(Version(
-                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
+        versions.append(
+            Version(
+                version=datetime.strptime(
+                    info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"
+                ),
                 semanticVersion=info_dict["semversion"],
                 stars=info_dict["stars"],
                 triples=info_dict["triples"],
@@ -39,7 +43,8 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
                 consistency=info_dict["consistent"]["conforms"],
                 lodeSeverity=str(info_dict["lode"]["severity"]),
                 ontology=ontology.uri,
-        ))
+            )
+        )
     return ontology, versions
 
 
@@ -52,12 +57,14 @@ def rebuildDatabase():
             print(f"Already listed: {uri}")
             continue
         try:
-            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f')
+            timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
         except ValueError:
-            timestamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
-        print("Handling URI "+ uri)
+            timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+        print("Handling URI " + uri)
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        ontology, versions = buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp)
+        ontology, versions = buildDatabaseObjectFromDatabus(
+            uri, group, artifact, source, timestamp
+        )
         db.session.add(ontology)
         for v in versions:
             db.session.add(v)
@@ -65,14 +72,18 @@ def rebuildDatabase():
             db.session.commit()
         except IntegrityError as e:
             print(str(e))
-            db.session.rollback() 
+            db.session.rollback()
         print(len(Ontology.query.all()))
+
 
 def writeIndexAsCSV(filepath):
     with open(filepath, "w+") as csvIndex:
         writer = csv.writer(csvIndex)
-        for uri, source, accessDate in db.session.query(Ontology.uri, Ontology.source, Ontology.accessDate):
+        for uri, source, accessDate in db.session.query(
+            Ontology.uri, Ontology.source, Ontology.accessDate
+        ):
             writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
+
 
 def updateInfoForOntology(uri, orig_uri=None):
     urisInDatabase = db.session.query(Ontology.uri).all()
@@ -80,7 +91,9 @@ def updateInfoForOntology(uri, orig_uri=None):
     if orig_uri == None:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
     else:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(orig_uri, dev=True)
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(
+            orig_uri, dev=True
+        )
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if not uri in urisInDatabase:
         webservice_logger.error("Not in database")
@@ -88,8 +101,11 @@ def updateInfoForOntology(uri, orig_uri=None):
     else:
         ontology = db.session.query(Ontology).filter_by(uri=uri).first()
     for info_dict in versions_info:
-        db.session.add(Version(
-                version=datetime.strptime(info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"),
+        db.session.add(
+            Version(
+                version=datetime.strptime(
+                    info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"
+                ),
                 semanticVersion=info_dict["semversion"],
                 stars=info_dict["stars"],
                 triples=info_dict["triples"],
@@ -99,42 +115,49 @@ def updateInfoForOntology(uri, orig_uri=None):
                 consistency=info_dict["consistent"]["conforms"],
                 lodeSeverity=str(info_dict["lode"]["severity"]),
                 ontology=ontology.uri,
-        ))
+            )
+        )
     try:
         db.session.commit()
     except IntegrityError as e:
         print(str(e))
-        db.session.rollback() 
+        db.session.rollback()
 
 
-def getDatabaseEntry(archivo_version : ArchivoVersion):
+def getDatabaseEntry(archivo_version: ArchivoVersion):
     if archivo_version.isDev:
-      dbOntology = DevelopOntology(
-        uri = archivo_version.reference_uri,
-        source="DEV",
-        accessDate=archivo_version.access_date,
-        title=archivo_version.md_label,
-        official=archivo_version.nir,
-      )
+        dbOntology = DevelopOntology(
+            uri=archivo_version.reference_uri,
+            source="DEV",
+            accessDate=archivo_version.access_date,
+            title=archivo_version.md_label,
+            official=archivo_version.nir,
+        )
     else:
-      dbOntology = OfficialOntology(
-        uri = archivo_version.reference_uri,
-        source = archivo_version.source,
-        accessDate = archivo_version.access_date,
-        title = archivo_version.md_label,
-        devel = None
-      )
-    consistencyCheck=lambda s: True if s == "Yes" else False
+        dbOntology = OfficialOntology(
+            uri=archivo_version.reference_uri,
+            source=archivo_version.source,
+            accessDate=archivo_version.access_date,
+            title=archivo_version.md_label,
+            devel=None,
+        )
+    consistencyCheck = lambda s: True if s == "Yes" else False
     dbVersion = Version(
-            version=datetime.strptime(archivo_version.version, "%Y.%m.%d-%H%M%S"),
-            semanticVersion=archivo_version.semantic_version,
-            stars=ontoFiles.measureStars(archivo_version.rapper_errors, archivo_version.conforms_licenseI, archivo_version.is_consistent, archivo_version.is_consistent_noimports, archivo_version.conforms_licenseII),
-            triples=archivo_version.triples,
-            parsing=True if archivo_version.rapper_errors == "" else False,
-            licenseI=archivo_version.conforms_licenseI,
-            licenseII=archivo_version.conforms_licenseII,
-            consistency=consistencyCheck(archivo_version.is_consistent),
-            lodeSeverity=archivo_version.lode_severity,
-            ontology=archivo_version.reference_uri,
-            )
+        version=datetime.strptime(archivo_version.version, "%Y.%m.%d-%H%M%S"),
+        semanticVersion=archivo_version.semantic_version,
+        stars=ontoFiles.measureStars(
+            archivo_version.rapper_errors,
+            archivo_version.conforms_licenseI,
+            archivo_version.is_consistent,
+            archivo_version.is_consistent_noimports,
+            archivo_version.conforms_licenseII,
+        ),
+        triples=archivo_version.triples,
+        parsing=True if archivo_version.rapper_errors == "" else False,
+        licenseI=archivo_version.conforms_licenseI,
+        licenseII=archivo_version.conforms_licenseII,
+        consistency=consistencyCheck(archivo_version.is_consistent),
+        lodeSeverity=archivo_version.lode_severity,
+        ontology=archivo_version.reference_uri,
+    )
     return dbOntology, dbVersion

@@ -15,9 +15,10 @@ descriptionNamespaceGraph.bind("dct", DCTERMS)
 descriptionNamespaceGraph.bind("dc", DC)
 descriptionNamespaceGraph.bind("rdfs", RDFS)
 
+
 def getGraphOfVocabFile(filepath, logger=None):
-    try:  
-        rdfFormat=rdflib.util.guess_format(filepath)
+    try:
+        rdfFormat = rdflib.util.guess_format(filepath)
         graph = rdflib.Graph()
         graph.parse(filepath, format=rdfFormat)
         return graph
@@ -26,6 +27,7 @@ def getGraphOfVocabFile(filepath, logger=None):
         if logger != None:
             logger.error("Exception in rdflib parsing", exc_info=True)
         return None
+
 
 def get_graph_of_string(rdf_string, format, logger=None):
     try:
@@ -39,22 +41,26 @@ def get_graph_of_string(rdf_string, format, logger=None):
         return None
 
 
-def getTurtleGraph(graph, base=None):    
-    return graph.serialize(format='turtle', encoding="utf-8", base=base).decode("utf-8")
+def getTurtleGraph(graph, base=None):
+    return graph.serialize(format="turtle", encoding="utf-8", base=base).decode("utf-8")
+
 
 def getAllClassUris(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?classUri \n"
         "WHERE {\n"
         " VALUES ?prop { void:property void:class }\n"
         " ?s ?prop ?classUri .\n"
         "}"
     )
-    result = graph.query(queryString, initNs={"void":URIRef("http://rdfs.org/ns/void#")})
+    result = graph.query(
+        queryString, initNs={"void": URIRef("http://rdfs.org/ns/void#")}
+    )
     if result == None:
         return []
     else:
         return [str(line[0]) for line in result if len(line) > 0]
+
 
 def getAllPropsAndClasses(graph):
     resultSet = set()
@@ -65,7 +71,8 @@ def getAllPropsAndClasses(graph):
             resultSet.add(str(obj))
     return resultSet
 
-#Relevant properties:
+
+# Relevant properties:
 # rdfs:label
 # rdfs:comment
 # rdfs:description
@@ -78,50 +85,55 @@ def getAllPropsAndClasses(graph):
 
 
 def getOwlVersionIRI(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?versionIRI\n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
         " ?uri owl:versionIRI ?versionIRI ."
         "} LIMIT 1"
-        )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
+    )
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
     else:
         return None
 
+
 # returns the NIR-URI if it got a owl:Ontology prop, else None
 def getNIRUri(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?uri\n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
         "} LIMIT 1"
-        )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
+    )
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
     else:
         return None
 
+
 # Returns the possible labels for a ontology
 def getLabel(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?label ?dctTitle ?dcTitle \n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
-        " OPTIONAL { ?uri rdfs:label ?label FILTER (lang(?label) = \"\" || langMatches(lang(?label), \"en\"))}\n"    
-        " OPTIONAL { ?uri dcterms:title ?dctTitle FILTER (lang(?dctTitle) = \"\" || langMatches(lang(?dctTitle), \"en\"))}\n"
-        " OPTIONAL { ?uri dc:title ?dcTitle FILTER (lang(?dcTitle) = \"\" || langMatches(lang(?dcTitle), \"en\"))}\n"
+        ' OPTIONAL { ?uri rdfs:label ?label FILTER (lang(?label) = "" || langMatches(lang(?label), "en"))}\n'
+        ' OPTIONAL { ?uri dcterms:title ?dctTitle FILTER (lang(?dctTitle) = "" || langMatches(lang(?dctTitle), "en"))}\n'
+        ' OPTIONAL { ?uri dc:title ?dcTitle FILTER (lang(?dcTitle) = "" || langMatches(lang(?dcTitle), "en"))}\n'
         "} LIMIT 1"
-        )
-    result=graph.query(queryString, initNs={"owl": OWL, "skos":SKOS,"rdfs":RDFS, "dcterms":DCTERMS, "dc":DC})
+    )
+    result = graph.query(
+        queryString,
+        initNs={"owl": OWL, "skos": SKOS, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC},
+    )
     if result != None and len(result) > 0:
         for row in result:
             for value in row:
@@ -133,17 +145,20 @@ def getLabel(graph):
 
 def getDescription(graph):
     resultStrings = []
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?descProp ?description\n"
         "WHERE {\n"
         " VALUES ?descProp { rdfs:description dcterms:description dc:description rdfs:comment dcterms:abstract }"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
         " ?uri ?descProp ?description .\n"
-        " FILTER (lang(?description) = \"\" || langMatches(lang(?description), \"en\"))"
+        ' FILTER (lang(?description) = "" || langMatches(lang(?description), "en"))'
         "}"
-        )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC, "skos":SKOS})
+    )
+    result = graph.query(
+        queryString,
+        initNs={"owl": OWL, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC, "skos": SKOS},
+    )
     if result != None and len(result) > 0:
         for row in result:
             descString = (
@@ -155,36 +170,43 @@ def getDescription(graph):
     else:
         return None
 
+
 def getTrackThisURI(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?trackURI\n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
         f" ?uri <{archivoConfig.track_this_uri}> ?trackURI ."
         "}"
-        )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf":RDF, "skos":SKOS})
+    )
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return str(row[0])
     else:
         return None
+
+
 # possible rdfs:comments for the databus
 
+
 def getComment(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription \n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
-        " OPTIONAL { ?uri dcterms:description ?dctDescription FILTER (lang(?dctDescription) = \"\" || langMatches(lang(?dctDescription), \"en\")) }\n"
-        " OPTIONAL { ?uri dc:description ?dcDescription FILTER (lang(?dcDescription) = \"\" || langMatches(lang(?dcDescription), \"en\")) }\n"    
-        " OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER (lang(?rdfsComment) = \"\" || langMatches(lang(?rdfsComment), \"en\")) }\n"
-        " OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER (lang(?dctAbstract) = \"\" || langMatches(lang(?dctAbstract), \"en\")) }\n"
+        ' OPTIONAL { ?uri dcterms:description ?dctDescription FILTER (lang(?dctDescription) = "" || langMatches(lang(?dctDescription), "en")) }\n'
+        ' OPTIONAL { ?uri dc:description ?dcDescription FILTER (lang(?dcDescription) = "" || langMatches(lang(?dcDescription), "en")) }\n'
+        ' OPTIONAL { ?uri rdfs:comment ?rdfsComment FILTER (lang(?rdfsComment) = "" || langMatches(lang(?rdfsComment), "en")) }\n'
+        ' OPTIONAL { ?uri dcterms:abstract ?dctAbstract FILTER (lang(?dctAbstract) = "" || langMatches(lang(?dctAbstract), "en")) }\n'
         "} LIMIT 1"
-        )
-    result=graph.query(queryString, initNs={"owl": OWL, "rdfs":RDFS, "dcterms":DCTERMS, "dc":DC, "skos":SKOS})
+    )
+    result = graph.query(
+        queryString,
+        initNs={"owl": OWL, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC, "skos": SKOS},
+    )
     if result != None and len(result) > 0:
         for row in result:
             for value in row:
@@ -193,34 +215,46 @@ def getComment(graph):
     else:
         return None
 
+
 # returns the license if there is any
 def getLicense(graph):
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?license \n"
         "WHERE {\n"
         " VALUES ?licenseProp { dcterms:license xhv:license cc:license dc:license }\n"
         "VALUES ?type { owl:Ontology skos:ConceptScheme }"
         " ?uri a ?type .\n"
-        " ?uri ?licenseProp ?license .\n"   
+        " ?uri ?licenseProp ?license .\n"
         "} LIMIT 1"
-        )
-    result=graph.query(queryString, initNs={"skos":SKOS,"owl": OWL, "dcterms": DCTERMS, "xhv":URIRef("http://www.w3.org/1999/xhtml/vocab#"), "dc":DC,"cc":URIRef("http://creativecommons.org/ns#")})
+    )
+    result = graph.query(
+        queryString,
+        initNs={
+            "skos": SKOS,
+            "owl": OWL,
+            "dcterms": DCTERMS,
+            "xhv": URIRef("http://www.w3.org/1999/xhtml/vocab#"),
+            "dc": DC,
+            "cc": URIRef("http://creativecommons.org/ns#"),
+        },
+    )
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
     else:
         return None
 
+
 # returns the non information resource of an ontology, representing the entity of the ontology
 def getDefinedByUri(ontgraph):
-    qString="""
+    qString = """
         SELECT DISTINCT ?defbyUri
         WHERE {
             VALUES ?prop { rdfs:isDefinedBy skos:inScheme }
             ?s ?prop ?defbyUri .
         } LIMIT 1
-        """ 
-    result = ontgraph.query(qString, initNs={"rdfs":RDFS, "skos":SKOS})
+        """
+    result = ontgraph.query(qString, initNs={"rdfs": RDFS, "skos": SKOS})
     if result != None and len(result) > 0:
         for row in result:
             return row[0]
@@ -229,16 +263,33 @@ def getDefinedByUri(ontgraph):
 
 
 def changeMetadata(rootdir):
-    for groupdir in [dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))]:
-        for artifactDir in [dir for dir in os.listdir(os.path.join(rootdir, groupdir)) if os.path.isdir(os.path.join(rootdir, groupdir, dir))]:
+    for groupdir in [
+        dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))
+    ]:
+        for artifactDir in [
+            dir
+            for dir in os.listdir(os.path.join(rootdir, groupdir))
+            if os.path.isdir(os.path.join(rootdir, groupdir, dir))
+        ]:
             print("Generating metadata for", groupdir, artifactDir)
-            versionDirs = [dir for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir)) if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir)) and dir != "target"]
+            versionDirs = [
+                dir
+                for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir))
+                if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir))
+                and dir != "target"
+            ]
             if versionDirs == []:
                 print("Couldnt find version for", groupdir, artifactDir)
                 continue
-            versionDir = versionDirs[0]  
-            #filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
-            jsonPath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=meta.json")
+            versionDir = versionDirs[0]
+            # filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
+            jsonPath = os.path.join(
+                rootdir,
+                groupdir,
+                artifactDir,
+                versionDir,
+                artifactDir + "_type=meta.json",
+            )
             if not os.path.isfile(jsonPath):
                 continue
             with open(jsonPath, "r") as jsonFile:
@@ -253,16 +304,18 @@ def checkShaclReport(reportURL):
     shaclReportGraph = getGraphOfVocabFile(reportURL)
     if shaclReportGraph == None:
         return "ERROR"
-    violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
-    warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
+    violationRef = URIRef("http://www.w3.org/ns/shacl#Violation")
+    warningRef = URIRef("http://www.w3.org/ns/shacl#Warning")
     infoRef = URIRef("http://www.w3.org/ns/shacl#Info")
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?severity \n"
         "WHERE {\n"
-        " ?s sh:resultSeverity ?severity . \n"   
+        " ?s sh:resultSeverity ?severity . \n"
         "}"
-        )
-    result=shaclReportGraph.query(queryString, initNs={"sh":URIRef("http://www.w3.org/ns/shacl#")})
+    )
+    result = shaclReportGraph.query(
+        queryString, initNs={"sh": URIRef("http://www.w3.org/ns/shacl#")}
+    )
 
     resultValues = [row[0] for row in result if row != None]
     if violationRef in resultValues:
@@ -274,6 +327,7 @@ def checkShaclReport(reportURL):
     else:
         return "OK"
 
+
 def hackyShaclStringInpection(text):
     if "sh:resultSeverity sh:Violation" in text:
         return "VIOLATION"
@@ -284,8 +338,9 @@ def hackyShaclStringInpection(text):
     else:
         return "OK"
 
+
 def hackyShaclInspection(shaclURL):
-    
+
     try:
         shaclString = requests.get(shaclURL).text
     except Exception as e:
@@ -302,17 +357,13 @@ def hackyShaclInspection(shaclURL):
 
 
 def interpretShaclGraph(graph):
-    violationRef = URIRef('http://www.w3.org/ns/shacl#Violation')
-    warningRef = URIRef('http://www.w3.org/ns/shacl#Warning')
+    violationRef = URIRef("http://www.w3.org/ns/shacl#Violation")
+    warningRef = URIRef("http://www.w3.org/ns/shacl#Warning")
     infoRef = URIRef("http://www.w3.org/ns/shacl#Info")
 
-    resultDict = {
-        "violations":None,
-        "warnings":None,
-        "infos":None
-    }
+    resultDict = {"violations": None, "warnings": None, "infos": None}
 
-    queryString=(
+    queryString = (
         "SELECT DISTINCT ?node ?severity ?problem \n"
         "WHERE {\n"
         "?report a sh:ValidationReport .\n"
@@ -321,9 +372,11 @@ def interpretShaclGraph(graph):
         "?result sh:resultMessage ?problem .\n"
         "?result sh:resultSeverity ?severity .\n"
         "}"
-        )
+    )
 
-    result=graph.query(queryString, initNs={"sh":URIRef("http://www.w3.org/ns/shacl#")})
+    result = graph.query(
+        queryString, initNs={"sh": URIRef("http://www.w3.org/ns/shacl#")}
+    )
 
     for node, severity, problemText in result:
         if severity == violationRef:

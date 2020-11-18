@@ -8,14 +8,17 @@ class Ontology(db.Model):
     title = db.Column(db.String(300))
     source = db.Column(db.String(64))
     accessDate = db.Column(db.DateTime)
-    versions = db.relationship('Version', backref='vocab', lazy='dynamic')
-    crawlingFallout = db.relationship('Fallout', backref='crawlingFallout', lazy='dynamic')
+    versions = db.relationship("Version", backref="vocab", lazy="dynamic")
+    crawlingFallout = db.relationship(
+        "Fallout", backref="crawlingFallout", lazy="dynamic"
+    )
     crawling_status = db.Column(db.Boolean)
-    type = db.Column('type', db.String(50))              # discriminator
-    __mapper_args__ = {'polymorphic_on': type}
+    type = db.Column("type", db.String(50))  # discriminator
+    __mapper_args__ = {"polymorphic_on": type}
 
     def __repr__(self):
-        return '<Ontology {}>'.format(self.uri)
+        return "<Ontology {}>".format(self.uri)
+
 
 class Version(db.Model):
     __tablename__ = "version"
@@ -29,25 +32,35 @@ class Version(db.Model):
     licenseII = db.Column(db.Boolean)
     consistency = db.Column(db.Boolean)
     lodeSeverity = db.Column(db.String(32))
-    ontology = db.Column(db.String(120), db.ForeignKey('ontology.uri'))
+    ontology = db.Column(db.String(120), db.ForeignKey("ontology.uri"))
 
     def __repr__(self):
-        return '<Version {}>'.format(self.version)
+        return "<Version {}>".format(self.version)
 
 
 class OfficialOntology(Ontology):
     __tablename__ = "officialOntology"
-    uri = db.Column(db.String(120), db.ForeignKey('ontology.uri'), primary_key=True)
-    __mapper_args__ = {'polymorphic_identity': 'officialOntology',
-                       'inherit_condition': (uri == Ontology.uri)}
-    devel = db.relationship('DevelopOntology', primaryjoin="(OfficialOntology.uri==DevelopOntology.official)", uselist=False,backref=db.backref('original'))
+    uri = db.Column(db.String(120), db.ForeignKey("ontology.uri"), primary_key=True)
+    __mapper_args__ = {
+        "polymorphic_identity": "officialOntology",
+        "inherit_condition": (uri == Ontology.uri),
+    }
+    devel = db.relationship(
+        "DevelopOntology",
+        primaryjoin="(OfficialOntology.uri==DevelopOntology.official)",
+        uselist=False,
+        backref=db.backref("original"),
+    )
+
 
 class DevelopOntology(Ontology):
     __tablename__ = "developOntology"
-    uri = db.Column(db.String(120), db.ForeignKey('ontology.uri'), primary_key=True)
-    __mapper_args__ = {'polymorphic_identity': 'developOntology',
-                       'inherit_condition': (uri == Ontology.uri)}
-    official = db.Column(db.String(120), db.ForeignKey('officialOntology.uri'))
+    uri = db.Column(db.String(120), db.ForeignKey("ontology.uri"), primary_key=True)
+    __mapper_args__ = {
+        "polymorphic_identity": "developOntology",
+        "inherit_condition": (uri == Ontology.uri),
+    }
+    official = db.Column(db.String(120), db.ForeignKey("officialOntology.uri"))
 
 
 class Fallout(db.Model):
@@ -57,11 +70,7 @@ class Fallout(db.Model):
     date = db.Column(db.DateTime, index=True, default=datetime.now)
     inArchivo = db.Column(db.Boolean, index=True)
     error = db.Column(db.String(250))
-    ontology = db.Column(db.String(120), db.ForeignKey('ontology.uri'))
-
-
-
-
+    ontology = db.Column(db.String(120), db.ForeignKey("ontology.uri"))
 
 
 class LatestOntologyMetadata(db.Model):
@@ -76,9 +85,9 @@ class LatestOntologyMetadata(db.Model):
     licenseII = db.Column(db.Boolean)
     consistency = db.Column(db.Boolean)
     lodeSeverity = db.Column(db.String(32))
-    ontology = db.Column(db.String(120), db.ForeignKey('ontology.uri'))
+    ontology = db.Column(db.String(120), db.ForeignKey("ontology.uri"))
     crawlingStatus = db.Column(db.Boolean)
     crawlingError = db.Column(db.String(120))
 
     def __repr__(self):
-        return '<Ontology {}>'.format(self.uri)
+        return "<Ontology {}>".format(self.uri)
