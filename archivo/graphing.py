@@ -5,8 +5,6 @@ import datetime
 import json
 import os
 
-timedelta = datetime.timedelta(weeks=4)
-
 
 def get_latest_stars_before_deadline(ont, deadline):
     sorted_versions = sorted(
@@ -20,7 +18,7 @@ def get_latest_stars_before_deadline(ont, deadline):
 
 
 def group_by_stars(ontologies):
-    dates = generate_dates()
+    dates = generate_dates(6, 2)
     results = {}
 
     for deadline in dates:
@@ -36,11 +34,13 @@ def group_by_stars(ontologies):
     return dates, results
 
 
-def generate_dates():
+def generate_dates(timespan=6, interval=4):
     day = datetime.datetime.now()
+    timedelta = datetime.timedelta(weeks=interval)
     dates = []
+    needed_dates = int((timespan * 4) / interval) + 1
     # with timedelta 4 weeks -> 6 months in the past
-    for i in range(7):
+    for i in range(needed_dates):
         dates.append(day)
         day = day - timedelta
 
@@ -66,34 +66,14 @@ def generate_star_graph(ontologies, stats_path):
     x_vals, results = group_by_stars(ontologies)
     figure = go.Figure()
 
-    # zero stars:
+    # four stars:
     figure.add_trace(
         go.Scatter(
             x=x_vals,
-            y=[results[d][0] for d in x_vals],
-            name=stringTools.generateStarString(0),
+            y=[results[d][4] for d in x_vals],
+            name=stringTools.generateStarString(4),
             stackgroup="one",
-            line=dict(width=0.5, color="rgb(255, 0, 0)"),
-        )
-    )
-    # one star:
-    figure.add_trace(
-        go.Scatter(
-            x=x_vals,
-            y=[results[d][1] for d in x_vals],
-            name=stringTools.generateStarString(1),
-            stackgroup="one",
-            line=dict(width=0.5, color="rgb(255, 165, 0)"),
-        )
-    )
-    # two stars:
-    figure.add_trace(
-        go.Scatter(
-            x=x_vals,
-            y=[results[d][2] for d in x_vals],
-            name=stringTools.generateStarString(2),
-            stackgroup="one",
-            line=dict(width=0.5, color="rgb(255, 215, 0)"),
+            line=dict(width=0.5, color="rgb(34, 139, 34)"),
         )
     )
     # three stars:
@@ -106,14 +86,34 @@ def generate_star_graph(ontologies, stats_path):
             line=dict(width=0.5, color="rgb(124, 252, 0)"),
         )
     )
-    # four stars:
+    # two stars:
     figure.add_trace(
         go.Scatter(
             x=x_vals,
-            y=[results[d][4] for d in x_vals],
-            name=stringTools.generateStarString(4),
+            y=[results[d][2] for d in x_vals],
+            name=stringTools.generateStarString(2),
             stackgroup="one",
-            line=dict(width=0.5, color="rgb(34, 139, 34)"),
+            line=dict(width=0.5, color="rgb(255, 215, 0)"),
+        )
+    )
+    # one star:
+    figure.add_trace(
+        go.Scatter(
+            x=x_vals,
+            y=[results[d][1] for d in x_vals],
+            name=stringTools.generateStarString(1),
+            stackgroup="one",
+            line=dict(width=0.5, color="rgb(255, 165, 0)"),
+        )
+    )
+    # zero stars:
+    figure.add_trace(
+        go.Scatter(
+            x=x_vals,
+            y=[results[d][0] for d in x_vals],
+            name=stringTools.generateStarString(0),
+            stackgroup="one",
+            line=dict(width=0.5, color="rgb(255, 0, 0)"),
         )
     )
     # All onts
@@ -121,17 +121,18 @@ def generate_star_graph(ontologies, stats_path):
         go.Scatter(
             x=x_vals,
             y=[sum([star_count for star_count in results[d].values()]) for d in x_vals],
-            name="All Ontologies",
-            line=dict(width=0.5, color="rgb(0, 0, 0)"),
+            name="Total discovered ontologies",
+            line=dict(width=1.0, color="rgb(0, 0, 0)"),
         )
     )
+    # avergage stars
     figure.add_trace(
         go.Scatter(
             x=x_vals,
             y=get_average_stars_from_dict(x_vals, results),
             name="Average Stars",
             yaxis="y2",
-            line=dict(width=0.5, color="rgb(0, 0, 128)"),
+            line=dict(width=1.0, color="rgb(0, 64, 255)", dash="dash"),
         )
     )
     figure.update_layout(
@@ -144,14 +145,18 @@ def generate_star_graph(ontologies, stats_path):
             ],
         ),
         yaxis2=dict(
-            title="Avg. Stars", anchor="x", overlaying="y", side="right", range=[0, 4]
+            title="Avgerage Stars",
+            anchor="x",
+            overlaying="y",
+            side="right",
+            range=[0, 4],
         ),
     )
     figure.update_layout(
         title_text="Archivo Stars Distribution",
         legend=dict(
             yanchor="top",
-            x=1.3,
+            x=1.35,
             xanchor="right",
             y=0.99,
         ),
