@@ -6,6 +6,7 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
 @prefix cc: <http://creativecommons.org/ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <#license-I>  
     a sh:NodeShape ;
