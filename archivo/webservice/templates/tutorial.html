@@ -1,0 +1,135 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<div class="container">
+    <br>
+    <h2>Archivo Ontology Tutorial</h2>
+
+    <p>
+        This page is dedicated to explain how to deploy a ontology correctly so Archivo can use it (which is the
+        recommended way of the W3C). It also explains how to easily archieve the 4 star rating for a vocabulary in
+        Archivo.
+    </p>
+
+    <h3>Ontology Deployment</h3>
+    <p>
+        Generally speaking, Archivo can process the ontology if it follows the <a
+            href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">recommendations
+            of the W3C</a>
+        for publishing RDF vocabularies, so if your ontology is not deployed yet you can follow the tutorial there. But
+        there are few extra requirements/features of Archivo:
+        <br>
+    <ul>
+        <li>
+            <p><strong>Ontology Recognition:</strong> To be recognized as a vocabulary, the RDF content of the ontology
+                should contain a triple in the
+                form of:
+                <br>
+                <code>&ltNIR&gt rdf:type owl:Ontology .</code> <b>OR</b>
+                <code>&ltNIR&gt rdf:type skos:ConceptScheme .</code><br>
+                The NIR is the non information resource of the ontology, e.g for FOAF it is <a
+                    href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>, and acts as the representation of
+                the
+                ontology.
+            </p>
+        </li>
+        <li>
+            <p>
+                <strong>RDF Accessablity:</strong> The vocabulary's RDF content must be accessible from this NIR (non
+                information resource), either directly or via content
+                negotiation. Here Archivo not only supports RDF+XML, but also Turtle and N-Triples. If there are
+                multiple
+                formats available, Archivo chooses the one with the most triples.
+            </p>
+        </li>
+        <li>
+            <p>
+                <strong>Note:</strong> Archivo does not (yet) support <a
+                    href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/#naming">slash
+                    ontologies</a>
+                that only link to its classes/properties and not define them (e.g <a
+                    href="http://dbpedia.org/ontology/">http://dbpedia.org/ontology/</a>)
+            </p>
+        </li>
+    </ul>
+    </p>
+    <h4>Ontology Sources</h4>
+    <p>
+        <b>Auto discovery:</b> Each week DBpedia Archivo follows links from the known part of the Semantic Web to
+        discover
+        more ontologies.
+        In particular, Archivo analyses: <a href='http://prefix.cc'>prefix.cc</a>, <a
+            href='http://lov.okfn.org'>http://lov.okfn.org</a>, <a href='https://www.w3.org/TR/void/'>VoID</a> data from
+        Databus artifacts, outgoing links (e.g. owl:import, owl:equivalentClasses|Properties) from archived ontologies.
+    </p>
+    <p>
+        <b>User Addition:</b> If Archivo couldn't find your ontology it can be added <a href="/add">here</a> just by
+        pasting the URI.
+    </p>
+    <h3>Archivo Stars</h3>
+    <p>
+        The Archivo Stars provide additional tests to check the fitness of the vocabulary for the semantic web. This
+        section explains how to quickly fix problems with a vocabulary to earn all four Archivo Stars.
+
+    </p>
+    <h4>★ Retrieval & Parsing</h4>
+    <p>
+        This star is granted if the ontology is retrievable from its non information resource and parses correctly. So
+        if the ontology is deployed following the recommendations written above, additionaly it should parse without
+        errors. There are three
+        different ways to debug it, depending on which step of deployment the vocabulary is:
+    <ol>
+        <li>
+            <p>
+                <strong>Local as a file:</strong>Archivo uses the <a href="http://librdf.org/raptor/"
+                    target="_blank">Raptor
+                    RDF library</a>
+                for parsing, so to test the local ontology file use it by running
+                <br><code>rapper -i [file-type] [file-path]</code><br>
+                and it will return the parsing errors. Additionally the ontology should be deployed following <a
+                    href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">W3C's
+                    recommendations</a>.
+            </p>
+        </li>
+        <li>
+            <p>
+                <strong>Deployed:</strong> If the ontology is accessable online paste the URI of it into the <a
+                    href="/add">add feature</a> and either it will add it to Archivos index or show the problem of the
+                deployment.
+            </p>
+        </li>
+        <li>
+            <p>
+                <strong>Already on Archivo:</strong> If the ontology is already on Archivo you can see the errors Raptor
+                RDF
+                yielded
+                on the <a href="/info">ontology view</a> of the vocabulary in the column <strong>Retrieval &
+                    parsing</strong>.
+            </p>
+        </li>
+    </ol>
+    If the ontology is deployed correctly and Raptor RDF can parse it is granted the first star.
+    </p>
+    <h4>★ License (I & II)</h4>
+    <p>
+        The second and third star are granted for using a license, the second star for using one at all and the third
+        for using a homogenized license with the property <code>dct:license</code> and a URI as object. The best
+        way here is making it correct from the start and adding a triple like
+    <pre><code>&ltNIR&gt dct:license &ltmy-license-uri&gt .</code></pre>
+    to your ontology. By adding this simple triple the vocabulary earns the second and third star at once. If you're not
+    sure what license(s) to choose you can search one that fits your needs at <a
+        href="https://dalicc.net/license-search">dalicc</a>.
+    <br>
+    In the near future the third star will only be granted for using license URIs that are machine readable.
+    </p>
+    <h4>★ Consistency</h4>
+    <p>
+        The forth star is granted for logical consistency of the ontology (tested with Stardog/Pellet). You can test it
+        yourself by using the <a href="https://github.com/stardog-union/pellet">Pellet CLI</a> or just access the
+        consistency check of Archivo at the <a href="/info">ontology view</a>. There a pellet report is available at the
+        failed consistency check symbol <span class="x">✘</span> where the logical inconstistencies can be seen and
+        fixed.
+    </p>
+</div>
+{% endblock %}

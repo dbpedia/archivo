@@ -48,14 +48,17 @@
             <a class="nav-link" href="/api">API</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="/tutorial">Tutorial</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="https://github.com/dbpedia/Archivo">
               <img src="{{url_for('.static', filename='github-logo.svg')}}" width="30" height="30"
                 class="d-inline-block align-top" alt="">
             </a>
           </li>
-          <li class="nav-item">
+          <!--li class="nav-item">
             <a class="nav-link" href="https://github.com/dbpedia/Archivo/issues">Report Issue</a>
-          </li>
+          </li-->
           <li class="nav-item">
             <a class="nav-link" href="/faq">FAQ</a>
           </li>
@@ -70,7 +73,7 @@
 
   {% block content %}
 
-  {%endblock %}
+  {% endblock %}
 
   <script>
     $(document).ready(function () {
@@ -78,7 +81,9 @@
       $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
     });  
   </script>
+  <footer>
 
+  </footer>
   <br>
   <br>
   <br>

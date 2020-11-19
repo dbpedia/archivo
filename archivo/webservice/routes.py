@@ -435,16 +435,13 @@ def shaclVisualisation():
 def faq():
     return render_template("faq.html")
 
-
-@app.route("/testgraph")
-def testgraph():
-    json_string = graphing.generate_star_graph()
-    return render_template("testgraph.html", graphJSON=json_string)
-
-
 def get_star_stats():
     with open(
         os.path.join(archivoPath, "stats", "stars_over_time.json"), "r"
     ) as json_file:
         json_data = json.load(json_file)
     return json.dumps(json_data)
+
+@app.route('/tutorial')
+def tutorial():
+    return render_template('tutorial.html')
