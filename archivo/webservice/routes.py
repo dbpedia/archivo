@@ -442,6 +442,6 @@ def get_star_stats():
         json_data = json.load(json_file)
     return json.dumps(json_data)
 
-@app.route('/tutorial')
-def tutorial():
-    return render_template('tutorial.html')
+@app.route('/rating')
+def rating():
+    return render_template('rating.html')
