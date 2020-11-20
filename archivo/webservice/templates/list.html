@@ -27,8 +27,8 @@
 
     <input type="checkbox" name="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
     <label for="stars">Archivo Star Rating</label>
-    <input type="checkbox" name="crawling" class="column_selector" value=12 checked
-        onclick="show_hide_column(12, checked)">
+    <input type="checkbox" name="crawling" class="column_selector" value=13 checked
+        onclick="show_hide_column(13, checked)">
     <label for="crawling">Crawling-Status</label>
     Switch: <a href="/list">Published Web Versions</a> |
     <a href="/list?dev"> Developer Versions</a>
@@ -41,20 +41,22 @@
     <input type="checkbox" name="semantic_version" class="column_selector" value=6
         onclick="show_hide_column(6, checked)">
     <label for="semantic_version">Semantic Version</label>
-    <input type="checkbox" name="parsing" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
+    <input type="checkbox" name="parsing" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
     <label for="parsing">Parsing</label>
 
-    <input type="checkbox" name="min_license" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
+    <input type="checkbox" name="min_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
     <label for="min_license">Min.License</label>
 
-    <input type="checkbox" name="good_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
+    <input type="checkbox" name="good_license" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
     <label for="good_license">Good License</label>
 
-    <input type="checkbox" name="consistency" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
+    <input type="checkbox" name="consistency" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
     <label for="consistency">Consistency</label>
 
-    <input type="checkbox" name="lode" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
-    <label for="lode">Lode-Status</label>
+    <input type="checkbox" name="lode" class="column_selector" value=12 onclick="show_hide_column(12, checked)">
+    <label for="lode">LODE conformity</label>
+    <input type="checkbox" name="timestamp" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
+    <label for="lode">Latest Timestamp</label>
 
     <table id="ontologies-table" data-toggle="table" data-search="true">
         <col class="col1" />
@@ -79,6 +81,7 @@
                 <th data-sortable="true" data-field="Triples">Triples</th>
                 <th data-sortable="true" data-field="stars">Stars</th>
                 <th data-sortable="true" data-field="semVersion">Latest Semantic Version</th>
+                <th data-sortable="true" data-field="timestamp">Latest Timestamp</th>
                 <th data-sortable="true" data-field="parsing">Parsing</th>
                 <th data-sortable="true" data-field="min-license">Min. License</th>
                 <th data-sortable="true" data-field="good-license">Good License</th>
@@ -104,6 +107,9 @@
                 <td>{{onto.triples}}</td>
                 <td>{{onto.stars}}</td>
                 <td>{{onto.semVersion}}</td>
+                <td>
+                    {{ onto.latestVersion }}
+                </td>
                 <td>
                     {% if onto.parsing %}
                     <div class="check">✔</div>

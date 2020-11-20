@@ -245,6 +245,7 @@ def onto_list():
             "goodLicense": v.licenseII,
             "consistency": v.consistency,
             "lodeSeverity": v.lodeSeverity,
+            "latestVersion": v.version.strftime("%Y.%m.%d-%H%M%S"),
         }
         ontos.append(result)
     return render_template(
