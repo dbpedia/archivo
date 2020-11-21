@@ -2,95 +2,90 @@
 <html lang="en">
 
 <head>
-  <title>DBpedia Archivo</title>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/faq-theme.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/custom.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='dbpedia-favicon-32x32.png') }}">
+    <title>DBpedia Archivo</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/faq-theme.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/custom.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='dbpedia-favicon-32x32.png') }}">
 
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
-  <script src="{{ url_for('static',filename='js/bootstrap/bootstrap.min.js') }}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap/bootstrap.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 </head>
 
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <img src="{{url_for('.static', filename='archivo_logo_alt.png')}}" height=100>
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{url_for('.static', filename='archivo_logo_alt.png')}}" height=100>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
 
 
-          <li class="nav-item">
-            <a class="nav-link" href="/list">Ontology Archive</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/info">View Ontology</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/add">Add Ontology</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/api">API</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/rating">Rating</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://github.com/dbpedia/Archivo">
-              <img src="{{url_for('.static', filename='github-logo.svg')}}" width="30" height="30"
-                class="d-inline-block align-top" alt="">
-            </a>
-          </li>
-          <!--li class="nav-item">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/list">Ontology Archive</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/info">View Ontology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add">Add Ontology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api">API</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/rating">Rating</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/dbpedia/Archivo">
+                            <img src="{{url_for('.static', filename='github-logo.svg')}}" width="30" height="30" class="d-inline-block align-top" alt="">
+                        </a>
+                    </li>
+                    <!--li class="nav-item">
             <a class="nav-link" href="https://github.com/dbpedia/Archivo/issues">Report Issue</a>
           </li-->
-          <li class="nav-item">
-            <a class="nav-link" href="/faq">FAQ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/about">About</a>
-          </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
 
-        </ul>
-      </div>
-    </div>
-  </nav>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  {% block content %}
+    {% block content %} {% endblock %}
 
-  {% endblock %}
+    <script>
+        $(document).ready(function() {
+            $('li.active').removeClass('active');
+            $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+        });
+    </script>
+    <footer>
 
-  <script>
-    $(document).ready(function () {
-      $('li.active').removeClass('active');
-      $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
-    });  
-  </script>
-  <footer>
-
-  </footer>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+    </footer>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 </body>
 
 </html>

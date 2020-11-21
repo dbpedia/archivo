@@ -1,135 +1,297 @@
-{% extends "index.html" %}
-
-
-{% block content %}
+{% extends "index.html" %} {% block content %}
 <div class="container">
     <br>
     <h2>Archivo Ontology Tutorial</h2>
-
-    <p>
-        This page is dedicated to explain how to deploy a ontology correctly so Archivo can use it (which is the
-        recommended way of the W3C). It also explains how to easily archieve the 4 star rating for a vocabulary in
-        Archivo.
-    </p>
-
-    <h3>Ontology Deployment</h3>
-    <p>
-        Generally speaking, Archivo can process the ontology if it follows the <a
-            href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">recommendations
-            of the W3C</a>
-        for publishing RDF vocabularies, so if your ontology is not deployed yet you can follow the tutorial there. But
-        there are few extra requirements/features of Archivo:
-        <br>
-    <ul>
-        <li>
-            <p><strong>Ontology Recognition:</strong> To be recognized as a vocabulary, the RDF content of the ontology
-                should contain a triple in the
-                form of:
-                <br>
-                <code>&ltNIR&gt rdf:type owl:Ontology .</code> <b>OR</b>
-                <code>&ltNIR&gt rdf:type skos:ConceptScheme .</code><br>
-                The NIR is the non information resource of the ontology, e.g for FOAF it is <a
-                    href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>, and acts as the representation of
-                the
-                ontology.
-            </p>
-        </li>
-        <li>
-            <p>
-                <strong>RDF Accessablity:</strong> The vocabulary's RDF content must be accessible from this NIR (non
-                information resource), either directly or via content
-                negotiation. Here Archivo not only supports RDF+XML, but also Turtle and N-Triples. If there are
-                multiple
-                formats available, Archivo chooses the one with the most triples.
-            </p>
-        </li>
-        <li>
-            <p>
-                <strong>Note:</strong> Archivo does not (yet) fully support <a
-                    href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/#naming">slash
-                    ontologies</a>
-                that only link to its classes/properties and not define them (e.g <a
-                    href="http://dbpedia.org/ontology/">http://dbpedia.org/ontology/</a>)
-            </p>
-        </li>
-    </ul>
-    </p>
-    <h4>Ontology Sources</h4>
-    <p>
-        <b>Auto discovery:</b> Each week DBpedia Archivo follows links from the known part of the Semantic Web to
-        discover
-        more ontologies.
-        In particular, Archivo analyses: <a href='http://prefix.cc'>prefix.cc</a>, <a
-            href='http://lov.okfn.org'>http://lov.okfn.org</a>, <a href='https://www.w3.org/TR/void/'>VoID</a> data from
-        Databus artifacts, outgoing links (e.g. owl:import, owl:equivalentClasses|Properties) from archived ontologies.
-    </p>
-    <p>
-        <b>User Addition:</b> If Archivo couldn't find your ontology it can be added <a href="/add">here</a> just by
-        pasting the URI.
-    </p>
-    <h3>Archivo Stars</h3>
-    <p>
-        The Archivo Stars provide additional tests to check the fitness of the vocabulary for the semantic web. This
-        section explains how to quickly fix problems with a vocabulary to earn all four Archivo Stars.
-
-    </p>
-    <h4>★ Retrieval & Parsing</h4>
-    <p>
-        This star is granted if the ontology is retrievable from its non information resource and parses correctly. So
-        if the ontology is deployed following the recommendations written above, additionaly it should parse without
-        errors. There are three
-        different ways to debug it, depending on which step of deployment the vocabulary is:
-    <ol>
-        <li>
-            <p>
-                <strong>Local as a file:</strong>Archivo uses the <a href="http://librdf.org/raptor/"
-                    target="_blank">Raptor
-                    RDF library</a>
-                for parsing, so to test the local ontology file use it by running
-                <br><code>rapper -i [file-type] [file-path]</code><br>
-                and it will return the parsing errors. Additionally the ontology should be deployed following <a
-                    href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">W3C's
-                    recommendations</a>.
-            </p>
-        </li>
-        <li>
-            <p>
-                <strong>Deployed:</strong> If the ontology is accessable online paste the URI of it into the <a
-                    href="/add">add feature</a> and either it will add it to Archivos index or show the problem of the
-                deployment.
-            </p>
-        </li>
-        <li>
-            <p>
-                <strong>Already on Archivo:</strong> If the ontology is already on Archivo you can see the errors Raptor
-                RDF
-                yielded
-                on the <a href="/info">ontology view</a> of the vocabulary in the column <strong>Retrieval &
-                    parsing</strong>.
-            </p>
-        </li>
-    </ol>
-    If the ontology is deployed correctly and Raptor RDF can parse it is granted the first star.
-    </p>
-    <h4>★ License (I & II)</h4>
-    <p>
-        The second and third star are granted for using a license, the second star for using one at all and the third
-        for using a homogenized license with the property <code>dct:license</code> and a URI as object. The best
-        way here is making it correct from the start and adding a triple like
-    <pre><code>&ltNIR&gt dct:license &ltmy-license-uri&gt .</code></pre>
-    to your ontology. By adding this simple triple the vocabulary earns the second and third star at once. If you're not
-    sure what license(s) to choose you can search one that fits your needs at <a
-        href="https://dalicc.net/license-search">dalicc</a>.
     <br>
-    In the near future the third star will only be granted for using license URIs that are machine readable.
-    </p>
-    <h4>★ Consistency</h4>
+    <h3>Ontology Recognition</h3>
     <p>
-        The forth star is granted for logical consistency of the ontology (tested with Stardog/Pellet). You can test it
-        yourself by using the <a href="https://github.com/stardog-union/pellet">Pellet CLI</a> or just access the
-        consistency check of Archivo at the <a href="/info">ontology view</a>. There a pellet report is available at the
-        failed consistency check symbol <span class="x">✘</span> where the logical inconstistencies can be seen and
-        fixed.
+        Archivos way of distinguishing ontologies from normal RDF content it should contain a triple in the form of
+        <div class="codeblock">
+            <pre>
+@prefix owl: &lthttp://www.w3.org/2002/07/owl#&gt .
+@prefix rdf: &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt .
+
+
+&lt$non-information-resource&gt rdf:type owl:Ontology .</pre>
+        </div>
+        <br>
+        <b>OR</b>
+        <br>
+        <div class="codeblock">
+            <pre>
+@prefix skos: &lthttp://www.w3.org/2004/02/skos/core#&gt .
+@prefix rdf: &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt .
+                
+                
+&lt$non-information-resource&gt rdf:type skos:ConceptScheme .</pre>
+        </div>
+        <br> This <b>non information resource</b> (short: NIR) acts as the representation of the ontology on the web and should lead, either directly or by redirection, to the RDF content of the ontology.
+    </p>
+
+    <h3>Automatic Ontology Discovery</h3>
+    <p>
+        Each week DBpedia Archivo follows links from the known part of the Semantic Web to discover more ontologies. For that Archivo uses different methods of finding NIRs of ontologies and by what method a ontology was dicovered can be seen either in the
+        <a href="/list">archive</a> or the <a href="/info">ontology view</a>.
+    </p>
+    <p>
+        <b>NIR Sources:</b>
+        <ol>
+            <li>
+                <b>LOV:</b> A straightforward way of discovering ontology URIs is by crawling ontology repositories, in Archivos case it is <a href='http://lov.okfn.org'>Linked Open Vocabularies</a>
+            </li>
+            <li>
+                <b>prefix.cc:</b> Often prefixes are non information resources, so crawling <a href='http://prefix.cc'>prefix.cc</a> yields good results.
+            </li>
+            <li>
+                <b>VOID mod:</b> To discover the ontologies data on the DBpedia Databus uses, Archivo crawls the <a href='https://www.w3.org/TR/void/'>VoID</a> from the databus for NIRs.
+            </li>
+            <li>
+                <b>SPOs:</b> To discover ontologies used by vocabularies, Archivo crawls all URIs from the <b>S</b>ubjects,
+                <b>P</b>redicates and <b>O</b>bjects for further potential non information resources.
+            </li>
+            <li>
+                <b>user-suggestions:</b> If neither of these methods can find a certain ontology, the NIR of the vocabulary can be added <a href="/add">here</a> and Archivo handles the rest.
+            </li>
+        </ol>
+        All these ontologies get updated regularily three times a day (currently 02:00 am, 10:00 am and 06:00 pm).
+    </p>
+
+    <h2>Archivo Stars</h2>
+    <p>
+        The Archivo Stars provide additional tests to check the fitness of the vocabulary for the semantic web. This section explains how to quickly fix problems with a vocabulary to earn all four Archivo Stars.
+
+    </p>
+    <h3>★ Retrieval & Parsing</h3>
+    <p>This star is granted if the ontology is retrievable from its non information resource and parses correctly.</p>
+    <h4>Implementation</h4>
+    <p>
+        <b>Retrival:</b> Archivo tries retrieving the RDF content of a ontology by testing different Accept Headers (currently supported:
+        <b>RDF+XML</b>, <b>Turtle</b> and <b>N-Triples</b>, <a href="https://github.com/dbpedia/archivo/blob/master/archivo/crawlURIs.py" target="_blank">code</a>) and takes the one which yields the most triples.
+        <br>Generally, Archivo can process the ontology if it follows the <a href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">recommendations
+            of the W3C</a> for publishing RDF vocabularies, so if your ontology is not deployed yet you can follow the tutorial there.
+    </p>
+    <p>
+        <b>Parsing:</b> If the ontology is deployed following the recommendations written above, additionaly it should parse without errors (warnings are OK, but should also be fixed). Archivo uses the <a href="http://librdf.org/raptor/" target="_blank">Raptor
+            RDF library</a> for parsing.
+    </p>
+    <h4>Debugging</h4>
+    <p>
+        A simple test to check the deployment and parsing of a ontology is by using Raptor RDF:
+        <div class="codeblock">
+            <pre>$ rapper -gc "$non-information-resource"</pre>
+        </div>
+        <br> If this works the ontology should be able to be processed by Archivo.
+    </p>
+    <h4>Limitations & Discussion</h4>
+    <p>
+        <ul>
+            <li>Archivo does not (yet) fully support <a href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/#naming">slash
+                ontologies</a> that only link to its classes/properties and not define them (e.g <a href="http://dbpedia.org/ontology/">http://dbpedia.org/ontology/</a>)
+            </li>
+            <li>
+                Right now Archivo can only process three different RDF formats (<b>RDF+XML</b>, <b>Turtle</b> and
+                <b>N-Triples</b>), but there are more, like the <a href="https://www.w3.org/TR/owl2-manchester-syntax/">Manchester Syntax</a> or <a href="https://www.w3.org/2006/07/SWD/RDFa/syntax/">RDFA</a>
+            </li>
+        </ul>
+    </p>
+    <h3>★ License (I & II)</h3>
+    <p>
+        The second and third star are granted for using a license, the second star for using one at all and the third for using a homogenized license with the property <code>dct:license</code> and a URI as object. Archivo tests this by using its <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library</a>.
+        <br> Ideally a ontology should look like:<br>
+        <div class="codeblock">
+            <pre>
+@prefix owl: &lthttp://www.w3.org/2002/07/owl#&gt .
+@prefix rdf: &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt .
+@prefix dct: &lthttp://purl.org/dc/terms/&gt .
+
+
+&lt$non-information-resource&gt a owl:Ontology;
+    dct:license &lt$license-uri&gt .</pre>
+        </div>
+        <br>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Compare ★★☆☆ and ★★★☆+ licenses</button>
+        <div class="row">
+            <div class="col">
+                <div class="collapse multi-collapse" id="multiCollapseExample1">
+                    <div class="card card-body">
+                        <b>★★☆☆ Licenses</b>
+                        <br><u>Count</u> <u>license-property</u> <u>license</u>
+                        <hr>
+                        <pre>190 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by/4.0/deed.en_US&gt
+52 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by-sa/3.0/&gt 
+40 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by/3.0/&gt 
+27 &lthttp://purl.org/dc/elements/1.1/license&gt &lthttps://creativecommons.org/licenses/by-sa/4.0/&gt 
+20 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by/4.0/&gt
+8 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by-nc/4.0/&gt 
+8 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/publicdomain/zero/1.0/&gt 
+7 &lthttp://purl.org/dc/terms/license&gt "https://www.gleif.org/en/meta/lei-data-terms-of-use/"^^&lthttp://www.w3.org/2001/XMLSchema#anyURI 
+7 &lthttp://creativecommons.org/ns#license&gt &lthttp://www.data.gouv.fr/Licence-Ouverte-Open-Licence&gt 
+6 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by/4.0/&gt 
+6 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by/3.0/&gt 
+6 &lthttp://creativecommons.org/ns#license&gt "http://creativecommons.org/licenses/by/3.0/"^^&lthttp://www.w3.org/2001/XMLSchema#anyURI
+5 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by/4.0/deed.en_US&gt 
+5 &lthttp://purl.org/dc/terms/license&gt "http://creativecommons.org/licenses/by-nc-sa/2.0/" 
+5 &lthttp://creativecommons.org/ns#license&gt &lthttp://opendatacommons.org/licenses/by/&gt 
+5 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by/2.0/&gt 
+4 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/publicdomain/zero/1.0/&gt
+3 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by-sa/2.0/uk/&gt 
+3 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by/1.0/&gt 
+3 &lthttp://schema.org/license&gt &lthttp://creativecommons.org/licenses/by-sa/3.0/&gt 
+2 &lthttp://purl.org/dc/terms/license&gt "https://creativecommons.org/licenses/by/4.0" 
+2 &lthttp://purl.org/dc/terms/license&gt "https://creativecommons.org/licenses/by/4.0/"
+2 &lthttp://purl.org/dc/elements/1.1/license&gt "http://creativecommons.org/publicdomain/zero/1.0/" 
+2 &lthttp://purl.org/dc/elements/1.1/license&gt &lthttp://creativecommons.org/licenses/by/3.0/&gt 
+2 &lthttp://creativecommons.org/ns#license&gt &lthttp://unlicense.org&gt 
+2 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by-sa/4.0/&gt 
+2 &lthttp://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by-nc-sa/2.0/&gt
+2 &lthttp://creativecommons.org/ns#license&gt "http://purl.org/NET/rdflicense/cc-by4.0"^^&lthttp://www.w3.org/2001/XMLSchema#string 
+2 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by-nc/4.0/&gt
+1 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by/4.0/&gt 
+1 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by/3.0/&gt 
+1 &lthttp://www.w3.org/1999/xhtml/vocab#license&gt &lthttp://creativecommons.org/licenses/by/2.5/ca/&gt 
+1 &lthttp://www.ontologyrepository.com/CommonCoreOntologies/content_license&gt &lthttps://creativecommons.org/licenses/by/3.0/&gt 
+1 &lthttp://www.ontologyrepository.com/CommonCoreOntologies/code_license&gt &lthttps://opensource.org/licenses/BSD-3-Clause&gt 
+1 &lthttps://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/publicdomain/zero/1.0/&gt 
+1 &lthttps://creativecommons.org/ns#license&gt &lthttps://creativecommons.org/licenses/by/4.0/&gt
+1 &lthttps://creativecommons.org/ns#licence&gt &lthttps://creativecommons.org/licenses/by/3.0/&gt 
+1 &lthttp://schema.org/license&gt &lthttp://creativecommons.org/licenses/by/4.0/deed.en_US&gt 
+1 &lthttp://purl.org/dc/terms/license&gt "www.apache.org/licenses/LICENSE-2.0"^^&lthttp://www.w3.org/2001/XMLSchema#string 
+1 &lthttp://purl.org/dc/terms/license&gt "https://creativecommons.org/licenses/by/3.0/"^^&lthttp://www.w3.org/2001/XMLSchema#string 
+1 &lthttp://purl.org/dc/terms/license&gt "https://creativecommons.org/licenses/by/3.0/" 
+1 &lthttp://purl.org/dc/terms/license&gt "https://creativecommons.org/licenses/by/1.0" 
+1 &lthttp://purl.org/dc/terms/license&gt "http://creativecommons.org/licenses/by-nc-sa/3.0/"^^&lthttp://www.w3.org/2001/XMLSchema#string
+1 &lthttp://purl.org/dc/terms/license&gt "http://creativecommons.org/licenses/by/4.0/"^^&lthttp://www.w3.org/2001/XMLSchema#string 
+1 &lthttp://purl.org/dc/terms/license&gt "http://creativecommons.org/licenses/by/4.0/" 
+1 &lthttp://purl.org/dc/terms/license&gt "http://creativecommons.org/licenses/by/3.0/"@en 
+1 &lthttp://purl.org/dc/terms/license&gt "CC-BY"^^&lthttp://www.w3.org/2001/XMLSchema#string 
+1 &lthttp://purl.org/dc/elements/1.1/license&gt "This document is available under Creative
+                        Common License. You are free to Share \u2014 to copy, distribute, display, and perform the work and to Remix \u2014 to make derivative works; under the condition of Attribution: You must attribute the work in the manner specified
+                        by the author or licensor (but not in any way that suggests that they endorse you or your use of the work). The publisher does not accept any liability for the inaccuracies in this document."@en 1 &lthttp://purl.org/dc/elements/1.1/license&gt
+                        &lthttps://creativecommons.org/licenses/by/4.0/&gt 1 &lthttp://purl.org/dc/elements/1.1/license&gt &lthttps://creativecommons.org/licenses/by/1.0/&gt 1 &lthttp://purl.org/dc/elements/1.1/license&gt &lthttp://creativecommons.org/licenses/by/3.0/it/&gt
+                        1 &lthttp://purl.org/dc/elements/1.1/license&gt "http://creativecommons.org/licenses/by/3.0/" 1 &lthttp://purl.org/dc/elements/1.1/license&gt "&lthttp://creativecommons.org/licenses/by/2.0/ 1 &lthttp://creativecommons.org/ns#license&gt
+                        &lthttp://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html&gt 1 &lthttp://creativecommons.org/ns#license&gt "http://www.apache.org/licenses/LICENSE-2.0"^^&lthttp://www.w3.org/2001/XMLSchema#string 1 &lthttp://creativecommons.org/ns#license&gt
+                        &lthttp://www.apache.org/licenses/LICENSE-2.0&gt 1 &lthttp://creativecommons.org/ns#license&gt &lthttps://www.gnu.org/licenses/agpl-3.0.en.html&gt 1 &lthttp://creativecommons.org/ns#license&gt &lthttps://www.apache.org/licenses/LICENSE-2.0&gt
+                        1 &lthttp://creativecommons.org/ns#license&gt &lthttps://spdx.org/licenses/BSD-3-Clause&gt 1 &lthttp://creativecommons.org/ns#license&gt &lthttp://opendatacommons.org/licenses/odbl/1.0/&gt 1 &lthttp://creativecommons.org/ns#license&gt
+                        &lthttp://creativecommons.org/publicdomain/mark/1.0/&gt 1 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by-sa/4.0/&gt 1 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by-sa/2.0/uk/deed.en_GB&gt
+                        1 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/licenses/by-nc-sa/3.0/&gt 1 &lthttp://creativecommons.org/ns#license&gt "http://creativecommons.org/licenses/by/4.0/"^^&lthttp://www.w3.org/2001/XMLSchema#string
+                        1 &lthttp://creativecommons.org/ns#license&gt "&lthttp://creativecommons.org/licenses/by/4.0/ 1 &lthttp://creativecommons.org/ns#license&gt &lthttp://creativecommons.org/license/by/3.0/&gt 1 &lthttp://creativecommons.org/ns#license&gt
+                        "Copyright (c) 2016-2018 Monge Roffarello Alberto\n\n Licensed under the Apache License, Version 2.0 (the \"License\");\n you may not use this file except in compliance with the License.\n You may obtain a copy of the License at\n\n
+                        http://www.apache.org/licenses/LICENSE-2.0\n\n Unless required by applicable law or agreed to in writing, software\n distributed under the License is distributed on an \"AS IS\" BASIS,\n WITHOUT WARRANTIES OR CONDITIONS OF ANY
+                        KIND, either express or implied.\n See the License for the specific language governing permissions and\n limitations under the License" 1 &lthttp://creativecommons.org/ns#license&gt "Copyright (c) 2008-2019 Dario Bonino\n\nLicensed
+                        under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required
+                        by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific
+                        language governing permissions and\nlimitations under the License"^^&lthttp://www.w3.org/2001/XMLSchema#string 1 &lthttp://creativecommons.org/ns#license&gt "Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)" 1 &lthttp://creativecommons.org/ns#license&gt
+                        "Academic Free License (\"AFL\") 3.0" 1 &lthttp://creativecommons.org/ns#licence&gt &lthttp://www.datagouv.fr/Licence-Ouverte-Open-Licence&gt 1 &lthttp://creativecommons.org/ns#licence&gt "http://creativecommons.org/licenses/by-sa/3.0/"
+                        1 &lthttp://creativecommons.org/ns#licence&gt &lthttp://creativecommons.org/licenses/by-sa/3.0/&gt
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="collapse multi-collapse" id="multiCollapseExample2">
+                    <div class="card card-body">
+                        <b>★★★☆+ Licenses</b><br>
+                        <u>Count</u> <u>license-property</u> <u>license</u>
+                        <hr>
+                        <pre> 
+41 &lthttp://purl.org/dc/terms/license&gt &lthttp://purl.allotrope.org/voc/iupac-license&gt
+35 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/3.0/&gt
+14 &lthttp://purl.org/dc/terms/license&gt &lthttps://www.apache.org/licenses/LICENSE-2.0&gt
+13 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/publicdomain/zero/1.0/&gt 
+13 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/4.0/&gt 
+10 &lthttp://purl.org/dc/terms/license&gt &lthttps://forge.etsi.org/etsi-software-license&gt 
+10 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by/4.0/&gt 
+8 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.opendatacommons.org/licenses/pddl/1.0/&gt
+8 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by-sa/4.0/&gt 
+7 &lthttp://purl.org/dc/terms/license&gt &lthttps://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40&gt 
+7 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-sa/4.0/&gt 
+5 &lthttp://purl.org/dc/terms/license&gt &lthttps://overheid.vlaanderen.be/sites/default/files/documenten/ict-egov/licenties/hergebruik/modellicentie_gratis_hergebruik_v1_0.html&gt
+5 &lthttp://purl.org/dc/terms/license&gt &lthttp://purl.org/NET/rdflicense/cc-by4.0&gt 
+5 &lthttp://purl.org/dc/terms/license&gt &lthttp://purl.allotrope.org/voc/creative-commons-attribution-license&gt 
+4 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.apache.org/licenses/LICENSE-2.0&gt 
+4 &lthttp://purl.org/dc/terms/license&gt &lthttps://joinup.ec.europa.eu/category/licence/isa-open-metadata-licence-v11&gt 
+4 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/publicdomain/zero/1.0/&gt
+3 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by/1.0/&gt 
+3 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-sa/3.0/&gt 
+3 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-sa/2.0/uk/&gt 
+3 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/4.0&gt 
+2 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.w3.org/Consortium/Legal/2015/copyright-software-and-document&gt
+2 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.opengeospatial.org/ogc/Software&gt 
+2 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/4.0#id&gt 
+2 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/3.0/au/&gt
+2 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/2.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.omg.org/techprocess/ab/SpecificationMetadata/MITLicense&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://www.gnu.org/licenses/lgpl.html&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://www.w3.org/Consortium/Legal/2002/ipr-notice-20021231#Copyright/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://www.apache.org/licenses/LICENSE-2.0/&gt
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://github.com/madhawap/human-device-gesture-interaction-ontology/blob/master/LICENSE&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by-sa/3.0/it/&gt
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by-nc/4.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttps://creativecommons.org/licenses/by/3.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://jazz.net/ns/license.html&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/publicdomain/zero/1.0/legalcode.ja&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-sa/4.0&gt
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-nc-sa/3.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-nc-sa/2.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by-nc/4.0/&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/1.0#id&gt 
+1 &lthttp://purl.org/dc/terms/license&gt &lthttp://creativecommons.org/licenses/by/1.0/&gt
+1 &lthttp://purl.org/dc/terms/license&gt &ltfile:///tmp/workspace/ttl/http://example.com/TODO&gt</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <h4>Debugging</h4>
+        <p>
+            Fixing this issue is rather easy, nevertheless there are a few common problems:
+            <ul>
+                <li>
+                    Do not confuse <b>dct</b> (<a href="http://purl.org/dc/terms/">http://purl.org/dc/terms/</a>) with <b>dc</b> (<a href="http://purl.org/dc/elements/1.1/">http://purl.org/dc/elements/1.1/</a>), because there is no property named <code>dc:license</code>.
+                </li>
+                <li>
+                    If a ontology already has a license statement, there is no need to delete it, just add another one with <code>dct:license</code>.
+                </li>
+                <li>
+                    Use licen<span style="color: green;">s</span>e, <b>NOT</b> licen<span style="color: red;">c</span>e
+                </li>
+            </ul>
+        </p>
+        <h4>Limitations & Discussions</h4>
+        <p>
+            <ul>
+                <li>
+                    Since the DBpedia Databus only accepts one license maybe ★★★☆ should only be given to ontologies that have <u>exactly</u> one license to prevent confusion (
+                    <a href="https://databus.dbpedia.org/ontologies/dbpedia.org/ontology--DEV/"></a> with different licenses).
+                </li>
+                <li>
+                    In the near future ★★★☆ should only be given to license URIs that are machine readable, which will also prevent license URIs like <code>&ltfile:///tmp/workspace/ttl/http://example.com/TODO&gt</code>.
+                </li>
+            </ul>
+        </p>
+    </p>
+    <h3>★ Consistency</h3>
+    <h4>Implementation</h4>
+    <p>
+        The forth star is granted for logical consistency of the ontology (tested with <a href="https://github.com/stardog-union/pellet">Stardog/Pellet</a>).
+    </p>
+    <h4>Debugging</h4>
+    <p>
+        You can test it yourself by using the <a href="https://github.com/stardog-union/pellet">Pellet CLI</a> or just access the consistency check of Archivo at the <a href="/info">ontology view</a>. There a pellet report is available at the failed consistency
+        check symbol <span class="x">✘</span> where the logical inconstistencies can be seen and fixed.
+    </p>
+    <br>
+    <h2>Help improving Archivo</h2>
+    <h3>Feature Badges</h3>
+    <p>
+        It is possible to add Feature Badges and other compliance checks in the <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library</a> of archivo.
+    </p>
+    <h3>Improve & Adapt Archivo's Core Features</h3>
+    <p>
+        It is possible to discuss about additions to the stars, Archivo's core rating system. On this page a few examples are given how the star rating can be adapted to fit the ontology consumers/developers needs better. A discussion can be started by adding
+        an issue at the github page or participate in the already created ones.<br>
+        <b>Discussions:</b> <a>Github Issues</a><br>
+        <b>Questions:</b> <a>DBpedia Forum</a>
     </p>
 </div>
 {% endblock %}

@@ -1,110 +1,132 @@
 .container p {
-  padding-top: 10px;
+    padding-top: 10px;
+    margin-bottom: 10px;
 }
 
+pre code {
+    overflow-x: auto;
+}
+
+div .codeblock {
+    display: inline-block;
+    padding-top: 15px;
+    padding-right: 10px;
+    padding-left: 10px;
+    /*padding-bottom: 10px;*/
+    background-color: rgb(211, 211, 211);
+    border-radius: 10px;
+    border: 2px solid rgb(128, 128, 128);
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New;
+    font-size: larger;
+}
 
 .testtooltip {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .testtooltip .tooltiptext {
-  visibility: hidden;
-  width: 140px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -75px;
-  opacity: 0;
-  transition: opacity 0.3s;
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .testtooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
 }
 
 .tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
+    visibility: visible;
+    opacity: 1;
 }
 
 #copy-me {
-  display:none
+    display: none
 }
 
-.th:hover, th:hover span {
-  text-decoration: underline;
-  color: hotpink;
+.th:hover,
+th:hover span {
+    text-decoration: underline;
+    color: hotpink;
 }
 
 .container-fluid {
-  padding-bottom: 300px;
-  padding-left: 150px;
-  padding-right: 150px;
+    padding-bottom: 300px;
+    padding-left: 150px;
+    padding-right: 150px;
 }
 
 .shaclTable {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  width: 400px;
-  display: inline-block;
-  border-collapse: collapse;
-  vertical-align: top;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 400px;
+    display: inline-block;
+    border-collapse: collapse;
+    vertical-align: top;
 }
 
 .shaclTable td {
-  border: 1px solid #ddd;
-  padding: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
 .shaclTable th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-  color: white;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    color: white;
 }
 
 .violations th {
-  background-color: #DC143C;
+    background-color: #DC143C;
 }
 
 .warnings th {
-  background-color: #FFA500;
+    background-color: #FFA500;
 }
 
 .infos th {
-  background-color: #696969;
+    background-color: #696969;
 }
 
-.shaclTable tr:hover {background-color: #ddd;}
+.shaclTable tr:hover {
+    background-color: #ddd;
+}
 
 table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
 }
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
+td,
+th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
 }
 
 .x {
-  color: red;
+    color: red;
 }
+
 .check {
-  color: green;
+    color: green;
 }
