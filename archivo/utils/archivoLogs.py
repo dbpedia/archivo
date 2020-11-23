@@ -2,9 +2,9 @@ import logging
 
 
 
-discovery_log_path = "/data/home/dstreitmatter/logs/archivo/discovery.log"
-webservce_log_path = "/data/home/dstreitmatter/logs/archivo/webservice.log"
-diff_log_path = "/data/home/dstreitmatter/logs/archivo/diff.log"
+discovery_log_path = "./logs/discovery.log"
+webservce_log_path = "./logs/webservice.log"
+diff_log_path = "./logs/diff.log"
 
 
 webservice_logger = logging.getLogger("webservice")

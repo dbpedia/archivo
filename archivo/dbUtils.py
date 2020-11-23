@@ -10,7 +10,7 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if title == None:
         return None, None
-    if type(timestamp) != datetime.datetime and type(timestamp) == str:
+    if type(timestamp) != datetime and type(timestamp) == str:
         timestamp = datetime.strptime(timestamp, "%Y.%m.%d-%H%M%S")
     if dev != "":
         ontology = DevelopOntology(
@@ -74,6 +74,27 @@ def rebuildDatabase():
             print(str(e))
             db.session.rollback()
         print(len(Ontology.query.all()))
+
+
+def update_database():
+
+    for ontology in db.session.query(OfficialOntology).all():
+        print('Handling URI:', ontology.uri)
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri)
+        _, versions = buildDatabaseObjectFromDatabus(ontology.uri, group, artifact, ontology.source, ontology.accessDate)
+        for v in [vers for vers in versions if vers.version not in [available_v.version for available_v in ontology.versions]]:
+            db.session.add(v)
+            db.session.commit()
+            print('Adds version for', ontology.uri, ':', v)
+
+        if ontology.devel != None:
+            dev_ont = ontology.devel
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri, dev=True)
+            _, versions = buildDatabaseObjectFromDatabus(ontology.uri, group, artifact, dev_ont.source, dev_ont.accessDate, dev=dev_ont.uri)
+            for v in [vers for vers in versions if vers.version not in [available_v.version for available_v in dev_ont.versions]]:
+                print('Adds version for', dev_ont.uri, ':', v)
+                db.session.add(v)
+                db.session.commit()
 
 
 def writeIndexAsCSV(filepath):
