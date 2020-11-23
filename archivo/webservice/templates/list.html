@@ -7,8 +7,14 @@
 <p>Archivo automatically discovers OWL ontology on the web and checks them every 8 hours. When changes are detected, Archivo downloads and rates and archives the latest snapshot persistently on the Databus. See <a href="about">the about page for details (paper &amp; video)</a>. 
 </p>
 
+
+    <h3>Status</h3>
+    <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies. <a href="#list"> See all available Ontologies</a></p>
+    <div id="chart" class="chart">
+    </div>
+
 <h3>Rating</h3>
-<p>Reaching ★★★★ stars doesn't mean your ontology is of good quality. Archivo's stars measure minimum viability, so ★★★★ stars mean that this minimum viability is achieved. The ontology is minimally FAIR (Findable, Accessible, Interoperability and Reusability) and further processing is possible at all. 
+<p>Reaching ★★★★ stars doesn't mean your ontology is of good quality. Archivo's stars measure minimum viability, so ★★★★ stars mean that this minimum viability is achieved. The ontology is minimally FAIR (Findable, Accessible, Interoperable and Reusable) and further processing is possible at all. 
 We prepared a <a href="rating">page to inform about future plans and limitations of the current implementation</a> as well as ways to discuss and contribute to further ratings. 
 </p> 
 
@@ -24,19 +30,13 @@ We prepared a <a href="rating">page to inform about future plans and limitations
  <b>How to get more stars?</b> Instructions provided at the <a href='/rating'>rating page</a>.<br>
  <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>.<br><br>
 
-
-    <h3>Status</h3>
-    <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies.</p>
-    <div id="chart" class="chart">
-    </div>
-
    
 
 </div>
 <!-- begin table -->
 <div class="container-fluid">
     <hr>
-    <h3>List of all available ontologies</h3>
+    <h3 id="list">List of all available ontologies</h3>
     <input type="checkbox" name="download" class="column_selector" value=3 checked
         onclick="show_hide_column(3, checked)">
     <label for="download">Download</label>

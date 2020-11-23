@@ -3,38 +3,20 @@
     <br>
     <h2>Archivo Ontology Tutorial</h2>
     <br>
-    <h3>Ontology Recognition</h3>
-    <p>
-        Archivos way of recognizing ontologies is to check for a triple in the form of:
-        <div class="codeblock">
-            <pre>
-@prefix owl: &lthttp://www.w3.org/2002/07/owl#&gt .
-@prefix rdf: &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt .
-
-
-&lt$non-information-resource&gt rdf:type owl:Ontology .</pre>
-        </div>
-        <br>
-        <b>OR</b>
-        <br>
-        <div class="codeblock">
-            <pre>
-@prefix skos: &lthttp://www.w3.org/2004/02/skos/core#&gt .
-@prefix rdf: &lthttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt .
-                
-                
-&lt$non-information-resource&gt rdf:type skos:ConceptScheme .</pre>
-        </div>
-        <br> This <b>non information resource</b> (short: NIR) acts as the representation of the ontology on the web and should lead, either directly or by redirection, to the RDF content of the ontology.
-    </p>
-
     <h3>Automatic Ontology Discovery</h3>
     <p>
-        Each week DBpedia Archivo follows links from the known part of the Semantic Web to discover more ontologies. For that Archivo uses different methods of finding NIRs of vocabularies and by what method one was dicovered can be seen either in the
+        Each week DBpedia Archivo follows links from the known part of the Semantic Web  to discover more ontologies. For that Archivo uses different methods of finding <b>Non-Information Resources (NIR)</b> of vocabularies. NIRs act as the representation of the ontology on the web and should lead, either directly or by redirection to the RDF content of the ontology. Discovery source is shown either in the
         <a href="/list">archive</a> or the <a href="/info">ontology view</a>.
     </p>
+           <div class="codeblock">
+            <pre>
+&lt$non-information-resource&gt rdf:type owl:Ontology .
+# OR
+&lt$non-information-resource&gt rdf:type skos:ConceptScheme .
+</pre>
+        </div>
     <p>
-        <b>NIR Sources:</b>
+        <b>NIR Discovery Sources:</b>
         <ol>
             <li>
                 <b>LOV:</b> A straightforward way of discovering ontology URIs is by crawling ontology repositories, in Archivos case it is <a href='http://lov.okfn.org'>Linked Open Vocabularies</a>
@@ -62,27 +44,26 @@
 
     </p>
     <h3>★ Retrieval & Parsing</h3>
-    <p>This star is granted if the ontology is retrievable from its non information resource and parses correctly.</p>
-    <h4>Implementation</h4>
-    <p>
-        <b>Retrival:</b> Archivo tries retrieving the RDF content of a ontology by testing different Accept Headers (currently supported:
-        <b>RDF+XML</b>, <b>Turtle</b> and <b>N-Triples</b>, <a href="https://github.com/dbpedia/archivo/blob/master/archivo/crawlURIs.py" target="_blank">code</a>) and takes the one which yields the most triples.
-        <br>Generally, Archivo can process the ontology if it follows the <a href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">recommendations
-            of the W3C</a> for publishing RDF vocabularies, so if your ontology is not deployed yet you can follow the tutorial there.
+    <p>This star is granted if the ontology is retrievable from its non-information resource and parses correctly.</p>
+    <p><b>Retrieval:</b> Archivo retrieves the RDF content of an ontology by testing different Accept Headers (currently supported:
+        <b>RDF+XML</b>, <b>Turtle</b> and <b>N-Triples</b>) and takes the one which yields the most triples (see  <a href="https://github.com/dbpedia/archivo/blob/master/archivo/crawlURIs.py" target="_blank">code</a>).
+        <br>Archivo processes the ontology, if it follows the <a href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/" target="_blank">recommendations of the W3C</a> for publishing RDF vocabularies. Some rules are relaxed by Archivo, as long as it is deterministic.
     </p>
     <p>
-        <b>Parsing:</b> If the ontology is deployed following the recommendations written above, additionaly it should parse without errors (warnings are OK, but should also be fixed). Archivo uses the <a href="http://librdf.org/raptor/" target="_blank">Raptor
+        <b>Parsing:</b> After retrieval succeeded, Archivo parses the syntax of the  different formats of the ontology. Parsing is greedy, we extract all triples until an error is found (warnings are ignored, but should also be fixed). 
+        If an owl:Ontology or skos:ConceptScheme is found in the parsed triples, the ontology is added to Archivo, but no star is awarded, if errors were found. Otherwise, Archivo discards the Ontology. Archivo uses the <a href="http://librdf.org/raptor/" target="_blank">Raptor
             RDF library</a> for parsing.
     </p>
     <h4>Debugging</h4>
     <p>
-        A simple test to check the deployment and parsing of a ontology is by using Raptor RDF:
         <div class="codeblock">
-            <pre>$ rapper -gc "$non-information-resource"</pre>
-        </div>
-        <br> If this works the ontology should be able to be processed by Archivo.
+            <pre>sudo apt-get install raptor2-utils
+rapper -gc "$non-information-resource"
+# example: rapper -gc http://mmoon.org/core#</pre>
+        </div><br>
+        See also the <a href="https://www.w3.org/RDF/Validator/">W3C RDF Validator (check by URI)</a> or cygri's note on <a href="http://richard.cyganiak.de/blog/2007/02/debugging-semantic-web-sites-with-curl/">Debugging the Semantic Web with CURL</a>.
     </p>
-    <h4>Limitations & Discussion</h4>
+    <h4>Limitations &amp; Discussion</h4>
     <p>
         <ul>
             <li>Archivo does not (yet) fully support <a href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/#naming">slash
