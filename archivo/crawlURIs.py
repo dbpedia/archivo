@@ -12,7 +12,7 @@ from utils import (
     docTemplates,
 )
 from urllib.robotparser import RobotFileParser
-from urllib.parse import urlparse, urldefrag, urlencode
+from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
 from string import Template
 from SPARQLWrapper import SPARQLWrapper, JSON
@@ -44,17 +44,15 @@ rdfHeadersMapping = {
     "application/rdf+xml": "rdfxml",
     "application/ntriples": "ntriples",
     "text/turtle": "turtle",
-    "*/*": None,
+    "application/xhtml": "rdfa",
 }
+
 file_ending_mapping = {
     "application/rdf+xml": "owl",
     "application/ntriples": "nt",
     "text/turtle": "ttl",
     "*/*": "file",
 }
-
-success_symbol = '<span class="check">✔</span>'
-failed_symbol = '<span class="x">✘</span>'
 
 
 # determine_best_content_type
@@ -76,17 +74,31 @@ def determine_best_content_type(uri, user_output=[]):
                 continue
             if triple_number is not None and triple_number > 0:
                 user_output.append(
-                    {"status": True, "step": f'Parsing with header {header}', "message": f"Triples: {str(triple_number)}"}
+                    {
+                        "status": True,
+                        "step": f"Parsing with header {header}",
+                        "message": f"Triples: {str(triple_number)}",
+                    }
                 )
                 header_dict[header] = (response, triple_number)
             else:
                 if len(rapper_errors) > 20:
                     rapper_errors = rapper_errors[:20]
                 user_output.append(
-                    {"status": False, "step": f'Parsing with header {header}', "message": f"Triples: {str(triple_number)}<br>{'<br>'.join(rapper_errors[:20])}"}
+                    {
+                        "status": False,
+                        "step": f"Parsing with header {header}",
+                        "message": "Triples: {} \n{}".format(str(triple_number), '\n'.join(rapper_errors[:20])),
+                    }
                 )
         else:
-            user_output.append({"status": False, "step": f'Parsing with header {header}', "message": f"{error}"})
+            user_output.append(
+                {
+                    "status": False,
+                    "step": f"Parsing with header {header}",
+                    "message": f"{error}",
+                }
+            )
     if header_dict == {}:
         return None, None, None
     best_header = [
@@ -279,9 +291,9 @@ class ArchivoVersion:
             inputFormat=rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
-        nt_generated = True if os.path.isfile(
-            raw_file_path + "_type=parsed.nt"
-        ) else False
+        nt_generated = (
+            True if os.path.isfile(raw_file_path + "_type=parsed.nt") else False
+        )
 
         ontoFiles.parseRDFSource(
             self.original_file,
@@ -291,9 +303,9 @@ class ArchivoVersion:
             inputFormat=rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
-        ttl_generated = True if os.path.isfile(
-            raw_file_path + "_type=parsed.ttl"
-        ) else False
+        ttl_generated = (
+            True if os.path.isfile(raw_file_path + "_type=parsed.ttl") else False
+        )
 
         ontoFiles.parseRDFSource(
             self.original_file,
@@ -303,11 +315,15 @@ class ArchivoVersion:
             inputFormat=rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
-        owl_generated = True if os.path.isfile(
-            raw_file_path + "_type=parsed.owl"
-        ) else False
+        owl_generated = (
+            True if os.path.isfile(raw_file_path + "_type=parsed.owl") else False
+        )
         self.user_output.append(
-                {"status": True, "step": 'Generate Formats', "message": f"N-triples: {nt_generated}<br>Turtle: {ttl_generated}<br>RDF+XML: {owl_generated}"}
+            {
+                "status": True,
+                "step": "Generate Formats",
+                "message": f"N-triples: {nt_generated}<br>Turtle: {ttl_generated}<br>RDF+XML: {owl_generated}",
+            }
         )
         self.triples = ontoFiles.getParsedTriples(
             self.original_file, inputFormat=rdfHeadersMapping[self.best_header]
@@ -489,7 +505,13 @@ class ArchivoVersion:
             return None, None, None
         trackThisURI = inspectVocabs.getTrackThisURI(self.graph)
         if trackThisURI is None and self.location_uri != trackThisURI:
-            self.user_output.append({"status": True, "step": 'Check for Dev version link', "message": f"Found dev version at: {trackThisURI}"})
+            self.user_output.append(
+                {
+                    "status": True,
+                    "step": "Check for Dev version link",
+                    "message": f"Found dev version at: {trackThisURI}",
+                }
+            )
             return handleDevURI(
                 self.nir,
                 trackThisURI,
@@ -515,12 +537,22 @@ def handleNewUri(
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
-        user_output.append({"status": False, "step": 'URI check', "message": f"ERROR: Malformed URI {vocab_uri}"})
+        user_output.append(
+            {
+                "status": False,
+                "step": "URI check",
+                "message": f"ERROR: Malformed URI {vocab_uri}",
+            }
+        )
         return False, isNIR, None
     if stringTools.get_uri_from_index(vocab_uri, index) is not None:
         logger.info("Already known uri, skipping...")
         user_output.append(
-            {"status": True, "step": 'Index check', "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={urlencode(vocab_uri)}>here</a>"}
+            {
+                "status": True,
+                "step": "Index check",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(vocab_uri)}>here</a>",
+            }
         )
         return False, isNIR, None
 
@@ -530,11 +562,21 @@ def handleNewUri(
     if not allowed:
         logger.warning(f"{archivoConfig.archivo_agent} not allowed")
         user_output.append(
-            {"status": False, "step": 'Robot allowed check', "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"}
+            {
+                "status": False,
+                "step": "Robot allowed check",
+                "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>",
+            }
         )
         return False, isNIR, None
 
-    user_output.append({"status": True, "step": 'Robot allowed check', "message": f"Archivo-Agent {archivoConfig.archivo_agent} is allowed."})
+    user_output.append(
+        {
+            "status": True,
+            "step": "Robot allowed check",
+            "message": f"Archivo-Agent {archivoConfig.archivo_agent} is allowed.",
+        }
+    )
     # load the best header with response and triple number
     bestHeader, response, triple_number = determine_best_content_type(
         vocab_uri, user_output=user_output
@@ -542,37 +584,79 @@ def handleNewUri(
 
     version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     if bestHeader is None:
-        user_output.append({'status': False, 'step': 'Find Best Header', 'message': f'No RDF content detectable.'})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Find Best Header",
+                "message": "No RDF content detectable.",
+            }
+        )
         return False, isNIR, None
 
     accessDate = datetime.now()
-    user_output.append({'status': True, 'step': 'Find Best Header', 'message': f'Best Header: {bestHeader} with {triple_number} triples'})
+    user_output.append(
+        {
+            "status": True,
+            "step": "Find Best Header",
+            "message": f"Best Header: {bestHeader} with {triple_number} triples",
+        }
+    )
 
     # generating the graph and runnning the queries
     try:
         graph = inspectVocabs.get_graph_of_string(response.text, bestHeader)
     except Exception:
         logger.error("Exception in rdflib parsing", exc_info=True)
-        user_output.append({'status': False, 'step': 'Load Graph in rdflib', 'message': f"RDFlib couldn't parse the file of {vocab_uri}. Reason: {traceback.format_exc()}"})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Load Graph in rdflib",
+                "message": f"RDFlib couldn't parse the file of {vocab_uri}. Reason: {traceback.format_exc()}",
+            }
+        )
         return False, isNIR, None
 
     try:
         real_ont_uri = inspectVocabs.getNIRUri(graph)
     except Exception:
         traceback.print_exc(file=sys.stderr)
-        user_output.append({'status': False, 'step':'Determine non-information resource', 'message': traceback.format_exc()})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Determine non-information resource",
+                "message": traceback.format_exc(),
+            }
+        )
         return False, isNIR, None
 
     if real_ont_uri is None:
-        user_output.append({'status': False, 'step': 'Determine non-information resource', 'message': "Neither owl:Ontology or skos:ConceptScheme"})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Determine non-information resource",
+                "message": "Neither owl:Ontology or skos:ConceptScheme",
+            }
+        )
         real_ont_uri = inspectVocabs.getDefinedByUri(graph)
         if real_ont_uri is None:
             logger.info("No Ontology discoverable")
-            user_output.append({'status': False, 'step': 'Looking for linked ontologies', 'message': "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple"})
+            user_output.append(
+                {
+                    "status": False,
+                    "step": "Looking for linked ontologies",
+                    "message": "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple",
+                }
+            )
             return False, isNIR, None
 
         if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
-            user_output.append({'status': True, 'step': 'Looking for linked ontologies', 'message': f"Found linked URI: {real_ont_uri}"})
+            user_output.append(
+                {
+                    "status": True,
+                    "step": "Looking for linked ontologies",
+                    "message": f"Found linked URI: {real_ont_uri}",
+                }
+            )
             return handleNewUri(
                 str(real_ont_uri),
                 index,
@@ -584,25 +668,41 @@ def handleNewUri(
                 user_output=user_output,
             )
         else:
-            user_output.append({'status': False, 'step': 'Looking for linked ontologies', 'message': "Self defining non-ontology."})
+            user_output.append(
+                {
+                    "status": False,
+                    "step": "Looking for linked ontologies",
+                    "message": "Self defining non-ontology.",
+                }
+            )
             return False, isNIR, None
 
-    user_output.append({'status': True, 'step': 'Determine non-information resource', 'message': f"Found non-information resource: {real_ont_uri}"})
+    user_output.append(
+        {
+            "status": True,
+            "step": "Determine non-information resource",
+            "message": f"Found non-information resource: {real_ont_uri}",
+        }
+    )
     isNIR = True
     if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
         user_output.append(
-            {'status': False, 'step': 'URI equality check', 'message': f"{real_ont_uri} differs from {vocab_uri}"}
+            {
+                "status": False,
+                "step": "URI equality check",
+                "message": f"{real_ont_uri} differs from {vocab_uri}",
+            }
         )
         return handleNewUri(
-                str(real_ont_uri),
-                index,
-                dataPath,
-                source,
-                True,
-                testSuite=testSuite,
-                logger=logger,
-                user_output=user_output,
-            )
+            str(real_ont_uri),
+            index,
+            dataPath,
+            source,
+            True,
+            testSuite=testSuite,
+            logger=logger,
+            user_output=user_output,
+        )
 
     # here we go if the uri is NIR and  its resolveable
     real_ont_uri = str(real_ont_uri)
@@ -613,13 +713,23 @@ def handleNewUri(
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
-        user_output.append({'status': False, 'step': 'URI Check', 'message': f"Malformed Uri {vocab_uri}"})
+        user_output.append(
+            {
+                "status": False,
+                "step": "URI Check",
+                "message": f"Malformed Uri {vocab_uri}",
+            }
+        )
         return False, isNIR, None
 
     if stringTools.get_uri_from_index(real_ont_uri, index) is None:
         logger.info(f"Already known uri {real_ont_uri}")
         user_output.append(
-            {"status": True, "step": 'Index check', "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={urlencode(vocab_uri)}>here</a>"}
+            {
+                "status": True,
+                "step": "Index check",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={urlencode(vocab_uri)}>here</a>",
+            }
         )
         return False, isNIR, None
 
@@ -669,12 +779,20 @@ def handleNewUri(
 
     if returncode > 0:
         logger.error("There was an Error deploying to the databus")
-        user_output.append({"status": False, "step": 'Deploy to DBpedia Databus', "message": deployLog})
+        user_output.append(
+            {"status": False, "step": "Deploy to DBpedia Databus", "message": deployLog}
+        )
         logger.error(deployLog)
         return False, isNIR, None
     else:
         logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
-        user_output.append({"status": True, "step": 'Deploy to DBpedia Databus', "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"})
+        user_output.append(
+            {
+                "status": True,
+                "step": "Deploy to DBpedia Databus",
+                "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon",
+            }
+        )
         return True, isNIR, new_version
 
 
@@ -690,11 +808,23 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     if not allowed:
         logger.warning(f"{archivoConfig.archivo_agent} not allowed")
         user_output.append(
-            {"status": False, "step": 'Robot allowed check', "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>"}
+            {
+                "status": False,
+                "step": "Robot allowed check",
+                "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>",
+            }
         )
         return False, None
 
-    user_output.append(user_output.append({"status": True, "step": 'Robot allowed check', "message": f"Archivo-Agent {archivoConfig.archivo_agent} is allowed."}))
+    user_output.append(
+        user_output.append(
+            {
+                "status": True,
+                "step": "Robot allowed check",
+                "message": f"Archivo-Agent {archivoConfig.archivo_agent} is allowed.",
+            }
+        )
+    )
     # load the best header with response and triple number
     bestHeader, response, triple_number = determine_best_content_type(
         nir, user_output=user_output
@@ -702,7 +832,13 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
 
     version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     if bestHeader is None:
-        user_output.append({'status': False, 'step': 'Find Best Header', 'message': f'No RDF content detectable.'})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Find Best Header",
+                "message": f"No RDF content detectable.",
+            }
+        )
         return False, None
 
     accessDate = datetime.now()
@@ -712,16 +848,29 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
         _ = inspectVocabs.get_graph_of_string(response.text, bestHeader)
     except Exception:
         logger.error("Exception in rdflib parsing", exc_info=True)
-        user_output.append({'status': False, 'step': 'Load Graph in rdflib', 'message': f"RDFlib couldn't parse the file of {nir}. Reason: {traceback.format_exc()}"})
+        user_output.append(
+            {
+                "status": False,
+                "step": "Load Graph in rdflib",
+                "message": f"RDFlib couldn't parse the file of {nir}. Reason: {traceback.format_exc()}",
+            }
+        )
         return False, None
-
 
     # here we go if the uri is NIR and  its resolveable
 
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(nir, dev=True)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {sourceURI}")
-        user_output.append(user_output.append({'status': False, 'step': 'URI Check', 'message': f"Malformed Uri {str(nir)}"}))
+        user_output.append(
+            user_output.append(
+                {
+                    "status": False,
+                    "step": "URI Check",
+                    "message": f"Malformed Uri {str(nir)}",
+                }
+            )
+        )
         return False, None
 
     newVersionPath = os.path.join(dataPath, groupId, artifact, version)
@@ -771,13 +920,19 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
 
     if returncode > 0:
         logger.error("There was an Error deploying to the databus")
-        user_output.append({"status": False, "step": 'Deploy to DBpedia Databus', "message": deployLog})
+        user_output.append(
+            {"status": False, "step": "Deploy to DBpedia Databus", "message": deployLog}
+        )
         logger.error(deployLog)
         return False, None
     else:
         logger.info(f"Successfully deployed the new dev ontology {sourceURI}")
         user_output.append(
-            {"status": True, "step": 'Deploy to DBpedia Databus', "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon"}
+            {
+                "status": True,
+                "step": "Deploy to DBpedia Databus",
+                "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon",
+            }
         )
         return True, new_version
 

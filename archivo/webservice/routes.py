@@ -81,11 +81,7 @@ def addOntology():
             db.session.add(fallout)
             db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        for step in output:
-            print(str(step['status']), step['step'])
-        return render_template(
-            "add.html", process_steps=output, form=form
-        )
+        return render_template("add.html", process_steps=output, form=form)
     return render_template("add.html", process_steps=None, form=form)
 
 
