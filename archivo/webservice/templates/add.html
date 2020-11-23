@@ -36,6 +36,30 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-    {{ responseText|safe }}
+    {% if process_steps %}
+    <div class="container">
+        <div id="accordion">
+            {% for step in process_steps %}
+            <div class="card">
+                <div class="card-header" id="step{{ loop.index }}" style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %};">
+                    <h4 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{ loop.index }}"
+                            aria-expanded="false" aria-controls="collapse{{ loop.index }}" style="font-size: large; color: black;">
+                            {{ step.step }}
+                        </button>
+                    </h4>
+                </div>
+
+                <div id="collapse{{ loop.index }}" class="collapse show" aria-labelledby="step{{ loop.index }}"
+                    data-parent="#accordion">
+                    <div class="card-body">
+                        {{ step.message }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

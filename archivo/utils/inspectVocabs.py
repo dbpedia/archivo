@@ -29,16 +29,10 @@ def getGraphOfVocabFile(filepath, logger=None):
         return None
 
 
-def get_graph_of_string(rdf_string, format, logger=None):
-    try:
-        graph = rdflib.Graph()
-        graph.parse(StringIO(rdf_string), format=format)
-        return graph
-    except Exception as e:
-        print(str(e))
-        if logger != None:
-            logger.error("Exception in rdflib parsing", exc_info=True)
-        return None
+def get_graph_of_string(rdf_string, format):
+    graph = rdflib.Graph()
+    graph.parse(StringIO(rdf_string), format=format)
+    return graph
 
 
 def getTurtleGraph(graph, base=None):

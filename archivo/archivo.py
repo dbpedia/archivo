@@ -12,11 +12,9 @@ from utils import (
 from utils.validation import TestSuite
 from utils.archivoLogs import discovery_logger, diff_logger
 from datetime import datetime
-from webservice.dbModels import Ontology, Version
-from sqlalchemy.exc import IntegrityError
-from urllib.parse import urlparse
 import requests
 import graphing
+import json
 
 cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
@@ -47,7 +45,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
         output = []
-        success, isNir, message, archivo_version = crawlURIs.handleNewUri(
+        success, isNir, archivo_version = crawlURIs.handleNewUri(
             uri,
             allOnts,
             dataPath,
@@ -70,7 +68,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             db.session.commit()
         elif not success and isNir:
             fallout = dbModels.Fallout(
-                uri=uri, source=source, inArchivo=False, error=message
+                uri=uri, source=source, inArchivo=False, error=json.dumps(output)
             )
             db.session.add(fallout)
             db.session.commit()

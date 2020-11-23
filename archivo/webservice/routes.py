@@ -50,7 +50,7 @@ def addOntology():
     if form.validate_on_submit():
         uri = form.suggestUrl.data.strip()
         output = []
-        success, isNir, message, archivo_version = crawlURIs.handleNewUri(
+        success, isNir, archivo_version = crawlURIs.handleNewUri(
             uri,
             allOnts,
             archivoConfig.localPath,
@@ -81,10 +81,12 @@ def addOntology():
             db.session.add(fallout)
             db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
+        for step in output:
+            print(str(step['status']), step['step'])
         return render_template(
-            "add.html", responseText="<br>".join(map(str, output)), form=form
+            "add.html", process_steps=output, form=form
         )
-    return render_template("add.html", responseText="", form=form)
+    return render_template("add.html", process_steps=None, form=form)
 
 
 @app.route("/info/", methods=["GET", "POST"])
