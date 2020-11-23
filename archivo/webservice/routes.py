@@ -6,7 +6,7 @@ from wtforms import validators
 import os
 from utils.validation import TestSuite
 import crawlURIs
-from utils import ontoFiles, archivoConfig, queryDatabus, stringTools, inspectVocabs
+from utils import archivoConfig, queryDatabus, stringTools, inspectVocabs
 import traceback
 import sys
 import requests
@@ -102,13 +102,13 @@ def vocabInfo():
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
         foundUri = stringTools.get_uri_from_index(ontoUri, allOntos)
-        if foundUri == None:
+        if foundUri is None:
             abort(status=404)
         ont = (
             db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
         )
         general_info = {}
-        general_info["hasDev"] = True if ont.devel != None else False
+        general_info["hasDev"] = True if ont.devel is not None else False
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
             foundUri, dev=isDev
         )
@@ -133,6 +133,8 @@ def vocabInfo():
             "databusArtifact"
         ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
+        for v in versions_info:
+            v['stars'] = stringTools.generateStarString(v['stars'])
         return render_template(
             "info.html",
             versions_info=sorted(

@@ -178,7 +178,7 @@ def getInfoForArtifact(group, artifact):
                     "errors": metadata["logs"]["rapper-errors"],
                 },
                 "semversion": metadata["ontology-info"]["semantic-version"],
-                "stars": generateStarString(stars),
+                "stars": stars,
                 "docuURL": docuURL,
             }
         )
@@ -255,7 +255,7 @@ def getDownloadURL(group, artifact, fileExt="owl", version=None):
         "   ?distribution dataid:formatExtension '%s'^^xsd:string ." % fileExt,
         "   ?distribution dcat:downloadURL ?file .",
     ]
-    if version == None:
+    if version is None:
         queryString.extend(
             [
                 "   ?dataset dct:hasVersion ?latestVersion .",
@@ -336,7 +336,7 @@ def allLatestParsedTurtleFiles():
         try:
             databusUri = binding["art"]["value"]
             title = binding["title"]["value"]
-            if not databusUri in result:
+            if databusUri not in result:
                 result[databusUri] = {
                     "title": title,
                     "ttlFile": binding["ttlFile"]["value"],
@@ -394,7 +394,7 @@ def latestNtriples():
     for binding in ontdata["results"]["bindings"]:
         try:
             databusUri = binding["art"]["value"]
-            if not databusUri in result:
+            if databusUri not in result:
                 result[databusUri] = {
                     "ntFile": binding["ntFile"]["value"],
                     "meta": binding["metafile"]["value"],
