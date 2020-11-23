@@ -113,8 +113,8 @@
             <p>
               On the <a href="/info">ontology view</a> the test results are accessible and generally a click/hover on a
               <span class="x">✘</span> will show the problems with a failed test.<br>
-              The <a href="/tutorial">tutorial page</a> shows how to deploy a ontology correctly and how to quickly find
-              and fix problems with the vocabulary.
+              The <a href="/rating">rating page</a> shows how to archieve four stars, what the limitations of the stars
+              are and how these can be improvd further.
             </p>
           </div>
         </div>
@@ -136,14 +136,9 @@
               The test-results of on ontology (and all it's versions) can be accessed at the <a href="/info">info</a>
               page of the ontology.
               <strong>Example:</strong>
-            <pre>http://archivo.dbpedia.org/info?o=http://datashapes.org/dash</pre>
-            </p>
-            <p>This URI also works by requesting RDF content types (currently supported: RDF+XML, Turtle and N-Triples).
-              This redirects to a SPARQL-query an the databus regarding all information/files available for this
-              ontology</p>
-            <p>
-              <strong>Example:</strong>
-            <pre>curl -L -H "Accept: text/turtle" "http://archivo.dbpedia.org/info?o=http://datashapes.org/dash"</pre>
+            <div class="codeblock">
+              <pre>http://archivo.dbpedia.org/info?o=http://datashapes.org/dash</pre>
+            </div>
             </p>
           </div>
         </div>
@@ -197,7 +192,12 @@
           <div class="panel-body px-3 mb-4">
             <h3>What is a compliance check?</h3>
             <p>
-              <b>TODO</b>
+              Beyond the <a href="/faq#stars">Archivo stars</a> Archivo uses <a href="https://www.w3.org/TR/shacl/">SHACL</a> to measure the quality of ontologies.
+              An example for such a test is the <a>LODE conformity test</a>, which checks the compatibility of a vocabulary with the fully automatic <a href="https://essepuntato.it/lode/">LODE service</a>.
+            </p>
+            <h3>How can i contribute to the compliance checks?</h3>
+            <p>
+              Just create a pull request at <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivos SHACL library</a> with your SHACL test, we will review it and add it to Archivos workflow.
             </p>
           </div>
         </div>

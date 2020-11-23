@@ -8,7 +8,7 @@ from crawlURIs import ArchivoVersion
 
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-    if title == None:
+    if title is None:
         return None, None
     if type(timestamp) != datetime and type(timestamp) == str:
         timestamp = datetime.strptime(timestamp, "%Y.%m.%d-%H%M%S")

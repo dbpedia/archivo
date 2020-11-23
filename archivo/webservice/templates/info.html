@@ -27,8 +27,8 @@
     </p>
     <p>{% if general_info.hasDev %}
         Switch:
-        <a href="/info?o={{general_info.nir.encoded}}">Official</a>
-        <a href="/info?o={{general_info.nir.encoded}}&dev"> Develop </a>
+        <a class="btn btn-primary btn-sm" href="/info?o={{general_info.nir.encoded}}">Official</a>
+        <a class="btn btn-secondary btn-sm" href="/info?o={{general_info.nir.encoded}}&dev"> Develop </a>
         {% endif %}
 
     <table>
@@ -57,8 +57,6 @@
     <h4>Version Snapshots and Archivo Star Rating</h4>
     <p>Archivo ★'s measure basic compliance and interoperability of ontologies.
         Hover over the headers for further information.
-        habe es unter services and applications reingebracht
-
     <table id="table">
         <tr>
             <th colspan="5" style="text-align: center;"></th>
@@ -186,7 +184,7 @@ Current implementation uses Pellet/Stardog
             <th><span
                     title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span>
             </th>
-            <th>&#x1F396;&#xFE0E; Lode-Conform</th>
+            <th>&#x1F396;&#xFE0E; <span title="Checks if the ontology can be documented properly using LODE.">LODE Conform</span></th>
             <th><a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Add further SHACL compliance
                     checks</a></th>
         </tr>
