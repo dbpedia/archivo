@@ -134,7 +134,7 @@ def vocabInfo():
         ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
         for v in versions_info:
-            v['stars'] = stringTools.generateStarString(v['stars'])
+            v["stars"] = stringTools.generateStarString(v["stars"])
         return render_template(
             "info.html",
             versions_info=sorted(
@@ -438,6 +438,7 @@ def shaclVisualisation():
 def faq():
     return render_template("faq.html")
 
+
 def get_star_stats():
     with open(
         os.path.join(archivoPath, "stats", "stars_over_time.json"), "r"
@@ -445,6 +446,7 @@ def get_star_stats():
         json_data = json.load(json_file)
     return json.dumps(json_data)
 
-@app.route('/rating')
+
+@app.route("/rating")
 def rating():
-    return render_template('rating.html')
+    return render_template("rating.html")

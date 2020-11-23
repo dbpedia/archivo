@@ -1,7 +1,6 @@
 import logging
 
 
-
 discovery_log_path = "./logs/discovery.log"
 webservce_log_path = "./logs/webservice.log"
 diff_log_path = "./logs/diff.log"
@@ -24,7 +23,7 @@ for logger in [webservice_logger, discovery_logger, diff_logger]:
     logger.setLevel(logging.DEBUG)
 
 # Formatters and adding the to the handlers
-c_format = logging.Formatter('[%(levelname)s]:[%(name)s]:%(message)s')
+c_format = logging.Formatter("[%(levelname)s]:[%(name)s]:%(message)s")
 console_handler.setFormatter(c_format)
 file_format = logging.Formatter("[%(asctime)s]:[%(levelname)s]:%(message)s")
 for f_handler in [webservice_file_handler, discovery_file_handler, diff_file_handler]:
