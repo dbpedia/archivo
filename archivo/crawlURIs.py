@@ -750,20 +750,20 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     user_output.append(f"Allowed Robot {archivoConfig.archivo_agent}: {success_symbol}")
     # load the best header with response and triple number
     bestHeader, response, triple_number = determine_best_content_type(
-        vocab_uri, user_output=user_output
+        nir, user_output=user_output
     )
 
     version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-    if bestHeader == None:
+    if bestHeader is None:
         error_str = "\n".join(user_output)
         user_output.append(f"Determinig the best header: {failed_symbol}")
         logger.error(f"Error in parsing: {error_str}")
-        return False, isNIR, "<br>".join(map(str, user_output)), None
+        return False, "<br>".join(map(str, user_output)), None
 
     accessDate = datetime.now()
 
     graph = inspectVocabs.get_graph_of_string(response.text, bestHeader, logger=logger)
-    if graph == None:
+    if graph is None:
         logger.error(f"RDFlib couldn't parse the file of {sourceURI}")
         user_output.append(f"Loading Graph in RDFlib: {failed_symbol}")
         return False, "<br>".join(map(str, user_output)), None
@@ -771,7 +771,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     # here we go if the uri is NIR and  its resolveable
 
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(nir, dev=True)
-    if groupId == None or artifact == None:
+    if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {sourceURI}")
         user_output.append(f"Malformed Uri {str(nir)}")
         return False, str("<br>".join(map(str, user_output))), None
@@ -799,8 +799,6 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     )
     with open(new_orig_file_path, "w+") as new_orig_file:
         print(response.text, file=new_orig_file)
-    # Generate database obj
-    ontTitle = inspectVocabs.getLabel(graph)
     # new release
     logger.info("Generate new release files...")
     new_version = ArchivoVersion(
