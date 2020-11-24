@@ -51,6 +51,7 @@ file_ending_mapping = {
     "application/rdf+xml": "owl",
     "application/ntriples": "nt",
     "text/turtle": "ttl",
+    "application/xhtml": "html",
     "*/*": "file",
 }
 
@@ -58,7 +59,7 @@ file_ending_mapping = {
 # determine_best_content_type
 # function used by
 #
-def determine_best_content_type(uri, user_output=[]):
+def determine_best_content_type(uri, user_output=[], logger=None):
     header_dict = {}
     for header in rdfHeadersMapping:
         response, error = download_rdf_string(uri, acc_header=header)
@@ -68,9 +69,8 @@ def determine_best_content_type(uri, user_output=[]):
                     response.text, uri, input_type=rdfHeadersMapping[header]
                 )
             except Exception as e:
-                print(
-                    f"There was an error parsing {uri} with header {header}: {str(e)}"
-                )
+                if logger is not None:
+                    logger.warning(f"Couldn't parse {uri} with header {header}: {str(e)}")
                 continue
             if triple_number is not None and triple_number > 0:
                 user_output.append(
