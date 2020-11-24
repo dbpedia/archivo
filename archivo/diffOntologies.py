@@ -58,7 +58,7 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
                 stderr=subprocess.PIPE,
             )
             nTriples = rapperProcess.stdout
-
+        
         with open(targetPath, "w+") as sortedNtriples:
             sortProcess = subprocess.run(
                 ["sort", "-u"],
@@ -222,7 +222,7 @@ def localDiffAndRelease(
             uri,
             inputType=crawlURIs.rdfHeadersMapping[newBestHeader],
         )
-        if not os.path.isfile(new_sorted_nt_path) or errors is not []:
+        if not os.path.isfile(new_sorted_nt_path) or errors is []:
             diff_logger.warning(f"File of {uri} not parseable")
             diff_logger.warning(errors)
             stringTools.deleteAllFilesInDirAndDir(newVersionPath)

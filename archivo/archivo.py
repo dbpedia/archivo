@@ -65,13 +65,19 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
                 dbOnt.devel = dev_ont.uri
             db.session.add(dbOnt)
             db.session.add(dbVersion)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
         elif not success and isNir:
             fallout = dbModels.Fallout(
                 uri=uri, source=source, inArchivo=False, error=json.dumps(output)
             )
             db.session.add(fallout)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
 
 
 # @cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
@@ -148,7 +154,10 @@ def ontology_official_update():
         else:
             ont.crawling_status = True
         # commit changes to database
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
 
 def scanForTrackThisURIs():
@@ -231,10 +240,16 @@ def ontology_dev_update():
             ont.crawling_status = True
             _, dev_version = dbUtils.getDatabaseEntry(archivo_version)
             db.session.add(dev_version)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
         else:
             ont.crawling_status = True
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
         # commit changes to database
 
 
@@ -262,7 +277,7 @@ def updateOntologyIndex():
     develop_diff = [
         onto.uri
         for onto in new_devs
-        if onto.uri not in [uri for uri, _, _ in old_devs]
+        if onto.uri not in [uri for uri, _, _, _ in old_devs]
     ]
     discovery_logger.info("New Ontologies:" + "\n".join(official_diff + develop_diff))
     if len(official_diff) <= 0 and len(develop_diff) <= 0:
