@@ -290,23 +290,23 @@ rapper -gc "$non-information-resource"
     </p>
     <h3>★ Consistency</h3>
     <p>
-        The forth star is granted for logical consistency of the ontology (tested with <a
+        The fourth star is granted for logical consistency of the ontology (tested with <a
             href="https://github.com/stardog-union/pellet">Stardog/Pellet</a>).
     </p>
     <h4>Debugging</h4>
     <p>
-        Test using <a href="https://github.com/stardog-union/pellet">Pellet CLI</a>. Archivo also provides the Pellet report is available at the <a href="/info">Archivo ontology view</a> at the failed consistency
-        check symbol <span class="x">✘</span> where the logical inconstistencies can be seen and fixed.
+        Test using <a href="https://github.com/stardog-union/pellet">Pellet CLI</a>. Archivo also provides the Pellet report, available at the <a href="/info">Archivo ontology view</a> at the failed consistency
+        check symbol <span class="x">✘</span> where the logical inconsistencies can be seen and fixed.
     </p>
     <br>
     <h4>Limitations & Discussions</h4>
     <p>
     <ul>
         <li>
-            Stardogs Pellet is not perfect and sometimes crashes (<a href="https://archivo.dbpedia.org/info?o=http://purl.obolibrary.org/obo/bco.owl">example</a>). So maybe somewhere is
-            a better reasoner / tool for consistency.
+            Stardog's Pellet sometimes crashes (<a href="https://archivo.dbpedia.org/info?o=http://purl.obolibrary.org/obo/bco.owl">example</a>) for unknown reasons. We are investigating. 
         </li>
-    </ul>
+		<li>We only integrated one reasoner implementation (Pellet) into Archivo at the moment. Ideally, several different reasoners should do a consistency check. This way, the interoperability of the ontology can e guaranteed. </li>
+	</ul>
     </p>
     <h2>Help improving the Web of Ontologies</h2>
     <br>
