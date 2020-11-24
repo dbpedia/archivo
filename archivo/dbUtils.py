@@ -50,11 +50,13 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
 
 def rebuildDatabase():
     db.create_all()
-    urisInDatabase = [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+    urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     oldIndex = queryDatabus.loadLastIndex()
     for uri, source, date in oldIndex:
         if uri in urisInDatabase:
             print(f"Already listed: {uri}")
+            continue
+        if source == 'DEV':
             continue
         try:
             timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
@@ -70,7 +72,7 @@ def rebuildDatabase():
             db.session.add(v)
         try:
             db.session.commit()
-        except IntegrityError as e:
+        except Exception as e:
             print(str(e))
             db.session.rollback()
         print(len(Ontology.query.all()))
