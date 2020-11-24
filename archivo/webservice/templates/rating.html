@@ -87,7 +87,7 @@ rapper -gc "$non-information-resource"
     <ul>
         <li>Archivo does not (yet) fully support <a
                 href="https://www.w3.org/2001/sw/BestPractices/VM/http-examples/2006-01-18/#naming">slash
-                ontologies</a> that only link to its classes/properties and not define them (e.g <a
+                ontologies</a> that often only contain the ontology stub at the Non-information URI. Further implementation might analyse links to its classes/properties via <code>http://open.vocab.org/terms/defines</code> an inverse of <code>rdfs:definedBy</code> (cf. <a
                 href="http://dbpedia.org/ontology/">http://dbpedia.org/ontology/</a>)
         </li>
         <li>
@@ -100,23 +100,19 @@ rapper -gc "$non-information-resource"
     </p>
     <h3>★ License (I & II)</h3>
     <p>
-        The second and third star are granted for using a license, the second star for using one at all and the third
-        for using a homogenized license with the property <code>dct:license</code> and a URI as object. Archivo tests
-        this by using its <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library</a>.
-        <br> Ideally a ontology should look like:<br>
-    <div class="codeblock">
-        <pre>
-@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
-@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
-@prefix dct: &lt;http://purl.org/dc/terms/&gt; .
-
-
-&lt;$non-information-resource&gt; a owl:Ontology;
-    dct:license &lt;$license-uri&gt; .</pre>
-    </div>
+        The second and third star are granted for proper and clear license statements and are tested with the <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivo SHACL Library</a>.<br>
+        </p><p>
+        <b>License I</b> grants a star for a huge variety of license statements, i.e. when a license is given, but consumers need to spend extra integration effort to understand and use it (cf. <a href="https://github.com/dbpedia/archivo/blob/master/shacl-library/license-I.ttl">License I SHACL test</a>).</p><p>
+        <b>License II</b> grants a star for a homogenized license statement: 1. using the property <code>dct:license</code> and a URI as object. (cf. <a href="https://github.com/dbpedia/archivo/blob/master/shacl-library/license-II.ttl">License II SHACL test</a> 
+        </p>
+        <p>
+        
+        </p>
+       
+        
     <br>
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse"
-        aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Compare ★★☆☆ and ★★★☆+
+        aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Click here to compare the decrease in variety from ★★☆☆ to ★★★☆+
         licenses</button>
     <div class="row">
         <div class="col">
@@ -248,51 +244,58 @@ rapper -gc "$non-information-resource"
             </div>
         </div>
     </div>
-    <br>
+<br>
     <h4>Debugging</h4>
-    <p>
-        Fixing this issue is rather easy, nevertheless there are a few common problems:
+     <p>
+        We encountered these common problems:
     <ul>
         <li>
-            Do not confuse <b>dct</b> (<a href="http://purl.org/dc/terms/">http://purl.org/dc/terms/</a>) with <b>dc</b>
+            Confusing <b>dct</b> (<a href="http://purl.org/dc/terms/">http://purl.org/dc/terms/</a>) with <b>dc</b>
             (<a href="http://purl.org/dc/elements/1.1/">http://purl.org/dc/elements/1.1/</a>), because there is no
             property named <code>dc:license</code>.
         </li>
+         <li>
+            Misspelling of licen<span style="color: green;">s</span>e, <b>as</b> licen<span style="color: red;">c</span>e in property
+        </li>
         <li>
-            If a ontology already has a license statement, there is no need to delete it, just add another one with
+            Note: If an ontology already has a license statement, there is no need to delete it, just add another one with
             <code>dct:license</code>.
         </li>
-        <li>
-            Use licen<span style="color: green;">s</span>e, <b>NOT</b> licen<span style="color: red;">c</span>e
-        </li>
     </ul>
     </p>
-    <h4>Limitations & Discussions</h4>
     <p>
+    <div class="codeblock">
+        <pre>
+# Pattern for accepted License II statement
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix dct: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;$non-information-resource&gt; a owl:Ontology;
+    dct:license &lt;$license-uri&gt; .</pre>
+    </div>
+    </p>
+   
+    <h4>Limitations & Discussion</h4>
+    <p>
+		Future work will aim at <b>improving underspecification</b>. We are in close contact with the <a href="https://dalicc.net/">Dalicc project</a> to employ <b>clear, unambiguous, machine understandable licenses</b> . 
     <ul>
         <li>
-            Since the DBpedia Databus only accepts one license maybe ★★★☆ should only be given to ontologies that have
-            <u>exactly</u> one license to prevent confusion (
-            <a href="https://databus.dbpedia.org/ontologies/dbpedia.org/ontology--DEV/">example</a> with different licenses).
+            We are further investigation the legal consequences of having several license statements, which introduces ambiguity, i.e. can the user choose? can they be merged? 
         </li>
         <li>
-            In the near future ★★★☆ should only be given to license URIs that are machine readable, which will also
-            prevent license URIs like <code>&lt;file:///tmp/workspace/ttl/http://example.com/TODO&gt;</code>.
+            The criteria for the License II star might be more strict in the future, requiring a machine-readable, resolvable URI or a URI that can be <code>owl:sameAs</code> linked to a machine-readable, resolvable URI. 
         </li>
     </ul>
     </p>
-    </p>
     <h3>★ Consistency</h3>
-    <h4>Implementation</h4>
     <p>
         The forth star is granted for logical consistency of the ontology (tested with <a
             href="https://github.com/stardog-union/pellet">Stardog/Pellet</a>).
     </p>
     <h4>Debugging</h4>
     <p>
-        You can test it yourself by using the <a href="https://github.com/stardog-union/pellet">Pellet CLI</a> or just
-        access the consistency check of Archivo at the <a href="/info">ontology view</a>. There a pellet report is
-        available at the failed consistency
+        Test using <a href="https://github.com/stardog-union/pellet">Pellet CLI</a>. Archivo also provides the Pellet report is available at the <a href="/info">Archivo ontology view</a> at the failed consistency
         check symbol <span class="x">✘</span> where the logical inconstistencies can be seen and fixed.
     </p>
     <br>
