@@ -22,7 +22,7 @@ def returnRapperErrors(rapperLog):
             errorMatches.append(line)
         elif rapperWarningsRegex.match(line):
             warningMatches.append(line)
-    return ";".join(errorMatches), ";".join(warningMatches)
+    return errorMatches, warningMatches
 
 
 def getTripleNumberFromRapperLog(rapperlog):
@@ -53,7 +53,7 @@ def parse_rdf_from_string(
 
 
 def get_triples_from_rdf_string(rdf_string, base_uri, input_type=None):
-    if input_type == None:
+    if input_type is None:
         command = ["rapper", "-I", base_uri, "-g", "-"]
     else:
         command = ["rapper", "-I", base_uri, "-i", input_type, "-"]

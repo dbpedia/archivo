@@ -1,7 +1,6 @@
 import re
 import os
 from urllib.parse import urlparse, urldefrag
-import sys
 
 urlRegex = r"https?://(?:www\.)?(.+?)/(.*)"
 
@@ -64,14 +63,14 @@ def getFirstLine(text):
 
 def getFirstSentence(text):
     matches = sentenceRegex.findall(text)
-    if matches != None and len(matches) > 0:
+    if matches is not None and len(matches) > 0:
         return matches[0].replace("\n", " ")
     else:
         return text.replace("\n", " ")
 
 
 def isNoneOrEmpty(string):
-    if string != None and string != "":
+    if string is not None and string != "":
         return False
     else:
         return True
@@ -79,40 +78,16 @@ def isNoneOrEmpty(string):
 
 def getFileExtensionFromUri(uri):
     match = uriFileExtensionRegex.match(uri)
-    if match != None:
+    if match is not None:
         return match.group(1)
     else:
         return ""
 
 
-def deprecatedGenerateGroupAndArtifactFromUri(vocab_uri):
-    matcher = re.search(urlRegex, vocab_uri)
-    if matcher != None:
-        groupId = matcher.group(1)
-        artifact = matcher.group(2)
-    else:
-        return None, None
-
-    # replace possible port de
-    groupId = groupId.replace(":", "--")
-
-    artifact = artifact.rstrip("#/")
-    artifact = (
-        artifact.replace("/", "--")
-        .replace("_", "--")
-        .replace(".", "--")
-        .replace("#", "--")
-    )
-
-    if artifact == "":
-        artifact = "defaultArtifact"
-    return groupId, artifact
-
-
 def getLastModifiedFromResponse(response):
     if "last-modified" in response.headers.keys():
         lastMod = response.headers["last-modified"]
-        if not "GMT" in lastMod:
+        if "GMT" not in lastMod:
             print("WARNING: No GMT time", response.url)
         return lastMod
     else:
@@ -138,7 +113,7 @@ def getFileEnding(response):
     if "Content-Type" in response.headers.keys():
         contentType = response.headers["content-type"]
         match = contentTypeRegex.search(contentType)
-        if match != None:
+        if match is not None:
             fileEnding = fileTypeDict.get(match.group(1), "")
 
     if fileEnding == "":
@@ -158,15 +133,7 @@ def deleteAllFilesInDirAndDir(directory):
     os.rmdir(directory)
 
 
-def deleteAllFilesInDir(directory):
-    if not os.path.isdir(directory):
-        return
-    for filename in os.listdir(directory):
-        if os.path.isfile(os.path.join(directory, filename)):
-            os.remove(os.path.join(directory, filename))
-
-
-def generateStarString(number):
+def generateStarString(number: int):
     return "★" * number + "☆" * (4 - number)
 
 

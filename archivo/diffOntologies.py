@@ -1,6 +1,5 @@
 import subprocess
 from rdflib import compare
-from utils import inspectVocabs, ontoFiles
 import requests
 import crawlURIs
 from datetime import datetime
@@ -8,7 +7,6 @@ import os
 import json
 import sys
 import re
-import uuid
 from utils import (
     ontoFiles,
     generatePoms,
@@ -34,7 +32,7 @@ def graphDiff(oldGraph, newGraph):
 
 def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
     try:
-        if inputType == None:
+        if inputType is None:
             rapperProcess = subprocess.run(
                 ["rapper", "-g", "-I", vocab_uri, sourceFile, "-o", "ntriples"],
                 stdout=subprocess.PIPE,
@@ -70,9 +68,10 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
                 env=myenv,
             )
             sortErrors = sortProcess.stderr.decode("utf-8")
-        if os.stat(targetPath).st_size == 0:
-            diff_logger.error("Error in parsing file, no triples returned")
-            os.remove(targetPath)
+        if not os.path.isfile(targetPath) or os.stat(targetPath).st_size == 0:
+            diff_logger.warning("Error in parsing file, no triples returned")
+            if os.path.isfile(targetPath):
+                os.remove(targetPath)
 
         if sortErrors != "":
             diff_logger.error(f"An error in sorting triples occured: {sortErrors}")
@@ -80,10 +79,10 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
         if inputType != "ntriples":
             return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
         else:
-            return None, None
+            return [], []
     except Exception as e:
         diff_logger.error("Exeption during parsing and sorting", exc_info=True)
-        return str(e), None
+        return [str(e)], []
 
 
 def containsIgnoredProps(line):
@@ -202,7 +201,7 @@ def localDiffAndRelease(
         newBestHeader, response, triple_number = crawlURIs.determine_best_content_type(
             locURI, user_output=output
         )
-        if newBestHeader == None:
+        if newBestHeader is None:
             error_str = "\n".join(output)
             diff_logger.warning(f" {locURI} Couldn't parse new version")
             diff_logger.warning(error_str)
@@ -223,9 +222,9 @@ def localDiffAndRelease(
             uri,
             inputType=crawlURIs.rdfHeadersMapping[newBestHeader],
         )
-        if not os.path.isfile(new_sorted_nt_path) or errors != "":
-            diff_logger.error(f"File of {uri} not parseable")
-            diff_logger.error(errors)
+        if not os.path.isfile(new_sorted_nt_path) or errors is not []:
+            diff_logger.warning(f"File of {uri} not parseable")
+            diff_logger.warning(errors)
             stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return None, f"Couldn't parse File: {errors}", None
         old_sorted_nt_path = os.path.join(newVersionPath, "oldVersionSorted.nt")
@@ -250,7 +249,7 @@ def localDiffAndRelease(
                     lastSemVersion, oldAxioms, newAxioms
                 )
             else:
-                diff_logger.error(
+                diff_logger.warning(
                     "Couldn't generate the axioms, no new semantic version"
                 )
                 diff_logger.debug("Old Axioms:" + str(oldAxioms))
@@ -397,8 +396,8 @@ def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=F
     diff_logger.info("New Axioms:\n" + "\n".join(new))
 
     match = semanticVersionRegex.match(oldSemanticVersion)
-    if match == None:
-        diff_logger.error(f"Bad format of semantic version: {oldSemanticVersion}")
+    if match is None:
+        diff_logger.warning(f"Bad format of semantic version: {oldSemanticVersion}")
         return (
             "ERROR: Can't build new semantic version because last is broken",
             old,
@@ -423,14 +422,15 @@ if __name__ == "__main__":
 
     ts = TestSuite(".")
     try:
-        success, msg, dbOnts, dbVersions = handleDiffForUri(
-            "http://purl.allotrope.org/voc/afo/REC/2019/09/aft",
-            ".",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=meta.json",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=parsed.nt",
-            "2020.06.10-201508",
+        success, msg, archivoVersion = handleDiffForUri(
+            "http://purl.org/cyber/misp",
+            "./testdir/",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=meta.json",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=parsed.nt",
+            "2020.06.10-203017",
             ts,
             "prefix.cc",
         )
+        print(success, msg)
     except:
         traceback.print_exc()
