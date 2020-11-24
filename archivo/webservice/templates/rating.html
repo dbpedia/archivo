@@ -1,7 +1,7 @@
 {% extends "index.html" %} {% block content %}
 <div class="container">
     <br>
-    <h2>Archivo Ontology Tutorial</h2>
+    <h2>Archivo Star Rating</h2>
     <br>
     <h3>Automatic Ontology Discovery</h3>
     <p>
@@ -309,27 +309,25 @@ rapper -gc "$non-information-resource"
 	</ul>
     </p>
     <h2>Help improving the Web of Ontologies</h2>
-    <br>
-    <h3>Feature Badges</h3>
-    <p>
-        It is possible to add Feature Badges and other compliance checks in the <a
-            href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library</a> of archivo. An example
-        for such an compliance check is the <a
-            href="https://github.com/dbpedia/archivo/blob/master/shacl-library/LODE.ttl">LODE conformity check</a>,
-        which measures if an ontology can be documented well using the <a href="https://essepuntato.it/lode/"
-            target="_blank">LODE service</a>.
+    <h3>SHACL tests</h3>
+    <p>SHACL (https://www.w3.org/TR/shacl/, co-edited by DBpedia’s CTO D. Kontokostas) enables easy testing of ontologies. Archivo offers free SHACL continuous integration testing for ontologies. Anyone can implement their SHACL tests and add them to the <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library on Github</a>. We believe that there are many synergies, i.e. SHACL tests for your ontology are helpful for others as well. Some ideas: Check for labels/comments, Check for multilinguality (i.e. labels in more than 5 languages), check for properties you consider essentiel. Add a file to github and we will run it. 
     </p>
-    <h3>Improve & Adapt Archivo's Core Features</h3>
+    <h3>Application compliance</h3>
     <p>
-        It is possible to discuss about additions to the stars, Archivo's core rating system. On this page a few
-        examples are given how the star rating can be adapted to fit the ontology consumers/developers needs better. A
-        discussion can be started by adding
-        an issue at the github page or participate in the already created ones.
-        <br>An example for this is the usage of not only <code>owl:Ontology</code> as ontology identification but also
-        <code>skos:ConceptScheme</code>, which was brought up during the review process of the Archivo paper.
-        <br>
-        <b>Discussions:</b> <a href="https://github.com/dbpedia/archivo/issues" target="_blank">Github Issues</a><br>
+        Applications often pose certain requirements to the ontology. Archivo allows to SHACL them up and test for them. An example for such an compliance check is the <a
+            href="https://github.com/dbpedia/archivo/blob/master/shacl-library/LODE.ttl">LODE conformity check</a>, which measures if an ontology can be documented well using the <a href="https://essepuntato.it/lode/" target="_blank">Live OWL Documentation Environment (LODE) service</a>.
+If the LODE SHACL test fails, it shows that some of the features of LODE will not work.     
+    </p>
+    <h3>Discuss Archivo's Future Features</h3>
+    <p>
+		We are open for feedback and are setting up a steering committee to further improve the overall integrity of the de-central web of ontologies.<br>
+		<b>Discussions:</b> <a href="https://github.com/dbpedia/archivo/issues" target="_blank">Github Issues</a><br>
         <b>Questions:</b> <a href="https://forum.dbpedia.org/c/services/archivo/42" target="_blank">DBpedia Forum</a>
-    </p>
+     </p>
+     Feedback and changes addressed:
+     <ul>
+		 <li>Sep 2020: we would like to thank the reviewers of SEMANTiCS 2020 to explain the importance of including SKOS. We now allow <code>skos:ConceptScheme</code> on NIR's in Archivo.</li>
+	 </ul>
+       
 </div>
 {% endblock %}
