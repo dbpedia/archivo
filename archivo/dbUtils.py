@@ -120,13 +120,22 @@ def update_database():
                 db.session.commit()
 
 
-def writeIndexAsCSV(filepath):
+def write_official_index(filepath):
     with open(filepath, "w+") as csvIndex:
         writer = csv.writer(csvIndex)
         for uri, source, accessDate in db.session.query(
-            Ontology.uri, Ontology.source, Ontology.accessDate
+            OfficialOntology.uri, OfficialOntology.source, OfficialOntology.accessDate
         ):
             writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
+
+
+def write_dev_index(filepath):
+    with open(filepath, "w+") as csvIndex:
+        writer = csv.writer(csvIndex)
+        for uri, source, accessDate, official in db.session.query(
+            DevelopOntology.uri, DevelopOntology.source, DevelopOntology.accessDate, DevelopOntology.official
+        ):
+            writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S"), official))
 
 
 def updateInfoForOntology(uri, orig_uri=None):

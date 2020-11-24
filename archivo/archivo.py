@@ -259,6 +259,11 @@ def updateOntologyIndex():
     discovery_logger.info("New Ontologies:" + "\n".join(diff))
     if len(diff) <= 0:
         return
+    else:
+        deploy_index()
+
+
+def deploy_index():
     newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     artifactPath = os.path.join(
         archivoConfig.localPath, "archivo-indices", "ontologies"
@@ -276,12 +281,17 @@ def updateOntologyIndex():
         )
         print(pomstring, file=pomfile)
     # write new index
-    dbUtils.writeIndexAsCSV(os.path.join(indexpath, "ontologies.csv"))
+    dbUtils.write_official_index(os.path.join(indexpath, "ontologies_type=official.csv"))
+    dbUtils.write_dev_index(os.path.join(indexpath, "ontologies_type=dev.csv"))
     # deploy
     status, log = generatePoms.callMaven(
         os.path.join(artifactPath, "pom.xml"), "deploy"
     )
-
+    if status:
+        discovery_logger.info("Deployed new index to databus")
+    else:
+        discovery_logger.warning("Failed deploying to databus")
+        discovery_logger.warning(log)
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
