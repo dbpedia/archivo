@@ -249,15 +249,23 @@ def update_star_graph():
 
 # @cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
-    oldOntoIndex = queryDatabus.loadLastIndex()
-    newOntoIndex = db.session.query(dbModels.OfficialOntology).all()
-    diff = [
+    old_officials = queryDatabus.get_last_official_index()
+    new_officials = db.session.query(dbModels.OfficialOntology).all()
+
+    old_devs = queryDatabus.get_last_dev_index()
+    new_devs = db.session.query(dbModels.DevelopOntology).all()
+    official_diff = [
         onto.uri
-        for onto in newOntoIndex
-        if onto.uri not in [uri for uri, src, date in oldOntoIndex]
+        for onto in new_officials
+        if onto.uri not in [uri for uri, src, date in old_officials]
+    ]
+    develop_diff = [
+        onto.uri
+        for onto in new_devs
+        if onto.uri not in [uri for uri, _, _ in old_devs]
     ]
     discovery_logger.info("New Ontologies:" + "\n".join(diff))
-    if len(diff) <= 0:
+    if len(official_diff) <= 0 and len(develop_diff) <= 0:
         return
     else:
         deploy_index()
