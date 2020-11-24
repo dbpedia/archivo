@@ -44,7 +44,7 @@ rdfHeadersMapping = {
     "application/rdf+xml": "rdfxml",
     "application/ntriples": "ntriples",
     "text/turtle": "turtle",
-    "application/xhtml": "rdfa",
+    #"application/xhtml": "rdfa",
 }
 
 file_ending_mapping = {
