@@ -573,6 +573,85 @@ def loadLastIndex():
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
 
 
+def get_last_official_index():
+    query = "\n".join(
+        (
+            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+            "PREFIX dct:    <http://purl.org/dc/terms/>",
+            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+            "PREFIX db:     <https://databus.dbpedia.org/>",
+            "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?downloadURL WHERE {",
+            "VALUES ?art { <https://databus.dbpedia.org/ontologies/archivo-indices/ontologies> }",
+            "?dataset dataid:artifact ?art .",
+            "?dataset dct:hasVersion ?latestVersion .",
+            "?dataset dcat:distribution ?dst .",
+            "?dst dataid-cv:type 'official'^^xsd:string .",
+            "?dst dcat:downloadURL ?downloadURL ." "{",
+            "SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
+            "?dataset dataid:artifact ?art .",
+            "?dataset dct:hasVersion ?v .",
+            "}",
+            "}",
+            "}",
+        )
+    )
+    sparql = SPARQLWrapper(databusRepoUrl)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    try:
+        downloadURL = results["results"]["bindings"][0]["downloadURL"]["value"]
+    except (KeyError, IndexError):
+        return None
+
+    csvString = requests.get(downloadURL).text
+    csvIO = StringIO(csvString)
+
+    return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
+
+def get_last_dev_index():
+    query = "\n".join(
+        (
+            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+            "PREFIX dct:    <http://purl.org/dc/terms/>",
+            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+            "PREFIX db:     <https://databus.dbpedia.org/>",
+            "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+            "SELECT DISTINCT ?downloadURL WHERE {",
+            "VALUES ?art { <https://databus.dbpedia.org/ontologies/archivo-indices/ontologies> }",
+            "?dataset dataid:artifact ?art .",
+            "?dataset dct:hasVersion ?latestVersion .",
+            "?dataset dcat:distribution ?dst .",
+            "?dst dataid-cv:type 'dev'^^xsd:string .",
+            "?dst dcat:downloadURL ?downloadURL ." "{",
+            "SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
+            "?dataset dataid:artifact ?art .",
+            "?dataset dct:hasVersion ?v .",
+            "}",
+            "}",
+            "}",
+        )
+    )
+    sparql = SPARQLWrapper(databusRepoUrl)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    try:
+        downloadURL = results["results"]["bindings"][0]["downloadURL"]["value"]
+    except (KeyError, IndexError):
+        return None
+
+    csvString = requests.get(downloadURL).text
+    csvIO = StringIO(csvString)
+
+    return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
 def get_SPOs():
     query = "\n".join(
         (
