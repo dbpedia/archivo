@@ -9,4 +9,4 @@ class Config(object):
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "archivo.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = b"uhhh mystery key... pls change this"
+    SECRET_KEY = b'\xc7\xf2]\xce\t\xfc\xc7\xabz\xbcRBK\xf1eR'

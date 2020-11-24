@@ -14,9 +14,9 @@ ignore_props = ["http://purl.org/dc/terms/modified"]
 track_this_uri = "http://archivo.dbpedia.org/trackThis"
 
 # edit for your dataset
-downloadUrl = "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
-packDir = "/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
-pub = "https://yum-yab.github.io/webid.ttl#onto"
+downloadUrl="https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
+packDir="/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
+pub="https://yum-yab.github.io/webid.ttl#onto"
 
 
 # paths for external services
