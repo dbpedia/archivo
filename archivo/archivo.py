@@ -264,7 +264,7 @@ def updateOntologyIndex():
         for onto in new_devs
         if onto.uri not in [uri for uri, _, _ in old_devs]
     ]
-    discovery_logger.info("New Ontologies:" + "\n".join(diff))
+    discovery_logger.info("New Ontologies:" + "\n".join(official_diff + develop_diff))
     if len(official_diff) <= 0 and len(develop_diff) <= 0:
         return
     else:
