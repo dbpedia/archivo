@@ -43,7 +43,7 @@
             <div class="panel panel-default">
               <div class="panel-heading p-3 mb-3" role="tab" id="step{{loop.index}}" style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %};">
                 <h3 class="panel-title">
-                  <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#link{{loop.index}}" style="color: black;"
+                  <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#link{{loop.index}}" style="color: black; font-size: medium;"
                     aria-expanded="true" aria-controls="link{{loop.index}}-collapse">
                     {{ step.step }}
                   </a>

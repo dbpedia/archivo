@@ -68,9 +68,10 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
                 env=myenv,
             )
             sortErrors = sortProcess.stderr.decode("utf-8")
-        if os.stat(targetPath).st_size == 0:
+        if not os.path.isfile(targetPath) or os.stat(targetPath).st_size == 0:
             diff_logger.warning("Error in parsing file, no triples returned")
-            os.remove(targetPath)
+            if os.path.isfile(targetPath):
+                os.remove(targetPath)
 
         if sortErrors != "":
             diff_logger.error(f"An error in sorting triples occured: {sortErrors}")
@@ -78,10 +79,10 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
         if inputType != "ntriples":
             return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
         else:
-            return None, None
+            return [], []
     except Exception as e:
         diff_logger.error("Exeption during parsing and sorting", exc_info=True)
-        return str(e), None
+        return [str(e)], []
 
 
 def containsIgnoredProps(line):
@@ -423,12 +424,13 @@ if __name__ == "__main__":
     try:
         success, msg, archivoVersion = handleDiffForUri(
             "http://purl.org/cyber/misp",
-            ".",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=meta.json",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.allotrope.org/voc--afo--REC--2019--09--aft/2020.06.10-201508/voc--afo--REC--2019--09--aft_type=parsed.nt",
-            "2020.06.10-201508",
+            "./testdir/",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=meta.json",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=parsed.nt",
+            "2020.06.10-203017",
             ts,
             "prefix.cc",
         )
+        print(success, msg)
     except:
         traceback.print_exc()
