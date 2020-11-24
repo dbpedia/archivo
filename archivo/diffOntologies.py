@@ -202,7 +202,7 @@ def localDiffAndRelease(
             locURI, user_output=output
         )
         if newBestHeader is None:
-            error_str = "\n".join(output)
+            error_str = "\n".join(str(output))
             diff_logger.warning(f" {locURI} Couldn't parse new version")
             diff_logger.warning(error_str)
             return None, error_str, None
