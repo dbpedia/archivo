@@ -235,9 +235,9 @@ def measureStars(
     rapperErrors, licenseI, consistent, consistentWithoutImports, licenseII
 ):
     stars = 0
-    if rapperErrors == "":
+    if rapperErrors == []:
         stars = stars + 1
-    if licenseI == True:
+    if licenseI is True:
         stars = stars + 1
 
     if not stars == 2:

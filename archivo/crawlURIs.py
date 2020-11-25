@@ -186,7 +186,7 @@ def checkRobot(uri):
     parsedUrl = urlparse(uri)
     if parsedUrl.scheme == "" or parsedUrl.netloc == "":
         return None, None
-    robotsUrl = parsedUrl.scheme + "://" + parsedUrl.netloc + "/robots.txt"
+    robotsUrl = str(parsedUrl.scheme) + "://" + str(parsedUrl.netloc) + "/robots.txt"
     try:
         req = requests.get(url=robotsUrl)
     except requests.exceptions.SSLError:
