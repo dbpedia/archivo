@@ -144,7 +144,7 @@ def getInfoForArtifact(group, artifact):
         except URLError:
             metadata = {}
 
-        parsing = True if metadata["logs"]["rapper-errors"] == "" else False
+        parsing = True if metadata["logs"]["rapper-errors"] == [] else False
         stars = ontoFiles.measureStars(
             metadata["logs"]["rapper-errors"],
             metadata["test-results"]["License-I"],
