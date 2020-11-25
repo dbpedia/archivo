@@ -84,7 +84,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
-    if allOntologiesInfo == None:
+    if allOntologiesInfo is None:
         diff_logger.warning(
             "There seems to be an error with the databus, no official diff possible"
         )
@@ -100,16 +100,21 @@ def ontology_official_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, archivo_version = diffOntologies.handleDiffForUri(
-            ont.uri,
-            dataPath,
-            urlInfo["meta"],
-            urlInfo["ntFile"],
-            urlInfo["version"],
-            testSuite,
-            ont.source,
-        )
-        if success == None:
+        try:
+            success, message, archivo_version = diffOntologies.handleDiffForUri(
+                ont.uri,
+                dataPath,
+                urlInfo["meta"],
+                urlInfo["ntFile"],
+                urlInfo["version"],
+                testSuite,
+                ont.source,
+            )
+        except Exception:
+            diff_logger.exception(f'There was an error handling {str(ont)}')
+            continue
+
+        if success is None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
                 source=ont.source,
@@ -128,7 +133,7 @@ def ontology_official_update():
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
                 # update with new trackThis URI
-                if ont.devel != None and ont.devel != dev_ont.uri:
+                if ont.devel is None and ont.devel != dev_ont.uri:
                     old_dev_obj = (
                         db.session.query(dbModels.DevelopOntology)
                         .filter_by(uri=ont.devel)
@@ -160,40 +165,6 @@ def ontology_official_update():
             db.session.rollback()
 
 
-def scanForTrackThisURIs():
-    dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestNtriples()
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
-    for ont in db.session.query(dbModels.OfficialOntology).all():
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
-        databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        oldDevURI = ont.devel
-        try:
-            urlInfo = allOntologiesInfo[databusURL]
-        except KeyError:
-            diff_logger.error(f"Could't find databus artifact for {ont.uri}")
-            continue
-        filename = urlInfo["ntFile"].split("/")[-1]
-        latest_version_dir = os.path.join(dataPath, group, artifact, urlInfo["version"])
-        filepath = os.path.join(latest_version_dir, filename)
-        if not os.path.isfile(filepath):
-            os.makedirs(latest_version_dir, exist_ok=True)
-            oldOntologyResponse = requests.get(urlInfo["ntFile"])
-            oldOntologyResponse.encoding = "utf-8"
-            if oldOntologyResponse.status_code > 400:
-                print(f"Couldnt download ntriples file for {ont.uri}")
-            with open(filepath, "w") as latestNtriples:
-                print(oldOntologyResponse.text, file=latestNtriples)
-        graph = inspectVocabs.getGraphOfVocabFile(filepath)
-        if graph == None:
-            print(f"Error loading graph of {ont.uri}")
-        trackURI = inspectVocabs.getTrackThisURI(graph)
-        if trackURI != oldDevURI:
-            success, message, onto, version = crawlURIs.handleDevURI(
-                ont.uri, trackURI, dataPath, testSuite, diff_logger
-            )
-
-
 # @cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
@@ -216,16 +187,20 @@ def ontology_dev_update():
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
-        success, message, archivo_version = diffOntologies.handleDiffForUri(
-            ont.official,
-            dataPath,
-            urlInfo["meta"],
-            urlInfo["ntFile"],
-            urlInfo["version"],
-            testSuite,
-            ont.source,
-            devURI=ont.uri,
-        )
+        try:
+            success, message, archivo_version = diffOntologies.handleDiffForUri(
+                ont.official,
+                dataPath,
+                urlInfo["meta"],
+                urlInfo["ntFile"],
+                urlInfo["version"],
+                testSuite,
+                ont.source,
+                devURI=ont.uri,
+            )
+        except Exception:
+            diff_logger.exception(f'Problem handling {str(ont)}')
+            continue
         if success == None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
