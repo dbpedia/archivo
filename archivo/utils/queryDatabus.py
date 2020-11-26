@@ -143,7 +143,12 @@ def getInfoForArtifact(group, artifact):
         except URLError:
             metadata = {}
 
-        parsing = True if metadata["logs"]["rapper-errors"] == [] or metadata["logs"]["rapper-errors"] == "" else False
+        parsing = (
+            True
+            if metadata["logs"]["rapper-errors"] == []
+            or metadata["logs"]["rapper-errors"] == ""
+            else False
+        )
         stars = ontoFiles.measureStars(
             metadata["logs"]["rapper-errors"],
             metadata["test-results"]["License-I"],
@@ -652,6 +657,7 @@ def get_last_dev_index():
     csvIO = StringIO(csvString)
 
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
 
 def get_SPOs():
     query = "\n".join(

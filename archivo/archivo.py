@@ -56,7 +56,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             user_output=output,
         )
         if success:
-            succ, message, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
@@ -111,7 +111,7 @@ def ontology_official_update():
                 ont.source,
             )
         except Exception:
-            diff_logger.exception(f'There was an error handling {str(ont)}')
+            diff_logger.exception(f"There was an error handling {str(ont)}")
             continue
 
         if success is None:
@@ -128,7 +128,7 @@ def ontology_official_update():
             ont.crawling_status = True
 
             # check for new trackThis URI
-            succ, message, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
@@ -199,7 +199,7 @@ def ontology_dev_update():
                 devURI=ont.uri,
             )
         except Exception:
-            diff_logger.exception(f'Problem handling {str(ont)}')
+            diff_logger.exception(f"Problem handling {str(ont)}")
             continue
         if success == None:
             dbFallout = dbModels.Fallout(
@@ -279,7 +279,9 @@ def deploy_index():
         )
         print(pomstring, file=pomfile)
     # write new index
-    dbUtils.write_official_index(os.path.join(indexpath, "ontologies_type=official.csv"))
+    dbUtils.write_official_index(
+        os.path.join(indexpath, "ontologies_type=official.csv")
+    )
     dbUtils.write_dev_index(os.path.join(indexpath, "ontologies_type=dev.csv"))
     # deploy
     status, log = generatePoms.callMaven(
@@ -290,6 +292,7 @@ def deploy_index():
     else:
         discovery_logger.warning("Failed deploying to databus")
         discovery_logger.warning(log)
+
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))

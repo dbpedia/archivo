@@ -44,7 +44,7 @@ rdfHeadersMapping = {
     "application/rdf+xml": "rdfxml",
     "application/ntriples": "ntriples",
     "text/turtle": "turtle",
-    #"application/xhtml": "rdfa",
+    # "application/xhtml": "rdfa",
 }
 
 file_ending_mapping = {
@@ -70,7 +70,9 @@ def determine_best_content_type(uri, user_output=[], logger=None):
                 )
             except Exception as e:
                 if logger is not None:
-                    logger.warning(f"Couldn't parse {uri} with header {header}: {str(e)}")
+                    logger.warning(
+                        f"Couldn't parse {uri} with header {header}: {str(e)}"
+                    )
                 continue
             if triple_number is not None and triple_number > 0:
                 user_output.append(
@@ -88,7 +90,9 @@ def determine_best_content_type(uri, user_output=[], logger=None):
                     {
                         "status": False,
                         "step": f"Parsing with header {header}",
-                        "message": "Triples: {} \n{}".format(str(triple_number), '\n'.join(rapper_errors[:20])),
+                        "message": "Triples: {} \n{}".format(
+                            str(triple_number), "\n".join(rapper_errors[:20])
+                        ),
                     }
                 )
         else:
@@ -502,7 +506,7 @@ class ArchivoVersion:
 
     def handleTrackThis(self):
         if self.isDev:
-            return None, None, None
+            return None, None
         trackThisURI = inspectVocabs.getTrackThisURI(self.graph)
         if trackThisURI is None and self.location_uri != trackThisURI:
             self.user_output.append(
@@ -521,7 +525,7 @@ class ArchivoVersion:
                 user_output=self.user_output,
             )
         else:
-            return False, None, None
+            return False, None
 
 
 # ======== END OF CLASS ================

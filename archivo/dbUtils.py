@@ -56,7 +56,7 @@ def rebuildDatabase():
         if uri in urisInDatabase:
             print(f"Already listed: {uri}")
             continue
-        if source == 'DEV':
+        if source == "DEV":
             continue
         try:
             timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
@@ -133,9 +133,14 @@ def write_dev_index(filepath):
     with open(filepath, "w+") as csvIndex:
         writer = csv.writer(csvIndex)
         for uri, source, accessDate, official in db.session.query(
-            DevelopOntology.uri, DevelopOntology.source, DevelopOntology.accessDate, DevelopOntology.official
+            DevelopOntology.uri,
+            DevelopOntology.source,
+            DevelopOntology.accessDate,
+            DevelopOntology.official,
         ):
-            writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S"), official))
+            writer.writerow(
+                (uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S"), official)
+            )
 
 
 def updateInfoForOntology(uri, orig_uri=None):

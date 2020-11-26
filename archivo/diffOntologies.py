@@ -58,7 +58,9 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
                 stderr=subprocess.PIPE,
             )
             nTriples = rapperProcess.stdout
-            errors, warnings = ontoFiles.returnRapperErrors(rapperProcess.stderr.decode('utf-8'))
+            errors, warnings = ontoFiles.returnRapperErrors(
+                rapperProcess.stderr.decode("utf-8")
+            )
             if errors != []:
                 return errors, warnings
 
@@ -206,7 +208,12 @@ def localDiffAndRelease(
             locURI, user_output=output
         )
         if newBestHeader is None:
-            error_str = "\n".join([d.get('step', 'None') + "  " + d.get('message', 'None') for d in output])
+            error_str = "\n".join(
+                [
+                    d.get("step", "None") + "  " + d.get("message", "None")
+                    for d in output
+                ]
+            )
             diff_logger.warning(f"{locURI} Couldn't parse new version")
             diff_logger.warning(error_str)
             return None, error_str, None
