@@ -333,7 +333,7 @@ class ArchivoVersion:
             self.original_file, inputFormat=rdfHeadersMapping[self.best_header]
         )[0]
         self.graph = inspectVocabs.getGraphOfVocabFile(
-            raw_file_path + "_type=parsed.ttl"
+            raw_file_path + "_type=parsed.ttl", logger=self.logger
         )
         # shacl-validation
         # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
@@ -508,7 +508,7 @@ class ArchivoVersion:
         if self.isDev:
             return None, None
         trackThisURI = inspectVocabs.getTrackThisURI(self.graph)
-        if trackThisURI is None and self.location_uri != trackThisURI:
+        if trackThisURI is not None and self.location_uri != trackThisURI:
             self.user_output.append(
                 {
                     "status": True,
@@ -516,14 +516,18 @@ class ArchivoVersion:
                     "message": f"Found dev version at: {trackThisURI}",
                 }
             )
-            return handleDevURI(
-                self.nir,
-                trackThisURI,
-                self.data_path,
-                self.test_suite,
-                self.logger,
-                user_output=self.user_output,
-            )
+            try:
+                return handleDevURI(
+                    self.nir,
+                    trackThisURI,
+                    self.data_path,
+                    self.test_suite,
+                    self.logger,
+                    user_output=self.user_output,
+                )
+            except Exception as e:
+                self.logger.exception("Problem during handling trackThis")
+                return None, None
         else:
             return False, None
 

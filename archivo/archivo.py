@@ -10,7 +10,7 @@ from utils import (
     inspectVocabs,
 )
 from utils.validation import TestSuite
-from utils.archivoLogs import discovery_logger, diff_logger
+from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger
 from datetime import datetime
 import requests
 import graphing
@@ -40,7 +40,7 @@ def ontology_discovery():
 
 
 def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
-    if lst == None:
+    if lst is None:
         return
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
@@ -91,8 +91,8 @@ def ontology_official_update():
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
-    for ont in db.session.query(dbModels.OfficialOntology).all():
-        diff_logger.info(f"Handling ontology: {ont.uri}")
+    for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
+        diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         try:
@@ -169,15 +169,15 @@ def ontology_official_update():
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
-    if allOntologiesInfo == None:
-        diff_logger.warning(
+    if allOntologiesInfo is None:
+        dev_diff_logger.warning(
             "There seems to be an error with the databus, no dev diff possible"
         )
         return
-    diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
+    dev_diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.DevelopOntology).all():
-        diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
+        dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
             ont.official, dev=True
         )
@@ -185,7 +185,7 @@ def ontology_dev_update():
         try:
             urlInfo = allOntologiesInfo[databusURL]
         except KeyError:
-            diff_logger.error(f"Could't find databus artifact for {ont.uri}")
+            dev_diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
         try:
             success, message, archivo_version = diffOntologies.handleDiffForUri(
@@ -197,11 +197,12 @@ def ontology_dev_update():
                 testSuite,
                 ont.source,
                 devURI=ont.uri,
+                logger=dev_diff_logger,
             )
         except Exception:
-            diff_logger.exception(f"Problem handling {str(ont)}")
+            dev_diff_logger.exception(f"Problem handling {str(ont)}")
             continue
-        if success == None:
+        if success is None:
             dbFallout = dbModels.Fallout(
                 uri=ont.uri,
                 source=ont.source,
@@ -296,6 +297,7 @@ def deploy_index():
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
+
 
 if __name__ == "__main__":
     db.create_all()

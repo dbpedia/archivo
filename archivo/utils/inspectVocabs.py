@@ -23,9 +23,10 @@ def getGraphOfVocabFile(filepath, logger=None):
         graph.parse(filepath, format=rdfFormat)
         return graph
     except Exception as e:
-        print(str(e))
-        if logger is None:
-            logger.error("Exception in rdflib parsing", exc_info=True)
+        if logger is not None:
+            logger.exception("Exception in rdflib parsing", exc_info=True)
+        else:
+            print(f'Problem parsing {filepath}' + str(e))
         return None
 
 

@@ -30,7 +30,7 @@ def graphDiff(oldGraph, newGraph):
     return compare.graph_diff(oldIsoGraph, newIsoGraph)
 
 
-def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
+def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None, logger=diff_logger):
     try:
         if inputType is None:
             rapperProcess = subprocess.run(
@@ -75,19 +75,19 @@ def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None):
             )
             sortErrors = sortProcess.stderr.decode("utf-8")
         if not os.path.isfile(targetPath) or os.stat(targetPath).st_size == 0:
-            diff_logger.warning("Error in parsing file, no triples returned")
+            logger.warning("Error in parsing file, no triples returned")
             if os.path.isfile(targetPath):
                 os.remove(targetPath)
 
         if sortErrors != "":
-            diff_logger.error(f"An error in sorting triples occured: {sortErrors}")
+            logger.error(f"An error in sorting triples occured: {sortErrors}")
 
         if inputType != "ntriples":
             return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
         else:
             return [], []
     except Exception as e:
-        diff_logger.error("Exeption during parsing and sorting", exc_info=True)
+        logger.error("Exeption during parsing and sorting", exc_info=True)
         return [str(e)], []
 
 
@@ -98,7 +98,7 @@ def containsIgnoredProps(line):
     return False
 
 
-def commDiff(oldFile, newFile):
+def commDiff(oldFile, newFile, logger=diff_logger):
     command = ["comm", "-3", oldFile, newFile]
     try:
         oldTriples = []
@@ -109,7 +109,7 @@ def commDiff(oldFile, newFile):
         diffErrors = process.stderr.decode("utf-8")
         commOutput = process.stdout.decode("utf-8")
         if diffErrors != "":
-            diff_logger.error(f"Error in diffing with comm: {diffErrors}")
+            logger.error(f"Error in diffing with comm: {diffErrors}")
         commLines = commOutput.split("\n")
         for line in commLines:
             if line.strip() == "":
@@ -128,11 +128,11 @@ def commDiff(oldFile, newFile):
                 [line.strip() for line in newTriples if line != ""],
             )
     except Exception:
-        diff_logger.error("Exeption during diffing with comm", exc_info=True)
+        logger.error("Exeption during diffing with comm", exc_info=True)
 
 
-def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader):
-    diff_logger.info(f"Checking the header for {vocab_uri}")
+def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader, logger=diff_logger):
+    logger.info(f"Checking the header for {vocab_uri}")
     # when both of the old values are not compareable, always download and check
     if (
         stringTools.isNoneOrEmpty(oldETag)
@@ -160,19 +160,19 @@ def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHea
         else:
             return None, f"No Access - Status {str(response.status_code)}"
     except requests.exceptions.TooManyRedirects:
-        diff_logger.warning("Too many redirects, cancel parsing...")
+        logger.warning("Too many redirects, cancel parsing...")
         return None, "Too many redirects"
     except TimeoutError:
-        diff_logger.warning(f"Timed out for {vocab_uri}")
+        logger.warning(f"Timed out for {vocab_uri}")
         return None, "TimeOut Error"
     except requests.exceptions.ConnectionError:
-        diff_logger.warning(f"Bad Connection for {vocab_uri}")
+        logger.warning(f"Bad Connection for {vocab_uri}")
         return None, "Connection Error"
     except requests.exceptions.ReadTimeout:
-        diff_logger.warning(f"Connection timed out for URI {vocab_uri}")
+        logger.warning(f"Connection timed out for URI {vocab_uri}")
         return None, "Read Timeout"
     except:
-        diff_logger.warning(f"Unkown Error occurred for URI {vocab_uri}")
+        logger.warning(f"Unkown Error occurred for URI {vocab_uri}")
         return None, "Unknown error"
 
 
@@ -185,6 +185,7 @@ def localDiffAndRelease(
     testSuite,
     source,
     devURI="",
+    logger=diff_logger,
 ):
     try:
         if devURI == "":
@@ -196,7 +197,7 @@ def localDiffAndRelease(
         artifactDir, latestVersion = os.path.split(latestVersionDir)
         groupDir, artifactName = os.path.split(artifactDir)
         _, group = os.path.split(groupDir)
-        diff_logger.info(
+        logger.info(
             "Found different headers, downloading and parsing to compare..."
         )
         new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
@@ -214,8 +215,8 @@ def localDiffAndRelease(
                     for d in output
                 ]
             )
-            diff_logger.warning(f"{locURI} Couldn't parse new version")
-            diff_logger.warning(error_str)
+            logger.warning(f"{locURI} Couldn't parse new version")
+            logger.warning(error_str)
             return None, error_str, None
         sourcePath = os.path.join(
             newVersionPath,
@@ -232,26 +233,27 @@ def localDiffAndRelease(
             new_sorted_nt_path,
             uri,
             inputType=crawlURIs.rdfHeadersMapping[newBestHeader],
+            logger=logger,
         )
         if not os.path.isfile(new_sorted_nt_path) or errors != []:
-            diff_logger.warning(f"File of {uri} not parseable")
-            diff_logger.warning(errors)
+            logger.warning(f"File of {uri} not parseable")
+            logger.warning(errors)
             stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return None, f"Couldn't parse File: {errors}", None
         old_sorted_nt_path = os.path.join(newVersionPath, "oldVersionSorted.nt")
-        getSortedNtriples(oldNtriples, old_sorted_nt_path, uri, inputType="ntriples")
+        getSortedNtriples(oldNtriples, old_sorted_nt_path, uri, inputType="ntriples", logger=logger)
         isEqual, oldTriples, newTriples = commDiff(
-            old_sorted_nt_path, new_sorted_nt_path
+            old_sorted_nt_path, new_sorted_nt_path, logger=logger
         )
-        diff_logger.debug("Old Triples:" + "\n".join(oldTriples))
-        diff_logger.debug("New Triples:" + "\n".join(newTriples))
+        logger.debug("Old Triples:" + "\n".join(oldTriples))
+        logger.debug("New Triples:" + "\n".join(newTriples))
         # if len(old) == 0 and len(new) == 0:
         if isEqual:
-            diff_logger.info("No new version")
+            logger.info("No new version")
             stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return False, "No new Version", None
         else:
-            diff_logger.info("New Version!")
+            logger.info("New Version!")
             # generating new semantic version
             oldSuccess, oldAxioms = testSuite.getAxiomsOfOntology(old_sorted_nt_path)
             newSuccess, newAxioms = testSuite.getAxiomsOfOntology(new_sorted_nt_path)
@@ -260,11 +262,11 @@ def localDiffAndRelease(
                     lastSemVersion, oldAxioms, newAxioms
                 )
             else:
-                diff_logger.warning(
+                logger.warning(
                     "Couldn't generate the axioms, no new semantic version"
                 )
-                diff_logger.debug("Old Axioms:" + str(oldAxioms))
-                diff_logger.debug("New Axioms:" + str(newAxioms))
+                logger.debug("Old Axioms:" + str(oldAxioms))
+                logger.debug("New Axioms:" + str(newAxioms))
                 if not oldSuccess and not newSuccess:
                     newSemVersion = "ERROR: No Axioms for both versions"
                 elif not oldSuccess:
@@ -291,7 +293,7 @@ def localDiffAndRelease(
                 testSuite,
                 accessDate,
                 newBestHeader,
-                diff_logger,
+                logger,
                 source,
                 semanticVersion=newSemVersion,
                 devURI=devURI,
@@ -318,18 +320,18 @@ def localDiffAndRelease(
                 os.path.join(artifactDir, "pom.xml"), "deploy"
             )
             if status > 0:
-                diff_logger.critical("Couldn't deploy new diff version")
-                diff_logger.info(log)
+                logger.critical("Couldn't deploy new diff version")
+                logger.info(log)
                 return None, "ERROR: Couldn't deploy to databus!", new_version
             else:
                 return True, "OK", new_version
     except FileNotFoundError:
-        diff_logger.critical(f"Couldn't find file for {uri}")
+        logger.exception(f"Couldn't find file for {uri}")
         return None, f"INTERNAL ERROR: Couldn't find file for {uri}", None
 
 
 def handleDiffForUri(
-    uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, source, devURI=""
+    uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, source, devURI="", logger=diff_logger
 ):
     if devURI != "":
         groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
@@ -346,7 +348,7 @@ def handleDiffForUri(
         try:
             metadata = requests.get(metafileUrl).json()
         except requests.exceptions.RequestException:
-            diff_logger.error(
+            logger.error(
                 "There was an error downloading the latest metadata-file, skipping this ontology..."
             )
             return (
@@ -374,14 +376,14 @@ def handleDiffForUri(
     semVersion = metadata["ontology-info"]["semantic-version"]
 
     isDiff, error = checkForNewVersion(
-        ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader
+        ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
     )
 
-    if isDiff == None:
-        diff_logger.warning("Header Access: " + error)
+    if isDiff is None:
+        logger.warning("Header Access: " + error)
         return None, "Header Access: " + error, None
     if isDiff:
-        diff_logger.info(f"Fond potential different version for {ontoLocationURI}")
+        logger.info(f"Fond potential different version for {ontoLocationURI}")
         return localDiffAndRelease(
             uri,
             lastNtFile,
@@ -391,24 +393,25 @@ def handleDiffForUri(
             testSuite,
             source,
             devURI=devURI,
+            logger=logger,
         )
     else:
-        diff_logger.info(f"No different version for {uri}")
+        logger.info(f"No different version for {uri}")
         return False, f"No different version for {uri}", None
 
 
-def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False):
+def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False, logger=diff_logger):
 
     both = oldAxiomSet.intersection(newAxiomSet)
     old = oldAxiomSet - newAxiomSet
     new = newAxiomSet - oldAxiomSet
 
-    diff_logger.info("Old Axioms:\n" + "\n".join(old))
-    diff_logger.info("New Axioms:\n" + "\n".join(new))
+    logger.info("Old Axioms:\n" + "\n".join(old))
+    logger.info("New Axioms:\n" + "\n".join(new))
 
     match = semanticVersionRegex.match(oldSemanticVersion)
     if match is None:
-        diff_logger.warning(f"Bad format of semantic version: {oldSemanticVersion}")
+        logger.warning(f"Bad format of semantic version: {oldSemanticVersion}")
         return (
             "ERROR: Can't build new semantic version because last is broken",
             old,
