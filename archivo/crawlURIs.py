@@ -736,7 +736,7 @@ def handleNewUri(
             {
                 "status": True,
                 "step": "Index check",
-                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={urlencode(vocab_uri)}>here</a>",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(vocab_uri)}>here</a>",
             }
         )
         return False, isNIR, None
