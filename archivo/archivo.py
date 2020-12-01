@@ -129,11 +129,12 @@ def ontology_official_update():
 
             # check for new trackThis URI
             succ, dev_version = archivo_version.handleTrackThis()
-            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            _, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            db.session.add(dbVersion)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
                 # update with new trackThis URI
-                if ont.devel is None and ont.devel != dev_ont.uri:
+                if ont.devel is not None and ont.devel != dev_ont.uri:
                     old_dev_obj = (
                         db.session.query(dbModels.DevelopOntology)
                         .filter_by(uri=ont.devel)
@@ -174,7 +175,9 @@ def ontology_dev_update():
             "There seems to be an error with the databus, no dev diff possible"
         )
         return
-    dev_diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
+    dev_diff_logger.info(
+        "Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
+    )
     testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")

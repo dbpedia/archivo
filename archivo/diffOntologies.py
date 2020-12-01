@@ -30,7 +30,9 @@ def graphDiff(oldGraph, newGraph):
     return compare.graph_diff(oldIsoGraph, newIsoGraph)
 
 
-def getSortedNtriples(sourceFile, targetPath, vocab_uri, inputType=None, logger=diff_logger):
+def getSortedNtriples(
+    sourceFile, targetPath, vocab_uri, inputType=None, logger=diff_logger
+):
     try:
         if inputType is None:
             rapperProcess = subprocess.run(
@@ -131,7 +133,9 @@ def commDiff(oldFile, newFile, logger=diff_logger):
         logger.error("Exeption during diffing with comm", exc_info=True)
 
 
-def checkForNewVersion(vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader, logger=diff_logger):
+def checkForNewVersion(
+    vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader, logger=diff_logger
+):
     logger.info(f"Checking the header for {vocab_uri}")
     # when both of the old values are not compareable, always download and check
     if (
@@ -197,9 +201,7 @@ def localDiffAndRelease(
         artifactDir, latestVersion = os.path.split(latestVersionDir)
         groupDir, artifactName = os.path.split(artifactDir)
         _, group = os.path.split(groupDir)
-        logger.info(
-            "Found different headers, downloading and parsing to compare..."
-        )
+        logger.info("Found different headers, downloading and parsing to compare...")
         new_version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
         newVersionPath = os.path.join(artifactDir, new_version)
         os.makedirs(newVersionPath, exist_ok=True)
@@ -241,7 +243,9 @@ def localDiffAndRelease(
             stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return None, f"Couldn't parse File: {errors}", None
         old_sorted_nt_path = os.path.join(newVersionPath, "oldVersionSorted.nt")
-        getSortedNtriples(oldNtriples, old_sorted_nt_path, uri, inputType="ntriples", logger=logger)
+        getSortedNtriples(
+            oldNtriples, old_sorted_nt_path, uri, inputType="ntriples", logger=logger
+        )
         isEqual, oldTriples, newTriples = commDiff(
             old_sorted_nt_path, new_sorted_nt_path, logger=logger
         )
@@ -262,9 +266,7 @@ def localDiffAndRelease(
                     lastSemVersion, oldAxioms, newAxioms
                 )
             else:
-                logger.warning(
-                    "Couldn't generate the axioms, no new semantic version"
-                )
+                logger.warning("Couldn't generate the axioms, no new semantic version")
                 logger.debug("Old Axioms:" + str(oldAxioms))
                 logger.debug("New Axioms:" + str(newAxioms))
                 if not oldSuccess and not newSuccess:
@@ -331,7 +333,15 @@ def localDiffAndRelease(
 
 
 def handleDiffForUri(
-    uri, localDir, metafileUrl, lastNtURL, lastVersion, testSuite, source, devURI="", logger=diff_logger
+    uri,
+    localDir,
+    metafileUrl,
+    lastNtURL,
+    lastVersion,
+    testSuite,
+    source,
+    devURI="",
+    logger=diff_logger,
 ):
     if devURI != "":
         groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
@@ -400,7 +410,9 @@ def handleDiffForUri(
         return False, f"No different version for {uri}", None
 
 
-def getNewSemanticVersion(oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False, logger=diff_logger):
+def getNewSemanticVersion(
+    oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False, logger=diff_logger
+):
 
     both = oldAxiomSet.intersection(newAxiomSet)
     old = oldAxiomSet - newAxiomSet

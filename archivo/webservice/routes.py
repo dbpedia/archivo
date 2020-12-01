@@ -202,10 +202,7 @@ def onto_list():
             .order_by(dbModels.Version.version.desc())
             .first()
         )
-        if v == None:
-            webservice_logger.warning(f"No version for {ont.uri}, try updating...")
-            dbUtils.updateInfoForOntology(ont.uri)
-        if v == None:
+        if v is None:
             webservice_logger.critical(f"Couldn't find any data for {ont.uri}")
             continue
         if ont.crawling_status or ont.crawling_status == None:

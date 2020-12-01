@@ -82,42 +82,7 @@ def update_database():
 
     for ontology in db.session.query(OfficialOntology).all():
         print("Handling URI:", ontology.uri)
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri)
-        _, versions = buildDatabaseObjectFromDatabus(
-            ontology.uri, group, artifact, ontology.source, ontology.accessDate
-        )
-        for v in [
-            vers
-            for vers in versions
-            if vers.version
-            not in [available_v.version for available_v in ontology.versions]
-        ]:
-            db.session.add(v)
-            db.session.commit()
-            print("Adds version for", ontology.uri, ":", v)
-
-        if ontology.devel != None:
-            dev_ont = ontology.devel
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(
-                ontology.uri, dev=True
-            )
-            _, versions = buildDatabaseObjectFromDatabus(
-                ontology.uri,
-                group,
-                artifact,
-                dev_ont.source,
-                dev_ont.accessDate,
-                dev=dev_ont.uri,
-            )
-            for v in [
-                vers
-                for vers in versions
-                if vers.version
-                not in [available_v.version for available_v in dev_ont.versions]
-            ]:
-                print("Adds version for", dev_ont.uri, ":", v)
-                db.session.add(v)
-                db.session.commit()
+        update_info_for_ontology(ontology)
 
 
 def write_official_index(filepath):
@@ -143,43 +108,51 @@ def write_dev_index(filepath):
             )
 
 
-def updateInfoForOntology(uri, orig_uri=None):
-    urisInDatabase = db.session.query(Ontology.uri).all()
-    urisInDatabase = [t[0] for t in urisInDatabase]
-    if orig_uri == None:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-    else:
+def update_info_for_ontology(ontology: OfficialOntology):
+
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri)
+    _, versions = buildDatabaseObjectFromDatabus(
+        ontology.uri, group, artifact, ontology.source, ontology.accessDate
+    )
+    for v in [
+        vers
+        for vers in versions
+        if vers.version
+        not in [available_v.version for available_v in ontology.versions]
+    ]:
+        db.session.add(v)
+        try:
+            db.session.commit()
+            print("Adds version for", ontology.uri, ":", v)
+        except Exception as e:
+            print(f"Problem handling update for {ontology.uri}: {str(e)}")
+
+    if ontology.devel is not None:
+        dev_ont = ontology.devel
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
-            orig_uri, dev=True
+            ontology.uri, dev=True
         )
-    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
-    if not uri in urisInDatabase:
-        webservice_logger.error("Not in database")
-        return
-    else:
-        ontology = db.session.query(Ontology).filter_by(uri=uri).first()
-    for info_dict in versions_info:
-        db.session.add(
-            Version(
-                version=datetime.strptime(
-                    info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"
-                ),
-                semanticVersion=info_dict["semversion"],
-                stars=info_dict["stars"],
-                triples=info_dict["triples"],
-                parsing=info_dict["parsing"]["conforms"],
-                licenseI=info_dict["minLicense"]["conforms"],
-                licenseII=info_dict["goodLicense"]["conforms"],
-                consistency=info_dict["consistent"]["conforms"],
-                lodeSeverity=str(info_dict["lode"]["severity"]),
-                ontology=ontology.uri,
-            )
+        _, versions = buildDatabaseObjectFromDatabus(
+            ontology.uri,
+            group,
+            artifact,
+            dev_ont.source,
+            dev_ont.accessDate,
+            dev=dev_ont.uri,
         )
-    try:
-        db.session.commit()
-    except IntegrityError as e:
-        print(str(e))
-        db.session.rollback()
+        for v in [
+            vers
+            for vers in versions
+            if vers.version
+            not in [available_v.version for available_v in dev_ont.versions]
+        ]:
+            print("Adds DEV version for", dev_ont.uri, ":", v)
+            db.session.add(v)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(f"Problem handling update for {dev_ont.uri}: {str(e)}")
+                db.session.rollback()
 
 
 def getDatabaseEntry(archivo_version: ArchivoVersion):

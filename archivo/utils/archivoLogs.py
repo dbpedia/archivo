@@ -28,7 +28,12 @@ for logger in [webservice_logger, discovery_logger, diff_logger, dev_diff_logger
 c_format = logging.Formatter("[%(levelname)s]:[%(name)s]:%(message)s")
 console_handler.setFormatter(c_format)
 file_format = logging.Formatter("[%(asctime)s]:[%(levelname)s]:%(message)s")
-for f_handler in [webservice_file_handler, discovery_file_handler, diff_file_handler, dev_diff_file_handler]:
+for f_handler in [
+    webservice_file_handler,
+    discovery_file_handler,
+    diff_file_handler,
+    dev_diff_file_handler,
+]:
     f_handler.setLevel(logging.DEBUG)
     f_handler.setFormatter(file_format)
 console_handler.setLevel(logging.ERROR)
