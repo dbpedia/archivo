@@ -446,7 +446,7 @@ if __name__ == "__main__":
     from utils.validation import TestSuite
     import traceback
 
-    ts = TestSuite(".")
+    ts = TestSuite()
     try:
         success, msg, archivoVersion = handleDiffForUri(
             "http://purl.org/cyber/misp",

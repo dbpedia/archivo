@@ -26,7 +26,7 @@ cron.start()
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite()
 
     discovery_logger.info("Started discovery of LOV URIs...")
     run_discovery(crawlURIs.getLovUrls(), "LOV", dataPath, testSuite)
@@ -90,7 +90,7 @@ def ontology_official_update():
         )
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite()
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
         diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
@@ -178,7 +178,7 @@ def ontology_dev_update():
     dev_diff_logger.info(
         "Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     )
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite()
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(

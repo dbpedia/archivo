@@ -27,6 +27,14 @@ def loadShaclGraph(filename, pubId=None):
     return shaclgraph
 
 
+def getDisplayAxiomsPath():
+    return os.path.join(
+        os.path.abspath(os.path.dirname(sys.argv[0])),
+        "helpingBinaries",
+        "DisplayAxioms.jar",
+    )
+
+
 def loadShacl(filepath, pubId=None):
     shaclgraph = Graph()
     with open(filepath, "r") as shaclfile:
@@ -39,22 +47,38 @@ class TestSuite:
     pelletPath = archivoConfig.pelletPath
     profileCheckerJar = archivoConfig.profileCheckerJar
 
-    def __init__(self, archivoPath):
-        self.licenseViolationGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "license-I.ttl"),
+    def __init__(self):
+        self.licenseViolationGraph = loadShaclGraph(
+            "license-I.ttl",
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl",
         )
-        self.licenseWarningGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "license-II.ttl"),
+        self.licenseWarningGraph = loadShaclGraph(
+            "license-II.ttl",
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl",
         )
-        self.lodeTestGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "LODE.ttl"),
+        self.lodeTestGraph = loadShaclGraph(
+            "LODE.ttl",
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
         )
-        self.displayAxiomsPath = os.path.join(
-            archivoPath, "helpingBinaries", "DisplayAxioms.jar"
+        self.displayAxiomsPath = getDisplayAxiomsPath()
+        self.archivoTestGraph = loadShaclGraph(
+            "archivo.ttl",
+            pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
+
+    def archivoConformityTest(self, ontograph):
+        success, report_graph, report_text = validate(
+            ontograph,
+            shacl_graph=self.archivoTestGraph,
+            ont_graph=None,
+            inference="none",
+            abort_on_error=False,
+            meta_shacl=False,
+            debug=False,
+            advanced=True,
+        )
+        report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
+        return success, report_graph, report_text
 
     def licenseViolationValidation(self, ontograph):
         success, report_graph, report_text = validate(

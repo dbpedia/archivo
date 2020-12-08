@@ -339,6 +339,18 @@ class ArchivoVersion:
         # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
         # no empty parsed files since shacl is valid on empty files.
         (
+            self.conforms_archivo,
+            reportGraphArchivo,
+            reportTextArchivo,
+        ) = self.test_suite.archivoConformityTest(self.graph)
+        with open(
+            raw_file_path + "_type=shaclReport_validates=archivoMetadata.ttl", "w+"
+        ) as archivoConformityFile:
+            print(
+                inspectVocabs.getTurtleGraph(reportGraphArchivo),
+                file=archivoConformityFile,
+            )
+        (
             self.conforms_licenseI,
             reportGraphLicense,
             reportTextLicense,
