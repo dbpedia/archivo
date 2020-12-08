@@ -17,48 +17,98 @@
     
 <#archivo-display-correctly>
     a sh:NodeShape ;
-    sh:targetClass owl:Ontology;
+    sh:targetClass owl:Ontology, skos:ConceptScheme;
+    sh:property <#description-warning> ;
     sh:property <#comment-violation> ;
-    sh:property <#preflabel-warning> ;
-    sh:or (
-		[
-			a sh:PropertyShape ;
-			sh:severity sh:Violation;
-			sh:path dc:title;
-			sh:nodeKind sh:Literal;
-			sh:minCount 1;
-			sh:message "dc:title is missing or no Literal"@en;
-			sh:name "dc:title not correctly specified"@en ;
-		]
-		[
-			a sh:PropertyShape;
-			sh:severity sh:Violation;
-			sh:path rdfs:label;
-			sh:nodeKind sh:Literal;
-			sh:minCount 1 ;
-			sh:name "label not correctly specified"@en;
-			sh:message "rdfs:label is missing or is no Literal"@en ;
-		]
-	) .
+    sh:property <#label-violation> .
+    
 
+
+
+<#label-violation>
+    a sh:PropertyShape;
+    sh:severity sh:Violation;
+    dct:description "For having a proper title on the Databus, Archivo uses skos:prefLabel, rdfs:label, dct:title and dc:title (taken in that order)."@en ;
+    sh:message "Archivo requires either skos:prefLabel, rdfs:label, dct:title or dc:title for the title of the ontology. Default is the non information resource URI."@en ;
+    sh:or (
+        [
+            sh:path skos:prefLabel;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path rdfs:label;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dc:title;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dct:title;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        
+    ).
 
 
 <#comment-violation>
     a sh:PropertyShape ;
     sh:severity sh:Violation;
-    sh:path rdfs:comment;
-    sh:nodeKind sh:Literal;
-    sh:minCount 1;
-    sh:name "comment not correctly specified"@en;
-    sh:message "rdfs:comment is missing or is no Literal"@en .
+    dct:description "For a short comment on the Databus Archivo uses the first sentence of either dct:abstract, dct:description or dc:description (taken in that order)."@en ;
+    sh:message "Archivo requires either dct:abstract, dct:description or dc:description for a short comment about the ontology."@en ;
+    sh:or (
+        [
+            sh:path dct:abstract;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dct:description;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dc:description;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ] 
+    ).
 
-<#skosPrefLabel-warning>
-# NOT implemented yet
+
+<#description-warning>
     a sh:PropertyShape ;
     sh:severity sh:Warning;
-    sh:path skos:prefLabel;
-    sh:nodeKind sh:Literal;
-    sh:minCount 1;
-    sh:name "skos:prefLabel recommendation, i.e. if several labels/titles are given skos:prefLabel will be choosen."@en;
-    sh:message "skos:prefLabel is missing or is no Literal"@en .
+    dct:description "For a longer description on the Databus Archivo aggregates the values of rdfs:description, dcterms:description, dc:description, rdfs:comment and dcterms:abstract."@en ;
+    sh:message "For a proper description of the ontology on the Databus Archivo requires at least one of rdfs:description, dcterms:description, dc:description, rdfs:comment or dcterms:abstract."@en ;
+    sh:or (
+        [
+            sh:path rdfs:description;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dct:description;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dc:description;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ] 
+        [
+            sh:path rdfs:comment;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ] 
+        [
+            sh:path dct:abstract;
+            sh:nodeKind sh:Literal;
+            sh:minCount 1;
+        ] 
+    ).
 

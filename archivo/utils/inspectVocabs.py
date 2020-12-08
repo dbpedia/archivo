@@ -116,10 +116,11 @@ def getNIRUri(graph):
 # Returns the possible labels for a ontology
 def getLabel(graph):
     queryString = (
-        "SELECT DISTINCT ?label ?dctTitle ?dcTitle \n"
+        "SELECT DISTINCT ?prefLabel ?label ?dctTitle ?dcTitle \n"
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
+        ' OPTIONAL { ?uri skos:prefLabel ?preflabel FILTER (lang(?preflabel) = "" || langMatches(lang(?preflabel), "en"))}\n'
         ' OPTIONAL { ?uri rdfs:label ?label FILTER (lang(?label) = "" || langMatches(lang(?label), "en"))}\n'
         ' OPTIONAL { ?uri dcterms:title ?dctTitle FILTER (lang(?dctTitle) = "" || langMatches(lang(?dctTitle), "en"))}\n'
         ' OPTIONAL { ?uri dc:title ?dcTitle FILTER (lang(?dcTitle) = "" || langMatches(lang(?dcTitle), "en"))}\n'
