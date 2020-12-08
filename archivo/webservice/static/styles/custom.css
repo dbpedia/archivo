@@ -123,14 +123,6 @@ th {
     padding: 8px;
 }
 
-.x {
-    color: red;
-}
-
-.check {
-    color: green;
-}
-
 a:link {
     color: blue;
     background-color: transparent;
@@ -147,4 +139,12 @@ a:hover {
     color: red;
     background-color: transparent;
     text-decoration: underline;
+}
+
+.x {
+    color: red !important;
+}
+
+.check {
+    color: green !important;
 }
