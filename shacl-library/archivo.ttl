@@ -53,6 +53,7 @@
     sh:message "rdfs:comment is missing or is no Literal"@en .
 
 <#skosPrefLabel-warning>
+# NOT implemented yet
     a sh:PropertyShape ;
     sh:severity sh:Warning;
     sh:path skos:prefLabel;
