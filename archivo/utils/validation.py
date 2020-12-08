@@ -35,6 +35,7 @@ def getDisplayAxiomsPath():
     )
 
 
+# needed for gunicorn
 def loadShacl(filepath, pubId=None):
     shaclgraph = Graph()
     with open(filepath, "r") as shaclfile:
@@ -47,22 +48,22 @@ class TestSuite:
     pelletPath = archivoConfig.pelletPath
     profileCheckerJar = archivoConfig.profileCheckerJar
 
-    def __init__(self):
-        self.licenseViolationGraph = loadShaclGraph(
-            "license-I.ttl",
+    def __init__(self, archivoPath):
+        self.licenseViolationGraph = loadShacl(
+            os.path.join(archivoPath, "shacl", "license-I.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl",
         )
-        self.licenseWarningGraph = loadShaclGraph(
-            "license-II.ttl",
+        self.licenseWarningGraph = loadShacl(
+            os.path.join(archivoPath, "shacl", "license-II.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl",
         )
-        self.lodeTestGraph = loadShaclGraph(
-            "LODE.ttl",
+        self.lodeTestGraph = loadShacl(
+            os.path.join(archivoPath, "shacl", "LODE.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
         )
         self.displayAxiomsPath = getDisplayAxiomsPath()
-        self.archivoTestGraph = loadShaclGraph(
-            "archivo.ttl",
+        self.archivoTestGraph = loadShacl(
+            os.path.join(archivoPath, "shacl", "archivo.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
 

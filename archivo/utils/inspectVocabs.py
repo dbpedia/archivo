@@ -17,11 +17,12 @@ descriptionNamespaceGraph.bind("rdfs", RDFS)
 
 
 header_rdflib_mapping = {
-    "application/ntriples" : "nt",
-    "application/rdf+xml" : "xml",
-    "text/turtle" : "turtle",
-    "application/xhtml" : "rdfa",
+    "application/ntriples": "nt",
+    "application/rdf+xml": "xml",
+    "text/turtle": "turtle",
+    "application/xhtml": "rdfa",
 }
+
 
 def getGraphOfVocabFile(filepath, logger=None):
     try:
@@ -39,7 +40,9 @@ def getGraphOfVocabFile(filepath, logger=None):
 
 def get_graph_of_string(rdf_string, content_type):
     graph = rdflib.Graph()
-    graph.parse(StringIO(rdf_string), format=header_rdflib_mapping.get(content_type, 'xml'))
+    graph.parse(
+        StringIO(rdf_string), format=header_rdflib_mapping.get(content_type, "xml")
+    )
     return graph
 
 

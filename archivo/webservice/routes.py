@@ -20,7 +20,7 @@ from urllib.error import HTTPError, URLError
 import json
 
 archivoPath = os.path.split(app.instance_path)[0]
-testingSuite = TestSuite()
+testingSuite = TestSuite(archivoPath)
 
 
 class SuggestionForm(FlaskForm):
