@@ -8,56 +8,40 @@
 @prefix cc: <http://creativecommons.org/ns#> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
 
 #
 # Ontology Level Tests for Archivo
 #
 #
-# VIOLATION:
-#    dc:title
-# 	 rdfs:comment
-
     
 <#archivo-display-correctly>
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
-    sh:property <#label-violation> ;
     sh:property <#comment-violation> ;
-    sh:property <#publisher-warning> .
-
-<#label-violation>
-    a sh:PropertyShape ;
-    sh:severity sh:Violation;
-    sh:path rdfs:label;
-    sh:nodeKind sh:Literal;
-    sh:minCount 1;
-    sh:message "dc:title is missing or no Literal"@en;
-    sh:name "title not correctly specified"@en .
-
-
-<#contributors-info>
-    a sh:PropertyShape;
-    sh:path dc:contributor;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "no dc:contributor of the ontology listed and will not be displayed"@en.
-    
-
-<#description-warning>
-    a sh:PropertyShape ;
-    sh:path dc:description;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:nodeKind sh:Literal;
-    sh:message "no dc:description given or no literal, will not be displayed"@en.
+    sh:property <#preflabel-warning> ;
+    sh:or (
+		[
+			a sh:PropertyShape ;
+			sh:severity sh:Violation;
+			sh:path dc:title;
+			sh:nodeKind sh:Literal;
+			sh:minCount 1;
+			sh:message "dc:title is missing or no Literal"@en;
+			sh:name "dc:title not correctly specified"@en ;
+		]
+		[
+			a sh:PropertyShape;
+			sh:severity sh:Violation;
+			sh:path rdfs:label;
+			sh:nodeKind sh:Literal;
+			sh:minCount 1 ;
+			sh:name "label not correctly specified"@en;
+			sh:message "rdfs:label is missing or is no Literal"@en ;
+		]
+	) .
 
 
-<#publisher-warning>
-    a sh:PropertyShape ;
-    sh:path dc:publisher;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:message "dc:pulisher of the ontology is missing and will not be displayed"@en.
 
 <#comment-violation>
     a sh:PropertyShape ;
@@ -68,12 +52,12 @@
     sh:name "comment not correctly specified"@en;
     sh:message "rdfs:comment is missing or is no Literal"@en .
 
-<#label-violation>
-    a sh:PropertyShape;
-    sh:severity sh:Violation;
-    sh:path rdfs:label;
+<#skosPrefLabel-warning>
+    a sh:PropertyShape ;
+    sh:severity sh:Warning;
+    sh:path skos:prefLabel;
     sh:nodeKind sh:Literal;
-    sh:minCount 1 ;
-    sh:name "label not correctly specified"@en;
-    sh:message "rdfs:label is missing or is no Literal"@en .
+    sh:minCount 1;
+    sh:name "skos:prefLabel recommendation, i.e. if several labels/titles are given skos:prefLabel will be choosen."@en;
+    sh:message "skos:prefLabel is missing or is no Literal"@en .
 
