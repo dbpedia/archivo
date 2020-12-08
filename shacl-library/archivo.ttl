@@ -14,20 +14,12 @@
 # Ontology Level Tests for Archivo
 #
 #
-    
-<#archivo-display-correctly>
-    a sh:NodeShape ;
-    sh:targetClass owl:Ontology, skos:ConceptScheme;
-    sh:property <#description-warning> ;
-    sh:property <#comment-violation> ;
-    sh:property <#label-violation> .
-    
 
 
-
-<#label-violation>
-    a sh:PropertyShape;
+<#ontology-label-violation>
+    a sh:NodeShape;
     sh:severity sh:Violation;
+    sh:targetClass owl:Ontology, skos:ConceptScheme;
     dct:description "For having a proper title on the Databus (and therefor also on the website), Archivo uses skos:prefLabel, rdfs:label, dct:title and dc:title (taken in that order)."@en ;
     sh:message "Archivo requires either skos:prefLabel, rdfs:label, dct:title or dc:title for the title of the ontology. Default is the non information resource URI."@en ;
     sh:or (
@@ -55,9 +47,10 @@
     ).
 
 
-<#comment-violation>
-    a sh:PropertyShape ;
+<#archivo-comment-violation>
+    a sh:NodeShape ;
     sh:severity sh:Violation;
+    sh:targetClass owl:Ontology, skos:ConceptScheme;
     dct:description "For a short comment on the Databus (and therefor also on the website) Archivo uses the first sentence of either dct:abstract, dct:description or dc:description (taken in that order)."@en ;
     sh:message "Archivo requires either dct:abstract, dct:description or dc:description for a short comment about the ontology."@en ;
     sh:or (
@@ -79,8 +72,9 @@
     ).
 
 
-<#description-warning>
-    a sh:PropertyShape ;
+<#archivo-description-warning>
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology, skos:ConceptScheme;
     sh:severity sh:Warning;
     dct:description "For a longer description on the Databus Archivo aggregates the values of rdfs:description, dcterms:description, dc:description, rdfs:comment and dcterms:abstract."@en ;
     sh:message "For a proper description of the ontology on the Databus Archivo requires at least one of rdfs:description, dcterms:description, dc:description, rdfs:comment or dcterms:abstract."@en ;
