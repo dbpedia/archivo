@@ -614,7 +614,7 @@ def handleNewUri(
     try:
         graph = inspectVocabs.get_graph_of_string(response.text, bestHeader)
     except Exception:
-        logger.error("Exception in rdflib parsing", exc_info=True)
+        logger.error(f"Exception in rdflib parsing of URI {vocab_uri}", exc_info=True)
         user_output.append(
             {
                 "status": False,

@@ -28,7 +28,7 @@
 <#label-violation>
     a sh:PropertyShape;
     sh:severity sh:Violation;
-    dct:description "For having a proper title on the Databus, Archivo uses skos:prefLabel, rdfs:label, dct:title and dc:title (taken in that order)."@en ;
+    dct:description "For having a proper title on the Databus (and therefor also on the website), Archivo uses skos:prefLabel, rdfs:label, dct:title and dc:title (taken in that order)."@en ;
     sh:message "Archivo requires either skos:prefLabel, rdfs:label, dct:title or dc:title for the title of the ontology. Default is the non information resource URI."@en ;
     sh:or (
         [
@@ -58,7 +58,7 @@
 <#comment-violation>
     a sh:PropertyShape ;
     sh:severity sh:Violation;
-    dct:description "For a short comment on the Databus Archivo uses the first sentence of either dct:abstract, dct:description or dc:description (taken in that order)."@en ;
+    dct:description "For a short comment on the Databus (and therefor also on the website) Archivo uses the first sentence of either dct:abstract, dct:description or dc:description (taken in that order)."@en ;
     sh:message "Archivo requires either dct:abstract, dct:description or dc:description for a short comment about the ontology."@en ;
     sh:or (
         [

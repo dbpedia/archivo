@@ -679,7 +679,6 @@ def get_SPOs():
     sparql = SPARQLWrapper(mods_uri)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
-    print("Query got called!")
     results = sparql.query().convert()
 
     try:
@@ -689,7 +688,6 @@ def get_SPOs():
 
     for binding in results:
         spo_csv_uri = binding["generated"]["value"]
-        print(binding["used"]["value"])
         try:
             csv_doc = requests.get(spo_csv_uri).text
         except Exception:

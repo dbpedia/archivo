@@ -25,7 +25,7 @@ for logger in [webservice_logger, discovery_logger, diff_logger, dev_diff_logger
     logger.setLevel(logging.DEBUG)
 
 # Formatters and adding the to the handlers
-c_format = logging.Formatter("[%(levelname)s]:[%(name)s]:%(message)s")
+c_format = logging.Formatter("[%(asctime)s]:[%(levelname)s]:[%(name)s]:%(message)s")
 console_handler.setFormatter(c_format)
 file_format = logging.Formatter("[%(asctime)s]:[%(levelname)s]:%(message)s")
 for f_handler in [
