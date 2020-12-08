@@ -1,82 +1,75 @@
-{% extends "index.html" %}
-
-{% block content %}
+{% extends "index.html" %} {% block content %}
 <div class="container">
     <p>
-    <h2><b>A</b>rchiv<b>o</b> - <b>O</b>ntology <b>A</b>rchive</h2>
-<p>Archivo automatically discovers OWL ontology on the web and checks them every 8 hours. When changes are detected, Archivo downloads and rates and archives the latest snapshot persistently on the Databus. See <a href="about">the about page for details (paper &amp; video)</a>. 
-</p>
+        <h2><b>A</b>rchiv<b>o</b> - <b>O</b>ntology <b>A</b>rchive</h2>
+        <p>Archivo automatically discovers OWL ontology on the web and checks them every 8 hours. When changes are detected, Archivo downloads and rates and archives the latest snapshot persistently on the Databus. See <a href="about">the about page for details (paper &amp; video)</a>.
+        </p>
 
 
-    <h3>Status</h3>
-    <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies. <a href="#list"> See all available Ontologies</a></p>
-    <div id="chart" class="chart">
-    </div>
+        <h3>Status</h3>
+        <p>At this moment Archivo contains <b>{{ontoNumber}}</b> Ontologies. <a href="#list"> See all available Ontologies</a></p>
+        <div id="chart" class="chart">
+        </div>
 
-<h3>Rating</h3>
-<p>Reaching ★★★★ stars doesn't mean your ontology is of good quality. Archivo's stars measure minimum viability, so ★★★★ stars mean that this minimum viability is achieved. The ontology is minimally FAIR (Findable, Accessible, Interoperable and Reusable) and further processing is possible at all. 
-We prepared a <a href="rating">page to inform about future plans and limitations of the current implementation</a> as well as ways to discuss and contribute to further ratings. 
-</p> 
+        <h3>Rating</h3>
+        <p>Reaching ★★★★ stars doesn't mean your ontology is of good quality. Archivo's stars measure minimum viability, so ★★★★ stars mean that this minimum viability is achieved. The ontology is minimally FAIR (Findable, Accessible, Interoperable and Reusable)
+            and further processing is possible at all. We prepared a <a href="rating">page to inform about future plans and limitations of the current implementation</a> as well as ways to discuss and contribute to further ratings.
+        </p>
 
-<ul style=" list-style-type: none;">
-<li>☆☆☆☆ The ontology is not retrievable or parseable, which will negatively impact all further applications (SPARQL, Reasoning, SHACL, etc.)</li>
-<li>★☆☆☆ The ontology is automatically retrievable and parses, missing or unclear license impacts usability</li>
-<li>★★☆☆ Some sort of license statement was found, any consumer is forced to spend effort on a manual inspection or extra coding</li>
-<li>★★☆☆ + ★ Additional star, if the license statement achieves minimial interoperability</li>
-<li>★★☆☆ + ★ Additional star, if successfull consistency check by reasoner, i.e. loading this ontology into a reasoner has a high chance of succeeding.</li>
-</ul>
- 
- 
- <b>How to get more stars?</b> Instructions provided at the <a href='/rating'>rating page</a>.<br>
- <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>.<br><br>
+        <ul style=" list-style-type: none;">
+            <li>☆☆☆☆ The ontology is not retrievable or parseable, which will negatively impact all further applications (SPARQL, Reasoning, SHACL, etc.)</li>
+            <li>★☆☆☆ The ontology is automatically retrievable and parses, missing or unclear license impacts usability</li>
+            <li>★★☆☆ Some sort of license statement was found, any consumer is forced to spend effort on a manual inspection or extra coding</li>
+            <li>★★☆☆ + ★ Additional star, if the license statement achieves minimial interoperability</li>
+            <li>★★☆☆ + ★ Additional star, if successfull consistency check by reasoner, i.e. loading this ontology into a reasoner has a high chance of succeeding.</li>
+        </ul>
 
-   
+
+        <b>How to get more stars?</b> Instructions provided at the <a href='/rating'>rating page</a>.<br>
+        <b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>.<br><br>
+
+
 
 </div>
 <!-- begin table -->
 <div class="container-fluid">
     <hr>
     <h3 id="list">List of all available ontologies</h3>
-    <input type="checkbox" name="download" class="column_selector" value=3 checked
-        onclick="show_hide_column(3, checked)">
+    <input type="checkbox" id="download" class="column_selector" value=3 checked onclick="show_hide_column(3, checked)">
     <label for="download">Download</label>
 
-    <input type="checkbox" name="triples" class="column_selector" value=4 checked
-        onclick="show_hide_column(4, checked)">
+    <input type="checkbox" id="triples" class="column_selector" value=4 checked onclick="show_hide_column(4, checked)">
     <label for="triples">Triples</label>
 
-    <input type="checkbox" name="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
+    <input type="checkbox" id="stars" class="column_selector" value=5 checked onclick="show_hide_column(5, checked)">
     <label for="stars">Archivo Star Rating</label>
-    <input type="checkbox" name="crawling" class="column_selector" value=13 checked
-        onclick="show_hide_column(13, checked)">
-    <label for="crawling">Crawling-Status</label>
-    Switch: <a href="/list">Published Web Versions</a> |
+    <input type="checkbox" id="crawling" class="column_selector" value=13 checked onclick="show_hide_column(13, checked)">
+    <label for="crawling">Crawling-Status</label> Switch: <a href="/list">Published Web Versions</a> |
     <a href="/list?dev"> Developer Versions</a>
     <br>Additional columns:
-    <input type="checkbox" name="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
+    <input type="checkbox" id="databus_uri" class="column_selector" value=1 onclick="show_hide_column(1, checked)">
     <label for="databus_uri">Databus URI</label>
 
-    <input type="checkbox" name="source" class="column_selector" value=2 onclick="show_hide_column(2, checked)">
+    <input type="checkbox" id="source" class="column_selector" value=2 onclick="show_hide_column(2, checked)">
     <label for="source">Source</label>
-    <input type="checkbox" name="semantic_version" class="column_selector" value=6
-        onclick="show_hide_column(6, checked)">
+    <input type="checkbox" id="semantic_version" class="column_selector" value=6 onclick="show_hide_column(6, checked)">
     <label for="semantic_version">Semantic Version</label>
-    <input type="checkbox" name="parsing" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
+    <input type="checkbox" id="parsing" class="column_selector" value=8 onclick="show_hide_column(8, checked)">
     <label for="parsing">Parsing</label>
 
-    <input type="checkbox" name="min_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
+    <input type="checkbox" id="min_license" class="column_selector" value=9 onclick="show_hide_column(9, checked)">
     <label for="min_license">Min.License</label>
 
-    <input type="checkbox" name="good_license" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
+    <input type="checkbox" id="good_license" class="column_selector" value=10 onclick="show_hide_column(10, checked)">
     <label for="good_license">Good License</label>
 
-    <input type="checkbox" name="consistency" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
+    <input type="checkbox" id="consistency" class="column_selector" value=11 onclick="show_hide_column(11, checked)">
     <label for="consistency">Consistency</label>
 
-    <input type="checkbox" name="lode" class="column_selector" value=12 onclick="show_hide_column(12, checked)">
+    <input type="checkbox" id="lode" class="column_selector" value=12 onclick="show_hide_column(12, checked)">
     <label for="lode">LODE conformity</label>
-    <input type="checkbox" name="timestamp" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
-    <label for="lode">Latest Timestamp</label>
+    <input type="checkbox" id="timestamp" class="column_selector" value=7 onclick="show_hide_column(7, checked)">
+    <label for="timestamp">Latest Timestamp</label>
 
     <table id="ontologies-table" data-toggle="table" data-search="true">
         <col class="col1" />
@@ -117,7 +110,7 @@ We prepared a <a href="rating">page to inform about future plans and limitations
             {% for onto in Ontologies %}
             <tr>
                 <td><a href="{{onto.ontology.infoURL}}">{{onto.ontology.label}}</a></td>
-                <td><a href="{{onto.databusURI}}">Link</a></td>
+                <td><a href="{{onto.databusURI}}">Databus Artifact</a></td>
                 <td>{{onto.source}}</td>
                 <td>
                     <a href="{{onto.ontology.downloadURL}}&f=owl">owl</a>,
@@ -171,10 +164,8 @@ We prepared a <a href="rating">page to inform about future plans and limitations
                 </td>
                 <td>
                     {% if onto.crawling.status %}
-                    <span class="check">✔</span>
-                    {% else %}
-                    <span title="{{onto.crawling.error}}" class="x">✘</span>
-                    {% endif %}
+                    <span class="check">✔</span> {% else %}
+                    <span title="{{onto.crawling.error}}" class="x">✘</span> {% endif %}
                 </td>
             </tr>
             {%endfor%}
@@ -193,11 +184,13 @@ We prepared a <a href="rating">page to inform about future plans and limitations
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script type="text/javascript">
-
-    var graphs = {{ graphJSON | safe }};
+    var graphs = {
+        {
+            graphJSON | safe
+        }
+    };
 
     Plotly.plot('chart', graphs, {});
-
 </script>
 
 <script>

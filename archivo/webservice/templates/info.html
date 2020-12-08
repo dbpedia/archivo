@@ -1,77 +1,70 @@
-{% extends "index.html" %}
-
-{% block content %}
+{% extends "index.html" %} {% block content %}
 <div class="container">
     <p>
-    <h2>Inspect an archived ontology</h2>
-    Select an ontology to see information about all versions deployed:
+        <h2>Inspect an archived ontology</h2>
+        Select an ontology to see information about all versions deployed:
     </p>
     <form action="" method="POST" novalidate>
-        {{ form.hidden_tag() }}
-        {{ form.csrf_token }}
+        {{ form.hidden_tag() }} {{ form.csrf_token }}
         <p>
-        <div style="width: 400px">
-            {{ form.uris(**{"onchange":"this.form.submit()"}) }}
-        </div>
+            <div style="width: 400px">
+                {{ form.uris(**{"onchange":"this.form.submit()"}) }}
+            </div>
         </p>
     </form>
-    <br>
-    {% if general_info.title %}
+    <br> {% if general_info.title %}
 
 
 
     <p style="color: darkgray;">given title:
-    <h2>{{general_info.title}}</h2>
+        <h2>{{general_info.title}}</h2>
 
-    <p><span style="color: darkgray;">given comment:</span> {{general_info.comment}}
-    </p>
-    <p>{% if general_info.hasDev %}
-        Switch:
-        <a class="btn btn-primary btn-sm" href="/info?o={{general_info.nir.encoded}}">Official</a>
-        <a class="btn btn-secondary btn-sm" href="/info?o={{general_info.nir.encoded}}&dev"> Develop </a>
-        {% endif %}
+        <p><span style="color: darkgray;">given comment:</span> {{general_info.comment}}
+        </p>
+        <p>{% if general_info.hasDev %} Switch:
+            <a class="btn btn-primary btn-sm" href="/info?o={{general_info.nir.encoded}}">Official</a>
+            <a class="btn btn-secondary btn-sm" href="/info?o={{general_info.nir.encoded}}&dev"> Develop </a> {% endif %}
 
-    <table>
-        <tr>
-            <td><b>Ontology URI</b></td>
-            {% if general_info.sourceURI %}
-            <td><b>Source URI</b></td>
-            {% endif %}
-            <td><b>First Discovery</b></td>
-            <td><b>Discovery Source</b></td>
-            <td><b>Databus Artifact</b></td>
-        </tr>
-        <tr>
-            <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
-            {% if general_info.sourceURI %}
-            <td><a href="{{ general_info.sourceURI }}">{{ general_info.sourceURI }}</a></td>
-            {% endif %}
-            <td>{{general_info.archivement}}</td>
-            <td>{{general_info.source}}</td>
-            <td><a href="{{ general_info.databusArtifact }}">Link</a></td>
-    </table>
-    </p>
+            <table>
+                <tr>
+                    <td><b>Ontology URI</b></td>
+                    {% if general_info.sourceURI %}
+                    <td><b>Source URI</b></td>
+                    {% endif %}
+                    <td><b>First Discovery</b></td>
+                    <td><b>Discovery Source</b></td>
+                    <td><b>Databus Artifact</b></td>
+                </tr>
+                <tr>
+                    <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
+                    {% if general_info.sourceURI %}
+                    <td><a href="{{ general_info.sourceURI }}">{{ general_info.sourceURI }}</a></td>
+                    {% endif %}
+                    <td>{{general_info.archivement}}</td>
+                    <td>{{general_info.source}}</td>
+                    <td><a href="{{ general_info.databusArtifact }}">Link</a></td>
+            </table>
+        </p>
 </div>
 <div class="container">
 
     <h4>Version Snapshots and Archivo Star Rating</h4>
-    <p>Archivo ★'s measure basic compliance and interoperability of ontologies.
-        Hover over the headers for further information.
-    <table id="table">
-        <tr>
-            <th colspan="5" style="text-align: center;"></th>
-            <th colspan="2" style="text-align: center;">Archivo Stars Baseline</th>
-            <th colspan="2" style="text-align: center;">Good Practice Stars</th>
-        </tr>
-        <tr>
-            <th><span title="Crawled Snapshots are saved on the Databus. 
+    <p>Archivo ★'s measure basic compliance and interoperability of ontologies. Hover over the headers for further information.
+        <table id="table">
+            <tr>
+                <td colspan="5" style="text-align: center;"></td>
+                <th colspan="2" style="text-align: center;">Archivo Stars Baseline</th>
+                <th colspan="2" style="text-align: center;">Good Practice Stars</th>
+            </tr>
+            <tr>
+                <th><span title="Crawled Snapshots are saved on the Databus. 
 The version string gives the data and time and is used for downloading the exact version.">Snapshot Details (?)</span>
-            </th>
-            <th><span title="Triple count">Triples (?)</span></th>
-            <th>Download</th>
-            <th>Semantic Version</th>
-            <th><a href="/faq#stars">Stars</a></th>
-            <th><span title="All of the following criteria have to be fulfilled:
+                </th>
+                <th><span title="Triple count">Triples (?)</span></th>
+                <th>Download</th>
+                <th>Semantic Version</th>
+                <th><a href="/faq#stars">Stars</a></th>
+                <th><span title="All of the following criteria have to be fulfilled:
 
 1) the non-information URI resolves to a machine readable format
 Alternativley a machine readable version of the ontology is deterministically discoverable by other common means. 
@@ -83,7 +76,7 @@ Alternativley a machine readable version of the ontology is deterministically di
 4) at least one format was found that parses with no or few (negligible) syntactical warnings">
                     ★ Retrieval &amp; Parsing (?)
                 </span></th>
-            <th><span title="Any license statement
+                <th><span title="Any license statement
 
 1) A proper ontology declaration was found using 'rdf:type owl:Ontology'
 
@@ -93,7 +86,7 @@ Alternativley a machine readable version of the ontology is deterministically di
 ">
                     ★ License I (?)
                 </span></th>
-            <th><span title="Homogenized license statement:
+                <th><span title="Homogenized license statement:
                 
 1) dct:license as property
 
@@ -103,130 +96,95 @@ Alternativley a machine readable version of the ontology is deterministically di
 ">
                     ★ License II (?)
                 </span></th>
-            <th><span title="Reasoner compliance:
+                <th><span title="Reasoner compliance:
                 
 1) passing the consistency check of implemented reasoners
 
 Current implementation uses Pellet/Stardog
 ">
                     ★ Consistency (?)</span>
-            </th>
-        </tr>
-        {% for version in versions_info %}
-        <tr>
-            <td>
-                <a href="{{version.version.url}}">{{version.version.label}}</a>
-                {% if version.docuURL %}
-                <a href="{{version.docuURL}}">📰</a>
-                {% endif %}
-            </td>
-            <td>{{version.triples}}</td>
-            <td>
-                {% if general_info.isDev %}
-                <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}&dev">owl</a>,
-                <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}&dev">ttl</a>,
-                <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}&dev">nt</a>
-                {% else %}
-                <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}">owl</a>,
-                <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}">ttl</a>,
-                <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}">nt</a>
-                {% endif %}
-            </td>
-            <td>{{version.semversion}}</td>
-            <td>{{version.stars}}</td>
-            <td>
-                {% if version.parsing.conforms %}
-                <span class="check">✔</span>
-                {% else %}
-                <span title="{{version.parsing.errors}}" class="x">✘</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if version.minLicense.conforms %}
-                <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')"
-                    class="check">✔</a>
-                {% else %}
-                <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')"
-                    class="x">✘</a>
-                {% endif %}
-            </td>
-            <td>
-                {% if version.goodLicense.conforms %}
-                <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')"
-                    class="check">✔</a>
-                {% else %}
-                <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')"
-                    class="x">✘</a>
-                {% endif %}
-            </td>
-            <td>
-                {% if version.consistent.conforms %}
-                <a href="{{version.consistent.url}}" class="check">✔</a>
-                {% else %}
-                <a href="{{version.consistent.url}}" class="x">✘</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+                </th>
+            </tr>
+            {% for version in versions_info %}
+            <tr>
+                <td>
+                    <a href="{{version.version.url}}">{{version.version.label}}</a> {% if version.docuURL %}
+                    <a href="{{version.docuURL}}">📰</a> {% endif %}
+                </td>
+                <td>{{version.triples}}</td>
+                <td>
+                    {% if general_info.isDev %}
+                    <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}&dev">owl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}&dev">ttl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}&dev">nt</a> {% else %}
+                    <a href="/download?o={{general_info.nir.encoded}}&f=owl&v={{version.version.label}}">owl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=ttl&v={{version.version.label}}">ttl</a>,
+                    <a href="/download?o={{general_info.nir.encoded}}&f=nt&v={{version.version.label}}">nt</a> {% endif %}
+                </td>
+                <td>{{version.semversion}}</td>
+                <td>{{version.stars}}</td>
+                <td>
+                    {% if version.parsing.conforms %}
+                    <span class="check">✔</span> {% else %}
+                    <span title="{{version.parsing.errors}}" class="x">✘</span> {% endif %}
+                </td>
+                <td>
+                    {% if version.minLicense.conforms %}
+                    <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')" class="check">✔</a> {% else %}
+                    <a href="/shaclVisualisation?r={{version.minLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.minLicense.url}}', 'popup', 'width=900,height=900')" class="x">✘</a> {% endif %}
+                </td>
+                <td>
+                    {% if version.goodLicense.conforms %}
+                    <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')" class="check">✔</a> {% else %}
+                    <a href="/shaclVisualisation?r={{version.goodLicense.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.goodLicense.url}}', 'popup', 'width=900,height=900')" class="x">✘</a> {% endif %}
+                </td>
+                <td>
+                    {% if version.consistent.conforms %}
+                    <a href="{{version.consistent.url}}" class="check">✔</a> {% else %}
+                    <a href="{{version.consistent.url}}" class="x">✘</a> {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </p>
 </div>
 <div class="container">
 
     <h4>Application Compliance</h4>
     <p>Beyond the Archivo ★'s, additional compliance checks can be added via Archivo's SHACL library.
-    <table style="width:400px">
-        <tr>
-            <th><span
-                    title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span>
-            </th>
-            <th>&#x1F396;&#xFE0E; <span title="Checks if the ontology can be documented properly using LODE.">LODE Conform</span></th>
-            <th><a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Add further SHACL compliance
+        <table style="width:400px">
+            <tr>
+                <th><span title="This leads to the release on the Databus. The string is the snapshot time andcan be used in the ReST request.">Snapshot</span>
+                </th>
+                <th>&#x1F396;&#xFE0E; <span title="Checks if the ontology can be documented properly using LODE.">LODE Conform</span></th>
+                <th><a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Add further SHACL compliance
                     checks</a></th>
-        </tr>
-        {% for version in versions_info %}
-        <tr>
-            <td>
-                <a href="{{version.version.url}}">{{version.version.label}}</a>
-                {% if version.docuURL %}
-                <a href="{{version.docuURL}}">📰</a>
-                {% endif %}
-            </td>
-            <td>
-                {% if version.lode.severity == 'OK' %}
-                <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')"
-                    class="check">✔</a>
-                {% elif version.lode.severity == 'INFO' %}
-                <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')"
-                    class="check"><strong>!</strong></a>
-                {% elif version.lode.severity == 'WARNING' %}
-                <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')"
-                    class="yellow"><strong>!</strong></a>
-                {% else %}
-                <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup"
-                    onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')"
-                    class="x">✘</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+            </tr>
+            {% for version in versions_info %}
+            <tr>
+                <td>
+                    <a href="{{version.version.url}}">{{version.version.label}}</a> {% if version.docuURL %}
+                    <a href="{{version.docuURL}}">📰</a> {% endif %}
+                </td>
+                <td>
+                    {% if version.lode.severity == 'OK' %}
+                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="check">✔</a> {% elif version.lode.severity == 'INFO' %}
+                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="check"><strong>!</strong></a> {% elif version.lode.severity
+                    == 'WARNING' %}
+                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="yellow"><strong>!</strong></a> {% else %}
+                    <a href="/shaclVisualisation?r={{version.lode.url}}" target="popup" onclick="window.open('/shaclVisualisation?r={{version.lode.url}}', 'popup', 'width=900,height=900')" class="x">✘</a> {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </p>
 </div>
 {% else %}
-<b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>.
-{% endif %}
+<b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>. {% endif %}
 </div>
 <script>
-    $(document).ready(function () {
-        $('#uris').select2({  // init Select2 on form's uris field
+    $(document).ready(function() {
+        $('#uris').select2({ // init Select2 on form's uris field
             placeholder: "{{ form.uris.label.text }}",
             allowClear: true,
             "width": 500
