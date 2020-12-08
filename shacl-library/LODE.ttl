@@ -108,7 +108,7 @@
     sh:path dc:publisher;
     sh:severity sh:Warning;
     sh:minCount 1;
-    sh:message "dc:pulisher of the ontology is missing and will not be displayed"@en.
+    sh:message "dc:publisher of the ontology is missing and will not be displayed"@en.
 
 <#contributors-info>
     a sh:PropertyShape;
