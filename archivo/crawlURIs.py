@@ -448,7 +448,7 @@ class ArchivoVersion:
         )
         # generate lode docu
         docustring, lode_error = getLodeDocuFile(self.location_uri, logger=self.logger)
-        if docustring is None:
+        if docustring is not None:
             with open(raw_file_path + "_type=generatedDocu.html", "w+") as docufile:
                 print(docustring, file=docufile)
 
