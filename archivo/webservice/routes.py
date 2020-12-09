@@ -81,8 +81,8 @@ def addOntology():
             db.session.add(fallout)
             db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        return render_template("add.html", process_steps=output, form=form)
-    return render_template("add.html", process_steps=None, form=form)
+        return render_template("add.html", process_steps=output, form=form, title="Archivo - Suggest Ontology")
+    return render_template("add.html", process_steps=None, form=form, title="Archivo - Suggest Ontology")
 
 
 @app.route("/info/", methods=["GET", "POST"])
@@ -118,7 +118,7 @@ def vocabInfo():
             general_info[
                 "message"
             ] = f"There seems to be a problem with the databus, please try it again later! {str(e)}"
-            return render_template("info.html", general_info=general_info, form=form)
+            return render_template("info.html", general_info=general_info, form=form, title=f"Archivo - Info about {foundUri}")
         if isDev:
             ont = ont.devel
             general_info["sourceURI"] = ont.uri
@@ -140,9 +140,10 @@ def vocabInfo():
             ),
             general_info=general_info,
             form=form,
+            title=f"Archivo - Info about {title}",
         )
     return render_template(
-        "info.html", general_info={"message": "Enter an ontology URI"}, form=form
+        "info.html", general_info={"message": "Enter an ontology URI"}, form=form, title=f"Archivo - Ontology Info",
     )
 
 
@@ -251,6 +252,7 @@ def onto_list():
         Ontologies=ontos,
         ontoNumber=len(ontos),
         graphJSON=get_star_stats(),
+        title="Archivo - Ontology Archive"
     )
 
 
@@ -298,7 +300,7 @@ def getRDFInfoLink(ontologyUrl, mimeType):
 
 @app.route("/sys/licenses")
 def licensesPage():
-    return render_template("licenses.html")
+    return render_template("licenses.html", title="Archivo - Licenses")
 
 
 @app.route("/download", methods=["GET"])
@@ -409,12 +411,12 @@ def downloadHandling(
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html", title="Archivo - About Archivo")
 
 
 @app.route("/api")
 def api_page():
-    return render_template("api.html")
+    return render_template("api.html", title="Archivo - Ontology Access")
 
 
 @app.route("/shaclVisualisation")
@@ -431,7 +433,7 @@ def shaclVisualisation():
 
 @app.route("/faq")
 def faq():
-    return render_template("faq.html")
+    return render_template("faq.html", title="Archivo - Frequently Asked Questions")
 
 
 def get_star_stats():
@@ -444,4 +446,4 @@ def get_star_stats():
 
 @app.route("/rating")
 def rating():
-    return render_template("rating.html")
+    return render_template("rating.html", title="Archivo - Ontology Rating")
