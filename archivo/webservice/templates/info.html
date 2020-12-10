@@ -34,6 +34,7 @@
                     <td><b>First Discovery</b></td>
                     <td><b>Discovery Source</b></td>
                     <td><b>Databus Artifact</b></td>
+                    <td><b><span title="Testet every eigth hours at the diff. Hover for the error">Accessability</span></b></td>
                 </tr>
                 <tr>
                     <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
@@ -43,6 +44,12 @@
                     <td>{{general_info.archivement}}</td>
                     <td>{{general_info.source}}</td>
                     <td><a href="{{ general_info.databusArtifact }}">Link</a></td>
+                    <td><span title="{{ general_info.access.message}}">
+                        {% if general_info.access.status %}
+                    <span title="{{general_info.access.message}}" class="check">✔</span> {% else %}
+                        <span title="{{general_info.access.message}}" class="x">✘</span> {% endif %}
+                        </span>
+                    </td>
             </table>
         </p>
 </div>

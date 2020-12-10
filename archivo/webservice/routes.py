@@ -81,8 +81,15 @@ def addOntology():
             db.session.add(fallout)
             db.session.commit()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        return render_template("add.html", process_steps=output, form=form, title="Archivo - Suggest Ontology")
-    return render_template("add.html", process_steps=None, form=form, title="Archivo - Suggest Ontology")
+        return render_template(
+            "add.html",
+            process_steps=output,
+            form=form,
+            title="Archivo - Suggest Ontology",
+        )
+    return render_template(
+        "add.html", process_steps=None, form=form, title="Archivo - Suggest Ontology"
+    )
 
 
 @app.route("/info/", methods=["GET", "POST"])
@@ -118,7 +125,12 @@ def vocabInfo():
             general_info[
                 "message"
             ] = f"There seems to be a problem with the databus, please try it again later! {str(e)}"
-            return render_template("info.html", general_info=general_info, form=form, title=f"Archivo - Info about {foundUri}")
+            return render_template(
+                "info.html",
+                general_info=general_info,
+                form=form,
+                title=f"Archivo - Info about {foundUri}",
+            )
         if isDev:
             ont = ont.devel
             general_info["sourceURI"] = ont.uri
@@ -131,6 +143,22 @@ def vocabInfo():
             "databusArtifact"
         ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
+        # check latest crawling status
+        if ont.crawling_status:
+            general_info["access"] = {"status": ont.crawling_status, "message": ""}
+        elif ont.crawling_status is None:
+            general_info["access"] = {"status": True, "message": "No database entry -> no crawling happened"}
+        else:
+            latestFallout = (
+                db.session.query(dbModels.Fallout)
+                .filter_by(ontology=ont.uri)
+                .order_by(dbModels.Fallout.date.desc())
+                .first()
+            )
+            general_info["access"] = {
+                "status": ont.crawling_status,
+                "message": latestFallout.error,
+            }
         for v in versions_info:
             v["stars"] = stringTools.generateStarString(v["stars"])
         return render_template(
@@ -143,7 +171,10 @@ def vocabInfo():
             title=f"Archivo - Info about {title}",
         )
     return render_template(
-        "info.html", general_info={"message": "Enter an ontology URI"}, form=form, title=f"Archivo - Ontology Info",
+        "info.html",
+        general_info={"message": "Enter an ontology URI"},
+        form=form,
+        title=f"Archivo - Ontology Info",
     )
 
 
@@ -252,7 +283,7 @@ def onto_list():
         Ontologies=ontos,
         ontoNumber=len(ontos),
         graphJSON=get_star_stats(),
-        title="Archivo - Ontology Archive"
+        title="Archivo - Ontology Archive",
     )
 
 

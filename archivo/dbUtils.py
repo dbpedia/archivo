@@ -51,7 +51,7 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
 def rebuildDatabase():
     db.create_all()
     urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
-    oldIndex = queryDatabus.loadLastIndex()
+    oldIndex = queryDatabus.get_last_official_index()
     for uri, source, date in oldIndex:
         if uri in urisInDatabase:
             print(f"Already listed: {uri}")
