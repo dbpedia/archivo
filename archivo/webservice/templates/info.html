@@ -187,8 +187,8 @@ Current implementation uses Pellet/Stardog
         </table>
     </p>
 </div>
-{% else %}
-<b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>. {% endif %}
+{% else %} {% if general_info.message %} {{ general_info.message }} {% else %}
+<b>Ontology missing?</b> Try adding it at the <a href='/add'>Archivo Suggestion Feature</a>. {% endif %} {% endif %}
 </div>
 <script>
     $(document).ready(function() {
