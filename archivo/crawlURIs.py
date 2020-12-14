@@ -565,13 +565,15 @@ def handleNewUri(
             }
         )
         return False, isNIR, None
-    if stringTools.get_uri_from_index(vocab_uri, index) is not None:
+
+    foundURI = stringTools.get_uri_from_index(vocab_uri, index)
+    if foundURI is not None:
         logger.info("Already known uri, skipping...")
         user_output.append(
             {
                 "status": True,
                 "step": "Index check",
-                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(vocab_uri)}>here</a>",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(foundURI)}>here</a>",
             }
         )
         return False, isNIR, None
@@ -742,13 +744,14 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    if stringTools.get_uri_from_index(real_ont_uri, index) is None:
+    foundURI = stringTools.get_uri_from_index(real_ont_uri, index)
+    if foundURI is not None:
         logger.info(f"Already known uri {real_ont_uri}")
         user_output.append(
             {
                 "status": True,
                 "step": "Index check",
-                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(vocab_uri)}>here</a>",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(foundURI)}>here</a>",
             }
         )
         return False, isNIR, None
