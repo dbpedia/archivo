@@ -61,7 +61,7 @@ def addOntology():
             user_output=output,
         )
         if success:
-            succ, dev_message, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
