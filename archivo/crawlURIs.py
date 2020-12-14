@@ -298,8 +298,6 @@ class ArchivoVersion:
         nt_generated = (
             True if os.path.isfile(raw_file_path + "_type=parsed.nt") else False
         )
-        print(self.original_file)
-        print(self.best_header)
         ontoFiles.parseRDFSource(
             self.original_file,
             raw_file_path + "_type=parsed.ttl",
