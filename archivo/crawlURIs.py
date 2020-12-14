@@ -298,7 +298,8 @@ class ArchivoVersion:
         nt_generated = (
             True if os.path.isfile(raw_file_path + "_type=parsed.nt") else False
         )
-
+        print(self.original_file)
+        print(self.best_header)
         ontoFiles.parseRDFSource(
             self.original_file,
             raw_file_path + "_type=parsed.ttl",
@@ -923,7 +924,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
     logger.info("Generate new release files...")
     new_version = ArchivoVersion(
         nir,
-        os.path.join(newVersionPath, artifact + "_type=orig" + fileExt),
+        os.path.join(newVersionPath, artifact + "_type=orig." + fileExt),
         response,
         testSuite,
         accessDate,
