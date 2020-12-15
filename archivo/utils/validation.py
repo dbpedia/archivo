@@ -27,14 +27,6 @@ def loadShaclGraph(filename, pubId=None):
     return shaclgraph
 
 
-def getDisplayAxiomsPath():
-    return os.path.join(
-        os.path.abspath(os.path.dirname(sys.argv[0])),
-        "helpingBinaries",
-        "DisplayAxioms.jar",
-    )
-
-
 # needed for gunicorn
 def loadShacl(filepath, pubId=None):
     shaclgraph = Graph()
@@ -61,7 +53,7 @@ class TestSuite:
             os.path.join(archivoPath, "shacl", "LODE.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
         )
-        self.displayAxiomsPath = getDisplayAxiomsPath()
+        self.displayAxiomsPath = os.path.join(archivoPath, "helpingBinaries", "DisplayAxioms.jar")
         self.archivoTestGraph = loadShacl(
             os.path.join(archivoPath, "shacl", "archivo.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
