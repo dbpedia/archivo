@@ -655,7 +655,7 @@ def handleNewUri(
             {
                 "status": False,
                 "step": "Determine non-information resource",
-                "message": "Neither owl:Ontology or skos:ConceptScheme",
+                "message": "Neither can't find a triple with <code>owl:Ontology</code> or <code>skos:ConceptScheme</code> as value.",
             }
         )
         real_ont_uri = inspectVocabs.getDefinedByUri(graph)
@@ -665,7 +665,7 @@ def handleNewUri(
                 {
                     "status": False,
                     "step": "Looking for linked ontologies",
-                    "message": "The given URI does not contain a rdf:type owl:Ontology, rdfs:isDefinedBy, skos:inScheme or a skos:ConceptScheme triple",
+                    "message": "The given URI does not contain a <code>rdfs:isDefinedBy</code> or <code>skos:inScheme</code> triple",
                 }
             )
             return False, isNIR, None
@@ -693,7 +693,7 @@ def handleNewUri(
                 {
                     "status": False,
                     "step": "Looking for linked ontologies",
-                    "message": "Self defining non-ontology.",
+                    "message": "This RDF document is linked to itself via <code>rdfs:isDefinedBy</code> or <code>skos:inScheme</code>, but does not contain a triple with <code>owl:Ontology</code> or <code>skos:ConceptScheme</code>, so it can't be recognized as an ontology.",
                 }
             )
             return False, isNIR, None
@@ -812,7 +812,7 @@ def handleNewUri(
             {
                 "status": True,
                 "step": "Deploy to DBpedia Databus",
-                "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>https://databus.dbpedia.org/ontologies/{groupId}/{artifact}</a> soon",
+                "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at the <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>databus</a> and at the <a href=/info?o={quote(real_ont_uri)}>Archivo webpage</a> soon.",
             }
         )
         return True, isNIR, new_version

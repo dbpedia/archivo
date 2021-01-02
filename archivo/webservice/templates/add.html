@@ -2,62 +2,79 @@
 
 {% block content %}
 <div class="container">
+  <p>
+  <h2>Add a new ontology to Archivo</h2>
+
+  Archivo retrieves ontologies exclusively from the web using their ontology URL.
+  The main rationale here is that we implemented the most common and standardized ways to access Ontologies
+  programmatically following Jon Postel: "Be conservative in what you do, be liberal in what you accept from others".
+  This means, we already allow some irregularities and heterogeneity, when parsing the ontologies from the web. Then
+  again, we only do so up to a certain point, i.e. there is only so much, that you can patch in good faith.
+  <br><br><b>If DBpediaArchivo can not process it in an automatic and deterministic manner,it is likely infeasible to
+    be processed by others.</b><br><br>
+
+  <h3>Ontology Indexing</h3>
+  If Archivo accepts the added ontology, it will be crawled every 8 hours and added to the persistent Ontology
+  Archive.
+  <br>
+  <br>
+  <h3>Archivo Requirements</h3>
+  <ol>
+    <li>The URL must be accessible and the RDF content of the ontology must be reachable via content negotiation
+      from there in any of these formats: RDF+XML, N-Triples, Turtle</li>
+    <li>The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided
+      here. If thats not the case Archivo tries to parse the new URI</li>
+  </ol>
+
+  Paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its
+  index for daily crawling:
+  </p>
+  <form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
     <p>
-    <h2>Add a new ontology to Archivo</h2>
-
-    Archivo retrieves ontologies exclusively from the web using their ontology URL.
-    The main rationale here is that we implemented the most common and standardized ways to access Ontologies
-    programmatically following Jon Postel: "Be conservative in what you do, be liberal in what you accept from others".
-    This means, we already allow some irregularities and heterogeneity, when parsing the ontologies from the web. Then
-    again, we only do so up to a certain point, i.e. there is only so much, that you can patch in good faith.
-    <br><br><b>If DBpediaArchivo can not process it in an automatic and deterministic manner,it is likely infeasible to
-        be processed by others.</b><br><br>
-
-    <h3>Ontology Indexing</h3>
-    If Archivo accepts the added ontology, it will be crawled every 8 hours and added to the persistent Ontology
-    Archive.
-    <br>
-    <br>
-    <h3>Archivo Requirements</h3>
-    <ol>
-        <li>The URL must be accessible and the RDF content of the ontology must be reachable via content negotiation
-            from there in any of these formats: RDF+XML, N-Triples, Turtle</li>
-        <li>The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided
-            here. If thats not the case Archivo tries to parse the new URI</li>
-    </ol>
-
-    Paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its
-    index for daily crawling:
+      {{ form.suggestUrl(size=100) }}
     </p>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.suggestUrl(size=100) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    {% if process_steps %}
-    <div class="container">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            {% for step in process_steps %}
-            <div class="panel panel-default">
-              <div class="panel-heading p-3 mb-3" role="tab" id="step{{loop.index}}" style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %};">
-                <h3 class="panel-title">
-                  <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#link{{loop.index}}" style="color: black; font-size: medium;"
-                    aria-expanded="true" aria-controls="link{{loop.index}}-collapse">
-                    {{ step.step }}
-                  </a>
-                </h3>
-              </div>
-              <div id="link{{loop.index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="step{{loop.index}}">
-                <div class="panel-body px-3 mb-4">
-                  <pre>{{ step.message | safe }}</pre>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+    <p>{{ form.submit() }}</p>
+  </form>
+  {% if process_steps %}
+  {% if added %}
+  <h3>The suggested ontology has been successfully accepted.</h3>
+  <p>
+    Note that orange/red panels are not necessarily critical but we suggest fixing them in the future.
+  </p>
+  {% else %}
+  <h3>The suggested ontology has been rejected.</h3>
+  <p>
+    Check out the processing log for the reasons it didn't work (typically the last panel is the final reason for the
+    rejection). If you think the ontology is correct and the problem is
+    on Archivos site, please report an Error on <a href="https://github.com/dbpedia/archivo/issues/">Github</a>.
+  </p>
+  {% endif %}
+  <h4>Processing log:</h4>
+  <div class="container">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      {% for step in process_steps %}
+      <div class="panel panel-default">
+        <div class="panel-heading p-3 mb-3" role="tab" id="step{{loop.index}}"
+          style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %};">
+          <h3 class="panel-title">
+            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
+              href="#link{{loop.index}}" style="color: black; font-size: medium;" aria-expanded="true"
+              aria-controls="link{{loop.index}}-collapse">
+              {{ step.step }}
+            </a>
+          </h3>
         </div>
+        <div id="link{{loop.index}}" class="panel-collapse collapse" role="tabpanel"
+          aria-labelledby="step{{loop.index}}">
+          <div class="panel-body px-3 mb-4">
+            <pre>{{ step.message | safe }}</pre>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

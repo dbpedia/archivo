@@ -83,6 +83,7 @@ def addOntology():
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         return render_template(
             "add.html",
+            added=success,
             process_steps=output,
             form=form,
             title="Archivo - Suggest Ontology",
@@ -147,7 +148,10 @@ def vocabInfo():
         if ont.crawling_status:
             general_info["access"] = {"status": ont.crawling_status, "message": ""}
         elif ont.crawling_status is None:
-            general_info["access"] = {"status": True, "message": "No database entry -> no crawling happened"}
+            general_info["access"] = {
+                "status": True,
+                "message": "No database entry -> no crawling happened",
+            }
         else:
             latestFallout = (
                 db.session.query(dbModels.Fallout)
