@@ -7,23 +7,34 @@
     <h2>API</h2>
 
     <h3>Download one ontology via Archivo</h3>
-    <strong>Example 1 (default)</strong> Download the latest version of the Cinelab ontology as RDFXML
-    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld"</pre>
+    <strong>Example 1 (default)</strong> Download the latest version of the Cinelab ontology as RDFXML<br>
+    <div class="codeblock" style="font-size: medium;">
+        <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld"</pre>
+    </div>
+    <br>
+    <strong>Example 2</strong> Download the latest version of the Cinelab ontology as Turtle<br>
+    <div class="codeblock" style="font-size: medium;">
+        <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&amp;f=ttl"</pre>
+    </div>
+    <br>
+    <strong>Example 3</strong> Download a specific version of the Datashapes ontology as RDFXML<br>
+    <div class="codeblock" style="font-size: medium;">
+        <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&amp;v=2020.07.16-115638"</pre>
+    </div>
+    </p>
 
-    <strong>Example 2</strong> Download the latest version of the Cinelab ontology as Turtle
-    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld&f=ttl"</pre>
-
-    <strong>Example 3</strong> Download a specific version of the Datashapes ontology as RDFXML
-    <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&v=2020.07.16-115638"</pre>
-
-
+    <p>
     <h4>API pattern explained</h4>
-
-    <pre><code>http://archivo.dbpedia.org/download?o={ontology-URI}&f={file-extension}&v={timestamp}</code></pre>
+    <div class="codeblock">
+        <pre>http://archivo.dbpedia.org/download?o={ontology-URI}&amp;f={file-extension}&amp;v={timestamp}</pre>
+    </div>
+    <br>
     with:
     <ul>
         <li><b>o={ontology-uri}</b> the URI of your desired ontology (e.g <a
-                href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>)</li>
+                href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>). If the URI contains problematic
+            characters like <code>#</code> you may encode the query with URL-encode.
+        </li>
         <li><b>f={file-extension}</b> currently supported: owl, ttl and nt; default: owl</li>
         <li><b>v={timestamp}</b> no parameter selects latest, otherwise the timestamp of the ontology snapshot. To see
             what timestamps are available check out the <a href="/info">View Ontology</a> of your ontology and copy it
@@ -31,11 +42,10 @@
         <li>Add <b>&amp;dev</b> to the request uri to access the dev version of the ontlogy (only works if there is a
             dev version; to see what dev versions are available check out the <a href="/list?dev">dev list</a>) </li>
     </ul>
-    <p>
 
 
-        Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a>
-        which also provides the latest download links.</p>
+    Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a>
+    which also provides the latest download links.</p>
 
 
     <h3>SPARQL API access via Databus</h3>

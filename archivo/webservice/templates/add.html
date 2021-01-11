@@ -25,9 +25,15 @@
     <li>The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided
       here. If thats not the case Archivo tries to parse the new URI</li>
   </ol>
-
-  Paste the URL of an OWL ontology here, Archivo will download and parse it and if this succeeds include it in its
-  index for daily crawling:
+  A ontology can be suggested with a POST request, Archivo will download and parse it and if this succeeds include it in
+  its
+  index for daily crawling.<br>
+  <strong>Example</strong>:<br>
+  <div class="codeblock" style="font-size: medium;">
+    <pre>curl -X POST https://archivo.dbpedia.org/add --data-urlencode "suggestUrl=http://purl.org/example/ontology.owl"</pre>
+  </div>
+  <br>
+  Alternatively paste the URL of an OWL ontology here:
   </p>
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
