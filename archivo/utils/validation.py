@@ -53,7 +53,9 @@ class TestSuite:
             os.path.join(archivoPath, "shacl", "LODE.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
         )
-        self.displayAxiomsPath = os.path.join(archivoPath, "helpingBinaries", "DisplayAxioms.jar")
+        self.displayAxiomsPath = os.path.join(
+            archivoPath, "helpingBinaries", "DisplayAxioms.jar"
+        )
         self.archivoTestGraph = loadShacl(
             os.path.join(archivoPath, "shacl", "archivo.ttl"),
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
@@ -132,7 +134,7 @@ class TestSuite:
         try:
             process = subprocess.run(
                 pelletCommand,
-                timeout=300,
+                timeout=600,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
