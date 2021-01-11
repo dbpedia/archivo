@@ -47,8 +47,15 @@ class InfoForm(FlaskForm):
 def addOntology():
     form = SuggestionForm()
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+
+    suggested_uri = None
     if form.validate_on_submit():
-        uri = form.suggestUrl.data.strip()
+        suggested_uri = form.suggestUrl.data.strip()
+    elif request.method == "POST":
+        suggested_uri = request.form.get("suggestUrl", None)
+
+    if suggested_uri is not None:
+        uri = suggested_uri
         output = []
         success, isNir, archivo_version = crawlURIs.handleNewUri(
             uri,

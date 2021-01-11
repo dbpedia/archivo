@@ -62,7 +62,7 @@ def rebuildDatabase():
             timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
         except ValueError:
             timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-        print("Handling URI " + uri)
+        # print("Handling URI " + uri)
         group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
         ontology, versions = buildDatabaseObjectFromDatabus(
             uri, group, artifact, source, timestamp
@@ -75,7 +75,7 @@ def rebuildDatabase():
         except Exception as e:
             print(str(e))
             db.session.rollback()
-        print(len(Ontology.query.all()))
+        # print(len(Ontology.query.all()))
 
 
 def update_database():

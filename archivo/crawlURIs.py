@@ -1004,7 +1004,7 @@ def get_VOID_URIs():
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
         results = sparql.query().convert()
-    except e:
+    except Exception:
         return None
     if not "results" in results:
         return None

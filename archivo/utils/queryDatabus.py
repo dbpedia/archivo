@@ -63,6 +63,39 @@ def getLatestMetaFile(group, artifact):
 
 
 def getInfoForArtifact(group, artifact):
+    """Returns the info for a given group and artifact:
+    Returns a tuple (title, comment, version_infos) with:
+    title -> being the lates title on the databus
+    comment -> being the latest comment (short description) on the databus
+    version_info -> being a list of dicts
+    which contain:
+    {
+        "minLicense": {
+            "conforms": metadata["test-results"]["License-I"],
+            "url": minLicenseURL,
+        },
+        "goodLicense": {
+            "conforms": metadata["test-results"]["License-II"],
+            "url": goodLicenseURL,
+        },
+        "lode": {
+            "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
+            "url": lodeShaclURL,
+        },
+        "version": {"label": version, "url": versionURL},
+        "consistent": {
+            "conforms": isConsistent(metadata["test-results"]["consistent"]),
+            "url": consistencyURL,
+        },
+        "triples": metadata["ontology-info"]["triples"],
+        "parsing": {
+            "conforms": parsing,
+            "errors": metadata["logs"]["rapper-errors"],
+        },
+        "semversion": metadata["ontology-info"]["semantic-version"],
+        "stars": stars,
+        "docuURL": docuURL,
+    }"""
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     query = "\n".join(
         (
@@ -356,6 +389,10 @@ def allLatestParsedTurtleFiles():
 
 
 def latestNtriples():
+    """Returns a dict with the NIR being the key and value being another dict with entries:
+    ntFile -> URL of the parsed ntriples of the ontology
+    meta -> URL of the metadata json file
+    version -> databus version string (YYYY.MM.DD-HHMMSS)"""
     query = "\n".join(
         (
             "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
