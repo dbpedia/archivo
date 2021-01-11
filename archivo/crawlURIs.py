@@ -83,6 +83,10 @@ def determine_best_content_type(uri, user_output=[], logger=None):
                     }
                 )
                 header_dict[header] = (response, triple_number)
+
+                # break for really large ontologies
+                if triple_number > 200000:
+                    break
             else:
                 if len(rapper_errors) > 20:
                     rapper_errors = rapper_errors[:20]
