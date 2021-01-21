@@ -467,8 +467,11 @@ def shaclVisualisation():
     shaclURI = args["r"] if "r" in args else None
     if shaclURI != None:
         g = inspectVocabs.getGraphOfVocabFile(shaclURI)
-        results = inspectVocabs.interpretShaclGraph(g)
-        return render_template("shaclReport.html", report=results)
+        try:
+            results = inspectVocabs.interpretShaclGraph(g)
+            return render_template("shaclReport.html", report=results)
+        except Exception:
+            return render_template("shaclReport.html", report=None, link=shaclURI)
     else:
         return abort(status=404)
 

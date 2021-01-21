@@ -64,6 +64,7 @@
 </head>
 
 <body>
+  {% if report %}
   {% if report.violations %}
   {% for problem, nodes in report.violations.items() %}
   <div>
@@ -122,6 +123,12 @@
   </div>
   <br>
   {% endfor %}
+  {% endif %}
+  {% else %}
+  <h1>ERROR during parsing the SHACL report</h1>
+  <p>
+    Please check out the turtle file <a href="{{ link }}">here</a> instead.
+  </p>
   {% endif %}
 </body>
 <script>
