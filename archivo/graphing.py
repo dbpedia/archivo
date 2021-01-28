@@ -149,7 +149,6 @@ def generate_star_graph(ontologies, stats_path):
             anchor="x",
             overlaying="y",
             side="right",
-            range=[0, 4],
         ),
     )
     figure.update_layout(
