@@ -150,10 +150,10 @@ def getInfoForArtifact(group, artifact):
     except KeyError:
         return False, version_infos, f"No data found for {databusLink}"
     try:
-        title = sorted(results, key=lambda binding: binding["version"]["value"])[0][
+        title = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
             "title"
         ]["value"]
-        comment = sorted(results, key=lambda binding: binding["version"]["value"])[0][
+        comment = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
             "comment"
         ]["value"]
     except Exception as e:
