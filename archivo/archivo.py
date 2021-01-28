@@ -37,7 +37,7 @@ archivo_path = get_correct_path()
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
 
     discovery_logger.info("Started discovery of LOV URIs...")
     run_discovery(crawlURIs.getLovUrls(), "LOV", dataPath, testSuite)
@@ -105,7 +105,7 @@ def ontology_official_update():
         )
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
         diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
@@ -193,7 +193,7 @@ def ontology_dev_update():
     dev_diff_logger.info(
         "Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     )
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
@@ -248,7 +248,7 @@ def ontology_dev_update():
 
 
 # updates the star graph json every midnight
-# @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="0", day_of_week="mon-sun")
+# @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="4,12,20", day_of_week="mon-sun")
 def update_star_graph():
     stats_path = os.path.join(os.path.split(app.instance_path)[0], "stats")
     graphing.generate_star_graph(
