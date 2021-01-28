@@ -10,15 +10,26 @@ from utils import (
     inspectVocabs,
 )
 from utils.validation import TestSuite
-from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger
+from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger, webservice_logger
 from datetime import datetime
-import requests
 import graphing
 import json
 
 cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
 cron.start()
+
+
+def get_correct_path() -> str:
+    archivo_path = os.path.split(app.instance_path)[0]
+    if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")):
+        return archivo_path
+    else:
+        webservice_logger.error(f"{archivo_path} is not the correct path")
+        exit(1)
+
+
+archivo_path = get_correct_path()
 
 
 # This is the discovery process
@@ -45,16 +56,20 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
         output = []
-        success, isNir, archivo_version = crawlURIs.handleNewUri(
-            uri,
-            allOnts,
-            dataPath,
-            source,
-            False,
-            testSuite=testSuite,
-            logger=logger,
-            user_output=output,
-        )
+        try:
+            success, isNir, archivo_version = crawlURIs.handleNewUri(
+                uri,
+                allOnts,
+                dataPath,
+                source,
+                False,
+                testSuite=testSuite,
+                logger=logger,
+                user_output=output,
+            )
+        except Exception:
+            discovery_logger.exception(f"Problem during validating {uri}", exc_info=True)
+            continue
         if success:
             succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
@@ -300,6 +315,7 @@ def deploy_index():
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
+
 
 
 if __name__ == "__main__":

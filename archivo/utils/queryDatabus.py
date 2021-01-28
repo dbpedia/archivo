@@ -736,7 +736,7 @@ def get_SPOs():
                 uri = tp[0]
             except Exception:
                 continue
-            if stringTools.get_uri_from_index(uri, distinct_spo_uris) == None:
+            if stringTools.get_uri_from_index(uri, distinct_spo_uris) is None:
                 distinct_spo_uris.append(uri)
         yield distinct_spo_uris
 

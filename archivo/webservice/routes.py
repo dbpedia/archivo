@@ -20,7 +20,6 @@ from urllib.error import HTTPError, URLError
 import json
 
 archivoPath = os.path.split(app.instance_path)[0]
-testingSuite = TestSuite(archivoPath)
 
 
 class SuggestionForm(FlaskForm):
@@ -57,6 +56,7 @@ def addOntology():
     if suggested_uri is not None:
         uri = suggested_uri
         output = []
+        testingSuite = TestSuite(archivoPath)
         success, isNir, archivo_version = crawlURIs.handleNewUri(
             uri,
             allOnts,
@@ -239,16 +239,13 @@ def onto_list():
     for ont in ontologies:
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        v = (
-            db.session.query(dbModels.Version)
-            .filter_by(ontology=ont.uri)
-            .order_by(dbModels.Version.version.desc())
-            .first()
-        )
+        versions = ont.versions.order_by(dbModels.Version.version.desc()).all()
+        v = versions[0]
+        first_version = versions[-1]
         if v is None:
             webservice_logger.critical(f"Couldn't find any data for {ont.uri}")
             continue
-        if ont.crawling_status or ont.crawling_status == None:
+        if ont.crawling_status or ont.crawling_status is None:
             crawlStatus = True
             crawlError = ""
         else:
@@ -274,6 +271,7 @@ def onto_list():
                 "infoURL": infoURL,
                 "downloadURL": downloadURL,
             },
+            "addition_date": first_version.version.strftime("%Y.%m.%d-%H%M%S"),
             "databusURI": databus_uri,
             "source": ont.source,
             "triples": v.triples,
