@@ -10,9 +10,8 @@ from utils import (
     inspectVocabs,
 )
 from utils.validation import TestSuite
-from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger
+from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger, webservice_logger
 from datetime import datetime
-import requests
 import graphing
 import json
 
@@ -21,12 +20,24 @@ cron = BackgroundScheduler(daemon=True)
 cron.start()
 
 
+def get_correct_path() -> str:
+    archivo_path = os.path.split(app.instance_path)[0]
+    if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")):
+        return archivo_path
+    else:
+        webservice_logger.error(f"{archivo_path} is not the correct path")
+        exit(1)
+
+
+archivo_path = get_correct_path()
+
+
 # This is the discovery process
 # @cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="15", minute="48", day_of_week="sat")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
 
     discovery_logger.info("Started discovery of LOV URIs...")
     run_discovery(crawlURIs.getLovUrls(), "LOV", dataPath, testSuite)
@@ -45,16 +56,20 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     for uri in lst:
         allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
         output = []
-        success, isNir, archivo_version = crawlURIs.handleNewUri(
-            uri,
-            allOnts,
-            dataPath,
-            source,
-            False,
-            testSuite=testSuite,
-            logger=logger,
-            user_output=output,
-        )
+        try:
+            success, isNir, archivo_version = crawlURIs.handleNewUri(
+                uri,
+                allOnts,
+                dataPath,
+                source,
+                False,
+                testSuite=testSuite,
+                logger=logger,
+                user_output=output,
+            )
+        except Exception:
+            discovery_logger.exception(f"Problem during validating {uri}", exc_info=True)
+            continue
         if success:
             succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
@@ -90,7 +105,7 @@ def ontology_official_update():
         )
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
         diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
@@ -178,7 +193,7 @@ def ontology_dev_update():
     dev_diff_logger.info(
         "Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     )
-    testSuite = TestSuite(os.path.join(os.path.split(app.instance_path)[0]))
+    testSuite = TestSuite(archivo_path)
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
@@ -233,7 +248,7 @@ def ontology_dev_update():
 
 
 # updates the star graph json every midnight
-# @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="0", day_of_week="mon-sun")
+# @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="4,12,20", day_of_week="mon-sun")
 def update_star_graph():
     stats_path = os.path.join(os.path.split(app.instance_path)[0], "stats")
     graphing.generate_star_graph(
@@ -300,6 +315,7 @@ def deploy_index():
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
+
 
 
 if __name__ == "__main__":

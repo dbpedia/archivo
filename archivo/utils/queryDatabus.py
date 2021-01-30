@@ -150,10 +150,10 @@ def getInfoForArtifact(group, artifact):
     except KeyError:
         return False, version_infos, f"No data found for {databusLink}"
     try:
-        title = sorted(results, key=lambda binding: binding["version"]["value"])[0][
+        title = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
             "title"
         ]["value"]
-        comment = sorted(results, key=lambda binding: binding["version"]["value"])[0][
+        comment = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
             "comment"
         ]["value"]
     except Exception as e:
@@ -736,7 +736,7 @@ def get_SPOs():
                 uri = tp[0]
             except Exception:
                 continue
-            if stringTools.get_uri_from_index(uri, distinct_spo_uris) == None:
+            if stringTools.get_uri_from_index(uri, distinct_spo_uris) is None:
                 distinct_spo_uris.append(uri)
         yield distinct_spo_uris
 

@@ -2,7 +2,7 @@
 <div class="container">
     <p>
         <h2>Inspect an archived ontology</h2>
-        Select an ontology to see information about all versions deployed:
+        Select an ontology to see information about all archived versions:
     </p>
     <form action="" method="POST" novalidate>
         {{ form.hidden_tag() }} {{ form.csrf_token }}
@@ -34,7 +34,7 @@
                     <th><b>First Discovery</b></th>
                     <th><b>Discovery Source</b></th>
                     <th><b>Databus Artifact</b></th>
-                    <th><b>Accessability <span title="Testet every eigth hours at the diff. Hover for the error">(?)</span></b></th>
+                    <th><b>Accessability <span title="Tested every eight hours at the diff. Hover for the error">(?)</span></b></th>
                 </tr>
                 <tr>
                     <td><a href="{{general_info.nir.regular}}">{{general_info.nir.regular}}</a></td>
