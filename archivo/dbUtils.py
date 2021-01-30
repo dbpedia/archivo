@@ -50,12 +50,12 @@ def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=
 
 def rebuildDatabase():
     db.create_all()
-    urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
+    # urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     oldIndex = queryDatabus.get_last_official_index()
     for uri, source, date in oldIndex:
-        if uri in urisInDatabase:
-            print(f"Already listed: {uri}")
-            continue
+        # if uri in urisInDatabase:
+        # print(f"Already listed: {uri}")
+        # continue
         if source == "DEV":
             continue
         try:
@@ -184,7 +184,9 @@ def getDatabaseEntry(archivo_version: ArchivoVersion):
             archivo_version.conforms_licenseII,
         ),
         triples=archivo_version.triples,
-        parsing=True if archivo_version.rapper_errors == "" else False,
+        parsing=True
+        if archivo_version.rapper_errors == "" or archivo_version.rapper_errors == []
+        else False,
         licenseI=archivo_version.conforms_licenseI,
         licenseII=archivo_version.conforms_licenseII,
         consistency=consistencyCheck(archivo_version.is_consistent),
