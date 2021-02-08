@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/faq-theme.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/custom.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='dbpedia-favicon-32x32.png') }}">
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -19,6 +18,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 
+    <!-- Googles Roboto font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <!-- Favicons from  https://realfavicongenerator.net -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static',filename='favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static',filename='favicon/favicon-32x32.png') }}">
@@ -32,7 +34,7 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 
-<body>
+<body style="font-family: Roboto, sans-serif;">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #002a43;">
         <div class="container">
