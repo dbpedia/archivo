@@ -34,8 +34,8 @@ class InfoForm(FlaskForm):
         "Enter a URI",
         choices=[("", "")]
         + [
-            (ont.uri, ont.uri)
-            for ont in db.session.query(dbModels.OfficialOntology).all()
+            # (ont.uri, ont.uri)
+            # for ont in db.session.query(dbModels.OfficialOntology).all()
         ],
         validators=[validators.InputRequired()],
     )
@@ -225,8 +225,12 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 
-@app.route("/list", methods=["GET"])
 @app.route("/", methods=["GET"])
+def handle_root():
+    return redirect("/list")
+
+
+@app.route("/list", methods=["GET"])
 def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
