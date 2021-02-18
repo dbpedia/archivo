@@ -34,8 +34,8 @@ class InfoForm(FlaskForm):
         "Enter a URI",
         choices=[("", "")]
         + [
-            # (ont.uri, ont.uri)
-            # for ont in db.session.query(dbModels.OfficialOntology).all()
+            (ont.uri, ont.uri)
+            for ont in db.session.query(dbModels.OfficialOntology).all()
         ],
         validators=[validators.InputRequired()],
     )
