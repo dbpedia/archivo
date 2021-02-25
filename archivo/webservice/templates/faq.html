@@ -45,15 +45,17 @@
         </div>
         <div id="stars" class="panel-collapse collapse" role="tabpanel" aria-labelledby="stars-heading">
           <div class="panel-body px-3 mb-4">
-            <p>Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data) for FAIRer ontologies.
-				Furthermore, Archivo allows to add more specialized and application-specific tests. 
-				The baseline stars are explained on the <a href="/list">main page</a> and in more detail on the <a href="/rating">rating page</a> including debugging help.  
+            <p>Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data) for FAIRer
+              ontologies.
+              Furthermore, Archivo allows to add more specialized and application-specific tests.
+              The baseline stars are explained on the <a href="/list">main page</a> and in more detail on the <a
+                href="/rating">rating page</a> including debugging help.
             </p>
           </div>
         </div>
       </div>
-      
-       <div class="panel panel-default">
+
+      <div class="panel panel-default">
         <div class="panel-heading p-3 mb-3" role="tab" id="uptime-heading">
           <h3 class="panel-title">
             <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#uptime"
@@ -64,7 +66,9 @@
         </div>
         <div id="uptime" class="panel-collapse collapse" role="tabpanel" aria-labelledby="uptime-heading">
           <div class="panel-body px-3 mb-4">
-            <p>No! Archivo checks all known ontologies every 8 hours. If a change is discovered, Archivo will update. If the ontology is down, nothing is done. Users can fallback on Archivo to retrieve the latest available version, if the ontology is down. 
+            <p>No! Archivo checks all known ontologies every 8 hours. If a change is discovered, Archivo will update. If
+              the ontology is down, nothing is done. Users can fallback on Archivo to retrieve the latest available
+              version, if the ontology is down.
             </p>
           </div>
         </div>
@@ -161,12 +165,8 @@
             to your ontology with NIR being the non information URI of your ontology (the URI which represents your
             ontology) and &ltURI of dev file&gt being an URI of a file (for example from raw.github.com).
             </p>
-            <p>This URI also works by requesting RDF content types (currently supported: RDF+XML, Turtle and N-Triples).
-              This redirects to a SPARQL-query an the databus regarding all information/files available for this
-              ontology</p>
             <p>
-              <strong>Example:</strong>
-            <pre>curl -L -H "Accept: text/turtle" "http://archivo.dbpedia.org/info?o=http://datashapes.org/dash"</pre>
+              The list of already enlisted development ontologies can be found <a href="/list?dev">here</a>.
             </p>
           </div>
         </div>
@@ -185,12 +185,16 @@
           <div class="panel-body px-3 mb-4">
             <h3>What is a compliance check?</h3>
             <p>
-              Beyond the <a href="/faq#stars">Archivo stars</a> Archivo uses <a href="https://www.w3.org/TR/shacl/">SHACL</a> to measure the quality of ontologies.
-              An example for such a test is the <a>LODE conformity test</a>, which checks the compatibility of a vocabulary with the fully automatic <a href="https://essepuntato.it/lode/">LODE service</a>.
+              Beyond the <a href="/faq#stars">Archivo stars</a> Archivo uses <a
+                href="https://www.w3.org/TR/shacl/">SHACL</a> to measure the quality of ontologies.
+              An example for such a test is the <a>LODE conformity test</a>, which checks the compatibility of a
+              vocabulary with the fully automatic <a href="https://essepuntato.it/lode/">LODE service</a>.
             </p>
             <h3>How can i contribute to the compliance checks?</h3>
             <p>
-              Just create a pull request at <a href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivos SHACL library</a> with your SHACL test, we will review it and add it to Archivos workflow.
+              Just create a pull request at <a
+                href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivos SHACL library</a> with your
+              SHACL test, we will review it and add it to Archivos workflow.
             </p>
           </div>
         </div>
