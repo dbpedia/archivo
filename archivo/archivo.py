@@ -30,6 +30,15 @@ def get_correct_path() -> str:
 archivo_path = get_correct_path()
 
 
+# Chech wether the uri is in archivo uris or a archivo uri is a substring of it
+# True returned when already contained, False otherwise
+def check_uri_containment(uri, archivo_uris):
+    for au in archivo_uris:
+        if uri == au or au in uri:
+            return True
+    return False
+
+
 # This is the discovery process
 # @cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="15", minute="48", day_of_week="sat")
 def ontology_discovery():
@@ -53,9 +62,8 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
         return
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     for uri in lst:
-        for archivo_uri in allOnts:
-            if uri == archivo_uri or archivo_uri in uri:
-                return
+        if check_uri_containment(uri, allOnts):
+            continue
         output = []
         try:
             success, isNir, archivo_version = crawlURIs.handleNewUri(
