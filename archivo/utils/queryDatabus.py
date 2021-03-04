@@ -150,12 +150,12 @@ def getInfoForArtifact(group, artifact):
     except KeyError:
         return False, version_infos, f"No data found for {databusLink}"
     try:
-        title = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
-            "title"
-        ]["value"]
-        comment = sorted(results, key=lambda binding: binding["version"]["value"], reverse=True)[0][
-            "comment"
-        ]["value"]
+        title = sorted(
+            results, key=lambda binding: binding["version"]["value"], reverse=True
+        )[0]["title"]["value"]
+        comment = sorted(
+            results, key=lambda binding: binding["version"]["value"], reverse=True
+        )[0]["comment"]["value"]
     except Exception as e:
         return None, None, None
 
@@ -182,13 +182,7 @@ def getInfoForArtifact(group, artifact):
             or metadata["logs"]["rapper-errors"] == ""
             else False
         )
-        stars = ontoFiles.measureStars(
-            metadata["logs"]["rapper-errors"],
-            metadata["test-results"]["License-I"],
-            metadata["test-results"]["consistent"],
-            metadata["test-results"]["consistent-without-imports"],
-            metadata["test-results"]["License-II"],
-        )
+        stars = ontoFiles.stars_from_meta_dict(metadata)
         isConsistent = lambda s: True if s == "Yes" else False
         version_infos.append(
             {
