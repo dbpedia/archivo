@@ -2,12 +2,10 @@ from webservice import app, db, dbModels
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit, os, crawlURIs, diffOntologies, dbUtils
 from utils import (
-    ontoFiles,
     archivoConfig,
     stringTools,
     queryDatabus,
     generatePoms,
-    inspectVocabs,
 )
 from utils.validation import TestSuite
 from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger, webservice_logger
@@ -53,8 +51,11 @@ def ontology_discovery():
 def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     if lst is None:
         return
+    allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     for uri in lst:
-        allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+        for archivo_uri in allOnts:
+            if uri == archivo_uri or archivo_uri in uri:
+                return
         output = []
         try:
             success, isNir, archivo_version = crawlURIs.handleNewUri(
@@ -82,6 +83,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             db.session.add(dbVersion)
             try:
                 db.session.commit()
+                allOnts.append(archivo_version.nir)
             except Exception:
                 db.session.rollback()
         elif not success and isNir:
@@ -315,7 +317,6 @@ def deploy_index():
 
 # Shutdown your cron thread if the web process is stopped
 atexit.register(lambda: cron.shutdown(wait=False))
-
 
 
 if __name__ == "__main__":
