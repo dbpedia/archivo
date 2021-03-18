@@ -7,18 +7,17 @@
     <br>
     <h2>Frequently Asked Questions </h2>
     <p>
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="about-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#about"
-              aria-expanded="true" aria-controls="about-collapse">
-              What is DBpedia Archivo?
-            </a>
-          </h3>
-        </div>
-        <div id="about" class="panel-collapse collapse" role="tabpanel" aria-labelledby="about-heading">
-          <div class="panel-body px-3 mb-4">
+    <div class="accordion" id="archivo-faq">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="about-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#about"
+            aria-expanded="false" aria-controls="about">
+            What is DBpedia Archivo?
+          </button>
+        </h2>
+        <div id="about" class="accordion-collapse collapse" aria-labelledby="about-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <p>
               DBpedia Archivo is an online interface and augmented archive for all kinds of vocabularies. It
               automatically crawls for new ontologies, updates the already enlisted ontologies regularly and performs
@@ -33,18 +32,16 @@
           </div>
         </div>
       </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="stars-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#stars"
-              aria-expanded="true" aria-controls="stars-collapse">
-              What are the Archivo Stars?
-            </a>
-          </h3>
-        </div>
-        <div id="stars" class="panel-collapse collapse" role="tabpanel" aria-labelledby="stars-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="stars-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#stars"
+            aria-expanded="false" aria-controls="collapseOne">
+            What are the Archivo Stars?
+          </button>
+        </h2>
+        <div id="stars" class="accordion-collapse collapse" aria-labelledby="stars-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <p>Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data) for FAIRer
               ontologies.
               Furthermore, Archivo allows to add more specialized and application-specific tests.
@@ -54,59 +51,53 @@
           </div>
         </div>
       </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="uptime-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#uptime"
-              aria-expanded="true" aria-controls="stars-collapse">
-              Does Archivo measure uptime of my ontology?
-            </a>
-          </h3>
-        </div>
-        <div id="uptime" class="panel-collapse collapse" role="tabpanel" aria-labelledby="uptime-heading">
-          <div class="panel-body px-3 mb-4">
-            <p>No! Archivo checks all known ontologies every 8 hours. If a change is discovered, Archivo will update. If
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="uptime-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#uptime"
+            aria-expanded="false" aria-controls="uptime">
+            Does Archivo measure uptime of my ontology?
+          </button>
+        </h2>
+        <div id="uptime" class="accordion-collapse collapse" aria-labelledby="uptime-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
+            <p>
+              No! Archivo checks all known ontologies every 8 hours. If a change is discovered, Archivo will update. If
               the ontology is down, nothing is done. Users can fallback on Archivo to retrieve the latest available
               version, if the ontology is down.
             </p>
           </div>
         </div>
       </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="access-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion" href="#access"
-              aria-expanded="true" aria-controls="access-collapse">
-              How can I access Archivo's ontologies?
-            </a>
-          </h3>
-        </div>
-        <div id="access" class="panel-collapse collapse" role="tabpanel" aria-labelledby="access-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="access-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#access"
+            aria-expanded="false" aria-controls="access">
+            How can I access Archivo's ontologies?
+          </button>
+        </h2>
+        <div id="access" class="accordion-collapse collapse" aria-labelledby="access-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <p>
               Generally ontologies on Archivo are accessible in all available formats in the <a href="/list">ontology
                 archive</a> as well as on the <a href="/info">ontology view</a>.
               If you want to access a ontology in your program or download huge dumps of ontologies check out the <a
                 href="/api">API page</a>.
             </p>
-
           </div>
         </div>
       </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="fixing-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
-              href="#fixing-ontologies" aria-expanded="true" aria-controls="access-collapse">
-              How can I archive all four Archivo stars?
-            </a>
-          </h3>
-        </div>
-        <div id="fixing-ontologies" class="panel-collapse collapse" role="tabpanel" aria-labelledby="fixing-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="debugging-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#debugging"
+            aria-expanded="false" aria-controls="debugging">
+            How can I archive all four Archivo stars?
+          </button>
+        </h2>
+        <div id="debugging" class="accordion-collapse collapse" aria-labelledby="debugging-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <p>
               On the <a href="/info">ontology view</a> the test results are accessible and generally a click/hover on a
               <span class="x">✘</span> will show the problems with a failed test.<br>
@@ -116,19 +107,16 @@
           </div>
         </div>
       </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="ontology-overview-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
-              href="#ontology-overview" aria-expanded="true" aria-controls="ontology-overview-collapse">
-              Where can I find the test results for my ontology?
-            </a>
-          </h3>
-        </div>
-        <div id="ontology-overview" class="panel-collapse collapse" role="tabpanel"
-          aria-labelledby="ontology-overview-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="ontology-overview-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ontology-overview"
+            aria-expanded="false" aria-controls="ontology-overview">
+            Where can I find the test results for my ontology?
+          </button>
+        </h2>
+        <div id="ontology-overview" class="accordion-collapse collapse" aria-labelledby="ontology-overview-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <p>
               The test-results of on ontology (and all it's versions) can be accessed at the <a href="/info">info</a>
               page of the ontology.
@@ -140,17 +128,16 @@
           </div>
         </div>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="dev-stage-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
-              href="#dev-stage" aria-expanded="true" aria-controls="dev-stage-collapse">
-              What is a develop stage version?
-            </a>
-          </h3>
-        </div>
-        <div id="dev-stage" class="panel-collapse collapse" role="tabpanel" aria-labelledby="dev-stage-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="dev-stage-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dev-stage"
+            aria-expanded="false" aria-controls="dev-stage">
+            What is a develop stage version?
+          </button>
+        </h2>
+        <div id="dev-stage" class="accordion-collapse collapse" aria-labelledby="dev-stage-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <h3>What is a develop stage version?</h3>
             <p>
               The develop stage version is an alternative URI (for example to a file on raw.github.com) which represents
@@ -171,18 +158,16 @@
           </div>
         </div>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="compliance-checks-heading">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
-              href="#compliance-checks" aria-expanded="true" aria-controls="compliance-checks-collapse">
-              How can I add a compliance check to Archivo?
-            </a>
-          </h3>
-        </div>
-        <div id="compliance-checks" class="panel-collapse collapse" role="tabpanel"
-          aria-labelledby="compliance-checks-heading">
-          <div class="panel-body px-3 mb-4">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="compliance-checks-heading">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compliance-checks"
+            aria-expanded="false" aria-controls="compliance-checks">
+            How can I add a compliance check to Archivo?
+          </button>
+        </h2>
+        <div id="compliance-checks" class="accordion-collapse collapse" aria-labelledby="compliance-checks-heading"
+          data-bs-parent="#archivo-faq">
+          <div class="accordion-body">
             <h3>What is a compliance check?</h3>
             <p>
               Beyond the <a href="/faq#stars">Archivo stars</a> Archivo uses <a
@@ -190,26 +175,21 @@
               An example for such a test is the <a>LODE conformity test</a>, which checks the compatibility of a
               vocabulary with the fully automatic <a href="https://essepuntato.it/lode/">LODE service</a>.
             </p>
-            <h3>How can i contribute to the compliance checks?</h3>
+            <h3>How can I contribute to the compliance checks?</h3>
             <p>
               Just create a pull request at <a
-                href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivos SHACL library</a> with your
+                href="https://github.com/dbpedia/archivo/tree/master/shacl-library">Archivos
+                SHACL library</a> with your
               SHACL test, we will review it and add it to Archivos workflow.
             </p>
           </div>
         </div>
       </div>
     </div>
-    </p>
     <p><b>Question missing?</b> Ask it at the <a href="https://forum.dbpedia.org/c/services/archivo/42">DBpedia
         Forum</a>.</p>
   </div>
+
 </section>
-<script>
-  $(document).ready(function () {
-    var anchor = window.location.hash;
-    $(".collapse").collapse('hide');
-    $(anchor).collapse('show');
-  });  
-</script>
+
 {% endblock %}
