@@ -52,30 +52,60 @@ def rebuildDatabase():
     db.create_all()
     # urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     oldIndex = queryDatabus.get_last_official_index()
+    print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
     for uri, source, date in oldIndex:
-        # if uri in urisInDatabase:
-        # print(f"Already listed: {uri}")
-        # continue
-        if source == "DEV":
-            continue
         try:
-            timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
-        except ValueError:
-            timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-        # print("Handling URI " + uri)
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-        ontology, versions = buildDatabaseObjectFromDatabus(
-            uri, group, artifact, source, timestamp
-        )
-        db.session.add(ontology)
-        for v in versions:
-            db.session.add(v)
-        try:
-            db.session.commit()
+            # if uri in urisInDatabase:
+            # print(f"Already listed: {uri}")
+            # continue
+            if source == "DEV":
+                continue
+            try:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+            # print("Handling URI " + uri)
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+            ontology, versions = buildDatabaseObjectFromDatabus(
+                uri, group, artifact, source, timestamp
+            )
+            db.session.add(ontology)
+            for v in versions:
+                db.session.add(v)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(str(e))
+                db.session.rollback()
+            # print(len(Ontology.query.all()))
         except Exception as e:
-            print(str(e))
-            db.session.rollback()
-        # print(len(Ontology.query.all()))
+            print(f"Error in handling {uri}", e)
+            continue
+
+    # rebuild dev data
+    dev_index = queryDatabus.get_last_dev_index()
+    print(f"Rebuilding dev data. Found {len(dev_index)} DEV URIs.")
+    for dev_uri, source, date, official_uri in dev_index:
+        try:
+            try:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(official_uri, dev=True)
+            ontology, versions = buildDatabaseObjectFromDatabus(official_uri, group, artifact, source, timestamp, dev=dev_uri)
+            db.session.add(ontology)
+            for v in versions:
+                db.session.add(v)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(str(e))
+                db.session.rollback()
+        except Exception as e:
+            print(f"Error in handling {dev_uri}", e)
+            continue
+
 
 
 def update_database():
