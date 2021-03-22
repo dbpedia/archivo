@@ -785,7 +785,7 @@ def handleNewUri(
     # new release
     logger.info("Generate new release files...")
     new_version = ArchivoVersion(
-        urldefrag(real_ont_uri)[0],
+        real_ont_uri,
         new_orig_file_path,
         response,
         testSuite,
