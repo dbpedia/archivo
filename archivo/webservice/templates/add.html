@@ -33,7 +33,9 @@
     <pre>curl -X POST https://archivo.dbpedia.org/add --data-urlencode "suggestUrl=http://purl.org/example/ontology.owl"</pre>
   </div>
   <br>
-  Alternatively paste the URL of an OWL ontology here:
+  Alternatively paste the URL of an OWL ontology here:<br>
+  <b>NOTE:</b> The process will take some time to process, especially if the ontology has been accepted, so please be
+  patient.
   </p>
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
@@ -42,45 +44,39 @@
     </p>
     <p>{{ form.submit() }}</p>
   </form>
+</div>
+<div class="container">
   {% if process_steps %}
-  {% if added %}
-  <h3>The suggested ontology has been successfully accepted.</h3>
+  <h3>{{report_heading}}</h3>
+  <p>{{ main_comment | safe}}</p>
   <p>
     Note that orange/red panels are not necessarily critical but we suggest fixing them in the future.
   </p>
-  {% else %}
-  <h3>The suggested ontology has been rejected.</h3>
-  <p>
-    Check out the processing log for the reasons it didn't work (typically the last panel is the final reason for the
-    rejection). If you think the ontology is correct and the problem is
-    on Archivos site, please report an Error on <a href="https://github.com/dbpedia/archivo/issues/">Github</a>.
-  </p>
-  {% endif %}
   <h4>Processing log:</h4>
-  <div class="container">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      {% for step in process_steps %}
-      <div class="panel panel-default">
-        <div class="panel-heading p-3 mb-3" role="tab" id="step{{loop.index}}"
-          style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %};">
-          <h3 class="panel-title">
-            <a class="collapsed" role="button" title="" data-toggle="collapse" data-parent="#accordion"
-              href="#link{{loop.index}}" style="color: black; font-size: medium;" aria-expanded="true"
-              aria-controls="link{{loop.index}}-collapse">
-              {{ step.step }}
-            </a>
-          </h3>
-        </div>
-        <div id="link{{loop.index}}" class="panel-collapse collapse" role="tabpanel"
-          aria-labelledby="step{{loop.index}}">
-          <div class="panel-body px-3 mb-4">
-            <pre>{{ step.message | safe }}</pre>
-          </div>
+  <div class="accordion" id="suggestion-report">
+    {% for step in process_steps %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="step{{loop.index}}">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapse{{loop.index}}" aria-expanded="false" aria-controls="collapse{{loop.index}}"
+          style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %}; color: black;">
+          {{step.step }}
+        </button>
+      </h2>
+    </div>
+    {% if not loop.last %}
+    <div id="collapse{{loop.index}}" class="accordion-collapse collapse" aria-labelledby="step{{loop.index}}"
+      data-bs-parent="#suggestion-report">
+      {% else %}
+      <div id="collapse{{loop.index}}" class="accordion-collapse collapse show" aria-labelledby="step{{loop.index}}"
+        data-bs-parent="#suggestion-report">
+        {% endif %}
+        <div class="accordion-body">
+          {{ step.message | safe }}
         </div>
       </div>
       {% endfor %}
     </div>
+    {% endif %}
   </div>
-  {% endif %}
-</div>
-{% endblock %}
+  {% endblock %}

@@ -57,6 +57,7 @@ def addOntology():
         uri = suggested_uri
         output = []
         testingSuite = TestSuite(archivoPath)
+        flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         success, isNir, archivo_version = crawlURIs.handleNewUri(
             uri,
             allOnts,
@@ -87,10 +88,21 @@ def addOntology():
             )
             db.session.add(fallout)
             db.session.commit()
-        flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
+        # Adding info about the process
+        if success:
+            report_heading = "The Ontology has been accepted and added to Archivo!"
+            main_comment = f"Check out this <a href=/info?o={quote(archivo_version.nir)}>page</a> for the overview over the suggested ontology!"
+        elif not success and output[-1]["status"] == True:
+            report_heading = "The Ontology is already part of Archivo!"
+            main_comment = output[-1]["message"]
+        else:
+            report_heading = "The Ontology has been rejected!"
+            main_comment = "Check out the log below for the reason. Click on the boxes for further details!"
+
         return render_template(
             "add.html",
-            added=success,
+            report_heading=report_heading,
+            main_comment=main_comment,
             process_steps=output,
             form=form,
             title="Archivo - Suggest Ontology",
