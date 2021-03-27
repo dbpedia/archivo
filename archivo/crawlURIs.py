@@ -543,6 +543,46 @@ class ArchivoVersion:
 
 # ======== END OF CLASS ================
 
+# returns the NIR if frgmant-equivalent, else None
+def check_NIR(uri, graph, output=[]):
+
+    candidates = inspectVocabs.get_ontology_URIs(graph)
+
+    if candidates == []:
+        output.append(
+            {
+                "status": False,
+                "step": "Determine non-information resource",
+                "message": "Neither can't find a triple with <code>owl:Ontology</code> or <code>skos:ConceptScheme</code> as value",
+            }
+        )
+        return False, None
+
+    found_nir = None
+
+    for nir in candidates:
+        if stringTools.check_uri_equality(uri, nir):
+            found_nir = nir
+
+    if found_nir is None:
+        output.append(
+            {
+                "status": False,
+                "step": "Determine non-information resource",
+                "message": f"Neither of {str(candidates)} equals the source URI {uri}, trying to validate {candidates[0]}",
+            }
+        )
+        return False, candidates[0]
+    else:
+        output.append(
+            {
+                "status": True,
+                "step": "Determine non-information resource",
+                "message": f"Found non-information resource: {found_nir}",
+            }
+        )
+        return True, found_nir
+
 
 def handleNewUri(
     vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=[]
@@ -636,7 +676,7 @@ def handleNewUri(
         return False, isNIR, None
 
     try:
-        real_ont_uri = inspectVocabs.getNIRUri(graph)
+        ont_succ, real_ont_uri = check_NIR(vocab_uri, graph, output=user_output)
     except Exception:
         traceback.print_exc(file=sys.stderr)
         user_output.append(
@@ -648,14 +688,8 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    if real_ont_uri is None:
-        user_output.append(
-            {
-                "status": False,
-                "step": "Determine non-information resource",
-                "message": "Neither can't find a triple with <code>owl:Ontology</code> or <code>skos:ConceptScheme</code> as value.",
-            }
-        )
+    if not ont_succ and real_ont_uri is None:
+        # if no or no different ontology URI -> check defined_by
         real_ont_uri = inspectVocabs.getDefinedByUri(graph)
         if real_ont_uri is None:
             logger.info("No Ontology discoverable")
@@ -667,7 +701,6 @@ def handleNewUri(
                 }
             )
             return False, isNIR, None
-
         if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
             user_output.append(
                 {
@@ -695,23 +728,9 @@ def handleNewUri(
                 }
             )
             return False, isNIR, None
-
-    user_output.append(
-        {
-            "status": True,
-            "step": "Determine non-information resource",
-            "message": f"Found non-information resource: {real_ont_uri}",
-        }
-    )
-    isNIR = True
-    if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
-        user_output.append(
-            {
-                "status": False,
-                "step": "URI equality check",
-                "message": f"{real_ont_uri} differs from {vocab_uri}",
-            }
-        )
+    elif not ont_succ and real_ont_uri is not None:
+        # when another URI was discovered -> check it
+        isNIR = True
         return handleNewUri(
             str(real_ont_uri),
             index,
@@ -724,7 +743,7 @@ def handleNewUri(
         )
 
     # here we go if the uri is NIR and  its resolveable
-    real_ont_uri = str(real_ont_uri)
+    isNIR = True
 
     if isNIR and vocab_uri != real_ont_uri:
         logger.warning(f"unexpected value for real uri: {real_ont_uri}")

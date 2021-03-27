@@ -106,6 +106,21 @@ def getOwlVersionIRI(graph):
         return None
 
 
+def get_ontology_URIs(graph):
+    queryString = (
+        "SELECT DISTINCT ?uri\n"
+        "WHERE {\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
+        "}"
+    )
+    result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
+    if result != None and len(result) > 0:
+        return [str(row[0]) for row in result]
+    else:
+        return []
+
+
 # returns the NIR-URI if it got a owl:Ontology prop, else None
 def getNIRUri(graph):
     queryString = (
