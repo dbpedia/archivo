@@ -17,8 +17,8 @@ def get_latest_stars_before_deadline(ont, deadline):
     return None
 
 
-def group_by_stars(ontologies):
-    dates = generate_dates(6, 2)
+def group_by_stars(ontologies, timespan=6, interval=2):
+    dates = generate_dates(timespan=timespan, interval=interval)
     results = {}
 
     for deadline in dates:
@@ -34,7 +34,7 @@ def group_by_stars(ontologies):
     return dates, results
 
 
-def generate_dates(timespan=6, interval=4):
+def generate_dates(timespan, interval):
     day = datetime.datetime.now()
     timedelta = datetime.timedelta(weeks=interval)
     dates = []
@@ -62,8 +62,8 @@ def get_average_stars_from_dict(x_vals, results):
     return average_star_values
 
 
-def generate_star_graph(ontologies, stats_path):
-    x_vals, results = group_by_stars(ontologies)
+def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
+    x_vals, results = group_by_stars(ontologies, timespan=timespan, interval=interval)
     figure = go.Figure()
 
     # four stars:

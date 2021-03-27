@@ -8,7 +8,12 @@ from utils import (
     generatePoms,
 )
 from utils.validation import TestSuite
-from utils.archivoLogs import discovery_logger, diff_logger, dev_diff_logger, webservice_logger
+from utils.archivoLogs import (
+    discovery_logger,
+    diff_logger,
+    dev_diff_logger,
+    webservice_logger,
+)
 from datetime import datetime
 import graphing
 import json
@@ -20,7 +25,9 @@ cron.start()
 
 def get_correct_path() -> str:
     archivo_path = os.path.split(app.instance_path)[0]
-    if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")):
+    if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(
+        os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")
+    ):
         return archivo_path
     else:
         webservice_logger.error(f"{archivo_path} is not the correct path")
@@ -51,7 +58,7 @@ def ontology_discovery():
     discovery_logger.info("Started discovery of prefix.cc URIs...")
     run_discovery(crawlURIs.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
-    run_discovery(crawlURIs.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
+    run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")
     for uri_list in queryDatabus.get_SPOs():
         run_discovery(uri_list, "SPOs", dataPath, testSuite)
@@ -77,7 +84,9 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
                 user_output=output,
             )
         except Exception:
-            discovery_logger.exception(f"Problem during validating {uri}", exc_info=True)
+            discovery_logger.exception(
+                f"Problem during validating {uri}", exc_info=True
+            )
             continue
         if success:
             succ, dev_version = archivo_version.handleTrackThis()

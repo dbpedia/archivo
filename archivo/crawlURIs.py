@@ -18,9 +18,6 @@ from string import Template
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 
-# mod uris
-mod_endpoint = "http://akswnc7.informatik.uni-leipzig.de:9062/sparql/"
-
 # url to get all vocabs and their resource
 lovOntologiesURL = "https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
 
@@ -197,12 +194,9 @@ def checkRobot(uri):
     robotsUrl = str(parsedUrl.scheme) + "://" + str(parsedUrl.netloc) + "/robots.txt"
     try:
         req = requests.get(url=robotsUrl)
-    except requests.exceptions.SSLError:
-        return True, "SSL error"
-    except requests.exceptions.ConnectionError:
-        return True, "Connection Error"
-    except requests.exceptions.InvalidSchema:
-        return True, f"Invalid schema: {robotsUrl}"
+    except Exception as e:
+        return True, str(e)
+
     if req.status_code > 400:
         # if robots.txt is not accessible, we are allowed
         return True, None
@@ -974,45 +968,6 @@ def getPrefixURLs():
     json_data = req.json()
     prefixOntoDict = json_data["@context"]
     return [prefixOntoDict[prefix] for prefix in prefixOntoDict]
-
-
-# returns a distinct list of VOID classes and properties
-def get_VOID_URIs():
-    query = "\n".join(
-        (
-            "PREFIX prov: <http://www.w3.org/ns/prov#>",
-            "PREFIX void: <http://rdfs.org/ns/void#>",
-            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
-            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
-            "PREFIX dct:    <http://purl.org/dc/terms/>",
-            "SELECT DISTINCT ?URI {",
-            "?mod prov:generated ?generated .",
-            "{ SELECT ?URI WHERE {",
-            "?generated void:propertyPartition [",
-            "void:property ?URI",
-            "] .",
-            "}",
-            "}",
-            "UNION",
-            "{ SELECT DISTINCT ?URI WHERE {",
-            "?generated void:classPartition [",
-            "void:class ?URI",
-            "] .",
-            "}",
-            "}",
-            "}",
-        )
-    )
-    try:
-        sparql = SPARQLWrapper(mod_endpoint)
-        sparql.setQuery(query)
-        sparql.setReturnFormat(JSON)
-        results = sparql.query().convert()
-    except Exception:
-        return None
-    if not "results" in results:
-        return None
-    return [binding["URI"]["value"] for binding in results["results"]["bindings"]]
 
 
 def testLOVInfo():

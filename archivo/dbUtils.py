@@ -92,8 +92,12 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(official_uri, dev=True)
-            ontology, versions = buildDatabaseObjectFromDatabus(official_uri, group, artifact, source, timestamp, dev=dev_uri)
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(
+                official_uri, dev=True
+            )
+            ontology, versions = buildDatabaseObjectFromDatabus(
+                official_uri, group, artifact, source, timestamp, dev=dev_uri
+            )
             db.session.add(ontology)
             for v in versions:
                 db.session.add(v)
@@ -105,7 +109,6 @@ def rebuildDatabase():
         except Exception as e:
             print(f"Error in handling {dev_uri}", e)
             continue
-
 
 
 def update_database():

@@ -4,12 +4,15 @@ from io import StringIO
 from urllib.error import URLError
 from utils import ontoFiles, inspectVocabs, stringTools
 from utils.stringTools import generateStarString
-from datetime import datetime
+from datetime import datetime, timedelta
 import csv
 
 databusRepoUrl = "https://databus.dbpedia.org/repo/sparql"
 
 mods_uri = "https://akswnc7.informatik.uni-leipzig.de/mods/sparql"
+
+# mod uris
+mod_endpoint = "https://mods.tools.dbpedia.org/sparql"
 
 
 def getLatestMetaFile(group, artifact):
@@ -691,23 +694,31 @@ def get_last_dev_index():
 
 
 def get_SPOs():
-    query = "\n".join(
-        (
-            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
-            "PREFIX dct:    <http://purl.org/dc/terms/>",
-            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
-            "PREFIX prov: <http://www.w3.org/ns/prov#>"
-            "SELECT DISTINCT ?used ?generated {",
-            "SERVICE <https://databus.dbpedia.org/repo/sparql> {",
-            "?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto> .",
-            "?s dcat:distribution/dataid:file ?used .",
-            "}",
-            "?mod prov:generated ?generated .",
-            "?mod prov:used ?used .",
-            "}",
-        )
+    # returns spos in a generator which are not olter than two weeks
+    today = datetime.now()
+
+    last_week = today - timedelta(days=14)
+
+    last_week_string = last_week.strftime("%Y.%m.%d-%H%M%S")
+
+    query = (
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n"
+        + "PREFIX dct:    <http://purl.org/dc/terms/>\n"
+        + "PREFIX dcat:   <http://www.w3.org/ns/dcat#>\n"
+        + "PREFIX prov: <http://www.w3.org/ns/prov#>\n"
+        + "SELECT DISTINCT ?used ?generated {\n"
+        + "      SERVICE <https://databus.dbpedia.org/repo/sparql> {\n"
+        + "            ?dataset dct:publisher <https://yum-yab.github.io/webid.ttl#onto> .\n"
+        + "            ?dataset dcat:distribution/dataid:file ?used .\n"
+        + "                ?dataset dct:hasVersion ?vers .\n"
+        + f'                FILTER(str(?vers) > "{last_week_string}")\n'
+        + "      }\n"
+        + "      ?mod prov:generated ?generated .\n"
+        + "  	 ?mod a  <https://mods.tools.dbpedia.org/ns/rdf#SpoMod> .\n"
+        + "      ?mod prov:used ?used .\n"
+        + "}\n"
     )
-    sparql = SPARQLWrapper(mods_uri)
+    sparql = SPARQLWrapper(mod_endpoint)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
@@ -733,6 +744,45 @@ def get_SPOs():
             if stringTools.get_uri_from_index(uri, distinct_spo_uris) is None:
                 distinct_spo_uris.append(uri)
         yield distinct_spo_uris
+
+
+# returns a distinct list of VOID classes and properties
+def get_VOID_URIs():
+    query = "\n".join(
+        (
+            "PREFIX prov: <http://www.w3.org/ns/prov#>",
+            "PREFIX void: <http://rdfs.org/ns/void#>",
+            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+            "PREFIX dct:    <http://purl.org/dc/terms/>",
+            "SELECT DISTINCT ?URI {",
+            "?mod prov:generated ?generated .",
+            "{ SELECT ?URI WHERE {",
+            "?generated void:propertyPartition [",
+            "void:property ?URI",
+            "] .",
+            "}",
+            "}",
+            "UNION",
+            "{ SELECT DISTINCT ?URI WHERE {",
+            "?generated void:classPartition [",
+            "void:class ?URI",
+            "] .",
+            "}",
+            "}",
+            "}",
+        )
+    )
+    try:
+        sparql = SPARQLWrapper(mod_endpoint)
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+    except Exception:
+        return None
+    if not "results" in results:
+        return None
+    return [binding["URI"]["value"] for binding in results["results"]["bindings"]]
 
 
 if __name__ == "__main__":
