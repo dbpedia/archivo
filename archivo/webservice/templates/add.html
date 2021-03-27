@@ -5,7 +5,7 @@
   <p>
   <h2>Add a new ontology to Archivo</h2>
 
-  Archivo retrieves ontologies exclusively from the web using their ontology URL.
+  Archivo retrieves ontologies exclusively from the web using their ontology URI.
   The main rationale here is that we implemented the most common and standardized ways to access Ontologies
   programmatically following Jon Postel: "Be conservative in what you do, be liberal in what you accept from others".
   This means, we already allow some irregularities and heterogeneity, when parsing the ontologies from the web. Then
@@ -25,28 +25,52 @@
     <li>The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided
       here. If thats not the case Archivo tries to parse the new URI</li>
   </ol>
-  A ontology can be suggested with a POST request, Archivo will download and parse it and if this succeeds include it in
+
+  A ontology can be suggested via webform or HTTP POST request. Archivo will download and parse it, and if this succeeds
+  include it in
   its
-  index for daily crawling.<br>
-  <strong>Example</strong>:<br>
-  <div class="codeblock" style="font-size: medium;">
-    <pre>curl -X POST https://archivo.dbpedia.org/add --data-urlencode "suggestUrl=http://purl.org/example/ontology.owl"</pre>
+  index for daily crawling.
+  </p>
+
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-URI-tab" data-bs-toggle="tab" data-bs-target="#nav-URI" type="button"
+        role="tab" aria-controls="nav-URI" aria-selected="true">URI</button>
+      <button class="nav-link" id="nav-POST-tab" data-bs-toggle="tab" data-bs-target="#nav-POST" type="button"
+        role="tab" aria-controls="nav-POST" aria-selected="false">HTTP POST</button>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-URI" role="tabpanel" aria-labelledby="nav-URI-tab">
+      <p>
+        Paste the URL of an OWL ontology here:<br>
+      <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+          {{ form.suggestUrl(size=100) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+      </form>
+      </p>
+    </div>
+    <div class="tab-pane fade" id="nav-POST" role="tabpanel" aria-labelledby="nav-POST-tab">
+      <p>
+        Alternatively you can use a HTTP POST request to suggest an ontology, like:
+      <div class="codeblock" style="font-size: medium;">
+        <pre>curl -X POST https://archivo.dbpedia.org/add --data-urlencode "suggestUrl=http://purl.org/example/ontology.owl"</pre>
+      </div>
+      </p>
+    </div>
   </div>
-  <br>
-  Alternatively paste the URL of an OWL ontology here:<br>
   <b>NOTE:</b> The process will take some time to process, especially if the ontology has been accepted, so please be
   patient.
-  </p>
-  <form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p>
-      {{ form.suggestUrl(size=100) }}
-    </p>
-    <p>{{ form.submit() }}</p>
-  </form>
+
+
 </div>
 <div class="container">
   {% if process_steps %}
+  <br>
+  <br>
   <h3>{{report_heading}}</h3>
   <p>{{ main_comment | safe}}</p>
   <p>
