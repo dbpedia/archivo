@@ -68,6 +68,11 @@ th:hover span {
     color: hotpink;
 }
 
+span.error:hover {
+    text-decoration: underline;
+    color: red;
+}
+
 .container-fluid {
     padding-bottom: 300px;
     padding-left: 150px;
@@ -110,7 +115,7 @@ th:hover span {
     background-color: #ddd;
 }
 
-table {
+/* table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
@@ -121,7 +126,7 @@ th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-}
+} */
 
 a:link {
     color: blue;
