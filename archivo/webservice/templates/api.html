@@ -4,9 +4,13 @@
 <div class="container">
 
     <p>
-    <h2>API</h2>
+    <h1>API</h1>
+    <p>This site provides instructions for the access of one or multiple ontologies.</p>
 
-    <h3>Download one ontology via Archivo</h3>
+    <h2 id="download-one"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
+            href="#download-one">#</a> Download one ontology via Archivo</h2>
+    <p>
+    <h4>Examples</h4>
     <strong>Example 1 (default)</strong> Download the latest version of the Cinelab ontology as RDFXML<br>
     <div class="codeblock" style="font-size: medium;">
         <pre>curl -L "http://archivo.dbpedia.org/download?o=http://advene.org/ns/cinelab/ld"</pre>
@@ -22,7 +26,6 @@
         <pre>curl -L "http://archivo.dbpedia.org/download?o=http://datashapes.org/dash&amp;v=2020.07.16-115638"</pre>
     </div>
     </p>
-
     <p>
     <h4>API pattern explained</h4>
     <div class="codeblock">
@@ -45,56 +48,99 @@
 
 
     Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a>
-    which also provides the latest download links.</p>
+    which also provides the latest download links.
+    </p>
 
+    <p>
+    <h2 id="download-all"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
+            href="#download-all">#</a> Download multiple ontologies</h2>
 
+    <h4 id="collections"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#collections">#</a>
+        Databus Collections</h4>
+
+    Archivo is powered by DBpedia Databus, which enables the creation of collection (custom data catalogues). Custom
+    collections can be created and edited <a href="https://databus.dbpedia.org/system/collection-editor"
+        target="_blank">here</a>. A
+    few useful collections were already created.
+    <ul>
+        <li>The latest ontologies as turtle files: <a
+                href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots</a>
+        </li>
+        <li>The latest ontologies as N-Triples: <a
+                href="https://databus.dbpedia.org/denis/collections/latest_ontologies_as_nt">https://databus.dbpedia.org/denis/collections/latest_ontologies_as_nt</a>
+        </li>
+        <li>The lates version of ontologies with a useable license statement: <a
+                href="https://databus.dbpedia.org/denis/collections/latest-licensed-ontologies">https://databus.dbpedia.org/denis/collections/latest-licensed-ontologies</a>
+        </li>
+    </ul>
+
+    Additionally the files in a collection can be downloaded with a few simple bash commands (can be copied from each
+    specific collection page):<br>
+    <div class="codeblock" style="font-size: medium;">
+        <pre># load the query of a collection via curl
+query=$(curl -H "Accept:text/sparql" &lt;COLLECTION-URI&gt;)
+
+# fetch the files via wget
+files=$(curl -H &quot;Accept: text/csv&quot; --data-urlencode &quot;query=${query}&quot; https://databus.dbpedia.org/repo/sparql | tail -n+2 | sed 's/&quot;//g')
+while IFS= read -r file ; do wget $file; done &lt;&lt;&lt; &quot;$files&quot;</pre>
+    </div>
+    </p>
+
+    <p>
+    <h4 id="docker-virtuoso"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
+            href="#docker-virtuoso">#</a>Setup SPARQL enpoint</h4><a
+        href="https://hub.docker.com/r/dbpedia/virtuoso-sparql-endpoint-quickstart">Virtuoso
+        quickstart docker</a> of the DBpedia Stack starts a Virtuoso instance and all latest ontologies will be deployed
+    automagically by feeding the collection URI.<br>
+    <strong>Example:</strong> Load latest versions of official ontology graphs in an virtuoso endpoint.<br>
+    <div class="codeblock" style="font-size: medium;">
+        <pre>git clone https://github.com/dbpedia/virtuoso-sparql-endpoint-quickstart.git
+cd virtuoso-sparql-endpoint-quickstart
+COLLECTION_URI=https://databus.dbpedia.org/denis/collections/latest_ontologies_as_nt VIRTUOSO_ADMIN_PASSWD=secret docker-compose up</pre>
+    </div><br>
+    <strong>NOTE:</strong> The Virtuoso SPARQL endpoint will be available at <a
+        href="http://localhost:8890/sparql">http://localhost:8890/sparql</a>.
+    </p>
+    <p>
+    <h4 id="download-alternatives"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
+            href="#download-alternatives">#</a> Other alternatives</h4>
+    <ul>
+        <li>
+            Using <code>wget</code> the raw databus interface
+            <strong>downloads all archived versions with all augmentation files of all ontologies:</strong><br>
+            <div class="codeblock" style="font-size: medium;">
+                <pre>wget --no-parent --mirror https://raw.databus.dbpedia.org/ontologies/</pre>
+            </div><br>
+
+        </li>
+        <li>Using the <a href="https://github.com/dbpedia/databus-client">Databus Client</a>: Generates a local file
+            dump of a SPARQL query<br><strong>Example Download as N-Triples:</strong><br>
+            <div class="codeblock" style="font-size: medium;">
+                <pre># download and build the client
+git clone https://github.com/dbpedia/databus-client.git
+cd databus-client
+mvn clean install
+
+# download the latest version of the official ontology release as turtle files
+bin/DatabusClient -f ttl -s https://databus.dbpedia.org/denis/collections/latest_ontologies_as_nt</pre>
+            </div>
+        </li>
+    </ul>
+    </p>
+    <!--p>
     <h3>SPARQL API access via Databus</h3>
 
-    <p> See the <a
-            href="https://databus.dbpedia.org/yasgui/#query=PREFIX+dataid%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcore%23%3E%0APREFIX+dct%3A++++%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+dcat%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0APREFIX+db%3A+++++%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2F%3E%0APREFIX+rdf%3A++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dataid-cv%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcv%23%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0A%0ASELECT+DISTINCT+%3Fart+%3Fversion+%3Ffile+WHERE+%7B%0A++VALUES+%3Fart+%7B+%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2Fontologies%2Fxmlns.com%2Ffoaf--0--1%3E+%7D+.%0A++%09%3Fdataset+dataid%3Aaccount+db%3Aontologies+.+%0A++%09%3Fdataset+dataid%3Aartifact+%3Fart+.%0A++%09%3Fdataset+dcat%3Adistribution+%3Fdistribution+.%0A++%09%3Fdistribution+dataid-cv%3Atype+'parsed'%5E%5Exsd%3Astring+.+%09%0A++%09%3Fdistribution+dataid%3AformatExtension+'owl'%5E%5Exsd%3Astring+.+%0A++%09%3Fdistribution+dcat%3AdownloadURL+%3Ffile+.%0A++%09%3Fdataset+dct%3AhasVersion+%3Fversion+.%0A%7D&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fdatabus.dbpedia.org%2Frepo%2Fsparql&requestMethod=POST&tabTitle=Example+Ontology+Query&headers=%7B%7D&outputFormat=table">example
-            query</a>.
-        Archivo is built on the DBpedia Databus SPARQL API. It is possible to query all Archivo artifacts
-        programmatically using SPARQL.
-        The Databus Artifact of each ontology are named in the following manner:
+    See the <a
+        href="https://databus.dbpedia.org/yasgui/#query=PREFIX+dataid%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcore%23%3E%0APREFIX+dct%3A++++%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX+dcat%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2Fns%2Fdcat%23%3E%0APREFIX+db%3A+++++%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2F%3E%0APREFIX+rdf%3A++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX+rdfs%3A+++%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0APREFIX+dataid-cv%3A+%3Chttp%3A%2F%2Fdataid.dbpedia.org%2Fns%2Fcv%23%3E%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0A%0ASELECT+DISTINCT+%3Fart+%3Fversion+%3Ffile+WHERE+%7B%0A++VALUES+%3Fart+%7B+%3Chttps%3A%2F%2Fdatabus.dbpedia.org%2Fontologies%2Fxmlns.com%2Ffoaf--0--1%3E+%7D+.%0A++%09%3Fdataset+dataid%3Aaccount+db%3Aontologies+.+%0A++%09%3Fdataset+dataid%3Aartifact+%3Fart+.%0A++%09%3Fdataset+dcat%3Adistribution+%3Fdistribution+.%0A++%09%3Fdistribution+dataid-cv%3Atype+'parsed'%5E%5Exsd%3Astring+.+%09%0A++%09%3Fdistribution+dataid%3AformatExtension+'owl'%5E%5Exsd%3Astring+.+%0A++%09%3Fdistribution+dcat%3AdownloadURL+%3Ffile+.%0A++%09%3Fdataset+dct%3AhasVersion+%3Fversion+.%0A%7D&contentTypeConstruct=text%2Fturtle&contentTypeSelect=application%2Fsparql-results%2Bjson&endpoint=https%3A%2F%2Fdatabus.dbpedia.org%2Frepo%2Fsparql&requestMethod=POST&tabTitle=Example+Ontology+Query&headers=%7B%7D&outputFormat=table">example
+        query</a>.
+    Archivo is built on the DBpedia Databus SPARQL API. It is possible to query all Archivo artifacts
+    programmatically using SPARQL.
+    The Databus Artifact of each ontology are named in the following manner:
     <pre>https://databus.dbpedia.org/ontologies/${ontology domain}/${ontology path}</pre>
     where as in ${ontology path} the chars <code>[/_#~]</code> are replaced by <code>--</code> in the middle and omitted
     at the end.
     Examples can be found via the Databus link in the <a href="/list">complete list</a> of ontologies or queries via the
     SPARQL endpoint.
-    </p>
-
-
-    <h3>Download all ontologies</h3>
-    <p>
-    <h4>Databus Collection</h4>
-
-    Archivo is powered by DBpedia Databus, which enables the creation of collection (custom data catalogues). For
-    Archivo we created a collection to access the latest version of all ontologies: <a
-        href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots</a>
-    </p>
-    <p>
-    <h4>Download instructions</h4> are given at the <a
-        href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">collection page</a> in
-    the query and download URL tabs.
-    </p>
-    <p>
-    <h4>Setup SPARQL enpoint</h4><a href="https://hub.docker.com/r/dbpedia/virtuoso-sparql-endpoint-quickstart">Virtuoso
-        quickstart docker</a> of the DBpedia Stack starts a Virtuoso instance and all latest ontologies will be deployed
-    automagically by feeding the collection URI.
-    </p>
-    <h4>Other alternatives</h4>
-    <ul>
-        <li>
-            Using <code>wget</code> the raw databus interface
-            <strong>Downloads all archived versions of all ontologies</strong>
-            <pre>wget --no-parent --mirror https://raw.databus.dbpedia.org/ontologies/</pre>
-        </li>
-        <li>Using the <a href="https://github.com/dbpedia/databus-client">Databus Client</a>: Generates a local file
-            dump of a SPARQL query<strong>Example Download as .nt:</strong>
-            <pre>bin/DatabusClient -f nt -s https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots/</pre>
-            </p>
-        </li>
-    </ul>
-
+    </p-->
 </div>
 {% endblock %}
