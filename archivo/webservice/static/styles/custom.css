@@ -127,23 +127,15 @@ th {
     text-align: left;
     padding: 8px;
 } */
-
-a:link {
-    color: blue;
-    background-color: transparent;
-    text-decoration: none;
-}
-
-a:hover {
-    color: purple;
-    background-color: transparent;
-    text-decoration: underline;
-}
-
 .x {
     color: red !important;
 }
 
 .check {
     color: green !important;
+}
+
+.hidden-link {
+    text-decoration: none !important;
+    color: black !important;
 }

@@ -7,8 +7,9 @@
     <h1>API</h1>
     <p>This site provides instructions for the access of one or multiple ontologies.</p>
 
-    <h2 id="download-one"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
-            href="#download-one">#</a> Download one ontology via Archivo</h2>
+    <h2 id="download-one">
+        <a href="#dowload-one" class="hidden-link">Download one ontology via Archivo</a>
+    </h2>
     <p>
     <h4>Examples</h4>
     <strong>Example 1 (default)</strong> Download the latest version of the Cinelab ontology as RDFXML<br>
@@ -47,21 +48,23 @@
     </ul>
 
 
-    Another way would be searching your ontology in the <a href="/list">complete list of Archivo ontologies</a>
+    Another way is searching your ontology in the <a href="/list">complete list of Archivo ontologies</a>
     which also provides the latest download links.
     </p>
 
     <p>
-    <h2 id="download-all"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
-            href="#download-all">#</a> Download multiple ontologies</h2>
+    <h2 id="download-all">
+        <a href="#download-all" class="hidden-link">Download multiple ontologies</a>
+    </h2>
 
-    <h4 id="collections"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#collections">#</a>
-        Databus Collections</h4>
+    <h4 id="collections">
+        <a href="#collections" class="hidden-link">Databus Collections</a>
+    </h4>
 
     Archivo is powered by DBpedia Databus, which enables the creation of collection (custom data catalogues). Custom
     collections can be created and edited <a href="https://databus.dbpedia.org/system/collection-editor"
         target="_blank">here</a>. A
-    few useful collections were already created.
+    few useful collections were already created:
     <ul>
         <li>The latest ontologies as turtle files: <a
                 href="https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots">https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots</a>
@@ -87,9 +90,8 @@ while IFS= read -r file ; do wget $file; done &lt;&lt;&lt; &quot;$files&quot;</p
     </p>
 
     <p>
-    <h4 id="docker-virtuoso"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
-            href="#docker-virtuoso">#</a>Setup SPARQL enpoint</h4><a
-        href="https://hub.docker.com/r/dbpedia/virtuoso-sparql-endpoint-quickstart">Virtuoso
+    <h4 id="docker-virtuoso"><a href="#docker-virtuoso" class="hidden-link">Setup SPARQL enpoint</a></h4>
+    <a href="https://hub.docker.com/r/dbpedia/virtuoso-sparql-endpoint-quickstart">Virtuoso
         quickstart docker</a> of the DBpedia Stack starts a Virtuoso instance and all latest ontologies will be deployed
     automagically by feeding the collection URI.<br>
     <strong>Example:</strong> Load latest versions of official ontology graphs in an virtuoso endpoint.<br>
@@ -102,8 +104,9 @@ COLLECTION_URI=https://databus.dbpedia.org/denis/collections/latest_ontologies_a
         href="http://localhost:8890/sparql">http://localhost:8890/sparql</a>.
     </p>
     <p>
-    <h4 id="download-alternatives"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#"
-            href="#download-alternatives">#</a> Other alternatives</h4>
+    <h4 id="download-alternatives">
+        <a href="#download-alternatives" class="hidden-link">Other alternatives</a>
+    </h4>
     <ul>
         <li>
             Using <code>wget</code> the raw databus interface
