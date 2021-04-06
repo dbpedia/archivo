@@ -120,13 +120,12 @@ rapper -gc "$non-information-resource"
 
     </p>
 
-
-    <br>
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse"
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse"
         aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">Click here to compare the
         decrease in variety from ★★☆☆ to ★★★☆+
         licenses</button>
     <div class="row">
+
         <div class="col">
             <div class="collapse multi-collapse" id="multiCollapseExample1">
                 <div class="card card-body">
@@ -271,7 +270,8 @@ rapper -gc "$non-information-resource"
                 style="color: red;">c</span>e in property
         </li>
         <li>
-            Note: If an ontology already has a license statement, there is no need to delete it, just add another one
+            Note: If an ontology already has a license statement, there is no need to delete it, just add another
+            one
             with
             <code>dct:license</code>.
         </li>
@@ -297,12 +297,14 @@ rapper -gc "$non-information-resource"
             licenses</b> .
     <ul>
         <li>
-            We are further investigation the legal consequences of having several license statements, which introduces
+            We are further investigation the legal consequences of having several license statements, which
+            introduces
             ambiguity, i.e. can the user choose? can they be merged?
         </li>
         <li>
             The criteria for the License II star might be more strict in the future, requiring a machine-readable,
-            resolvable URI or a URI that can be <code>owl:sameAs</code> linked to a machine-readable, resolvable URI.
+            resolvable URI or a URI that can be <code>owl:sameAs</code> linked to a machine-readable, resolvable
+            URI.
         </li>
     </ul>
     </p>
@@ -313,7 +315,8 @@ rapper -gc "$non-information-resource"
     </p>
     <h4>Debugging</h4>
     <p>
-        Test using <a href="https://github.com/stardog-union/pellet">Pellet CLI</a>. Archivo also provides the Pellet
+        Test using <a href="https://github.com/stardog-union/pellet">Pellet CLI</a>. Archivo also provides the
+        Pellet
         report, available at the <a href="/info">Archivo ontology view</a> at the failed consistency
         check symbol <span class="x">✘</span> where the logical inconsistencies can be seen and fixed.
     </p>
@@ -337,15 +340,18 @@ rapper -gc "$non-information-resource"
     <p>SHACL (<a href="https://www.w3.org/TR/shacl/" target="_blank">https://www.w3.org/TR/shacl/</a>, co-edited by
         DBpedia’s CTO D. Kontokostas) enables easy testing of ontologies. Archivo offers free SHACL continuous
         integration testing for ontologies. Anyone can implement their SHACL tests and add them to the <a
-            href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library on Github</a>. We believe
-        that there are many synergies, i.e. SHACL tests for your ontology are helpful for others as well. Some ideas:
+            href="https://github.com/dbpedia/archivo/tree/master/shacl-library">SHACL library on Github</a>. We
+        believe
+        that there are many synergies, i.e. SHACL tests for your ontology are helpful for others as well. Some
+        ideas:
         Check for labels/comments, Check for multilinguality (i.e. labels in more than 5 languages), check for
         properties you consider essentiel. Add a file to github and we will run it.
     </p>
     <br>
     <h3>Application compliance</h3>
     <p>
-        Applications often pose certain requirements to the ontology. Archivo allows to SHACL them up and test for them.
+        Applications often pose certain requirements to the ontology. Archivo allows to SHACL them up and test for
+        them.
         An example for such an compliance check is the <a
             href="https://github.com/dbpedia/archivo/blob/master/shacl-library/LODE.ttl">LODE conformity check</a>,
         which measures if an ontology can be documented well using the <a href="https://essepuntato.it/lode/"
@@ -355,10 +361,13 @@ rapper -gc "$non-information-resource"
     <br>
     <h3>Discuss Archivo's Future Features</h3>
     <p>
-        We are open for feedback and are setting up a steering committee to further improve the overall integrity of the
+        We are open for feedback and are setting up a steering committee to further improve the overall integrity of
+        the
         de-central web of ontologies.<br>
-        <b>Discussions:</b> <a href="https://github.com/dbpedia/archivo/issues" target="_blank">Github Issues</a><br>
-        <b>Questions:</b> <a href="https://forum.dbpedia.org/c/services/archivo/42" target="_blank">DBpedia Forum</a>
+        <b>Discussions:</b> <a href="https://github.com/dbpedia/archivo/issues" target="_blank">Github
+            Issues</a><br>
+        <b>Questions:</b> <a href="https://forum.dbpedia.org/c/services/archivo/42" target="_blank">DBpedia
+            Forum</a>
     </p>
     Feedback and changes addressed:
     <ul>
