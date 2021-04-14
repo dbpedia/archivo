@@ -292,7 +292,7 @@ def localDiffAndRelease(
         # if len(old) == 0 and len(new) == 0:
         if isEqual:
             logger.info("No new version")
-            #stringTools.deleteAllFilesInDirAndDir(newVersionPath)
+            stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return False, "No new Version", None
         else:
             logger.info("New Version!")
