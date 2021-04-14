@@ -17,6 +17,21 @@ fileTypeDict = {
     "xml": ".xml",
 }
 
+rdfHeadersMapping = {
+    "application/rdf+xml": "rdfxml",
+    "application/ntriples": "ntriples",
+    "text/turtle": "turtle",
+    # "application/xhtml": "rdfa",
+}
+
+file_ending_mapping = {
+    "application/rdf+xml": "owl",
+    "application/ntriples": "nt",
+    "text/turtle": "ttl",
+    "application/xhtml": "html",
+    "*/*": "file",
+}
+
 # regex to get the content type
 contentTypeRegex = re.compile(r"\w+/([\w+-]+)(?:.*)?")
 

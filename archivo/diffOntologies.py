@@ -14,6 +14,8 @@ from utils import (
     queryDatabus,
     archivoConfig,
     docTemplates,
+    async_rdf_retrieval,
+    inspectVocabs,
 )
 from utils.archivoLogs import diff_logger
 from string import Template
@@ -163,21 +165,9 @@ def checkForNewVersion(
                 return True, None
         else:
             return None, f"No Access - Status {str(response.status_code)}"
-    except requests.exceptions.TooManyRedirects:
+    except Exception as e:
         logger.warning("Too many redirects, cancel parsing...")
-        return None, "Too many redirects"
-    except TimeoutError:
-        logger.warning(f"Timed out for {vocab_uri}")
-        return None, "TimeOut Error"
-    except requests.exceptions.ConnectionError:
-        logger.warning(f"Bad Connection for {vocab_uri}")
-        return None, "Connection Error"
-    except requests.exceptions.ReadTimeout:
-        logger.warning(f"Connection timed out for URI {vocab_uri}")
-        return None, "Read Timeout"
-    except:
-        logger.warning(f"Unkown Error occurred for URI {vocab_uri}")
-        return None, "Unknown error"
+        return None, str(e)
 
 
 def localDiffAndRelease(
@@ -210,6 +200,7 @@ def localDiffAndRelease(
         newBestHeader, response, triple_number = crawlURIs.determine_best_content_type(
             locURI, user_output=output
         )
+        
         if newBestHeader is None:
             error_str = "\n".join(
                 [
@@ -220,12 +211,59 @@ def localDiffAndRelease(
             logger.warning(f"{locURI} Couldn't parse new version")
             logger.warning(error_str)
             return None, error_str, None
+
+        # change the encoding to utf-8
+        response.encoding = "utf-8"
         sourcePath = os.path.join(
             newVersionPath,
-            artifactName + "_type=orig." + crawlURIs.file_ending_mapping[newBestHeader],
+            artifactName + "_type=orig." + stringTools.file_ending_mapping[newBestHeader],
         )
-        with open(sourcePath, "w+") as new_orig_file:
-            print(response.text, file=new_orig_file)
+
+        if uri.endswith("/"):
+            # check if URI is slash URI -> retrieve linked content
+            (orig_turtle_content, _, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
+                response.text,
+                uri,
+                input_type=stringTools.rdfHeadersMapping[newBestHeader],
+                output_type="turtle",
+            )
+
+            if rapper_errors != []:
+                return None, "\n".join(rapper_errors), None
+                
+            graph = inspectVocabs.get_graph_of_string(orig_turtle_content, "text/turtle")
+            nt_list, retrieval_errors = async_rdf_retrieval.gather_linked_content(uri, graph, pref_header=newBestHeader, logger=logger)
+
+            if retrieval_errors != []:
+                error_str = "Failed retrieval for content:\n" + "\n".join([" -- ".join(tp) for tp in retrieval_errors])
+                logger.warning(error_str)
+                return None, error_str, None
+
+            (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
+                response.text,
+                uri,
+                input_type=stringTools.rdfHeadersMapping[newBestHeader],
+                output_type="ntriples",
+            )
+            if len(nt_list) > 0:
+                # append original nt content to retrieved content
+                nt_list.append(orig_nt_content)
+
+                (parsed_triples, triple_count, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
+                    "\n".join(nt_list),
+                    uri,
+                    input_type="ntriples",
+                    output_type=stringTools.rdfHeadersMapping[newBestHeader],
+                )
+                with open(sourcePath, "w+") as new_orig_file:
+                    print(parsed_triples, file=new_orig_file)
+            else:
+                with open(sourcePath, "w+") as new_orig_file:
+                    print(response.text, file=new_orig_file)
+        else:
+            with open(sourcePath, "w+") as new_orig_file:
+                print(response.text, file=new_orig_file)
+
         accessDate = datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
         new_sorted_nt_path = os.path.join(
             newVersionPath, artifactName + "_type=parsed_sorted.nt"
@@ -234,7 +272,7 @@ def localDiffAndRelease(
             sourcePath,
             new_sorted_nt_path,
             uri,
-            inputType=crawlURIs.rdfHeadersMapping[newBestHeader],
+            inputType=stringTools.rdfHeadersMapping[newBestHeader],
             logger=logger,
         )
         if not os.path.isfile(new_sorted_nt_path) or errors != []:
@@ -254,7 +292,7 @@ def localDiffAndRelease(
         # if len(old) == 0 and len(new) == 0:
         if isEqual:
             logger.info("No new version")
-            stringTools.deleteAllFilesInDirAndDir(newVersionPath)
+            #stringTools.deleteAllFilesInDirAndDir(newVersionPath)
             return False, "No new Version", None
         else:
             logger.info("New Version!")
@@ -385,9 +423,14 @@ def handleDiffForUri(
     contentLength = metadata["http-data"]["content-length"]
     semVersion = metadata["ontology-info"]["semantic-version"]
 
-    isDiff, error = checkForNewVersion(
-        ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
-    )
+    if uri.endswith("/"):
+        # in the case of slash uris -> directly jump to the content diff
+        isDiff = True
+    else:
+        # check headers if something changed
+        isDiff, error = checkForNewVersion(
+            ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
+        )
 
     if isDiff is None:
         logger.warning("Header Access: " + error)

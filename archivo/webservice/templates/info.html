@@ -1,18 +1,28 @@
 {% extends "index.html" %} {% block content %}
 <div class="container">
-    <p>
-    <h2>Inspect an archived ontology</h2>
-    Select an ontology to see information about all archived versions:
-    </p>
-    <form action="" method="POST" novalidate>
-        {{ form.hidden_tag() }} {{ form.csrf_token }}
-        <p>
-        <div style="width: 400px">
-            {{ form.uris(**{"onchange":"this.form.submit()"}) }}
+    <a data-bs-toggle="collapse" href="#uri-search" role="button"
+        aria-expanded="{% if general_info.title %}false{% else %}true{% endif %}" aria-controls="uri-search">
+        Search for another ontology
+    </a>
+    <div class="collapse {% if not general_info.title %}.show{% endif %}" id="uri-search">
+        <div class="card card-body">
+            <h2>Inspect an archived ontology</h2>
+            Select an ontology to see information about all archived versions:
+            </p>
+            <form action="" method="POST" novalidate>
+                {{ form.hidden_tag() }} {{ form.csrf_token }}
+                <p>
+                <div style="width: 400px">
+                    {{ form.uris(**{"onchange":"this.form.submit()"}) }}
+                </div>
+                </p>
+            </form>
         </div>
-        </p>
-    </form>
-    <br> {% if general_info.title %}
+    </div>
+
+    <p>
+
+        {% if general_info.title %}
 
     <p style="color: darkgray;">given title:
     <h2>{{general_info.title}}</h2>

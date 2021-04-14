@@ -6,6 +6,7 @@ from utils import (
     stringTools,
     queryDatabus,
     generatePoms,
+    discovery
 )
 from utils.validation import TestSuite
 from utils.archivoLogs import (
@@ -54,9 +55,9 @@ def ontology_discovery():
     testSuite = TestSuite(archivo_path)
 
     discovery_logger.info("Started discovery of LOV URIs...")
-    run_discovery(crawlURIs.getLovUrls(), "LOV", dataPath, testSuite)
+    run_discovery(discovery.getLovUrls(), "LOV", dataPath, testSuite)
     discovery_logger.info("Started discovery of prefix.cc URIs...")
-    run_discovery(crawlURIs.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
+    run_discovery(discovery.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
     run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")

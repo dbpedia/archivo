@@ -10,6 +10,7 @@ from utils import (
     inspectVocabs,
     archivoConfig,
     docTemplates,
+    feature_plugins,
 )
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
@@ -18,52 +19,17 @@ from string import Template
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 
-# url to get all vocabs and their resource
-lovOntologiesURL = "https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/list"
-
-# prefix.cc complete urls
-prefixccURLs = "http://prefix.cc/context"
-
-# url for the lodo docu service
-lodeServiceUrl = "https://w3id.org/lode/owlapi/"
-
-# url for the oops rest service
-oopsServiceUrl = " http://oops.linkeddata.es/rest"
-
-# possible headers for rdf-data
-rdfHeaders = [
-    "application/rdf+xml",
-    "application/ntriples",
-    "text/turtle",
-    "application/html",
-]
-rdfHeadersMapping = {
-    "application/rdf+xml": "rdfxml",
-    "application/ntriples": "ntriples",
-    "text/turtle": "turtle",
-    # "application/xhtml": "rdfa",
-}
-
-file_ending_mapping = {
-    "application/rdf+xml": "owl",
-    "application/ntriples": "nt",
-    "text/turtle": "ttl",
-    "application/xhtml": "html",
-    "*/*": "file",
-}
-
-
 # determine_best_content_type
 # function used by
 #
 def determine_best_content_type(uri, user_output=[], logger=None):
     header_dict = {}
-    for header in rdfHeadersMapping:
+    for header in stringTools.rdfHeadersMapping:
         response, error = download_rdf_string(uri, acc_header=header)
         if error is None:
             try:
                 triple_number, rapper_errors = ontoFiles.get_triples_from_rdf_string(
-                    response.text, uri, input_type=rdfHeadersMapping[header]
+                    response.text, uri, input_type=stringTools.rdfHeadersMapping[header]
                 )
             except Exception as e:
                 if logger is not None:
@@ -112,8 +78,8 @@ def determine_best_content_type(uri, user_output=[], logger=None):
             header_dict.items(), key=lambda item: item[1][1], reverse=True
         )
     ][0]
-    rdf_string, triple_number = header_dict[best_header]
-    return best_header, rdf_string, triple_number
+    resp, triple_number = header_dict[best_header]
+    return best_header, resp, triple_number
 
 
 def download_rdf_string(uri, acc_header, encoding="utf-8"):
@@ -126,64 +92,10 @@ def download_rdf_string(uri, acc_header, encoding="utf-8"):
             return response, None
         else:
             return response, "Not Accessible - Status " + str(response.status_code)
-    except requests.exceptions.TooManyRedirects as e:
-        return None, str(e)
-    except TimeoutError as e:
-        return None, str(e)
-    except requests.exceptions.ConnectionError as e:
-        return None, str(e)
-    except requests.exceptions.ReadTimeout as e:
-        return None, str(e)
     except KeyboardInterrupt:
         sys.exit(19)
     except Exception as e:
         traceback.print_exc(file=sys.stdout)
-        return None, str(e)
-
-
-def getLodeDocuFile(vocab_uri, logger):
-    try:
-        response = requests.get(lodeServiceUrl + vocab_uri)
-        if response.status_code < 400:
-            return response.text, None
-        else:
-            return None, f"Access Error - Status {response.status_code}"
-    except requests.exceptions.TooManyRedirects as e:
-        logger.error("Exeption in loading the LODE-docu", exc_info=True)
-        return None, str(e)
-    except TimeoutError as e:
-        logger.error("Exeption in loading the LODE-docu", exc_info=True)
-        return None, str(e)
-    except requests.exceptions.ConnectionError as e:
-        logger.error("Exeption in loading the LODE-docu", exc_info=True)
-        return None, str(e)
-    except requests.exceptions.ReadTimeout as e:
-        logger.error("Exeption in loading the LODE-docu", exc_info=True)
-        return None, str(e)
-
-
-def getOOPSReport(parsedRdfString, logger):
-    oopsXml = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        "   <OOPSRequest>\n"
-        "   <OntologyURI></OntologyURI>\n"
-        f"    <OntologyContent><![CDATA[\n{parsedRdfString}]]></OntologyContent>\n"
-        "   <Pitfalls></Pitfalls>\n"
-        "   <OutputFormat>RDF/XML</OutputFormat>\n"
-        "</OOPSRequest>"
-    )
-    headers = {"Content-Type": "application/xml"}
-    try:
-        response = requests.post(
-            oopsServiceUrl, data=oopsXml.encode("utf-8"), headers=headers, timeout=30
-        )
-        if response.status_code < 400:
-            return response.text, None
-        else:
-            logger.error(f"OOPS not acessible: Status {response.status_code}")
-            return None, f"Not Accessible - Status {response.status_code}"
-    except Exception as e:
-        logger.error("Exeption in loading the OOPS-report", exc_info=True)
         return None, str(e)
 
 
@@ -290,7 +202,7 @@ class ArchivoVersion:
             outputType="ntriples",
             deleteEmpty=True,
             sourceUri=self.nir,
-            inputFormat=rdfHeadersMapping[self.best_header],
+            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
         nt_generated = (
@@ -301,7 +213,7 @@ class ArchivoVersion:
             raw_file_path + "_type=parsed.ttl",
             outputType="turtle",
             deleteEmpty=True,
-            inputFormat=rdfHeadersMapping[self.best_header],
+            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
         ttl_generated = (
@@ -313,7 +225,7 @@ class ArchivoVersion:
             raw_file_path + "_type=parsed.owl",
             outputType="rdfxml",
             deleteEmpty=True,
-            inputFormat=rdfHeadersMapping[self.best_header],
+            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
             logger=self.logger,
         )
         owl_generated = (
@@ -327,7 +239,8 @@ class ArchivoVersion:
             }
         )
         self.triples = ontoFiles.getParsedTriples(
-            self.original_file, inputFormat=rdfHeadersMapping[self.best_header]
+            self.original_file,
+            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
         )[0]
         self.graph = inspectVocabs.getGraphOfVocabFile(
             raw_file_path + "_type=parsed.ttl", logger=self.logger
@@ -444,7 +357,9 @@ class ArchivoVersion:
             snapshot_url=self.location_url,
         )
         # generate lode docu
-        docustring, lode_error = getLodeDocuFile(self.location_uri, logger=self.logger)
+        docustring, lode_error = feature_plugins.getLodeDocuFile(
+            self.location_uri, logger=self.logger
+        )
         if docustring is not None:
             with open(raw_file_path + "_type=generatedDocu.html", "w+") as docufile:
                 print(docustring, file=docufile)
@@ -789,7 +704,7 @@ def handleNewUri(
         with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
             print(pomString, file=parentPomFile)
     # prepare new release
-    fileExt = file_ending_mapping[bestHeader]
+    fileExt = stringTools.file_ending_mapping[bestHeader]
     new_orig_file_path = os.path.join(
         newVersionPath, artifact + "_type=orig." + fileExt
     )
@@ -850,7 +765,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
             {
                 "status": False,
                 "step": "Robot allowed check",
-                "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>",
+                "message": f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={sourceURI}>{sourceURI}</a>",
             }
         )
         return False, None
@@ -929,7 +844,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
         with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
             print(pomString, file=parentPomFile)
     # prepare new release
-    fileExt = file_ending_mapping[bestHeader]
+    fileExt = stringTools.file_ending_mapping[bestHeader]
     new_orig_file_path = os.path.join(
         newVersionPath, artifact + "_type=orig." + fileExt
     )
@@ -974,31 +889,3 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
             }
         )
         return True, new_version
-
-
-def getLovUrls():
-    req = requests.get(lovOntologiesURL)
-    json_data = req.json()
-    return [dataObj["uri"] for dataObj in json_data]
-
-
-def getPrefixURLs():
-    req = requests.get(prefixccURLs)
-    json_data = req.json()
-    prefixOntoDict = json_data["@context"]
-    return [prefixOntoDict[prefix] for prefix in prefixOntoDict]
-
-
-def testLOVInfo():
-    req = requests.get(
-        "https://lov.linkeddata.es/dataset/lov/api/v2/vocabulary/info?vocab=schema"
-    )
-    json_data = req.json()
-    for versionObj in json_data["versions"]:
-        resourceUrl = versionObj["fileURL"]
-        version = versionObj["name"]
-        print("Download source:", resourceUrl)
-        success, pathToFile, response = downloadSource(
-            resourceUrl, ".", "tempOnt" + version, "text/rdf+n3"
-        )
-        print(success)

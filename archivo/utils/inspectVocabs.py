@@ -8,7 +8,7 @@ import json
 import traceback
 from utils import stringTools, archivoConfig
 from urllib.parse import quote as urlQuote
-from io import StringIO
+from urllib.parse import urlparse
 
 descriptionNamespaceGraph = Graph()
 descriptionNamespaceGraph.bind("dct", DCTERMS)
@@ -40,9 +40,7 @@ def getGraphOfVocabFile(filepath, logger=None):
 
 def get_graph_of_string(rdf_string, content_type):
     graph = rdflib.Graph()
-    graph.parse(
-        StringIO(rdf_string), format=header_rdflib_mapping.get(content_type, "xml")
-    )
+    graph.parse(data=rdf_string, format=header_rdflib_mapping.get(content_type, "xml"))
     return graph
 
 
@@ -75,6 +73,33 @@ def getAllPropsAndClasses(graph):
         if pred == voidClass or pred == voidProp:
             resultSet.add(str(obj))
     return resultSet
+
+
+def get_defined_URIs(nir: str, graph: rdflib.Graph):
+    """Returns a list of defined resources of an ontology.
+    The subject is not relevant, it considers only the objects of the properties defined in the config."""
+
+    prop_string = " ".join(
+        [f"<{defines_prop}>" for defines_prop in archivoConfig.defines_properties]
+    )
+    queryString = "\n".join(
+        [
+            "SELECT DISTINCT ?defResource",
+            "WHERE {",
+            " VALUES ?prop { %s }" % prop_string,
+            " ?s ?prop ?defResource .",
+            "}",
+        ]
+    )
+
+    result = graph.query(queryString)
+
+    nir_domain = urlparse(nir).netloc
+
+    if result is None:
+        return []
+    else:
+        return [str(line[0]) for line in result if len(line) > 0 and nir_domain == urlparse(line[0]).netloc]
 
 
 # Relevant properties:

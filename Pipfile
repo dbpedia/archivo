@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyshacl = "*"
+rdflib = "*"
+gunicorn = "*"
+requests = "*"
+plotly = "*"
+Flask = "*"
+Flask-WTF = "*"
+WTForms = "*"
+Markdown = "*"
+SPARQLWrapper = "*"
+flask_accept = "*"
+APScheduler = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
+aiohttp = "*"
+
+[dev-packages]
+flake8 = "*"
+
+[requires]
+python_version = "3.8"
