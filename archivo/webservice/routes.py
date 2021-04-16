@@ -195,7 +195,7 @@ def vocabInfo():
         )
     return render_template(
         "info.html",
-        general_info={"message": "Enter an ontology URI"},
+        general_info={},
         form=form,
         title=f"Archivo - Ontology Info",
     )

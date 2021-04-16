@@ -11,6 +11,7 @@ from utils import (
     archivoConfig,
     docTemplates,
     feature_plugins,
+    async_rdf_retrieval,
 )
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
@@ -169,7 +170,8 @@ class ArchivoVersion:
         source,
         semanticVersion="1.0.0",
         devURI="",
-        user_output=[],
+        retrieval_errors=list(),
+        user_output=list(),
     ):
         self.nir = nir
         self.isDev = False if devURI == "" else True
@@ -188,6 +190,7 @@ class ArchivoVersion:
         self.semantic_version = semanticVersion
         self.user_output = user_output
         self.logger = logger
+        self.retrieval_errors = retrieval_errors
         if len(self.response.history) > 0:
             self.nir_header = str(self.response.history[0].headers)
         else:
@@ -339,7 +342,7 @@ class ArchivoVersion:
             pathToFile=raw_file_path + "_type=meta.json",
             definedByUri=self.reference_uri,
             lastModified=stringTools.getLastModifiedFromResponse(self.response),
-            rapperErrors=self.rapper_errors,
+            rapperErrors=self.retrieval_errors + self.rapper_errors,
             rapperWarnings=rapperWarnings,
             etag=stringTools.getEtagFromResponse(self.response),
             tripleSize=self.triples,
@@ -500,7 +503,7 @@ def check_NIR(uri, graph, output=[]):
 
 
 def handleNewUri(
-    vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=[]
+    vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=list()
 ):
     # remove fragment
     vocab_uri = urldefrag(vocab_uri)[0]
@@ -686,6 +689,67 @@ def handleNewUri(
             }
         )
         return False, isNIR, None
+    
+    # handle slash uris
+    if real_ont_uri.endswith("/"):
+        nt_content_list, retrieval_error_list = async_rdf_retrieval.gather_linked_content(real_ont_uri, graph, bestHeader, logger=logger)
+
+        # get nt content from response
+        (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
+            response.text,
+            real_ont_uri,
+            input_type=stringTools.rdfHeadersMapping[bestHeader],
+            output_type="ntriples",
+        )
+        
+
+        if len(nt_content_list) > 0:
+            # append original nt content to retrieved content
+            nt_content_list.append(orig_nt_content)
+
+            # set parsed, concatted content as the original content
+            (parsed_triples, triple_count, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
+            "\n".join(nt_content_list),
+            real_ont_uri,
+            input_type="ntriples",
+            output_type=stringTools.rdfHeadersMapping[bestHeader],
+            )
+            if len(retrieval_error_list) > 0:
+                user_output.append(
+                    {
+                        "status": False,
+                        "step": "Retrieve defined RDF content",
+                        "message": "This ontology was recognized as a Slash Ontology, but there were errors with the defined RDF content:\n{}".format("\n".join([", ".join(tp) for tp in retrieval_error_list])),
+                    }
+                )
+            else:
+                user_output.append(
+                    {
+                        "status": True,
+                        "step": "Retrieve defined RDF content",
+                        "message": "This ontology was recognized as a Slash Ontology and {} different sources were included".format(len(nt_content_list)),
+                    }
+                )
+
+            orig_rdf_content = parsed_triples
+
+    # if no slash uri or no additional content retrieved -> set original file as orig content
+        else:
+            user_output.append(
+                    {
+                        "status": True,
+                        "step": "Retrieve defined RDF content",
+                        "message": "This ontology was recognized as a Slash Ontology but no defined RDF content was found by using the following properties:\n{}".format("\n".join(archivoConfig.defines_properties)),
+                    }
+                )
+            orig_rdf_content = response.text
+    else:
+        orig_rdf_content = response.text
+
+    try:
+        retrival_errors = [", ".join(tp) for tp in retrieval_error_list]
+    except NameError:
+        retrival_errors = []
 
     newVersionPath = os.path.join(dataPath, groupId, artifact, version)
     os.makedirs(newVersionPath, exist_ok=True)
@@ -709,7 +773,7 @@ def handleNewUri(
         newVersionPath, artifact + "_type=orig." + fileExt
     )
     with open(new_orig_file_path, "w+") as new_orig_file:
-        print(response.text, file=new_orig_file)
+        print(orig_rdf_content, file=new_orig_file)
     # new release
     logger.info("Generate new release files...")
     new_version = ArchivoVersion(
@@ -721,6 +785,7 @@ def handleNewUri(
         bestHeader,
         logger,
         source,
+        retrieval_errors=retrival_errors,
         user_output=user_output,
     )
     new_version.generateFiles()
@@ -750,7 +815,7 @@ def handleNewUri(
         return True, isNIR, new_version
 
 
-def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=[]):
+def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=list()):
     # remove fragment
     sourceURI = urldefrag(sourceURI)[0]
     # testing uri validity
