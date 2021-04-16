@@ -13,6 +13,12 @@ ignore_props = ["http://purl.org/dc/terms/modified"]
 # archivo trackthis uri
 track_this_uri = "http://archivo.dbpedia.org/trackThis"
 
+# the properties pointing to classes/props defined by a ontology
+# all the objects of triples with these properties are considered a defined resource
+# use full uris and no prefixes
+defines_properties = ["http://open.vocab.org/terms/defines"]
+
+
 # edit for your dataset
 downloadUrl="https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
 packDir="/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
