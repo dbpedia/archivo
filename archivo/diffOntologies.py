@@ -423,15 +423,18 @@ def handleDiffForUri(
     contentLength = metadata["http-data"]["content-length"]
     semVersion = metadata["ontology-info"]["semantic-version"]
 
-    if uri.endswith("/"):
-        # in the case of slash uris -> directly jump to the content diff
-        isDiff = True
-    else:
-        # check headers if something changed
-        isDiff, error = checkForNewVersion(
-            ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
-        )
-
+    # this is for handling slash URIs explicitly with related content
+    # if uri.endswith("/"):
+    #     # in the case of slash uris -> directly jump to the content diff
+    #     isDiff = True
+    # else:
+    #     # check headers if something changed
+    #     isDiff, error = checkForNewVersion(
+    #         ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
+    #     )
+    isDiff, error = checkForNewVersion(
+        ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
+    )
     if isDiff is None:
         logger.warning("Header Access: " + error)
         return None, "Header Access: " + error, None
