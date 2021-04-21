@@ -237,6 +237,7 @@ def ntriplesInfo():
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
 
 
+@app.route("/home", methods=["GET"])
 @app.route("/", methods=["GET"])
 def handle_root():
     return redirect("/list")
