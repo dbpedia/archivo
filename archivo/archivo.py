@@ -25,7 +25,7 @@ cron.start()
 
 
 def get_correct_path() -> str:
-    archivo_path = os.path.split(app.instance_path)[0]
+    archivo_path = os.path.dirname(os.path.realpath(__file__))
     if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(
         os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")
     ):

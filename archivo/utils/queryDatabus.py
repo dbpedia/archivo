@@ -697,7 +697,7 @@ def get_SPOs():
     # returns spos in a generator which are not olter than two weeks
     today = datetime.now()
 
-    last_week = today - timedelta(days=14)
+    last_week = today - timedelta(days=21)
 
     last_week_string = last_week.strftime("%Y.%m.%d-%H%M%S")
 

@@ -27,10 +27,10 @@ pub="https://yum-yab.github.io/webid.ttl#onto"
 
 # paths for external services
 pelletPath = (
-    "/data/home/dstreitmatter/workspace/repos/pellet/cli/target/pelletcli/bin/pellet"
+    "/usr/lib/pellet/cli/target/pelletcli/bin/pellet"
 )
 profileCheckerJar = "/data/home/dstreitmatter/profilechecker-1.1.0.jar"
 
 
 # local paths
-localPath = "/data/home/dstreitmatter/data/archivo-init-release"
+localPath = "./data"
