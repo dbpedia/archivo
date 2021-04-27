@@ -85,6 +85,10 @@ def getInfoForArtifact(group, artifact):
             "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
             "url": lodeShaclURL,
         },
+        "archivo": {
+            "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
+            "url": lodeShaclURL,
+        },
         "version": {"label": version, "url": versionURL},
         "consistent": {
             "conforms": isConsistent(metadata["test-results"]["consistent"]),
@@ -102,45 +106,50 @@ def getInfoForArtifact(group, artifact):
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     query = "\n".join(
         (
-            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
-            "PREFIX dct:    <http://purl.org/dc/terms/>",
-            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
-            "PREFIX db:     <https://databus.dbpedia.org/>",
-            "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
-            "SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
-            "VALUES ?art { <%s> } ." % databusLink,
-            "?dataset dataid:account db:ontologies .",
-            "?dataset dataid:artifact ?art .",
-            "?dataset dcat:distribution ?metaDst .",
-            "?metaDst dataid-cv:type 'meta'^^xsd:string .",
-            "?metaDst dcat:downloadURL ?metafile .",
-            "?dataset dcat:distribution ?shaclMinLicense .",
-            "?dataset dcat:distribution ?consistencyReport .",
-            "?consistencyReport dataid-cv:type 'pelletConsistency'^^xsd:string .",
-            "?consistencyReport dataid-cv:imports 'FULL'^^xsd:string .",
-            "?consistencyReport dcat:downloadURL ?consistencyFile .",
-            "?shaclMinLicense dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclMinLicense dataid-cv:validates 'minLicense'^^xsd:string .",
-            "?shaclMinLicense dcat:downloadURL ?minLicense .",
-            "?dataset dcat:distribution ?shaclGoodLicense .",
-            "?shaclGoodLicense dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclGoodLicense dataid-cv:validates 'goodLicense'^^xsd:string .",
-            "?shaclGoodLicense dcat:downloadURL ?goodLicense .",
-            "?dataset dcat:distribution ?shaclLode .",
-            "?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .",
-            "?shaclLode dcat:downloadURL ?lode .",
-            "OPTIONAL {" "?dataset dcat:distribution ?docuDst .",
-            "?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .",
-            "?docuDst dcat:downloadURL ?docuURL .",
-            "}",
-            "?dataset dataid:version ?versionURL .",
-            "?dataset dct:hasVersion ?version ." "?dataset dct:title ?title .",
-            "?dataset rdfs:comment ?comment .",
-            "}",
+            '  PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>  \n',
+            '  PREFIX dct:    <http://purl.org/dc/terms/>  \n',
+            '  PREFIX dcat:   <http://www.w3.org/ns/dcat#>  \n',
+            '  PREFIX db:     <https://databus.dbpedia.org/>  \n',
+            '  PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  \n',
+            '  PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>  \n',
+            '  PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>  \n',
+            '  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>  \n',
+            '  SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?goodLicense ?lode ?archivoCheck ?consistencyFile ?docuURL WHERE {  \n',
+            '        VALUES ?art { <%s> } .  \n' % databusLink,
+            '        ?dataset dataid:account db:ontologies .  \n',
+            '        ?dataset dataid:artifact ?art .  \n',
+            '        ?dataset dcat:distribution ?metaDst .  \n',
+            '        ?metaDst dataid-cv:type "meta"^^xsd:string .  \n',
+            '        ?metaDst dcat:downloadURL ?metafile .  \n',
+            '        ?dataset dcat:distribution ?shaclMinLicense .  \n',
+            '        ?dataset dcat:distribution ?consistencyReport .  \n',
+            '        ?consistencyReport dataid-cv:type "pelletConsistency"^^xsd:string .  \n',
+            '        ?consistencyReport dataid-cv:imports "FULL"^^xsd:string .  \n',
+            '        ?consistencyReport dcat:downloadURL ?consistencyFile .  \n',
+            '        ?shaclMinLicense dataid-cv:type "shaclReport"^^xsd:string .  \n',
+            '        ?shaclMinLicense dataid-cv:validates "minLicense"^^xsd:string .  \n',
+            '        ?shaclMinLicense dcat:downloadURL ?minLicense .  \n',
+            '        ?dataset dcat:distribution ?shaclGoodLicense .  \n',
+            '        ?shaclGoodLicense dataid-cv:type "shaclReport"^^xsd:string .  \n',
+            '        ?shaclGoodLicense dataid-cv:validates "goodLicense"^^xsd:string .  \n',
+            '        ?shaclGoodLicense dcat:downloadURL ?goodLicense .  \n',
+            '        ?dataset dcat:distribution ?shaclLode .  \n',
+            '        ?shaclLode dataid-cv:type "shaclReport"^^xsd:string .  \n',
+            '        ?shaclLode dataid-cv:validates "lodeMetadata"^^xsd:string .  \n',
+            '        ?shaclLode dcat:downloadURL ?lode .  \n',
+            '            \n',
+            '        OPTIONAL { ?dataset dcat:distribution ?docuDst .  \n',
+            '              ?docuDst dataid-cv:type "generatedDocu"^^xsd:string .  \n',
+            '              ?docuDst dcat:downloadURL ?docuURL .  \n',
+            '              ?dataset dcat:distribution ?shaclArchivo .  \n',
+            '              ?shaclArchivo dataid-cv:type "shaclReport"^^xsd:string .  \n',
+            '              ?shaclArchivo dataid-cv:validates "archivoMetadata"^^xsd:string .  \n',
+            '              ?shaclArchivo dcat:downloadURL ?archivoCheck .  \n',
+            '        }  \n',
+            '              ?dataset dataid:version ?versionURL .  \n',
+            '              ?dataset dct:hasVersion ?version . ?dataset dct:title ?title .  \n',
+            '              ?dataset rdfs:comment ?comment .  \n',
+            '        }  '
         )
     )
     sparql = SPARQLWrapper(databusRepoUrl)
@@ -170,6 +179,15 @@ def getInfoForArtifact(group, artifact):
         goodLicenseURL = binding.get("goodLicense", {"value": ""})["value"]
         lodeShaclURL = binding.get("lode", {"value": ""})["value"]
         consistencyURL = binding["consistencyFile"]["value"]
+
+        try:
+            archivo_test_url = binding["archivoCheck"]["value"]
+            archiv_test_severity = inspectVocabs.hackyShaclInspection(archivo_test_url)
+        except KeyError:
+            archivo_test_url = None
+            archiv_test_severity = None
+    
+
         try:
             docuURL = binding["docuURL"]["value"]
         except KeyError:
@@ -200,6 +218,10 @@ def getInfoForArtifact(group, artifact):
                 "lode": {
                     "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
                     "url": lodeShaclURL,
+                },
+                "archivo": {
+                    "severity": archiv_test_severity,
+                    "url": archivo_test_url,
                 },
                 "version": {"label": version, "url": versionURL},
                 "consistent": {
