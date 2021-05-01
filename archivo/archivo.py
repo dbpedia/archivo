@@ -270,7 +270,7 @@ def ontology_dev_update():
 # updates the star graph json every midnight
 # @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="4,12,20", day_of_week="mon-sun")
 def update_star_graph():
-    stats_path = os.path.join(os.path.split(app.instance_path)[0], "stats")
+    stats_path = os.path.join(archivo_path, "stats")
     graphing.generate_star_graph(
         db.session.query(dbModels.OfficialOntology).all(), stats_path
     )
