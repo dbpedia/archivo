@@ -279,24 +279,26 @@ def update_star_graph():
 # @cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
     old_officials = queryDatabus.get_last_official_index()
+    old_official_uris = [uri for uri, src, date in old_officials]
     new_officials = db.session.query(dbModels.OfficialOntology).all()
 
     old_devs = queryDatabus.get_last_dev_index()
+    old_dev_uris = [uri for uri, _, _, _ in old_devs]
     new_devs = db.session.query(dbModels.DevelopOntology).all()
     official_diff = [
         onto.uri
         for onto in new_officials
-        if onto.uri not in [uri for uri, src, date in old_officials]
+        if onto.uri not in old_official_uris
     ]
     develop_diff = [
         onto.uri
         for onto in new_devs
-        if onto.uri not in [uri for uri, _, _, _ in old_devs]
+        if onto.uri not in old_dev_uris
     ]
-    discovery_logger.info("New Ontologies:" + "\n".join(official_diff + develop_diff))
     if len(official_diff) <= 0 and len(develop_diff) <= 0:
         return
     else:
+        discovery_logger.info("New Ontologies:" + "\n".join(official_diff + develop_diff))
         deploy_index()
 
 
@@ -307,6 +309,25 @@ def deploy_index():
     )
     indexpath = os.path.join(artifactPath, newVersionString)
     os.makedirs(indexpath, exist_ok=True)
+    # write parent pom if not existent
+    if not os.path.isfile(os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")):
+        pomString = generatePoms.generateParentPom(
+            groupId="archivo-indices",
+            packaging="pom",
+            modules=[],
+            packageDirectory=archivoConfig.packDir,
+            downloadUrlPath=archivoConfig.downloadUrl,
+            publisher=archivoConfig.pub,
+            maintainer=archivoConfig.pub,
+            groupdocu="This dataset contains the index of all ontologies from DBpedia Archivo",
+        )
+        with open(os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+") as parentPomFile:
+            print(pomString, file=parentPomFile)
+    # write new md description of artifact
+    if not os.path.isfile(os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies","ontologies.md")):
+        generatePoms.writeMarkdownDescription(
+            artifactPath, "ontologies", "Archivo Ontologies", "A complete list of all ontologies in DBpedia Archivo.", "# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**."
+        )
     # update pom
     with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:
         pomstring = generatePoms.generateChildPom(
@@ -323,10 +344,10 @@ def deploy_index():
     )
     dbUtils.write_dev_index(os.path.join(indexpath, "ontologies_type=dev.csv"))
     # deploy
-    status, log = generatePoms.callMaven(
+    status_code, log = generatePoms.callMaven(
         os.path.join(artifactPath, "pom.xml"), "deploy"
     )
-    if status:
+    if status_code == 0:
         discovery_logger.info("Deployed new index to databus")
     else:
         discovery_logger.warning("Failed deploying to databus")
