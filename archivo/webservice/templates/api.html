@@ -93,7 +93,7 @@ while IFS= read -r file ; do wget $file; done &lt;&lt;&lt; &quot;$files&quot;</p
     <h4 id="docker-virtuoso"><a href="#docker-virtuoso" class="hidden-link">Setup SPARQL enpoint</a></h4>
     <a href="https://hub.docker.com/r/dbpedia/virtuoso-sparql-endpoint-quickstart">Virtuoso
         quickstart docker</a> of the DBpedia Stack starts a Virtuoso instance and all latest ontologies will be deployed
-    automagically by feeding the collection URI.<br>
+    automagically by feeding the collection URI. Requirements for this is a proper installation of <a href="https://docs.docker.com/engine/install/" target="_blank">docker</a> and <a href="https://docs.docker.com/compose/install/" target="_blank">docker-compose</a> on your machine.<br>
     <strong>Example:</strong> Load latest versions of official ontology graphs in an virtuoso endpoint.<br>
     <div class="codeblock" style="font-size: medium;">
         <pre>git clone https://github.com/dbpedia/virtuoso-sparql-endpoint-quickstart.git

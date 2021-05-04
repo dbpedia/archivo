@@ -10,7 +10,7 @@
   programmatically following Jon Postel: "Be conservative in what you do, be liberal in what you accept from others".
   This means, we already allow some irregularities and heterogeneity, when parsing the ontologies from the web. Then
   again, we only do so up to a certain point, i.e. there is only so much, that you can patch in good faith.
-  <br><br><b>If DBpediaArchivo can not process it in an automatic and deterministic manner,it is likely infeasible to
+  <br><br><b>If DBpediaArchivo can not process it in an automatic and deterministic manner, it is likely infeasible to
     be processed by others.</b><br><br>
 
   <h3>Ontology Indexing</h3>
@@ -81,8 +81,8 @@
     {% for step in process_steps %}
     <div class="accordion-item">
       <h2 class="accordion-header" id="step{{loop.index}}">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-          data-bs-target="#collapse{{loop.index}}" aria-expanded="false" aria-controls="collapse{{loop.index}}"
+        <button class="accordion-button {% if not loop.last %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapse{{loop.index}}" aria-expanded="{% if not loop.last %}false{% else %}true{% endif %}" aria-controls="collapse{{loop.index}}"
           style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %}; color: black;">
           {{step.step }}
         </button>
