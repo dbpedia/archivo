@@ -1,13 +1,7 @@
 from webservice import app, db, dbModels
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit, os, crawlURIs, diffOntologies, dbUtils
-from utils import (
-    archivoConfig,
-    stringTools,
-    queryDatabus,
-    generatePoms,
-    discovery
-)
+from utils import archivoConfig, stringTools, queryDatabus, generatePoms, discovery
 from utils.validation import TestSuite
 from utils.archivoLogs import (
     discovery_logger,
@@ -286,19 +280,15 @@ def updateOntologyIndex():
     old_dev_uris = [uri for uri, _, _, _ in old_devs]
     new_devs = db.session.query(dbModels.DevelopOntology).all()
     official_diff = [
-        onto.uri
-        for onto in new_officials
-        if onto.uri not in old_official_uris
+        onto.uri for onto in new_officials if onto.uri not in old_official_uris
     ]
-    develop_diff = [
-        onto.uri
-        for onto in new_devs
-        if onto.uri not in old_dev_uris
-    ]
+    develop_diff = [onto.uri for onto in new_devs if onto.uri not in old_dev_uris]
     if len(official_diff) <= 0 and len(develop_diff) <= 0:
         return
     else:
-        discovery_logger.info("New Ontologies:" + "\n".join(official_diff + develop_diff))
+        discovery_logger.info(
+            "New Ontologies:" + "\n".join(official_diff + develop_diff)
+        )
         deploy_index()
 
 
@@ -310,7 +300,9 @@ def deploy_index():
     indexpath = os.path.join(artifactPath, newVersionString)
     os.makedirs(indexpath, exist_ok=True)
     # write parent pom if not existent
-    if not os.path.isfile(os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")):
+    if not os.path.isfile(
+        os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")
+    ):
         pomString = generatePoms.generateParentPom(
             groupId="archivo-indices",
             packaging="pom",
@@ -321,12 +313,22 @@ def deploy_index():
             maintainer=archivoConfig.pub,
             groupdocu="This dataset contains the index of all ontologies from DBpedia Archivo",
         )
-        with open(os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+") as parentPomFile:
+        with open(
+            os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+"
+        ) as parentPomFile:
             print(pomString, file=parentPomFile)
     # write new md description of artifact
-    if not os.path.isfile(os.path.join(archivoConfig.localPath, "archivo-indices", "ontologies","ontologies.md")):
+    if not os.path.isfile(
+        os.path.join(
+            archivoConfig.localPath, "archivo-indices", "ontologies", "ontologies.md"
+        )
+    ):
         generatePoms.writeMarkdownDescription(
-            artifactPath, "ontologies", "Archivo Ontologies", "A complete list of all ontologies in DBpedia Archivo.", "# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**."
+            artifactPath,
+            "ontologies",
+            "Archivo Ontologies",
+            "A complete list of all ontologies in DBpedia Archivo.",
+            "# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**.",
         )
     # update pom
     with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:

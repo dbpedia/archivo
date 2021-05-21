@@ -367,6 +367,14 @@ class ArchivoVersion:
             with open(raw_file_path + "_type=generatedDocu.html", "w+") as docufile:
                 print(docustring, file=docufile)
 
+        # generate pylode docu
+        pylode_doc = feature_plugins.get_pyLODE_doc_string(
+            raw_file_path + "_type=parsed.ttl"
+        )
+        if pylode_doc is not None:
+            with open(raw_file_path + "_type=pyLodeDoc.html", "w+") as docufile:
+                print(pylode_doc, file=docufile)
+
     def generatePomAndDoc(self):
         datetime_obj = datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
         versionIRI = str(None)
@@ -689,10 +697,15 @@ def handleNewUri(
             }
         )
         return False, isNIR, None
-    
+
     # handle slash uris
     if real_ont_uri.endswith("/"):
-        nt_content_list, retrieval_error_list = async_rdf_retrieval.gather_linked_content(real_ont_uri, graph, bestHeader, logger=logger)
+        (
+            nt_content_list,
+            retrieval_error_list,
+        ) = async_rdf_retrieval.gather_linked_content(
+            real_ont_uri, graph, bestHeader, logger=logger
+        )
 
         # get nt content from response
         (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
@@ -701,25 +714,31 @@ def handleNewUri(
             input_type=stringTools.rdfHeadersMapping[bestHeader],
             output_type="ntriples",
         )
-        
 
         if len(nt_content_list) > 0:
             # append original nt content to retrieved content
             nt_content_list.append(orig_nt_content)
 
             # set parsed, concatted content as the original content
-            (parsed_triples, triple_count, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
-            "\n".join(nt_content_list),
-            real_ont_uri,
-            input_type="ntriples",
-            output_type=stringTools.rdfHeadersMapping[bestHeader],
+            (
+                parsed_triples,
+                triple_count,
+                rapper_errors,
+                _,
+            ) = ontoFiles.parse_rdf_from_string(
+                "\n".join(nt_content_list),
+                real_ont_uri,
+                input_type="ntriples",
+                output_type=stringTools.rdfHeadersMapping[bestHeader],
             )
             if len(retrieval_error_list) > 0:
                 user_output.append(
                     {
                         "status": False,
                         "step": "Retrieve defined RDF content",
-                        "message": "This ontology was recognized as a Slash Ontology, but there were errors with the defined RDF content:\n{}".format("\n".join([", ".join(tp) for tp in retrieval_error_list])),
+                        "message": "This ontology was recognized as a Slash Ontology, but there were errors with the defined RDF content:\n{}".format(
+                            "\n".join([", ".join(tp) for tp in retrieval_error_list])
+                        ),
                     }
                 )
             else:
@@ -727,21 +746,25 @@ def handleNewUri(
                     {
                         "status": True,
                         "step": "Retrieve defined RDF content",
-                        "message": "This ontology was recognized as a Slash Ontology and {} different sources were included".format(len(nt_content_list)),
+                        "message": "This ontology was recognized as a Slash Ontology and {} different sources were included".format(
+                            len(nt_content_list)
+                        ),
                     }
                 )
 
             orig_rdf_content = parsed_triples
 
-    # if no slash uri or no additional content retrieved -> set original file as orig content
+        # if no slash uri or no additional content retrieved -> set original file as orig content
         else:
             user_output.append(
-                    {
-                        "status": True,
-                        "step": "Retrieve defined RDF content",
-                        "message": "This ontology was recognized as a Slash Ontology but no defined RDF content was found by using the following properties:\n{}".format("\n".join(archivoConfig.defines_properties)),
-                    }
-                )
+                {
+                    "status": True,
+                    "step": "Retrieve defined RDF content",
+                    "message": "This ontology was recognized as a Slash Ontology but no defined RDF content was found by using the following properties:\n{}".format(
+                        "\n".join(archivoConfig.defines_properties)
+                    ),
+                }
+            )
             orig_rdf_content = response.text
     else:
         orig_rdf_content = response.text

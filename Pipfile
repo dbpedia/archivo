@@ -19,9 +19,11 @@ APScheduler = "*"
 Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 aiohttp = "*"
+pylode = "*"
 
 [dev-packages]
 flake8 = "*"
+progressbar = "*"
 
 [requires]
 python_version = "3.8"

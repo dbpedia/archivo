@@ -83,11 +83,10 @@ async def collect_linked_content(nir, graph, pref_header, logger=None):
 
     return all_nt_strings, retrieval_errors
 
+
 def gather_linked_content(nir, graph, pref_header, logger=None):
     """Returns a tuple (list_of_nt_strings, retrieval_error_tuples)"""
-    return asyncio.run(
-        collect_linked_content(nir, graph, pref_header, logger=logger)
-    )
+    return asyncio.run(collect_linked_content(nir, graph, pref_header, logger=logger))
 
 
 if __name__ == "__main__":

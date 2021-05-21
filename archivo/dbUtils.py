@@ -4,6 +4,7 @@ from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
 from datetime import datetime
 import csv
 from crawlURIs import ArchivoVersion
+import progressbar
 
 
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
@@ -53,7 +54,14 @@ def rebuildDatabase():
     # urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     oldIndex = queryDatabus.get_last_official_index()
     print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
-    for uri, source, date in oldIndex:
+
+    # init progress bar
+    widgets = ["Loading artifacts into Database: ", progressbar.AnimatedMarker()]
+    bar = progressbar.ProgressBar(widgets=widgets).start()
+
+    for i, tp in enumerate(oldIndex):
+        uri, source, date = tp
+        bar.update(i)
         try:
             # if uri in urisInDatabase:
             # print(f"Already listed: {uri}")
@@ -113,9 +121,56 @@ def rebuildDatabase():
 
 def update_database():
 
-    for ontology in db.session.query(OfficialOntology).all():
-        print("Handling URI:", ontology.uri)
-        update_info_for_ontology(ontology)
+    all_onts = db.session.query(OfficialOntology).all()
+    listed_uris = [ont.uri for ont in all_onts]
+    print(f"Current index size: {len(all_onts)}")
+    oldIndex = queryDatabus.get_last_official_index()
+    print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
+
+    missing_ontologies = [
+        (uri, source, date)
+        for (uri, source, date) in oldIndex
+        if uri not in listed_uris
+    ]
+    print(f"Found {len(missing_ontologies)} missing ontologies, trying to update")
+
+    # init progress bar
+    widgets = ["Loading artifacts into Database: ", progressbar.AnimatedMarker()]
+    bar = progressbar.ProgressBar(widgets=widgets).start()
+
+    for i, tp in enumerate(missing_ontologies):
+
+        uri, source, date = tp
+
+        bar.update(i)
+
+        try:
+            # if uri in urisInDatabase:
+            # print(f"Already listed: {uri}")
+            # continue
+            if source == "DEV":
+                continue
+            try:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+            # print("Handling URI " + uri)
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+            ontology, versions = buildDatabaseObjectFromDatabus(
+                uri, group, artifact, source, timestamp
+            )
+            db.session.add(ontology)
+            for v in versions:
+                db.session.add(v)
+            try:
+                db.session.commit()
+            except Exception as e:
+                print(str(e))
+                db.session.rollback()
+            # print(len(Ontology.query.all()))
+        except Exception as e:
+            print(f"Error in handling {uri}", e)
+            continue
 
 
 def write_official_index(filepath):

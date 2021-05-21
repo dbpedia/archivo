@@ -105,7 +105,8 @@ def getInfoForArtifact(group, artifact):
     }"""
     databusLink = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
 
-    query = """PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+    query = (
+        """PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
@@ -151,7 +152,9 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
             ?dataset dct:hasVersion ?version . ?dataset dct:title ?title .
             ?dataset rdfs:comment ?comment .
       }
-    """ % databusLink
+    """
+        % databusLink
+    )
     sparql = SPARQLWrapper(databusRepoUrl)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
@@ -186,7 +189,6 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
         except KeyError:
             archivo_test_url = None
             archiv_test_severity = None
-    
 
         try:
             docuURL = binding["docuURL"]["value"]

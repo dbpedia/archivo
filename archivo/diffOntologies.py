@@ -200,7 +200,7 @@ def localDiffAndRelease(
         newBestHeader, response, triple_number = crawlURIs.determine_best_content_type(
             locURI, user_output=output
         )
-        
+
         if newBestHeader is None:
             error_str = "\n".join(
                 [
@@ -216,12 +216,19 @@ def localDiffAndRelease(
         response.encoding = "utf-8"
         sourcePath = os.path.join(
             newVersionPath,
-            artifactName + "_type=orig." + stringTools.file_ending_mapping[newBestHeader],
+            artifactName
+            + "_type=orig."
+            + stringTools.file_ending_mapping[newBestHeader],
         )
 
         if uri.endswith("/"):
             # check if URI is slash URI -> retrieve linked content
-            (orig_turtle_content, _, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
+            (
+                orig_turtle_content,
+                _,
+                rapper_errors,
+                _,
+            ) = ontoFiles.parse_rdf_from_string(
                 response.text,
                 uri,
                 input_type=stringTools.rdfHeadersMapping[newBestHeader],
@@ -230,12 +237,18 @@ def localDiffAndRelease(
 
             if rapper_errors != []:
                 return None, "\n".join(rapper_errors), None
-                
-            graph = inspectVocabs.get_graph_of_string(orig_turtle_content, "text/turtle")
-            nt_list, retrieval_errors = async_rdf_retrieval.gather_linked_content(uri, graph, pref_header=newBestHeader, logger=logger)
+
+            graph = inspectVocabs.get_graph_of_string(
+                orig_turtle_content, "text/turtle"
+            )
+            nt_list, retrieval_errors = async_rdf_retrieval.gather_linked_content(
+                uri, graph, pref_header=newBestHeader, logger=logger
+            )
 
             if retrieval_errors != []:
-                error_str = "Failed retrieval for content:\n" + "\n".join([" -- ".join(tp) for tp in retrieval_errors])
+                error_str = "Failed retrieval for content:\n" + "\n".join(
+                    [" -- ".join(tp) for tp in retrieval_errors]
+                )
                 logger.warning(error_str)
                 return None, error_str, None
 
@@ -249,7 +262,12 @@ def localDiffAndRelease(
                 # append original nt content to retrieved content
                 nt_list.append(orig_nt_content)
 
-                (parsed_triples, triple_count, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
+                (
+                    parsed_triples,
+                    triple_count,
+                    rapper_errors,
+                    _,
+                ) = ontoFiles.parse_rdf_from_string(
                     "\n".join(nt_list),
                     uri,
                     input_type="ntriples",

@@ -99,7 +99,11 @@ def get_defined_URIs(nir: str, graph: rdflib.Graph):
     if result is None:
         return []
     else:
-        return [str(line[0]) for line in result if len(line) > 0 and nir_domain == urlparse(line[0]).netloc]
+        return [
+            str(line[0])
+            for line in result
+            if len(line) > 0 and nir_domain == urlparse(line[0]).netloc
+        ]
 
 
 # Relevant properties:

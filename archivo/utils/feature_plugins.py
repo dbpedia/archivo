@@ -1,5 +1,5 @@
 import requests
-
+import pylode
 
 # url for the lodo docu service
 lodeServiceUrl = "https://w3id.org/lode/owlapi/"
@@ -48,3 +48,15 @@ def getOOPSReport(parsedRdfString, logger):
     except Exception as e:
         logger.error("Exeption in loading the OOPS-report", exc_info=True)
         return None, str(e)
+
+
+def get_pyLODE_doc_string(input_file_path, logger):
+    try:
+        html = pylode.MakeDocco(
+            input_data_file=input_file_path, outputformat="html", profile="ontdoc"
+        ).document()
+    except Exception:
+        logger.exception("Problem during creation of pylode documentation")
+        return None
+
+    return html
