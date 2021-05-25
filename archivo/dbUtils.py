@@ -4,7 +4,6 @@ from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
 from datetime import datetime
 import csv
 from crawlURIs import ArchivoVersion
-import progressbar
 
 
 def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
@@ -55,13 +54,8 @@ def rebuildDatabase():
     oldIndex = queryDatabus.get_last_official_index()
     print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
 
-    # init progress bar
-    widgets = ["Loading artifacts into Database: ", progressbar.AnimatedMarker()]
-    bar = progressbar.ProgressBar(widgets=widgets).start()
-
     for i, tp in enumerate(oldIndex):
         uri, source, date = tp
-        bar.update(i)
         try:
             # if uri in urisInDatabase:
             # print(f"Already listed: {uri}")
@@ -134,16 +128,9 @@ def update_database():
     ]
     print(f"Found {len(missing_ontologies)} missing ontologies, trying to update")
 
-    # init progress bar
-    widgets = ["Loading artifacts into Database: ", progressbar.AnimatedMarker()]
-    bar = progressbar.ProgressBar(widgets=widgets).start()
-
     for i, tp in enumerate(missing_ontologies):
 
         uri, source, date = tp
-
-        bar.update(i)
-
         try:
             # if uri in urisInDatabase:
             # print(f"Already listed: {uri}")
