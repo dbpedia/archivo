@@ -369,7 +369,7 @@ class ArchivoVersion:
 
         # generate pylode docu
         pylode_doc = feature_plugins.get_pyLODE_doc_string(
-            raw_file_path + "_type=parsed.ttl"
+            raw_file_path + "_type=parsed.ttl", self.logger
         )
         if pylode_doc is not None:
             with open(raw_file_path + "_type=pyLodeDoc.html", "w+") as docufile:
