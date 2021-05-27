@@ -62,7 +62,7 @@ async def collect_linked_content(nir, graph, pref_header, logger=None):
     if logger is not None:
         logger.debug(f"Found {len(defined_uris)} possible candidates")
 
-    for chunk in chunk_list(defined_uris, 200):
+    for chunk in chunk_list(defined_uris, 100):
         tasks = []
         async with aiohttp.ClientSession() as session:
             for uri in chunk:
