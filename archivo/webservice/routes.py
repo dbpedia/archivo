@@ -47,12 +47,15 @@ class InfoForm(FlaskForm):
 def addOntology():
     form = SuggestionForm()
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-
+    
     suggested_uri = None
+
+    post_request = False
     if form.validate_on_submit():
         suggested_uri = form.suggestUrl.data.strip()
     elif request.method == "POST":
         suggested_uri = request.form.get("suggestUrl", None)
+        post_request = True
 
     if suggested_uri is not None:
         uri = suggested_uri
@@ -99,15 +102,17 @@ def addOntology():
         else:
             report_heading = "The Ontology has been rejected!"
             main_comment = "Check out the log below for the reason. Click on the boxes for further details!"
-
-        return render_template(
-            "add.html",
-            report_heading=report_heading,
-            main_comment=main_comment,
-            process_steps=output,
-            form=form,
-            title="Archivo - Suggest Ontology",
-        )
+        if post_request:
+            return json.dumps(output)
+        else:
+            return render_template(
+                "add.html",
+                report_heading=report_heading,
+                main_comment=main_comment,
+                process_steps=output,
+                form=form,
+                title="Archivo - Suggest Ontology",
+            )
     return render_template(
         "add.html", process_steps=None, form=form, title="Archivo - Suggest Ontology"
     )
