@@ -1,5 +1,5 @@
 from webservice import app, db, dbModels
-from flask import render_template, flash, redirect, request, abort
+from flask import render_template, flash, redirect, request, abort, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
@@ -103,7 +103,7 @@ def addOntology():
             report_heading = "The Ontology has been rejected!"
             main_comment = "Check out the log below for the reason. Click on the boxes for further details!"
         if post_request:
-            return json.dumps(output)
+            return jsonify(output)
         else:
             return render_template(
                 "add.html",
