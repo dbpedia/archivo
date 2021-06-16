@@ -44,13 +44,14 @@ def generateGroupAndArtifactFromUri(url, dev=False):
     # replacing the port with --
     group = parsedObj.netloc.replace(":", "--")
     artifact = parsedObj.path + "#" + parsedObj.fragment
-    artifact = artifact.strip("#/~")
+    artifact = artifact.strip("#/~:")
     artifact = (
         artifact.replace("/", "--")
         .replace("_", "--")
         .replace(".", "--")
         .replace("#", "--")
         .replace("~", "--")
+        .replace(":", "--")
     )
     if artifact == "":
         artifact = "defaultArtifact"
