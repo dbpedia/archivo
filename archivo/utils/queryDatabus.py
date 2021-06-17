@@ -114,40 +114,44 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?goodLicense ?lode ?archivoCheck ?consistencyFile ?docuURL WHERE {
-      VALUES ?art { <%s> } .
-      ?dataset dataid:account db:ontologies .
-      ?dataset dataid:artifact ?art .
-      ?dataset dcat:distribution ?metaDst .
-      ?metaDst dataid-cv:type 'meta'^^xsd:string .
-      ?metaDst dcat:downloadURL ?metafile .
-      ?dataset dcat:distribution ?shaclMinLicense .
-      ?dataset dcat:distribution ?consistencyReport .
-      ?consistencyReport dataid-cv:type 'pelletConsistency'^^xsd:string .
-      ?consistencyReport dataid-cv:imports 'FULL'^^xsd:string .
-      ?consistencyReport dcat:downloadURL ?consistencyFile .
-      ?shaclMinLicense dataid-cv:type 'shaclReport'^^xsd:string .
-      ?shaclMinLicense dataid-cv:validates 'minLicense'^^xsd:string .
-      ?shaclMinLicense dcat:downloadURL ?minLicense .
-      ?dataset dcat:distribution ?shaclGoodLicense .
-      ?shaclGoodLicense dataid-cv:type 'shaclReport'^^xsd:string .
-      ?shaclGoodLicense dataid-cv:validates 'goodLicense'^^xsd:string .
-      ?shaclGoodLicense dcat:downloadURL ?goodLicense .
-      ?dataset dcat:distribution ?shaclLode .
-      ?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .
-      ?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .
-      ?shaclLode dcat:downloadURL ?lode .
+SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?goodLicense ?lode ?archivoCheck ?consistencyFile ?docuURL ?pylodeURL WHERE {
+        VALUES ?art { <%s> } .
+        ?dataset dataid:account db:ontologies .
+        ?dataset dataid:artifact ?art .
+        ?dataset dcat:distribution ?metaDst .
+        ?metaDst dataid-cv:type 'meta'^^xsd:string .
+        ?metaDst dcat:downloadURL ?metafile .
+        ?dataset dcat:distribution ?shaclMinLicense .
+        ?dataset dcat:distribution ?consistencyReport .
+        ?consistencyReport dataid-cv:type 'pelletConsistency'^^xsd:string .
+        ?consistencyReport dataid-cv:imports 'FULL'^^xsd:string .
+        ?consistencyReport dcat:downloadURL ?consistencyFile .
+        ?shaclMinLicense dataid-cv:type 'shaclReport'^^xsd:string .
+        ?shaclMinLicense dataid-cv:validates 'minLicense'^^xsd:string .
+        ?shaclMinLicense dcat:downloadURL ?minLicense .
+        ?dataset dcat:distribution ?shaclGoodLicense .
+        ?shaclGoodLicense dataid-cv:type 'shaclReport'^^xsd:string .
+        ?shaclGoodLicense dataid-cv:validates 'goodLicense'^^xsd:string .
+        ?shaclGoodLicense dcat:downloadURL ?goodLicense .
+        ?dataset dcat:distribution ?shaclLode .
+        ?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .
+        ?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .
+        ?shaclLode dcat:downloadURL ?lode .
   	  
-      OPTIONAL { ?dataset dcat:distribution ?docuDst .
-            ?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .
-            ?docuDst dcat:downloadURL ?docuURL .
-      }
-  OPTIONAL {
-  			?dataset dcat:distribution ?shaclArchivo .
-    		?shaclArchivo dataid-cv:type 'shaclReport'^^xsd:string .
-      		?shaclArchivo dataid-cv:validates 'archivoMetadata'^^xsd:string .
-      		?shaclArchivo dcat:downloadURL ?archivoCheck .
-  }
+        OPTIONAL { ?dataset dcat:distribution ?docuDst .
+                ?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .
+                ?docuDst dcat:downloadURL ?docuURL .
+        }
+        OPTIONAL { ?dataset dcat:distribution ?pylodeDocDst .
+                ?pylodeDocDst dataid-cv:type 'pyLodeDoc'^^xsd:string .
+                ?pylodeDocDst dcat:downloadURL ?pylodeURL .
+        }
+        OPTIONAL {
+                    ?dataset dcat:distribution ?shaclArchivo .
+                    ?shaclArchivo dataid-cv:type 'shaclReport'^^xsd:string .
+                    ?shaclArchivo dataid-cv:validates 'archivoMetadata'^^xsd:string .
+                    ?shaclArchivo dcat:downloadURL ?archivoCheck .
+        }
             ?dataset dataid:version ?versionURL .
             ?dataset dct:hasVersion ?version . ?dataset dct:title ?title .
             ?dataset rdfs:comment ?comment .
@@ -190,10 +194,10 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
             archivo_test_url = None
             archiv_test_severity = None
 
-        try:
-            docuURL = binding["docuURL"]["value"]
-        except KeyError:
-            docuURL = None
+        # select docu url, pref pylode doc
+        docuURL = binding.get("pylodeURL", {}).get("value", None)
+        if docuURL is None:
+            docuURL = binding.get("docuURL", {}).get("value", None)
         try:
             metadata = requests.get(metafile).json()
         except URLError:
