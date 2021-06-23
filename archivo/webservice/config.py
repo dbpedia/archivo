@@ -10,3 +10,4 @@ class Config(object):
     ) or "sqlite:///" + os.path.join(basedir, "archivo.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = b"uhhh mystery..."
+    VOCAB_FOLDER = os.path.join(basedir, "static", "vocabulary")

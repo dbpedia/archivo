@@ -1,0 +1,36 @@
+@base <https://archivo.dbpedia.org/vocab/> .
+@prefix archivo: <> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+
+
+<> a owl:Ontology;
+    rdfs:label "The DBpedia Archivo Ontology"@en ;
+    dc:title "The DBpedia Archivo Ontology"@en ;
+    dct:license <http://creativecommons.org/licenses/by/3.0/> ;		
+    rdfs:comment """The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."""@en ;
+    dct:description """The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."""@en ;
+    dct:creator <https://yum-yab.github.io/webid.ttl#this> ;
+    archivo:trackThis <https://raw.githubusercontent.com/dbpedia/archivo/master/vocabulary/vocab.ttl> .
+
+
+archivo:Ontology a owl:Class;
+    rdfs:label "Archivo Ontology"@en;
+    rdfs:comment "Everything that is considered an ontology by the DBpedia Archivo system."@en;
+    rdfs:isDefinedBy <>;
+    owl:unionOf (owl:Ontology skos:ConceptScheme) .
+
+
+archivo:trackThis a owl:ObjectProperty;
+    rdfs:label "Archivo Track This"@en;
+    rdfs:comment "This property links to the develop version (e.g on github) of an ontology."@en;
+    rdfs:isDefinedBy <> ;
+    rdfs:domain archivo:Ontology;
+    rdfs:range rdfs:Resource .

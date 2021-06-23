@@ -1,0 +1,37 @@
+{% extends "index.html" %} {% block content %}
+
+<div class="container">
+    <h1>The DBpedia Archivo Ontology</h1>
+    <p>The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus.</p>
+    <br>
+    <h2>Classes</h2>
+    <div class="card">
+        <div class="card-body">
+            <h3>Archivo Ontology</h3>
+            <p>IRI: <a href="/vocab/Ontology">https://archivo.dbpedia.org/vocab/Ontology</a>
+            </p>
+            <p class="lead">Everything that is considered an ontology by the DBpedia Archivo system (currently
+                owl:Ontology
+                and
+                skos:ConceptScheme).</p>
+        </div>
+    </div>
+    <br>
+    <h2>Properties</h2>
+    <div class="card">
+        <div class="card-body">
+            <h3>Archivo Track This</h3>
+            <p>IRI: <a
+                    href="/vocab/trackThis">https://archivo.dbpedia.org/vocab/trackThis</a>
+            </p>
+            <p class="lead">This property links to the develop version (e.g on github) of an ontology.</p>
+            <ul>
+                <li><b>type</b>: owl:ObjectProperty</li>
+                <li><b>domain</b>: archivo:Ontology</li>
+                <li><b>range</b>: rdfs:Resource</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

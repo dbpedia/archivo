@@ -1,5 +1,5 @@
 from webservice import app, db, dbModels
-from flask import render_template, flash, redirect, request, abort, jsonify
+from flask import render_template, flash, redirect, request, abort, jsonify, send_from_directory
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
@@ -7,14 +7,9 @@ import os
 from utils.validation import TestSuite
 import crawlURIs
 from utils import archivoConfig, queryDatabus, stringTools, inspectVocabs
-import traceback
-import sys
-import requests
-import markdown
 from flask_accept import accept, accept_fallback
-from urllib.parse import quote, unquote, urlparse
+from urllib.parse import quote, unquote
 from utils.archivoLogs import webservice_logger
-from datetime import datetime
 import dbUtils
 from urllib.error import HTTPError, URLError
 import json
@@ -513,3 +508,21 @@ def get_star_stats():
 @app.route("/rating")
 def rating():
     return render_template("rating.html", title="Archivo - Ontology Rating")
+
+@app.route("/vocab/")
+@app.route("/vocab/<objid>")
+def deliver_vocab(objid=None):
+
+    # get the mimetype, defaults to html
+    mime = request.headers.get("Accept", "text/html")
+    print(mime)
+
+    # checks for mimetype in accept header
+    if "application/rdf+xml" in mime:
+        return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.rdf")
+    elif "text/turtle" in mime:
+        return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.ttl")
+    elif "application/ntriples" in mime:
+        return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.nt")
+    else:
+        return render_template("vocab.html")
