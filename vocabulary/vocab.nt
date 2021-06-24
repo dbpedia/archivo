@@ -1,23 +1,34 @@
-<https://archivo.dbpedia.org/vocab/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
-<https://archivo.dbpedia.org/vocab/> <http://www.w3.org/2000/01/rdf-schema#label> "The DBpedia Archivo Ontology"@en .
-<https://archivo.dbpedia.org/vocab/> <http://purl.org/dc/elements/1.1/title> "The DBpedia Archivo Ontology"@en .
-<https://archivo.dbpedia.org/vocab/> <http://purl.org/dc/terms/license> <http://creativecommons.org/licenses/by/3.0/> .
-<https://archivo.dbpedia.org/vocab/> <http://www.w3.org/2000/01/rdf-schema#comment> "The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."@en .
-<https://archivo.dbpedia.org/vocab/> <http://purl.org/dc/terms/description> "The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."@en .
-<https://archivo.dbpedia.org/vocab/> <http://purl.org/dc/terms/creator> <https://yum-yab.github.io/webid.ttl#this> .
-<https://archivo.dbpedia.org/vocab/> <https://archivo.dbpedia.org/vocab/trackThis> <https://raw.githubusercontent.com/dbpedia/archivo/master/vocabulary/vocab.ttl> .
+<https://archivo.dbpedia.org/onto#> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Ontology> .
+<https://archivo.dbpedia.org/onto#> <http://www.w3.org/2000/01/rdf-schema#label> "The DBpedia Archivo Ontology"@en .
+<https://archivo.dbpedia.org/onto#> <http://purl.org/dc/elements/1.1/title> "The DBpedia Archivo Ontology"@en .
+<https://archivo.dbpedia.org/onto#> <http://purl.org/dc/terms/license> <http://creativecommons.org/licenses/by/3.0/> .
+<https://archivo.dbpedia.org/onto#> <http://www.w3.org/2000/01/rdf-schema#comment> "The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."@en .
+<https://archivo.dbpedia.org/onto#> <http://purl.org/dc/terms/description> "The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."@en .
+<https://archivo.dbpedia.org/onto#> <http://purl.org/vocab/vann/preferredNamespacePrefix> "archivo" .
+<https://archivo.dbpedia.org/onto#> <http://purl.org/dc/terms/creator> <https://yum-yab.github.io/webid.ttl#this> .
+<https://archivo.dbpedia.org/onto#> <https://archivo.dbpedia.org/onto#trackThis> <https://raw.githubusercontent.com/dbpedia/archivo/master/vocabulary/vocab.ttl> .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
 _:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/07/owl#Ontology> .
 _:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid1 .
-<https://archivo.dbpedia.org/vocab/Ontology> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<https://archivo.dbpedia.org/vocab/Ontology> <http://www.w3.org/2000/01/rdf-schema#label> "Archivo Ontology"@en .
-<https://archivo.dbpedia.org/vocab/Ontology> <http://www.w3.org/2000/01/rdf-schema#comment> "Everything that is considered an ontology by the DBpedia Archivo system."@en .
-<https://archivo.dbpedia.org/vocab/Ontology> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://archivo.dbpedia.org/vocab/> .
-<https://archivo.dbpedia.org/vocab/Ontology> <http://www.w3.org/2002/07/owl#unionOf> _:genid2 .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/2000/01/rdf-schema#label> "Archivo Track This"@en .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/2000/01/rdf-schema#comment> "This property links to the develop version (e.g on github) of an ontology."@en .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://archivo.dbpedia.org/vocab/> .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/2000/01/rdf-schema#domain> <https://archivo.dbpedia.org/vocab/Ontology> .
-<https://archivo.dbpedia.org/vocab/trackThis> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+<https://archivo.dbpedia.org/onto#Ontology> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<https://archivo.dbpedia.org/onto#Ontology> <http://www.w3.org/2000/01/rdf-schema#label> "Archivo Ontology"@en .
+<https://archivo.dbpedia.org/onto#Ontology> <http://www.w3.org/2000/01/rdf-schema#comment> "Everything that is considered an ontology by the DBpedia Archivo system."@en .
+<https://archivo.dbpedia.org/onto#Ontology> <http://purl.org/dc/terms/description> "Archivo considers all instances of skos:ConceptScheme and owl:Ontology as an ontology."@en .
+<https://archivo.dbpedia.org/onto#Ontology> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://archivo.dbpedia.org/onto#> .
+<https://archivo.dbpedia.org/onto#Ontology> <http://www.w3.org/2002/07/owl#unionOf> _:genid2 .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/2000/01/rdf-schema#label> "Archivo Track This"@en .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/2000/01/rdf-schema#comment> "This property links an ontology to a file resembling the currently actively developed version of the ontology."@en .
+<https://archivo.dbpedia.org/onto#trackThis> <http://purl.org/dc/terms/description> "This property can be used to link an ontology to the actively developed RDF file resembling the ontology, for example on github."@en .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://archivo.dbpedia.org/onto#> .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/2000/01/rdf-schema#domain> <https://archivo.dbpedia.org/onto#Ontology> .
+<https://archivo.dbpedia.org/onto#trackThis> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2000/01/rdf-schema#label> "Archivo Defines"@en .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2000/01/rdf-schema#comment> "This property links a given resource to one that it defines."@en .
+<https://archivo.dbpedia.org/onto#defines> <http://purl.org/dc/terms/description> "This property is the inverse of rdfs:isDefinedBy and can, for example, be used to link a ontology to the classes and properties it defines."@en .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <https://archivo.dbpedia.org/onto#> .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2002/07/owl#inverseOf> <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Resource> .
+<https://archivo.dbpedia.org/onto#defines> <http://www.w3.org/2000/01/rdf-schema#domain> <http://www.w3.org/2000/01/rdf-schema#Resource> .

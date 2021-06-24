@@ -509,9 +509,8 @@ def get_star_stats():
 def rating():
     return render_template("rating.html", title="Archivo - Ontology Rating")
 
-@app.route("/vocab/")
-@app.route("/vocab/<objid>")
-def deliver_vocab(objid=None):
+@app.route("/onto")
+def deliver_vocab():
 
     # get the mimetype, defaults to html
     mime = request.headers.get("Accept", "text/html")

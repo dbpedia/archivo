@@ -1,4 +1,4 @@
-@base <https://archivo.dbpedia.org/vocab/> .
+@base <https://archivo.dbpedia.org/onto#> .
 @prefix archivo: <> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -9,6 +9,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix vann: <http://purl.org/vocab/vann/>.
 
 
 <> a owl:Ontology;
@@ -17,6 +18,7 @@
     dct:license <http://creativecommons.org/licenses/by/3.0/> ;		
     rdfs:comment """The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."""@en ;
     dct:description """The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus."""@en ;
+    vann:preferredNamespacePrefix "archivo";
     dct:creator <https://yum-yab.github.io/webid.ttl#this> ;
     archivo:trackThis <https://raw.githubusercontent.com/dbpedia/archivo/master/vocabulary/vocab.ttl> .
 
@@ -24,13 +26,24 @@
 archivo:Ontology a owl:Class;
     rdfs:label "Archivo Ontology"@en;
     rdfs:comment "Everything that is considered an ontology by the DBpedia Archivo system."@en;
+    dct:description "Archivo considers all instances of skos:ConceptScheme and owl:Ontology as an ontology."@en;
     rdfs:isDefinedBy <>;
     owl:unionOf (owl:Ontology skos:ConceptScheme) .
 
 
 archivo:trackThis a owl:ObjectProperty;
     rdfs:label "Archivo Track This"@en;
-    rdfs:comment "This property links to the develop version (e.g on github) of an ontology."@en;
+    rdfs:comment "This property links an ontology to a file resembling the currently actively developed version of the ontology."@en;
+    dct:description "This property can be used to link an ontology to the actively developed RDF file resembling the ontology, for example on github."@en;
     rdfs:isDefinedBy <> ;
     rdfs:domain archivo:Ontology;
     rdfs:range rdfs:Resource .
+
+archivo:defines a owl:ObjectProperty;
+    rdfs:label "Archivo Defines"@en;
+    rdfs:comment "This property links a given resource to one that it defines."@en;
+    dct:description "This property is the inverse of rdfs:isDefinedBy and can, for example, be used to link a ontology to the classes and properties it defines."@en;
+    rdfs:isDefinedBy <>;
+    owl:inverseOf rdfs:isDefinedBy;
+    rdfs:range rdfs:Resource;
+    rdfs:domain rdfs:Resource.

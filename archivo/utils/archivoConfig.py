@@ -16,7 +16,7 @@ track_this_uri = "http://archivo.dbpedia.org/trackThis"
 # the properties pointing to classes/props defined by a ontology
 # all the objects of triples with these properties are considered a defined resource
 # use full uris and no prefixes
-defines_properties = ["http://open.vocab.org/terms/defines"]
+defines_properties = ["http://open.vocab.org/terms/defines", "https://archivo.dbpedia.org/onto#defines"]
 
 
 # edit for your dataset

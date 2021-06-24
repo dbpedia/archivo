@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xmlns:archivo="https://archivo.dbpedia.org/vocab/"
+<rdf:RDF xmlns:archivo="https://archivo.dbpedia.org/onto#"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:dct="http://purl.org/dc/terms/"
    xmlns:foaf="http://xmlns.com/foaf/0.1/"
@@ -8,19 +8,22 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+   xmlns:vann="http://purl.org/vocab/vann/"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
-  <owl:Ontology rdf:about="https://archivo.dbpedia.org/vocab/">
+  <owl:Ontology rdf:about="https://archivo.dbpedia.org/onto#">
     <dc:title xml:lang="en">The DBpedia Archivo Ontology</dc:title>
     <dct:creator rdf:resource="https://yum-yab.github.io/webid.ttl#this"/>
     <dct:description xml:lang="en">The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus.</dct:description>
     <dct:license rdf:resource="http://creativecommons.org/licenses/by/3.0/"/>
+    <vann:preferredNamespacePrefix>archivo</vann:preferredNamespacePrefix>
     <rdfs:comment xml:lang="en">The Archivo Ontology lays the foundation for managing ontologies (and their metadata) on the DBpedia Databus.</rdfs:comment>
     <rdfs:label xml:lang="en">The DBpedia Archivo Ontology</rdfs:label>
     <archivo:trackThis rdf:resource="https://raw.githubusercontent.com/dbpedia/archivo/master/vocabulary/vocab.ttl"/>
   </owl:Ontology>
-  <owl:Class rdf:about="https://archivo.dbpedia.org/vocab/Ontology">
+  <owl:Class rdf:about="https://archivo.dbpedia.org/onto#Ontology">
+    <dct:description xml:lang="en">Archivo considers all instances of skos:ConceptScheme and owl:Ontology as an ontology.</dct:description>
     <rdfs:comment xml:lang="en">Everything that is considered an ontology by the DBpedia Archivo system.</rdfs:comment>
-    <rdfs:isDefinedBy rdf:resource="https://archivo.dbpedia.org/vocab/"/>
+    <rdfs:isDefinedBy rdf:resource="https://archivo.dbpedia.org/onto#"/>
     <rdfs:label xml:lang="en">Archivo Ontology</rdfs:label>
     <owl:unionOf>
       <rdf:Description>
@@ -34,10 +37,20 @@
       </rdf:Description>
     </owl:unionOf>
   </owl:Class>
-  <owl:ObjectProperty rdf:about="https://archivo.dbpedia.org/vocab/trackThis">
-    <rdfs:comment xml:lang="en">This property links to the develop version (e.g on github) of an ontology.</rdfs:comment>
-    <rdfs:domain rdf:resource="https://archivo.dbpedia.org/vocab/Ontology"/>
-    <rdfs:isDefinedBy rdf:resource="https://archivo.dbpedia.org/vocab/"/>
+  <owl:ObjectProperty rdf:about="https://archivo.dbpedia.org/onto#defines">
+    <dct:description xml:lang="en">This property is the inverse of rdfs:isDefinedBy and can, for example, be used to link a ontology to the classes and properties it defines.</dct:description>
+    <rdfs:comment xml:lang="en">This property links a given resource to one that it defines.</rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdfs:isDefinedBy rdf:resource="https://archivo.dbpedia.org/onto#"/>
+    <rdfs:label xml:lang="en">Archivo Defines</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <owl:inverseOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#isDefinedBy"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="https://archivo.dbpedia.org/onto#trackThis">
+    <dct:description xml:lang="en">This property can be used to link an ontology to the actively developed RDF file resembling the ontology, for example on github.</dct:description>
+    <rdfs:comment xml:lang="en">This property links an ontology to a file resembling the currently actively developed version of the ontology.</rdfs:comment>
+    <rdfs:domain rdf:resource="https://archivo.dbpedia.org/onto#Ontology"/>
+    <rdfs:isDefinedBy rdf:resource="https://archivo.dbpedia.org/onto#"/>
     <rdfs:label xml:lang="en">Archivo Track This</rdfs:label>
     <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
   </owl:ObjectProperty>

@@ -7,7 +7,7 @@
     <h2>Classes</h2>
     <div class="card">
         <div class="card-body">
-            <h3><a href="/vocab/Ontology">Archivo Ontology</a></h3>
+            <h3><a href="/onto#Ontology">Archivo Ontology</a></h3>
             <p class="lead">Everything that is considered an ontology by the DBpedia Archivo system (currently
                 owl:Ontology
                 and
@@ -19,11 +19,25 @@
     <div class="card">
         <div class="card-body">
             <h3><a
-                href="/vocab/trackThis">Archivo Track This</a></h3>
+                href="/onto#trackThis">Archivo Track This</a></h3>
             <p class="lead">This property links to the develop version (e.g on github) of an ontology.</p>
+            <p>This property can be used to link an ontology to the actively developed RDF file resembling the ontology, for example on github.</p>
             <ul>
                 <li><b>type</b>: owl:ObjectProperty</li>
                 <li><b>domain</b>: archivo:Ontology</li>
+                <li><b>range</b>: rdfs:Resource</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3><a
+                href="/onto#defines">Archivo Defines</a></h3>
+            <p class="lead">This property links a given resource to one that it defines.</p>
+            <p>This property is the inverse of rdfs:isDefinedBy and can, for example, be used to link a ontology to the classes and properties it defines.</p>
+            <ul>
+                <li><b>type</b>: owl:ObjectProperty</li>
+                <li><b>domain</b>: rdfs:Resource</li>
                 <li><b>range</b>: rdfs:Resource</li>
             </ul>
         </div>
