@@ -1,0 +1,216 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+
+# Source: https://github.com/RDFLib/pyLODE/blob/master/README.rst
+
+    
+<#LODE-ontology-tests>
+    a sh:NodeShape ;
+    sh:targetClass owl:Ontology;
+    sh:property <#title-violation> ;
+    sh:property <#comment-violation> ;
+    sh:property <#versionInfo-warning> ;
+    sh:property <#date-warning> ;
+    sh:property <#description-warning> ;
+    sh:property <#creator-warning> ;
+    sh:property <#publisher-warning> ;
+    sh:property <#contributors-info> ;
+    sh:property <#versionIRI-info> ;
+    sh:property <#imports-info> ;
+    sh:property <#backward-compatible-info> ;
+    sh:property <#incompatible-info> ;
+    sh:property <#rigths-info> .
+
+<#LODE-class-tests>
+    a sh:NodeShape ;
+    sh:target <#non-anonymous-classes>;
+    sh:property <#comment-violation> ;
+    sh:property <#label-violation> ;
+    sh:property <#isDefinedBy-warning> .
+
+
+# SPARQL Target for non anonymous classes, objectProperties and datatypeProperties
+
+<#non-anonymous-classes>
+    a sh:SPARQLTarget ;
+    sh:select """
+        PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
+        PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT ?this WHERE {
+            VALUES ?type { owl:Class owl:ObjectProperty owl:DatatypeProperty }
+            ?this a ?type .
+            FILTER ( !isBlank(?this) )
+        }
+        """.
+
+# Property Shapes for each test
+
+<#date-warning>
+    a sh:PropertyShape ;
+    sh:path dc:date;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:message "dc:date is missing and will not be displayed"@en.
+
+<#versionInfo-warning>
+    a sh:PropertyShape;
+    sh:path owl:versionInfo;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:message "owl:versionInfo is missing and will not be displayed"@en.
+
+<#creator-warning>
+    a sh:PropertyShape ;
+    sh:path dc:creator;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:message "dc:creator of the ontology is missing and will not be displayed"@en.
+
+<#publisher-warning>
+    a sh:PropertyShape ;
+    sh:path dc:publisher;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:message "dc:publisher of the ontology is missing and will not be displayed"@en.
+
+<#contributors-info>
+    a sh:PropertyShape;
+    sh:path dc:contributor;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "no dc:contributor of the ontology listed and will not be displayed"@en.
+
+
+<#versionIRI-info>
+    a sh:PropertyShape;
+    sh:path owl:versionIRI;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "owl:versionIRI of the ontology missing and will not be displayed"@en.
+
+
+<#imports-info>
+    a sh:PropertyShape ;
+    sh:path owl:imports;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "no owl:imports of the ontology listed and will not be displayed"@en.
+
+<#backward-compatible-info>
+    a sh:PropertyShape;
+    sh:path owl:backwardCompatibleWith;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "no owl:backwardsCompatibleWith of the ontology given, will not be displayed"@en.
+
+<#incompatible-info>
+    a sh:PropertyShape;
+    sh:path owl:incompatibleWith;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "owl:incompatibleWith statement of the ontology missing, will not be displayed"@en.
+
+<#rigths-info>
+    a sh:PropertyShape;
+    sh:path dc:rigths;
+    sh:severity sh:Info;
+    sh:minCount 1;
+    sh:message "no dc:rigths of the ontology given and will not be displayed"@en.
+
+<#description-warning>
+    a sh:PropertyShape ;
+    sh:path dc:description;
+    sh:severity sh:Warning;
+    sh:minCount 1;
+    sh:nodeKind sh:Literal;
+    sh:message "no dc:description given or no literal, will not be displayed"@en.
+
+
+
+<#isDefinedBy-warning>
+    a sh:PropertyShape ;
+    sh:severity sh:Warning;
+    sh:path rdfs:isDefinedBy;
+    sh:nodeKind sh:IRI;
+    sh:minCount 1;
+    sh:name "isDefinedBy not correctly specified"@en;
+    sh:message "isDefinedBy is missing or is no IRI"@en .
+
+<#comment-violation>
+    a sh:PropertyShape ;
+    sh:severity sh:Violation;
+    sh:path rdfs:comment;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1;
+    sh:name "comment not correctly specified"@en;
+    sh:message "rdfs:comment is missing or is no Literal"@en .
+
+<#label-violation>
+    a sh:PropertyShape;
+    sh:severity sh:Violation;
+    sh:path rdfs:label;
+    sh:nodeKind sh:Literal;
+    sh:minCount 1 ;
+    sh:name "label not correctly specified"@en;
+    sh:message "rdfs:label is missing or is no Literal"@en .
+
+
+
+<#description-violation>
+    a sh:PropertyShape;
+    sh:severity sh:Violation;
+    sh:name "Description not correctly specified"@en;
+    sh:message "Either of rdfs:comment, dct:description, dc:description or skos:definition is required for the description of the ontology"@en;
+    sh:or (
+        [
+            sh:path rdfs:comment;
+            sh:minCount 1;
+        ]
+        [
+            sh:path skos:definition;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dct:description;
+            sh:minCount 1;
+        ]
+        [
+            sh:path dc:description;
+            sh:minCount 1;
+        ]
+    ) .
+
+<#title-violation>
+    a sh:PropertyShape ;
+    sh:severity sh:Violation;
+    sh:message "Either of rdfs:label, dct:title, dc:title or skos:prefLabel is required for the title of the ontology"@en;
+    sh:name "title not correctly specified"@en ;
+    sh:or (
+        [
+        sh:path rdfs:label;
+        sh:minCount 1;
+        ]
+        [
+        sh:path dct:title;
+        sh:minCount 1;
+        ]
+        [
+        sh:path skos:prefLabel;
+        sh:minCount 1;
+        ]
+        [
+        sh:path dc:title;
+        sh:minCount 1;
+        ]
+    ) .
+    
