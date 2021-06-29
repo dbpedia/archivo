@@ -6,7 +6,10 @@ import csv
 from crawlURIs import ArchivoVersion
 
 
-def buildDatabaseObjectFromDatabus(uri, group, artifact, source, timestamp, dev=""):
+def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(
+        uri, dev=True if dev != "" else False
+    )
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
     if title is None:
         return None, None
@@ -68,9 +71,7 @@ def rebuildDatabase():
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-            ontology, versions = buildDatabaseObjectFromDatabus(
-                uri, group, artifact, source, timestamp
-            )
+            ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
                 db.session.add(v)
@@ -98,7 +99,7 @@ def rebuildDatabase():
                 official_uri, dev=True
             )
             ontology, versions = buildDatabaseObjectFromDatabus(
-                official_uri, group, artifact, source, timestamp, dev=dev_uri
+                official_uri, source, timestamp, dev=dev_uri
             )
             db.session.add(ontology)
             for v in versions:
@@ -144,7 +145,7 @@ def update_database():
             # print("Handling URI " + uri)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
             ontology, versions = buildDatabaseObjectFromDatabus(
-                uri, group, artifact, source, timestamp
+                uri, source, timestamp
             )
             db.session.add(ontology)
             for v in versions:
@@ -187,7 +188,7 @@ def update_info_for_ontology(ontology: OfficialOntology):
 
     group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri)
     _, versions = buildDatabaseObjectFromDatabus(
-        ontology.uri, group, artifact, ontology.source, ontology.accessDate
+        ontology.uri, ontology.source, ontology.accessDate
     )
     for v in [
         vers
@@ -209,8 +210,6 @@ def update_info_for_ontology(ontology: OfficialOntology):
         )
         _, versions = buildDatabaseObjectFromDatabus(
             ontology.uri,
-            group,
-            artifact,
             dev_ont.source,
             dev_ont.accessDate,
             dev=dev_ont.uri,
