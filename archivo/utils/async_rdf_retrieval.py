@@ -8,7 +8,7 @@ import requests
 
 def chunk_list(lst, size):
     for i in range(0, len(lst), size):
-        yield lst[i : i + size]
+        yield lst[i: i + size]
 
 
 async def fetch_one_nt_resource(

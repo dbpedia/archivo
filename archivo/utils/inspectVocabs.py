@@ -39,6 +39,9 @@ def getGraphOfVocabFile(filepath, logger=None):
 
 
 def get_graph_of_string(rdf_string, content_type):
+
+    if rdf_string is None:
+        return None
     graph = rdflib.Graph()
     graph.parse(data=rdf_string, format=header_rdflib_mapping.get(content_type, "xml"))
     return graph
@@ -406,7 +409,24 @@ def hackyShaclInspection(shaclURL):
         return "OK"
 
 
+def inspect_shacl_string(shaclString):
+
+    if shaclString is None:
+        return None
+
+    if "sh:resultSeverity sh:Violation" in shaclString:
+        return "VIOLATION"
+    elif "sh:resultSeverity sh:Warning" in shaclString:
+        return "WARNING"
+    elif "sh:resultSeverity sh:Info" in shaclString:
+        return "INFO"
+    else:
+        return "OK"
+
+
 def interpretShaclGraph(graph):
+    if graph is None:
+        return None
     violationRef = URIRef("http://www.w3.org/ns/shacl#Violation")
     warningRef = URIRef("http://www.w3.org/ns/shacl#Warning")
     infoRef = URIRef("http://www.w3.org/ns/shacl#Info")

@@ -13,6 +13,7 @@ from utils.archivoLogs import webservice_logger
 import dbUtils
 from urllib.error import HTTPError, URLError
 import json
+import asyncio
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -201,6 +202,91 @@ def vocabInfo():
         title=f"Archivo - Ontology Info",
     )
 
+@app.route("/newinfo/", methods=["GET", "POST"])
+@app.route("/newinfo", methods=["GET", "POST"])
+@accept("text/html")
+def newvocabInfo():
+    args = request.args
+    ontoUri = args["o"] if "o" in args else ""
+    ontoUri = unquote(ontoUri)
+    isDev = True if "dev" in args else False
+    form = InfoForm()
+    allOntos = [ont.uri for ont in db.session.query(dbModels.OfficialOntology).all()]
+    if form.validate_on_submit():
+        uri = form.uris.data.strip()
+        return redirect(f"/newinfo?o={uri}")
+    if ontoUri != "":
+        foundUri = stringTools.get_uri_from_index(ontoUri, allOntos)
+        if foundUri is None:
+            abort(status=404)
+        ont = (
+            db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
+        )
+        general_info = {}
+        general_info["hasDev"] = True if ont.devel is not None else False
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(
+            foundUri, dev=isDev
+        )
+        try:
+            title, comment, versions_info = asyncio.run(queryDatabus.artifact_info_async(group, artifact))
+        except HTTPError as e:
+            general_info[
+                "message"
+            ] = f"There seems to be a problem with the databus, please try it again later! {str(e)}"
+            return render_template(
+                "info.html",
+                general_info=general_info,
+                form=form,
+                title=f"Archivo - Info about {foundUri}",
+            )
+        if isDev:
+            ont = ont.devel
+            general_info["sourceURI"] = ont.uri
+        general_info["source"] = ont.source
+        general_info["isDev"] = isDev
+        general_info["archivement"] = ont.accessDate
+        general_info["title"] = title
+        general_info["comment"] = comment
+        general_info[
+            "databusArtifact"
+        ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
+        # check latest crawling status
+        if ont.crawling_status:
+            general_info["access"] = {"status": ont.crawling_status, "message": ""}
+        elif ont.crawling_status is None:
+            general_info["access"] = {
+                "status": True,
+                "message": "No database entry -> no crawling happened",
+            }
+        else:
+            latestFallout = (
+                db.session.query(dbModels.Fallout)
+                .filter_by(ontology=ont.uri)
+                .order_by(dbModels.Fallout.date.desc())
+                .first()
+            )
+            general_info["access"] = {
+                "status": ont.crawling_status,
+                "message": latestFallout.error,
+            }
+        for v in versions_info:
+            v["stars"] = stringTools.generateStarString(v["stars"])
+        return render_template(
+            "newinfo.html",
+            versions_info=sorted(
+                versions_info, key=lambda d: d["version"]["label"], reverse=True
+            ),
+            general_info=general_info,
+            form=form,
+            title=f"Archivo - Info about {title}",
+        )
+    return render_template(
+        "newinfo.html",
+        general_info={},
+        form=form,
+        title=f"Archivo - Ontology Info",
+    )
 
 @vocabInfo.support("text/turtle")
 def turtleInfo():
