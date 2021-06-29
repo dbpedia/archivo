@@ -509,6 +509,7 @@ def get_star_stats():
 def rating():
     return render_template("rating.html", title="Archivo - Ontology Rating")
 
+
 @app.route("/onto")
 def deliver_vocab():
 

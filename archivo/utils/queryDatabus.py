@@ -237,7 +237,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                 "triples": metadata["ontology-info"]["triples"],
                 "parsing": {
                     "conforms": parsing,
-                    "errors": metadata["logs"]["rapper-errors"],
+                    "errors": "\n".join(metadata["logs"]["rapper-errors"]),
                 },
                 "semversion": metadata["ontology-info"]["semantic-version"],
                 "stars": stars,
