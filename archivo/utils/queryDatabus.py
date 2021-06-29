@@ -342,8 +342,6 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
             result_tuples = await asyncio.gather(*tasks)
 
             for key, text in result_tuples:
-                if text is None:
-                    print(key, id_url_mapping[key])
                 content_mapping[key] = text
 
             metadata = json.loads(content_mapping["metafile"])
