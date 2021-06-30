@@ -165,3 +165,13 @@ def get_uri_from_index(uri, index):
         if check_uri_equality(uri, indexUri):
             return indexUri
     return None
+
+
+def get_consistency_status(s):
+
+    if s == "Yes":
+        return "CONSISTENT"
+    elif "error" in s.lower():
+        return "ERROR"
+    else:
+        return "INCONSISTENT"
