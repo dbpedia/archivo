@@ -210,7 +210,6 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
             else False
         )
         stars = ontoFiles.stars_from_meta_dict(metadata)
-        isConsistent = lambda s: True if s == "Yes" else False
         version_infos.append(
             {
                 "minLicense": {
@@ -231,8 +230,9 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                 },
                 "version": {"label": version, "url": versionURL},
                 "consistent": {
-                    "conforms": isConsistent(metadata["test-results"]["consistent"]),
+                    "status": stringTools.get_consistency_status(metadata["test-results"]["consistent"]),
                     "url": consistencyURL,
+                    "log": requests.get(consistencyURL).text
                 },
                 "triples": metadata["ontology-info"]["triples"],
                 "parsing": {
