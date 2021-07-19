@@ -33,4 +33,4 @@ profileCheckerJar = "/data/home/dstreitmatter/profilechecker-1.1.0.jar"
 
 
 # local paths
-localPath = "./data"
+localPath = "/usr/local/archivo-data/"

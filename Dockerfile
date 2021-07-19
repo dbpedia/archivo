@@ -19,9 +19,9 @@ FROM python:3.9
 # add archivo user
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-
-# the required deploy directory for databus data
+# the required deploy directory for databus data and the directory for the data
 RUN mkdir -p /home/dstreitmatter/www/archivo/
+RUN mkdir -p /usr/local/archivo-data/
 
 # install rapper and maven
 RUN apt-get update
