@@ -8,6 +8,11 @@
 @prefix cc: <http://creativecommons.org/ns#> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix schema: <http://schema.org/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
 
 
 # Source: https://github.com/RDFLib/pyLODE/blob/master/README.rst
@@ -17,25 +22,27 @@
     a sh:NodeShape ;
     sh:targetClass owl:Ontology;
     sh:property <#title-violation> ;
-    sh:property <#comment-violation> ;
-    sh:property <#versionInfo-warning> ;
-    sh:property <#date-warning> ;
-    sh:property <#description-warning> ;
-    sh:property <#creator-warning> ;
-    sh:property <#publisher-warning> ;
-    sh:property <#contributors-info> ;
-    sh:property <#versionIRI-info> ;
-    sh:property <#imports-info> ;
-    sh:property <#backward-compatible-info> ;
-    sh:property <#incompatible-info> ;
-    sh:property <#rigths-info> .
+    sh:property <#description-violation> ;
+    sh:property <#version-uri-info> ;
+    sh:property <#history-note-info> ;
+    sh:property <#version-info-info> ;
+    sh:property <#creation-date-info> ;
+    sh:property <#modification-date-info> ;
+    sh:property <#issued-date-info> ;
+    sh:property <#creator-contributor-violation> ;
+    sh:property <#preferred-prefix-warning> ;
+    sh:property <#preferred-namespace-warning> ;
+    sh:property <#rights-violation> ;
+    sh:property <#code-repo-info> ;
+    sh:property <#source-info> .
 
 <#LODE-class-tests>
     a sh:NodeShape ;
     sh:target <#non-anonymous-classes>;
-    sh:property <#comment-violation> ;
-    sh:property <#label-violation> ;
-    sh:property <#isDefinedBy-warning> .
+    sh:property <#title-violation> ;
+    sh:property <#description-violation> ;
+    sh:property <#scope-note-info> ;
+    sh:property <#example-info> .
 
 
 # SPARQL Target for non anonymous classes, objectProperties and datatypeProperties
@@ -47,124 +54,13 @@
         PREFIX  owl:  <http://www.w3.org/2002/07/owl#>
         PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         SELECT ?this WHERE {
-            VALUES ?type { owl:Class owl:ObjectProperty owl:DatatypeProperty }
+            VALUES ?type { owl:Class owl:ObjectProperty owl:DatatypeProperty rdfs:Class }
             ?this a ?type .
             FILTER ( !isBlank(?this) )
         }
         """.
 
 # Property Shapes for each test
-
-<#date-warning>
-    a sh:PropertyShape ;
-    sh:path dc:date;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:message "dc:date is missing and will not be displayed"@en.
-
-<#versionInfo-warning>
-    a sh:PropertyShape;
-    sh:path owl:versionInfo;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:message "owl:versionInfo is missing and will not be displayed"@en.
-
-<#creator-warning>
-    a sh:PropertyShape ;
-    sh:path dc:creator;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:message "dc:creator of the ontology is missing and will not be displayed"@en.
-
-<#publisher-warning>
-    a sh:PropertyShape ;
-    sh:path dc:publisher;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:message "dc:publisher of the ontology is missing and will not be displayed"@en.
-
-<#contributors-info>
-    a sh:PropertyShape;
-    sh:path dc:contributor;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "no dc:contributor of the ontology listed and will not be displayed"@en.
-
-
-<#versionIRI-info>
-    a sh:PropertyShape;
-    sh:path owl:versionIRI;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "owl:versionIRI of the ontology missing and will not be displayed"@en.
-
-
-<#imports-info>
-    a sh:PropertyShape ;
-    sh:path owl:imports;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "no owl:imports of the ontology listed and will not be displayed"@en.
-
-<#backward-compatible-info>
-    a sh:PropertyShape;
-    sh:path owl:backwardCompatibleWith;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "no owl:backwardsCompatibleWith of the ontology given, will not be displayed"@en.
-
-<#incompatible-info>
-    a sh:PropertyShape;
-    sh:path owl:incompatibleWith;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "owl:incompatibleWith statement of the ontology missing, will not be displayed"@en.
-
-<#rigths-info>
-    a sh:PropertyShape;
-    sh:path dc:rigths;
-    sh:severity sh:Info;
-    sh:minCount 1;
-    sh:message "no dc:rigths of the ontology given and will not be displayed"@en.
-
-<#description-warning>
-    a sh:PropertyShape ;
-    sh:path dc:description;
-    sh:severity sh:Warning;
-    sh:minCount 1;
-    sh:nodeKind sh:Literal;
-    sh:message "no dc:description given or no literal, will not be displayed"@en.
-
-
-
-<#isDefinedBy-warning>
-    a sh:PropertyShape ;
-    sh:severity sh:Warning;
-    sh:path rdfs:isDefinedBy;
-    sh:nodeKind sh:IRI;
-    sh:minCount 1;
-    sh:name "isDefinedBy not correctly specified"@en;
-    sh:message "isDefinedBy is missing or is no IRI"@en .
-
-<#comment-violation>
-    a sh:PropertyShape ;
-    sh:severity sh:Violation;
-    sh:path rdfs:comment;
-    sh:nodeKind sh:Literal;
-    sh:minCount 1;
-    sh:name "comment not correctly specified"@en;
-    sh:message "rdfs:comment is missing or is no Literal"@en .
-
-<#label-violation>
-    a sh:PropertyShape;
-    sh:severity sh:Violation;
-    sh:path rdfs:label;
-    sh:nodeKind sh:Literal;
-    sh:minCount 1 ;
-    sh:name "label not correctly specified"@en;
-    sh:message "rdfs:label is missing or is no Literal"@en .
-
-
 
 <#description-violation>
     a sh:PropertyShape;
@@ -213,4 +109,219 @@
         sh:minCount 1;
         ]
     ) .
-    
+
+
+<#version-uri-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "The version URI can be explicitly noted to make this version persistently available. This needs to be an URI."@en;
+    sh:name "Version URI not explicitly noted"@en;
+    sh:path owl:versionIRI;
+    sh:minCount 1;
+    sh:nodeKind sh:IRI .
+
+<#history-note-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "A history note about the development of the ontology can be given. Supported are inline HTML/markdown."@en;
+    sh:name "History Note missing"@en;
+    sh:path skos:historyNote;
+    sh:minCount 1 .
+
+<#version-info-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "Info about the version can be given, i.e. a semantic versioning or other information. Should be a Literal."@en;
+    sh:name "Version Info not explicitly noted"@en;
+    sh:path owl:versionInfo;
+    sh:minCount 1;
+    sh:nodeKind sh:Literal .
+
+<#preferred-prefix-warning>
+    a sh:PropertyShape;
+    sh:severity sh:Warning;
+    sh:message "The preferred prefix for the Ontology should be defined as a Literal."@en;
+    sh:name "Preferred prefix not defined"@en;
+    sh:path vann:preferredNamespacePrefix;
+    sh:minCount 1;
+    sh:nodeKind sh:Literal .
+
+<#preferred-namespace-warning>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "The preferred namespace for the Ontology can be defined as a Resource, only necessary if it differs from the Ontology Resource."@en;
+    sh:name "Preferred prefix not defined"@en;
+    sh:path vann:preferredNamespaceUri;
+    sh:minCount 1;
+    sh:nodeKind sh:IRI .
+
+
+# TODO: This is only a minimal representation, pyLODE has a far more advanced creator processing then tested here, see https://github.com/RDFLib/pyLODE#agents
+
+<#creator-contributor-violation>
+    a sh:PropertyShape ;
+    sh:severity sh:Violation;
+    sh:message "There should be some kind of reference to the creators and all kinds of contributors of the ontology. Multiple properties from dublin core, schema and foaf may be used."@en;
+    sh:name "Some contributor should be listed."@en ;
+    sh:or (
+        [
+        sh:path dct:contributor;
+        sh:minCount 1;
+        ]
+        [
+        sh:path dct:creator;
+        sh:minCount 1;
+        ]
+        [
+        sh:path dct:publisher;
+        sh:minCount 1;
+        ]
+        [
+        sh:path dct:rightsHolder;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:author;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:contributor;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:creator;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:editor;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:funder;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:publisher;
+        sh:minCount 1;
+        ]
+        [
+        sh:path schema:translator;
+        sh:minCount 1;
+        ]
+        [
+        sh:path foaf:maker;
+        sh:minCount 1;
+        ]
+    ) .
+
+
+<#creation-date-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "There can be some info given of the day of creation. Sould either be xsd:date or xsd:dateTime."@en;
+    sh:name "Day of creation not specified"@en;
+    sh:or (
+        [
+        sh:path dct:created;
+        sh:minCount 1;
+        sh:nodeKind xsd:date;
+        ]
+        [
+        sh:path dct:created;
+        sh:minCount 1;
+        sh:nodeKind xsd:dateTime;
+        ]
+    ) .
+
+<#modification-date-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "There can be some info given of the day of modification. Sould either be xsd:date or xsd:dateTime."@en;
+    sh:name "Day of modification not specified"@en;
+    sh:or (
+        [
+        sh:path dct:modified;
+        sh:minCount 1;
+        sh:nodeKind xsd:date;
+        ]
+        [
+        sh:path dct:modified;
+        sh:minCount 1;
+        sh:nodeKind xsd:dateTime;
+        ]
+    ) .
+
+<#issued-date-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "There can be some info given of the date if issue. Sould either be xsd:date or xsd:dateTime."@en;
+    sh:name "Day of issue not specified"@en;
+    sh:or (
+        [
+        sh:path dct:issued;
+        sh:minCount 1;
+        sh:nodeKind xsd:date;
+        ]
+        [
+        sh:path dct:issued;
+        sh:minCount 1;
+        sh:nodeKind xsd:dateTime;
+        ]
+    ) .
+
+<#rights-violation>
+    a sh:PropertyShape;
+    sh:severity sh:Violation;
+    sh:message "The terms of usage should be specified, either as text with dct:rights or as an URI with dct:license"@en;
+    sh:name "Rights not specified"@en;
+    sh:or (
+        [
+            sh:path dct:rights;
+            sh:minCount 1;
+            sh:nodeKind sh:Literal;
+        ]
+        [
+            sh:path dct:license;
+            sh:minCount 1;
+            sh:nodeKind sh:IRI;
+        ]
+    ) .
+
+<#code-repo-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "The code repository of the ontology can be linked with schema:codeRepository and xsd:anyURI."@en;
+    sh:name "Code repository not defined"@en;
+    sh:path schema:codeRepository;
+    sh:minCount 1;
+    sh:nodeKind xsd:anyURI .
+
+<#source-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "The source of the ontology can be defined with dct:source and a Literal or xsd:anyURI"@en;
+    sh:name "The source is not defined"@en;
+    sh:path dct:source;
+    sh:minCount 1;
+    sh:nodeKind sh:Literal .
+
+
+
+# CLASSES & PROPERTY RESTRICTIONS
+
+<#scope-note-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "The scope of this calss/property can be explained with skos:scopeNote and inline HTML/markdown as a Literal"@en;
+    sh:name "The scope of this class/property is not explained"@en;
+    sh:path skos:scopeNote;
+    sh:minCount 1;
+    sh:nodeKind sh:Literal .
+
+<#example-info>
+    a sh:PropertyShape;
+    sh:severity sh:Info;
+    sh:message "An example of usage can be given in any form with skos:example."@en;
+    sh:name "No example given"@en;
+    sh:path skos:scopeNote;
+    sh:minCount 1 .
