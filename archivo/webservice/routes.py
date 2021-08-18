@@ -91,7 +91,7 @@ def addOntology():
         if success:
             report_heading = "The Ontology has been accepted and added to Archivo!"
             main_comment = f"Check out this <a href=/info?o={quote(archivo_version.nir)}>page</a> for the overview over the suggested ontology!"
-        elif not success and output[-1]["status"] == True:
+        elif not success and output[-1]["status"]:
             report_heading = "The Ontology is already part of Archivo!"
             main_comment = output[-1]["message"]
         else:
@@ -198,7 +198,7 @@ def vocabInfo():
         "info.html",
         general_info={},
         form=form,
-        title=f"Archivo - Ontology Info",
+        title="Archivo - Ontology Info",
     )
 
 
@@ -369,7 +369,6 @@ def downloadOntology():
     rdfFormat = args.get("f", "owl")
     version = args.get("v", None)
     ontoUri = unquote(ontoUri)
-    referrer = request.headers.get("Referer", request.url)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
     return downloadHandling(
@@ -388,7 +387,6 @@ def turtleDownload():
     rdfFormat = args.get("f", "ttl")
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
-    referrer = request.headers.get("Referer", request.url)
     version = args.get("v", None)
     return downloadHandling(
         uri=ontoUri,
@@ -406,7 +404,6 @@ def rdfxmlDownload():
     rdfFormat = args.get("f", "owl")
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
-    referrer = request.headers.get("Referer", request.url)
     version = args.get("v", None)
     return downloadHandling(
         uri=ontoUri,
@@ -448,7 +445,7 @@ def downloadHandling(
     foundURI = stringTools.get_uri_from_index(
         ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
     )
-    if foundURI == None:
+    if foundURI is None:
         abort(status=404)
     group, artifact = stringTools.generateGroupAndArtifactFromUri(foundURI, dev=isDev)
     try:
@@ -460,7 +457,7 @@ def downloadHandling(
             500,
             f"There seems to be an error with the DBpedia Databus. Try again later. {str(e)}",
         )
-    if downloadLink != None:
+    if downloadLink is not None:
         correctUrl = str(sourceSchema) + "://" + str(downloadLink.split("://")[1])
         return redirect(correctUrl, code=307)
     else:
@@ -481,7 +478,7 @@ def api_page():
 def shaclVisualisation():
     args = request.args
     shaclURI = args["r"] if "r" in args else None
-    if shaclURI != None:
+    if shaclURI is not None:
         g = inspectVocabs.getGraphOfVocabFile(shaclURI)
         try:
             results = inspectVocabs.interpretShaclGraph(g)

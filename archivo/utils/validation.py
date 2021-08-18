@@ -5,7 +5,6 @@ import os
 import sys
 import subprocess
 import re
-import traceback
 
 # from owlready2 import get_ontology, sync_reasoner_pellet
 
@@ -166,7 +165,7 @@ class TestSuite:
         )
         if returncode == 0:
             match = consistencyRegex.search(stdout)
-            if match != None:
+            if match is not None:
                 return match.group(1), stderr + "\n\n" + stdout
             else:
                 return (

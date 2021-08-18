@@ -13,15 +13,15 @@ RUN mvn --version
 RUN git clone https://github.com/stardog-union/pellet.git /usr/lib/pellet/
 RUN mvn clean install -f /usr/lib/pellet/pom.xml -DskipTests=true
 
-# here we go with python 3.8
-FROM python:3.8
+# here we go with python 3.9
+FROM python:3.9
 
 # add archivo user
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-
-# the required deploy directory for databus data
+# the required deploy directory for databus data and the directory for the data
 RUN mkdir -p /home/dstreitmatter/www/archivo/
+RUN mkdir -p /usr/local/archivo-data/
 
 # install rapper and maven
 RUN apt-get update
