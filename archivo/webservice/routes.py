@@ -1,5 +1,14 @@
 from webservice import app, db, dbModels
-from flask import render_template, flash, redirect, request, abort, jsonify, send_from_directory
+from flask import (
+    render_template,
+    flash,
+    redirect,
+    request,
+    abort,
+    jsonify,
+    send_from_directory,
+    Response
+)
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
@@ -13,6 +22,7 @@ from utils.archivoLogs import webservice_logger
 import dbUtils
 from urllib.error import HTTPError, URLError
 import json
+import html
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -42,7 +52,7 @@ class InfoForm(FlaskForm):
 def addOntology():
     form = SuggestionForm()
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
-    
+
     suggested_uri = None
 
     post_request = False
@@ -459,7 +469,19 @@ def downloadHandling(
         )
     if downloadLink is not None:
         correctUrl = str(sourceSchema) + "://" + str(downloadLink.split("://")[1])
-        return redirect(correctUrl, code=307)
+        correct_mimetype = get_mimetype_of_fileExt(rdfFormat)
+        resp = Response(  # type: ignore
+            '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n'
+            "<title>Redirecting...</title>\n"
+            "<h1>Redirecting...</h1>\n"
+            "<p>You should be redirected automatically to target URL: "
+            f'<a href="{html.escape(correctUrl)}">{html.escape(correctUrl)}</a>. If'
+            " not click the link.",
+            status=307,
+            mimetype=correct_mimetype,
+        )
+        resp.headers["Location"] = correctUrl
+        return resp
     else:
         abort(status=404)
 
@@ -523,3 +545,15 @@ def deliver_vocab():
         return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.nt")
     else:
         return render_template("vocab.html")
+
+
+def get_mimetype_of_fileExt(fileExt: str):
+
+    if fileExt == "owl" or fileExt == "rdf":
+        return "application/rdf+xml"
+    elif fileExt == "ttl":
+        return "text/turtle"
+    elif fileExt == "nt":
+        return "application/n-triples"
+    else:
+        return "text/plain"
