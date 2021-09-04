@@ -178,6 +178,7 @@ def localDiffAndRelease(
     lastSemVersion,
     testSuite,
     source,
+    old_triples,
     devURI="",
     logger=diff_logger,
 ):
@@ -221,8 +222,14 @@ def localDiffAndRelease(
             + stringTools.file_ending_mapping[newBestHeader],
         )
 
+        # This message is used to show errors of the linked data content gathering
+        # even if it was successfull
+        success_error_message = None
+
         if uri.endswith("/"):
             # check if URI is slash URI -> retrieve linked content
+            # this is still under development and not perfect
+            # i.e. currently there is no way of reducing an ontology, since it checks wether the ontology is increased
             (
                 orig_turtle_content,
                 _,
@@ -242,7 +249,11 @@ def localDiffAndRelease(
                 orig_turtle_content, "text/turtle"
             )
             nt_list, retrieval_errors = async_rdf_retrieval.gather_linked_content(
-                uri, graph, pref_header=newBestHeader, logger=logger
+                uri,
+                graph,
+                pref_header=newBestHeader,
+                concurrent_requests=50,
+                logger=logger,
             )
 
             if retrieval_errors != []:
@@ -250,7 +261,7 @@ def localDiffAndRelease(
                     [" -- ".join(tp) for tp in retrieval_errors]
                 )
                 logger.warning(error_str)
-                return None, error_str, None
+                success_error_message = error_str
 
             (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
                 response.text,
@@ -382,7 +393,7 @@ def localDiffAndRelease(
                 logger.info(log)
                 return None, "ERROR: Couldn't deploy to databus!", new_version
             else:
-                return True, "OK", new_version
+                return True, success_error_message, new_version
     except FileNotFoundError:
         logger.exception(f"Couldn't find file for {uri}")
         return None, f"INTERNAL ERROR: Couldn't find file for {uri}", None
@@ -440,19 +451,25 @@ def handleDiffForUri(
     bestHeader = metadata["http-data"]["best-header"]
     contentLength = metadata["http-data"]["content-length"]
     semVersion = metadata["ontology-info"]["semantic-version"]
+    old_triple_count = metadata["ontology-info"]["triples"]
 
     # this is for handling slash URIs explicitly with related content
-    # if uri.endswith("/"):
-    #     # in the case of slash uris -> directly jump to the content diff
-    #     isDiff = True
-    # else:
-    #     # check headers if something changed
-    #     isDiff, error = checkForNewVersion(
-    #         ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
-    #     )
-    isDiff, error = checkForNewVersion(
-        ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
-    )
+    if uri.endswith("/"):
+        # in the case of slash uris -> directly jump to the content diff
+        isDiff = True
+    else:
+        # check headers if something changed
+        isDiff, error = checkForNewVersion(
+            ontoLocationURI,
+            oldETag,
+            oldLastMod,
+            contentLength,
+            bestHeader,
+            logger=logger,
+        )
+    # isDiff, error = checkForNewVersion(
+    #     ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
+    # )
     if isDiff is None:
         logger.warning("Header Access: " + error)
         return None, "Header Access: " + error, None
@@ -466,6 +483,7 @@ def handleDiffForUri(
             semVersion,
             testSuite,
             source,
+            old_triple_count,
             devURI=devURI,
             logger=logger,
         )
@@ -513,13 +531,13 @@ if __name__ == "__main__":
     ts = TestSuite(".")
     try:
         success, msg, archivoVersion = handleDiffForUri(
-            "http://purl.org/cyber/misp",
+            "http://dbpedia.org/ontology/",
             "./testdir/",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=meta.json",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/purl.org/cyber--misp/2020.06.10-203017/cyber--misp_type=parsed.nt",
-            "2020.06.10-203017",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology/2021.01.08-020001/ontology_type=meta.json",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology/2021.01.08-020001/ontology_type=parsed_sorted.nt",
+            "2021.01.08-020001",
             ts,
-            "prefix.cc",
+            "LOV",
         )
         print(success, msg)
     except:

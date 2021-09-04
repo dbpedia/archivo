@@ -121,6 +121,12 @@ def ontology_official_update():
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
     testSuite = TestSuite(archivo_path)
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
+
+        # skip problematic ontologies
+        if ont.uri in archivoConfig.diff_skip_onts:
+            diff_logger.info(f"{str(i+1)}: Skipped ontology {ont.uri} due to earlier problems...")
+            continue
+        
         diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -154,7 +160,19 @@ def ontology_official_update():
             ont.crawling_status = False
             db.session.add(dbFallout)
         elif success:
-            ont.crawling_status = True
+            if message is None:
+                ont.crawling_status = True
+            else:
+                dbFallout = dbModels.Fallout(
+                    uri=ont.uri,
+                    source=ont.source,
+                    inArchivo=True,
+                    error=message,
+                    ontology=ont.uri,
+                )
+                ont.crawling_status = False
+                db.session.add(dbFallout)
+
 
             # check for new trackThis URI
             succ, dev_version = archivo_version.handleTrackThis()

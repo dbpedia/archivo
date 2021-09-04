@@ -3,7 +3,6 @@ import aiohttp
 from utils import ontoFiles
 from utils.stringTools import rdfHeadersMapping
 from utils import inspectVocabs as IV
-import requests
 
 
 def chunk_list(lst, size):
@@ -45,7 +44,9 @@ async def fetch_one_nt_resource(
         return None
 
 
-async def collect_linked_content(nir, graph, pref_header, logger=None):
+async def collect_linked_content(
+    nir, graph, pref_header, concurrent_requests: int, logger=None
+):
 
     defined_uris = IV.get_defined_URIs(nir, graph)
 
@@ -62,7 +63,7 @@ async def collect_linked_content(nir, graph, pref_header, logger=None):
     if logger is not None:
         logger.debug(f"Found {len(defined_uris)} possible candidates")
 
-    for chunk in chunk_list(defined_uris, 100):
+    for chunk in chunk_list(defined_uris, concurrent_requests):
         tasks = []
         async with aiohttp.ClientSession() as session:
             for uri in chunk:
@@ -84,40 +85,12 @@ async def collect_linked_content(nir, graph, pref_header, logger=None):
     return all_nt_strings, retrieval_errors
 
 
-def gather_linked_content(nir, graph, pref_header, logger=None):
+def gather_linked_content(
+    nir, graph, pref_header, concurrent_requests: int, logger=None
+):
     """Returns a tuple (list_of_nt_strings, retrieval_error_tuples)"""
-    return asyncio.run(collect_linked_content(nir, graph, pref_header, logger=logger))
-
-
-if __name__ == "__main__":
-    import time
-    import csv
-
-    startTime = time.time()
-
-    resp = requests.get(
-        "https://archivo.dbpedia.org/download?o=http%3A//dbpedia.org/ontology/&f=nt&v=2021.01.08-020001"
+    return asyncio.run(
+        collect_linked_content(
+            nir, graph, pref_header, concurrent_requests, logger=logger
+        )
     )
-    graph = IV.get_graph_of_string(resp.text, "application/ntriples")
-
-    nt_list, error_list = asyncio.run(
-        concat_defined_graphs(resp.text, graph, "application/rdf+xml")
-    )
-    print(f"Length of returned graphs: {len(nt_list)}")
-    (parsed_triples, triple_count, rapper_errors, _,) = ontoFiles.parse_rdf_from_string(
-        "\n".join(nt_list),
-        "http://dbpedia.org/ontology/",
-        input_type="ntriples",
-        output_type="ntriples",
-    )
-    print(f"Final ontology with {triple_count}")
-    with open("./concatted_ont_async.nt", "w+") as concatted_file:
-        print(parsed_triples, file=concatted_file)
-
-    with open("./dbpedia_retrieval_errors_async.csv", "w+") as retr_errors_file:
-        writer = csv.writer(retr_errors_file)
-        for row in error_list:
-            writer.writerow(row)
-
-    executionTime = time.time() - startTime
-    print("Execution time in seconds: " + str(executionTime))
