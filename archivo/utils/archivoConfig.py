@@ -26,9 +26,7 @@ defines_properties = [
 
 # All the ontologies in this list will not be skipped during update due to performance reasons
 # NOTE: These problems should be investigated, not ignored, so a github issue should be opened to name and shame myself
-diff_skip_onts = [
-    "http://purl.obolibrary.org/obo/dron.owl"
-]
+diff_skip_onts = ["http://purl.obolibrary.org/obo/dron.owl"]
 
 # edit for your dataset
 downloadUrl = "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"

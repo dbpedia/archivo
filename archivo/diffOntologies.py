@@ -273,17 +273,26 @@ def localDiffAndRelease(
                 # append original nt content to retrieved content
                 nt_list.append(orig_nt_content)
 
+                triple_set = set()
+
+                # deduplicate ntriples
+                for nt_str in nt_list:
+                    for triple in nt_str.split("\n"):
+                        if triple.strip() != "":
+                            triple_set.add(triple)
+
                 (
                     parsed_triples,
                     triple_count,
                     rapper_errors,
                     _,
                 ) = ontoFiles.parse_rdf_from_string(
-                    "\n".join(nt_list),
+                    "\n".join(triple_set),
                     uri,
                     input_type="ntriples",
                     output_type=stringTools.rdfHeadersMapping[newBestHeader],
                 )
+
                 with open(sourcePath, "w+") as new_orig_file:
                     print(parsed_triples, file=new_orig_file)
             else:
