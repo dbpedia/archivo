@@ -6,4 +6,4 @@ Archivo runs shacl tests. SHACL was standardized by DBpedia's former CTO and is 
 
 ## Contribute
 
-If you have an application or would like to test ontologies for specific features, you can create a pull request and add a turtle file with your SHACL test here.
+If you have an application or would like to test ontologies for specific features, you can create a pull request and add a turtle file with your SHACL test in this directory. We will set it up to be run on all ontologies in Archivo soon.
