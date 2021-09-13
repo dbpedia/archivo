@@ -20,6 +20,7 @@ Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 aiohttp = "*"
 pylode = "*"
+flask-cors = "*"
 
 [dev-packages]
 flake8 = "*"

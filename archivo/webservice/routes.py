@@ -23,6 +23,7 @@ import dbUtils
 from urllib.error import HTTPError, URLError
 import json
 import html
+from flask_cors import cross_origin
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -373,6 +374,7 @@ def licensesPage():
 
 @app.route("/download", methods=["GET"])
 @accept_fallback
+@cross_origin()
 def downloadOntology():
     args = request.args
     ontoUri = args.get("o", "")
