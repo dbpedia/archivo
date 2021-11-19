@@ -230,9 +230,11 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                 },
                 "version": {"label": version, "url": versionURL},
                 "consistent": {
-                    "status": stringTools.get_consistency_status(metadata["test-results"]["consistent"]),
+                    "status": stringTools.get_consistency_status(
+                        metadata["test-results"]["consistent"]
+                    ),
                     "url": consistencyURL,
-                    "log": requests.get(consistencyURL).text
+                    "log": requests.get(consistencyURL).text,
                 },
                 "triples": metadata["ontology-info"]["triples"],
                 "parsing": {
@@ -808,7 +810,7 @@ def get_VOID_URIs():
         results = sparql.query().convert()
     except Exception:
         return None
-    if not "results" in results:
+    if "results" not in results:
         return None
     return [binding["URI"]["value"] for binding in results["results"]["bindings"]]
 

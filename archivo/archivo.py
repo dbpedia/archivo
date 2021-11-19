@@ -42,7 +42,6 @@ def check_uri_containment(uri, archivo_uris):
 
 
 # This is the discovery process
-# @cron.scheduled_job("cron", id="archivo_ontology_discovery", hour="15", minute="48", day_of_week="sat")
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
@@ -109,7 +108,6 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
                 db.session.rollback()
 
 
-# @cron.scheduled_job("cron", id="archivo_official_ontology_update", hour="2,10,18", day_of_week="mon-sun")
 def ontology_official_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -124,9 +122,11 @@ def ontology_official_update():
 
         # skip problematic ontologies
         if ont.uri in archivoConfig.diff_skip_onts:
-            diff_logger.info(f"{str(i+1)}: Skipped ontology {ont.uri} due to earlier problems...")
+            diff_logger.info(
+                f"{str(i+1)}: Skipped ontology {ont.uri} due to earlier problems..."
+            )
             continue
-        
+
         diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
         group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -173,7 +173,6 @@ def ontology_official_update():
                 ont.crawling_status = False
                 db.session.add(dbFallout)
 
-
             # check for new trackThis URI
             succ, dev_version = archivo_version.handleTrackThis()
             _, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
@@ -213,7 +212,6 @@ def ontology_official_update():
             db.session.rollback()
 
 
-# @cron.scheduled_job("cron", id="archivo_dev_ontology_update", minute="*/10", day_of_week="mon-sun")
 def ontology_dev_update():
     dataPath = archivoConfig.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
@@ -280,7 +278,6 @@ def ontology_dev_update():
 
 
 # updates the star graph json every midnight
-# @cron.scheduled_job("cron", id="update_archivo_star_graph", hour="4,12,20", day_of_week="mon-sun")
 def update_star_graph():
     stats_path = os.path.join(archivo_path, "stats")
     graphing.generate_star_graph(
@@ -288,7 +285,6 @@ def update_star_graph():
     )
 
 
-# @cron.scheduled_job("cron", id="index-backup-deploy", hour="22", day_of_week="mon-sun")
 def updateOntologyIndex():
     old_officials = queryDatabus.get_last_official_index()
     old_official_uris = [uri for uri, src, date in old_officials]
@@ -378,6 +374,76 @@ def deploy_index():
 atexit.register(lambda: cron.shutdown(wait=False))
 
 
+# checks if everything is configured correctly
+def startup_check():
+
+    import sys
+
+    available_files = [
+        archivoConfig.pelletPath,
+        os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar"),
+    ]
+    available_dirs = [archivoConfig.packDir, archivoConfig.localPath]
+
+    for f in available_files:
+        if not os.path.isfile(f):
+            print(f"Unavailable File: {f}")
+            sys.exit(1)
+
+    for d in available_dirs:
+        if not os.path.isdir(d):
+            print(f"Unavailable Directory: {d}")
+            sys.exit(1)
+
+
 if __name__ == "__main__":
     db.create_all()
     app.run(debug=True)
+elif __name__ == "archivo":
+    # checks if all resources are properly available
+    startup_check()
+
+    # runs the cronjob when run with gunicorn
+    cron = BackgroundScheduler(daemon=True)
+    # add the archivo cronjobs:
+    cron.add_job(
+        updateOntologyIndex,
+        "cron",
+        id="index-backup-deploy",
+        hour="22",
+        day_of_week="mon-sun",
+    )
+    cron.add_job(
+        update_star_graph,
+        "cron",
+        id="update_archivo_star_graph",
+        hour="5,13,21",
+        day_of_week="mon-sun",
+    )
+    cron.add_job(
+        ontology_dev_update,
+        "cron",
+        id="archivo_dev_ontology_update",
+        minute="*/10",
+        day_of_week="mon-sun",
+    )
+    cron.add_job(
+        ontology_official_update,
+        "cron",
+        id="archivo_official_ontology_update",
+        hour="2,10,18",
+        day_of_week="mon-sun",
+    )
+    cron.add_job(
+        ontology_discovery,
+        "cron",
+        id="archivo_ontology_discovery",
+        hour="15",
+        minute="48",
+        day_of_week="sat",
+    )
+    # Explicitly kick off the background thread
+    cron.start()
+
+    # Shutdown your cron thread if the web process is stopped
+    atexit.register(lambda: cron.shutdown(wait=False))

@@ -144,9 +144,7 @@ def update_database():
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
-            ontology, versions = buildDatabaseObjectFromDatabus(
-                uri, source, timestamp
-            )
+            ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
                 db.session.add(v)

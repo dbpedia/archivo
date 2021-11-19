@@ -25,6 +25,8 @@ flask-cors = "*"
 [dev-packages]
 flake8 = "*"
 progressbar = "*"
+autopep8 = "*"
+black = "*"
 
 [requires]
 python_version = "3.9"

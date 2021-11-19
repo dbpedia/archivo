@@ -7,7 +7,7 @@ from flask import (
     abort,
     jsonify,
     send_from_directory,
-    Response
+    Response,
 )
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
