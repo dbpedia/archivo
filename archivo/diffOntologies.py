@@ -325,8 +325,6 @@ def localDiffAndRelease(
         isEqual, oldTriples, newTriples = commDiff(
             old_sorted_nt_path, new_sorted_nt_path, logger=logger
         )
-        logger.debug("Old Triples:" + "\n".join(oldTriples))
-        logger.debug("New Triples:" + "\n".join(newTriples))
         # if len(old) == 0 and len(new) == 0:
         if isEqual:
             logger.info("No new version")
@@ -343,8 +341,8 @@ def localDiffAndRelease(
                 )
             else:
                 logger.warning("Couldn't generate the axioms, no new semantic version")
-                logger.debug("Old Axioms:" + str(oldAxioms))
-                logger.debug("New Axioms:" + str(newAxioms))
+                # logger.debug("Old Axioms:" + str(oldAxioms))
+                # logger.debug("New Axioms:" + str(newAxioms))
                 if not oldSuccess and not newSuccess:
                     newSemVersion = "ERROR: No Axioms for both versions"
                 elif not oldSuccess:
@@ -363,6 +361,14 @@ def localDiffAndRelease(
                 "w+",
             ) as newAxiomsFile:
                 print("\n".join(newAxioms), file=newAxiomsFile)
+            with open(
+                os.path.join(newVersionPath, artifactName + "_type=diff_triples=old.nt")
+            ) as old_diff_file:
+                print("\n".join(oldTriples), file=old_diff_file)
+            with open(
+                os.path.join(newVersionPath, artifactName + "_type=diff_triples=new.nt")
+            ) as new_diff_file:
+                print("\n".join(newTriples), file=old_diff_file)
 
             new_version = crawlURIs.ArchivoVersion(
                 uri,
