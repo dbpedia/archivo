@@ -383,7 +383,7 @@ def startup_check():
         archivoConfig.pelletPath,
         os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar"),
     ]
-    available_dirs = [archivoConfig.packDir, archivoConfig.localPath]
+    available_dirs = [archivoConfig.localPath]
 
     for f in available_files:
         if not os.path.isfile(f):
