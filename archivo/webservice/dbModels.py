@@ -71,23 +71,3 @@ class Fallout(db.Model):
     inArchivo = db.Column(db.Boolean, index=True)
     error = db.Column(db.String(250))
     ontology = db.Column(db.String(120), db.ForeignKey("ontology.uri"))
-
-
-class LatestOntologyMetadata(db.Model):
-    uri = db.Column(db.String(120), primary_key=True)
-    source = db.Column(db.String(64))
-    accessDate = db.Column(db.DateTime)
-    version = db.Column(db.DateTime, index=True)
-    semanticVersion = db.Column(db.String(64))
-    stars = db.Column(db.Integer)
-    parsing = db.Column(db.Boolean)
-    licenseI = db.Column(db.Boolean)
-    licenseII = db.Column(db.Boolean)
-    consistency = db.Column(db.Boolean)
-    lodeSeverity = db.Column(db.String(32))
-    ontology = db.Column(db.String(120), db.ForeignKey("ontology.uri"))
-    crawlingStatus = db.Column(db.Boolean)
-    crawlingError = db.Column(db.String(120))
-
-    def __repr__(self):
-        return "<Ontology {}>".format(self.uri)

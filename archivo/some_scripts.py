@@ -126,23 +126,39 @@ def load_imports_into_archivo(uri, source="user-suggestion"):
     g = rdflib.Graph()
     g.load(uri)
 
-    imports = [str(o) for _, p, o in g if rdflib.URIRef("http://www.w3.org/2002/07/owl#imports") == p]
+    imports = [
+        str(o)
+        for _, p, o in g
+        if rdflib.URIRef("http://www.w3.org/2002/07/owl#imports") == p
+    ]
 
-    run_discovery(imports, source, archivoConfig.localPath, validation.TestSuite(get_correct_path()))
+    run_discovery(
+        imports,
+        source,
+        archivoConfig.localPath,
+        validation.TestSuite(get_correct_path()),
+    )
+
 
 def check_imports_for_existence(uri: str):
 
-    from urllib.parse import quote
     g = rdflib.Graph()
     g.load(uri)
 
-    imports = [str(o) for _, p, o in g if rdflib.URIRef("http://www.w3.org/2002/07/owl#imports") == p]
+    imports = [
+        str(o)
+        for _, p, o in g
+        if rdflib.URIRef("http://www.w3.org/2002/07/owl#imports") == p
+    ]
 
-    for imp in imports:
+    for i, imp in enumerate(imports):
         archivo_uri = f"https://archivo.dbpedia.org/info?o={imp}"
         resp = requests.head(archivo_uri, headers={"Accept": "text/html"})
-        print(f"URI: {imp} ; Archivo: {archivo_uri}; Status: {resp.status_code}")
+        print(f"{i}: URI: {imp} ; Archivo: {archivo_uri}; Status: {resp.status_code}")
+
 
 if __name__ == "__main__":
 
-    load_imports_into_archivo("https://archivo.dbpedia.org/download?o=http%3A//bdi.si.ehu.es/bdi/ontologies/ExtruOnt/ExtruOnt&f=owl&v=2020.12.14-144514", source="SPO")
+    check_imports_for_existence(
+        "https://archivo.dbpedia.org/download?o=http%3A//purl.obolibrary.org/obo/uberon/bridge/collected-metazoan.owl&f=owl&v=2021.06.03-121820"
+    )
