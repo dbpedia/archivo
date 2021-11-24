@@ -362,11 +362,17 @@ def localDiffAndRelease(
             ) as newAxiomsFile:
                 print("\n".join(newAxioms), file=newAxiomsFile)
             with open(
-                os.path.join(newVersionPath, artifactName + "_type=diff_triples=old.nt")
+                os.path.join(
+                    newVersionPath, artifactName + "_type=diff_triples=old.nt"
+                ),
+                "w+",
             ) as old_diff_file:
                 print("\n".join(oldTriples), file=old_diff_file)
             with open(
-                os.path.join(newVersionPath, artifactName + "_type=diff_triples=new.nt")
+                os.path.join(
+                    newVersionPath, artifactName + "_type=diff_triples=new.nt"
+                ),
+                "w+",
             ) as new_diff_file:
                 print("\n".join(newTriples), file=old_diff_file)
 
