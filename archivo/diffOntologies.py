@@ -374,7 +374,7 @@ def localDiffAndRelease(
                 ),
                 "w+",
             ) as new_diff_file:
-                print("\n".join(newTriples), file=old_diff_file)
+                print("\n".join(newTriples), file=new_diff_file)
 
             new_version = crawlURIs.ArchivoVersion(
                 uri,
@@ -552,11 +552,11 @@ if __name__ == "__main__":
     ts = TestSuite(".")
     try:
         success, msg, archivoVersion = handleDiffForUri(
-            "http://dbpedia.org/ontology/",
+            "http://www.bbc.co.uk/ontologies/bbc",
             "./testdir/",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology/2021.01.08-020001/ontology_type=meta.json",
-            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/dbpedia.org/ontology/2021.01.08-020001/ontology_type=parsed_sorted.nt",
-            "2021.01.08-020001",
+            "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/id.kb.se/vocab/2021.11.23-091502/vocab_type=meta.json",
+            "http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/bbc.co.uk/ontologies--bbc/2020.07.16-163437/ontologies--bbc_type=parsed.nt",
+            "2021.11.23-091502",
             ts,
             "LOV",
         )
