@@ -1,5 +1,6 @@
 import requests
-import pylode
+# since pylode is not compatible with rdflib 6.0.2 it will be removed
+# import pylode
 
 # url for the lodo docu service
 lodeServiceUrl = "https://w3id.org/lode/owlapi/"
