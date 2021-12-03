@@ -59,6 +59,7 @@ def ontology_discovery():
 
 
 def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
+    logger.info(f"Crunching {len(lst)} ontologies....")
     if lst is None:
         return
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
@@ -369,15 +370,8 @@ def deploy_index():
         discovery_logger.warning("Failed deploying to databus")
         discovery_logger.warning(log)
 
-
-# Shutdown your cron thread if the web process is stopped
-atexit.register(lambda: cron.shutdown(wait=False))
-
-
 # checks if everything is configured correctly
 def startup_check():
-
-    import sys
 
     available_files = [
         archivoConfig.pelletPath,
@@ -387,13 +381,13 @@ def startup_check():
 
     for f in available_files:
         if not os.path.isfile(f):
-            print(f"Unavailable File: {f}")
-            sys.exit(1)
+            return False, f"Unavailable File: {f}"
 
     for d in available_dirs:
         if not os.path.isdir(d):
-            print(f"Unavailable Directory: {d}")
-            sys.exit(1)
+            return False, f"Unavailable Directory: {d}"
+
+    return True, None
 
 
 if __name__ == "__main__":
@@ -401,8 +395,10 @@ if __name__ == "__main__":
     app.run(debug=True)
 elif __name__ == "archivo":
     # checks if all resources are properly available
-    startup_check()
-
+    correct, reason = startup_check()
+    if not correct:
+        import sys
+        sys.exit(reason)
     # runs the cronjob when run with gunicorn
     cron = BackgroundScheduler(daemon=True)
     # add the archivo cronjobs:

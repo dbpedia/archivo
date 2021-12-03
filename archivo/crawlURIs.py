@@ -368,12 +368,12 @@ class ArchivoVersion:
                 print(docustring, file=docufile)
 
         # generate pylode docu
-        pylode_doc = feature_plugins.get_pyLODE_doc_string(
-            raw_file_path + "_type=parsed.ttl", self.logger
-        )
-        if pylode_doc is not None:
-            with open(raw_file_path + "_type=pyLodeDoc.html", "w+") as docufile:
-                print(pylode_doc, file=docufile)
+        # pylode_doc = feature_plugins.get_pyLODE_doc_string(
+        #     raw_file_path + "_type=parsed.ttl", self.logger
+        # )
+        # if pylode_doc is not None:
+        #     with open(raw_file_path + "_type=pyLodeDoc.html", "w+") as docufile:
+        #         print(pylode_doc, file=docufile)
 
     def generatePomAndDoc(self):
         datetime_obj = datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
