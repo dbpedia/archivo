@@ -723,13 +723,13 @@ def get_last_dev_index():
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
 
 
-def get_SPOs():
+def get_SPOs(date=None):
     # returns spos in a generator which are not olter than two weeks
-    today = datetime.now()
-
-    last_week = today - timedelta(days=21)
-
-    last_week_string = last_week.strftime("%Y.%m.%d-%H%M%S")
+    if date is None:
+        last_week = today - timedelta(days=21)
+        deadline_str = last_week.strftime("%Y.%m.%d-%H%M%S")
+    else:
+        deadline_str = date.strftime("%Y.%m.%d-%H%M%S")
 
     query = (
         "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>\n"
@@ -741,7 +741,7 @@ def get_SPOs():
         + "            ?dataset dct:publisher <https://yum-yab.github.io/webid.ttl#onto> .\n"
         + "            ?dataset dcat:distribution/dataid:file ?used .\n"
         + "                ?dataset dct:hasVersion ?vers .\n"
-        + f'                FILTER(str(?vers) > "{last_week_string}")\n'
+        + f'                FILTER(str(?vers) > "{deadline_str}")\n'
         + "      }\n"
         + "      ?mod prov:generated ?generated .\n"
         + "  	 ?mod a  <https://mods.tools.dbpedia.org/ns/rdf#SpoMod> .\n"
