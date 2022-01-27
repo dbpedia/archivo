@@ -370,6 +370,7 @@ def deploy_index():
         discovery_logger.warning("Failed deploying to databus")
         discovery_logger.warning(log)
 
+
 # checks if everything is configured correctly
 def startup_check():
 
@@ -398,6 +399,7 @@ elif __name__ == "archivo":
     correct, reason = startup_check()
     if not correct:
         import sys
+
         sys.exit(reason)
     # runs the cronjob when run with gunicorn
     cron = BackgroundScheduler(daemon=True)

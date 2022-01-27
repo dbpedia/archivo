@@ -704,7 +704,7 @@ def handleNewUri(
             nt_content_list,
             retrieval_error_list,
         ) = async_rdf_retrieval.gather_linked_content(
-            real_ont_uri, graph, bestHeader, logger=logger
+            real_ont_uri, graph, bestHeader, concurrent_requests=50, logger=logger
         )
 
         # get nt content from response
