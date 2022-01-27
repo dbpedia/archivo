@@ -13,9 +13,9 @@ from datetime import datetime
 import graphing
 import json
 
-cron = BackgroundScheduler(daemon=True)
-# Explicitly kick off the background thread
-cron.start()
+# cron = BackgroundScheduler(daemon=True)
+# # Explicitly kick off the background thread
+# cron.start()
 
 
 def get_correct_path() -> str:
@@ -78,19 +78,20 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
                 logger=logger,
                 user_output=output,
             )
+            discovery_logger.info(output[-1]["message"])
         except Exception:
             discovery_logger.exception(
                 f"Problem during validating {uri}", exc_info=True
             )
             continue
         if success:
-            succ, dev_version = archivo_version.handleTrackThis()
+            # succ, dev_version = archivo_version.handleTrackThis()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
-            if succ:
-                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
-                db.session.add(dev_ont)
-                db.session.add(dev_version)
-                dbOnt.devel = dev_ont.uri
+            # if succ:
+            #     dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+            #     db.session.add(dev_ont)
+            #     db.session.add(dev_version)
+            #     dbOnt.devel = dev_ont.uri
             db.session.add(dbOnt)
             db.session.add(dbVersion)
             try:
@@ -393,55 +394,23 @@ def startup_check():
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(debug=True)
-elif __name__ == "archivo":
-    # checks if all resources are properly available
-    correct, reason = startup_check()
-    if not correct:
-        import sys
 
-        sys.exit(reason)
-    # runs the cronjob when run with gunicorn
-    cron = BackgroundScheduler(daemon=True)
-    # add the archivo cronjobs:
-    cron.add_job(
-        updateOntologyIndex,
-        "cron",
-        id="index-backup-deploy",
-        hour="22",
-        day_of_week="mon-sun",
-    )
-    cron.add_job(
-        update_star_graph,
-        "cron",
-        id="update_archivo_star_graph",
-        hour="5,13,21",
-        day_of_week="mon-sun",
-    )
-    cron.add_job(
-        ontology_dev_update,
-        "cron",
-        id="archivo_dev_ontology_update",
-        minute="*/10",
-        day_of_week="mon-sun",
-    )
-    cron.add_job(
-        ontology_official_update,
-        "cron",
-        id="archivo_official_ontology_update",
-        hour="2,10,18",
-        day_of_week="mon-sun",
-    )
-    cron.add_job(
-        ontology_discovery,
-        "cron",
-        id="archivo_ontology_discovery",
-        hour="15",
-        minute="48",
-        day_of_week="sat",
-    )
-    # Explicitly kick off the background thread
-    cron.start()
+    file_map = {"c-distrib-min10.tsv": "\t", "p-distrib-min10.csv": ","}
 
-    # Shutdown your cron thread if the web process is stopped
-    atexit.register(lambda: cron.shutdown(wait=False))
+    term_set = set()
+
+    test_suite = TestSuite(archivo_path)
+
+    import csv
+
+    for filepath, seperator in file_map.items():
+
+        with open(filepath) as term_file:
+            reader = csv.reader(term_file, delimiter=seperator)
+
+            new_terms = [line[0] for line in reader ]
+
+            term_set.update(new_terms) 
+
+    run_discovery(term_set, "LOD-a-lot crawl", archivoConfig.localPath, test_suite)
+

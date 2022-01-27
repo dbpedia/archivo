@@ -1,18 +1,3 @@
-# # first install java 8 for compiling pellet
-FROM openjdk:8 as pellet-build
-
-# update apt-get
-RUN apt-get update
-
-# install rapper and maven
-RUN apt-get install -y maven git zip 
-
-# download and compile pellet
-RUN mkdir /usr/lib/pellet/
-RUN mvn --version
-RUN git clone https://github.com/stardog-union/pellet.git /usr/lib/pellet/
-RUN mvn clean install -f /usr/lib/pellet/pom.xml -DskipTests=true
-
 # here we go with python 3.9
 FROM python:3.9
 
@@ -26,10 +11,6 @@ RUN mkdir -p /usr/local/archivo-data/
 # install rapper and maven
 RUN apt-get update
 RUN apt-get install -y raptor2-utils maven git zip unzip
-
-# copy pellet to new image and make it executeable
-COPY --from=pellet-build /usr/lib/pellet/ /usr/lib/pellet/
-RUN chmod +x /usr/lib/pellet/cli/target/pelletcli/bin/pellet
 
 # load pipenv
 RUN pip install pipenv
@@ -57,4 +38,4 @@ EXPOSE 5000
 
 #Run the command
 # CMD ["./startup.sh"]
-CMD ["/usr/local/bin/gunicorn","--bind", "0.0.0.0:5000", "--workers=6", "archivo:app", "--access-logfile", "./logs/gunicorn-access.log", "--log-file", "./logs/gunicorn-errors.log", "--timeout", "1200", "--preload"]
+CMD ["python", "archivo.py"]

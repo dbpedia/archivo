@@ -296,46 +296,48 @@ class ArchivoVersion:
             print(
                 inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile
             )
+        self.is_consistent = True
+        self.is_consistent_noimports = True
         # checks consistency with and without imports
-        self.is_consistent, output = self.test_suite.getConsistency(
-            raw_file_path + "_type=parsed.ttl", ignoreImports=False
-        )
-        self.is_consistent_noimports, outputNoImports = self.test_suite.getConsistency(
-            raw_file_path + "_type=parsed.ttl", ignoreImports=True
-        )
-        with open(
-            raw_file_path + "_type=pelletConsistency_imports=FULL.txt", "w+"
-        ) as consistencyReport:
-            print(output, file=consistencyReport)
-        with open(
-            raw_file_path + "_type=pelletConsistency_imports=NONE.txt", "w+"
-        ) as consistencyReportNoImports:
-            print(outputNoImports, file=consistencyReportNoImports)
-        # print pellet info files
-        with open(
-            raw_file_path + "_type=pelletInfo_imports=FULL.txt", "w+"
-        ) as pelletInfoFile:
-            print(
-                self.test_suite.getPelletInfo(
-                    raw_file_path + "_type=parsed.ttl", ignoreImports=False
-                ),
-                file=pelletInfoFile,
-            )
-        with open(
-            raw_file_path + "_type=pelletInfo_imports=NONE.txt", "w+"
-        ) as pelletInfoFileNoImports:
-            print(
-                self.test_suite.getPelletInfo(
-                    raw_file_path + "_type=parsed.ttl", ignoreImports=True
-                ),
-                file=pelletInfoFileNoImports,
-            )
+        # self.is_consistent, output = self.test_suite.getConsistency(
+        #     raw_file_path + "_type=parsed.ttl", ignoreImports=False
+        # )
+        # self.is_consistent_noimports, outputNoImports = self.test_suite.getConsistency(
+        #     raw_file_path + "_type=parsed.ttl", ignoreImports=True
+        # )
+        # with open(
+        #     raw_file_path + "_type=pelletConsistency_imports=FULL.txt", "w+"
+        # ) as consistencyReport:
+        #     print(output, file=consistencyReport)
+        # with open(
+        #     raw_file_path + "_type=pelletConsistency_imports=NONE.txt", "w+"
+        # ) as consistencyReportNoImports:
+        #     print(outputNoImports, file=consistencyReportNoImports)
+        # # print pellet info files
+        # with open(
+        #     raw_file_path + "_type=pelletInfo_imports=FULL.txt", "w+"
+        # ) as pelletInfoFile:
+        #     print(
+        #         self.test_suite.getPelletInfo(
+        #             raw_file_path + "_type=parsed.ttl", ignoreImports=False
+        #         ),
+        #         file=pelletInfoFile,
+        #     )
+        # with open(
+        #     raw_file_path + "_type=pelletInfo_imports=NONE.txt", "w+"
+        # ) as pelletInfoFileNoImports:
+        #     print(
+        #         self.test_suite.getPelletInfo(
+        #             raw_file_path + "_type=parsed.ttl", ignoreImports=True
+        #         ),
+        #         file=pelletInfoFileNoImports,
+        #     )
         # profile check for ontology
-        stdout, stderr = self.test_suite.getProfileCheck(
-            raw_file_path + "_type=parsed.ttl"
-        )
-        with open(raw_file_path + "_type=profile.txt", "w+") as profileCheckFile:
-            print(stderr + "\n" + stdout, file=profileCheckFile)
+        # stdout, stderr = self.test_suite.getProfileCheck(
+        #     raw_file_path + "_type=parsed.ttl"
+        # )
+        # with open(raw_file_path + "_type=profile.txt", "w+") as profileCheckFile:
+        #     print(stderr + "\n" + stdout, file=profileCheckFile)
 
         # write the metadata json file
         ontoFiles.altWriteVocabInformation(
@@ -814,11 +816,17 @@ def handleNewUri(
     new_version.generateFiles()
     new_version.generatePomAndDoc()
 
-    logger.info("Deploying the data to the databus...")
-    returncode, deployLog = generatePoms.callMaven(
-        os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"
-    )
+    # new_version.generatePomAndDoc()
 
+    # logger.info("Deploying the data to the databus...")
+    # returncode, deployLog = generatePoms.callMaven(
+    #     os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"
+    # )
+
+    returncode = 0
+
+    deployLog = "No need to deploy, just add it to the database"
+    
     if returncode > 0:
         logger.error("There was an Error deploying to the databus")
         user_output.append(
@@ -953,12 +961,16 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=list()
         devURI=sourceURI,
     )
     new_version.generateFiles()
-    new_version.generatePomAndDoc()
+    # new_version.generatePomAndDoc()
 
-    logger.info("Deploying the data to the databus...")
-    returncode, deployLog = generatePoms.callMaven(
-        os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"
-    )
+    # logger.info("Deploying the data to the databus...")
+    # returncode, deployLog = generatePoms.callMaven(
+    #     os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"
+    # )
+
+    returncode = 0
+
+    deployLog = "No need to deploy, just add it to the database"
 
     if returncode > 0:
         logger.error("There was an Error deploying to the databus")
