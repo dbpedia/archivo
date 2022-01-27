@@ -395,22 +395,18 @@ def startup_check():
 if __name__ == "__main__":
     db.create_all()
 
-    file_map = {"c-distrib-min10.tsv": "\t", "p-distrib-min10.csv": ","}
-
-    term_set = set()
+    file_map = {"c-distrib-min10.csv": "LOD-a-lot classes", "p-distrib-min10.csv": "LOD-a-lot properties"}
 
     test_suite = TestSuite(archivo_path)
 
     import csv
 
-    for filepath, seperator in file_map.items():
+    for filepath, source in file_map.items():
 
         with open(filepath) as term_file:
-            reader = csv.reader(term_file, delimiter=seperator)
+            reader = csv.reader(term_file)
 
-            new_terms = [line[0] for line in reader ]
+            terms = set([line[0] for line in reader ]) 
 
-            term_set.update(new_terms) 
-
-    run_discovery(term_set, "LOD-a-lot crawl", archivoConfig.localPath, test_suite)
+        run_discovery(terms, source, archivoConfig.localPath, test_suite)
 
