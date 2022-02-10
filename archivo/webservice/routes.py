@@ -542,7 +542,6 @@ def retrieve_list_from_database(ontoType):
         if ont.uri == last_ont_uri:
             continue
         else:
-            print(ont.uri, last_ont_uri)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
             databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
             infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
