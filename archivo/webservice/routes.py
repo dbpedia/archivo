@@ -263,58 +263,9 @@ def onto_list():
         ontoType = dbModels.DevelopOntology
     else:
         ontoType = dbModels.OfficialOntology
-    ontologies = db.session.query(ontoType).all()
-    ontos = []
-    for ont in ontologies:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
-        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        versions = ont.versions.order_by(dbModels.Version.version.desc()).all()
-        v = versions[0]
-        first_version = versions[-1]
-        if v is None:
-            webservice_logger.critical(f"Couldn't find any data for {ont.uri}")
-            continue
-        if ont.crawling_status or ont.crawling_status is None:
-            crawlStatus = True
-            crawlError = ""
-        else:
-            crawlStatus = False
-            latestFallout = (
-                db.session.query(dbModels.Fallout)
-                .filter_by(ontology=ont.uri)
-                .order_by(dbModels.Fallout.date.desc())
-                .first()
-            )
-            crawlError = f"{str(latestFallout.date)} : {latestFallout.error}"
 
-        infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
-        downloadURL = (
-            f"/download?o={quote(ont.official)}&dev"
-            if isDev
-            else f"/download?o={quote(ont.uri)}"
-        )
-        result = {
-            "ontology": {
-                "label": ont.title,
-                "URL": ont.uri,
-                "infoURL": infoURL,
-                "downloadURL": downloadURL,
-            },
-            "addition_date": first_version.version.strftime("%Y.%m.%d-%H%M%S"),
-            "databusURI": databus_uri,
-            "source": ont.source,
-            "triples": v.triples,
-            "crawling": {"status": crawlStatus, "error": crawlError},
-            "stars": stringTools.generateStarString(v.stars),
-            "semVersion": v.semanticVersion,
-            "parsing": v.parsing,
-            "minLicense": v.licenseI,
-            "goodLicense": v.licenseII,
-            "consistency": v.consistency,
-            "lodeSeverity": v.lodeSeverity,
-            "latestVersion": v.version.strftime("%Y.%m.%d-%H%M%S"),
-        }
-        ontos.append(result)
+    ontos = retrieve_list_from_database(ontoType)
+
     return render_template(
         "list.html",
         isDev=isDev,
@@ -547,6 +498,73 @@ def deliver_vocab():
         return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.nt")
     else:
         return render_template("vocab.html")
+
+
+def retrieve_list_from_database(ontoType):
+
+    isDev = True if ontoType == dbModels.DevelopOntology else False
+
+    query_result = (
+        db.session.query(ontoType, dbModels.Version, dbModels.Fallout)
+        .join(dbModels.Version)
+        .outerjoin(dbModels.Fallout)
+        .order_by(
+            ontoType.uri, dbModels.Version.version.desc(), dbModels.Fallout.date.desc()
+        ).all()
+    )
+    print(query_result)
+    result_list = []
+
+    last_ont_uri = ""
+
+    for ont, version, fallout in query_result:
+
+        if ont.uri == last_ont_uri:
+            continue
+        else:
+            print(ont.uri, last_ont_uri)
+            group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+            databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+
+            # set the crawl error none means no crawl yet
+            if ont.crawling_status or ont.crawling_status is None:
+                crawlStatus = True
+                crawlError = ""
+            else:
+                crawlStatus = False
+                crawlError = f"{str(fallout.date)} : {fallout.error}"
+
+            infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
+            downloadURL = (
+                f"/download?o={quote(ont.official)}&dev"
+                if isDev
+                else f"/download?o={quote(ont.uri)}"
+            )
+            result = {
+                "ontology": {
+                    "label": ont.title,
+                    "URL": ont.uri,
+                    "infoURL": infoURL,
+                    "downloadURL": downloadURL,
+                },
+                "addition_date": ont.accessDate.strftime("%Y.%m.%d-%H%M%S"),
+                "databusURI": databus_uri,
+                "source": ont.source,
+                "triples": version.triples,
+                "crawling": {"status": crawlStatus, "error": crawlError},
+                "stars": stringTools.generateStarString(version.stars),
+                "semVersion": version.semanticVersion,
+                "parsing": version.parsing,
+                "minLicense": version.licenseI,
+                "goodLicense": version.licenseII,
+                "consistency": version.consistency,
+                "lodeSeverity": version.lodeSeverity,
+                "latestVersion": version.version.strftime("%Y.%m.%d-%H%M%S"),
+            }
+            result_list.append(result)
+            last_ont_uri = ont.uri
+
+    return result_list
 
 
 def get_mimetype_of_fileExt(fileExt: str):
