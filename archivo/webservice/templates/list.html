@@ -179,7 +179,7 @@
                 <td>
                     {% if onto.crawling.status %}
                     <span class="btn btn-success btn-sm">✔</span> {% else %}
-                    <span class="btn btn-danger btn-sm" title="{{onto.crawling.error}}">✘</span> {% endif %}
+                    <a class="btn btn-danger btn-sm" title="Click for more details in the info screen!" href="{{onto.crawling.error}}">✘</a> {% endif %}
                 </td>
             </tr>
             {%endfor%}
