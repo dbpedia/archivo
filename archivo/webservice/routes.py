@@ -1,4 +1,11 @@
-from webservice import app, db, dbModels
+from webservice import app, db
+from webservice.dbModels import (
+    OfficialOntology,
+    DevelopOntology,
+    Fallout,
+    Version,
+    Ontology,
+)
 from flask import (
     render_template,
     flash,
@@ -24,6 +31,7 @@ from urllib.error import HTTPError, URLError
 import json
 import html
 from flask_cors import cross_origin
+from flask_sqlalchemy import sqlalchemy as sa
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -40,10 +48,7 @@ class InfoForm(FlaskForm):
     uris = SelectField(
         "Enter a URI",
         choices=[("", "")]
-        + [
-            (ont.uri, ont.uri)
-            for ont in db.session.query(dbModels.OfficialOntology).all()
-        ],
+        + [(ont.uri, ont.uri) for ont in db.session.query(OfficialOntology).all()],
         validators=[validators.InputRequired()],
     )
     submit = SubmitField(label="Get Info")
@@ -52,7 +57,7 @@ class InfoForm(FlaskForm):
 @app.route("/add", methods=["GET", "POST"])
 def addOntology():
     form = SuggestionForm()
-    allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+    allOnts = [ont.uri for ont in db.session.query(Ontology.uri).all()]
 
     suggested_uri = None
 
@@ -90,7 +95,7 @@ def addOntology():
             db.session.add(dbVersion)
             db.session.commit()
         elif not success and isNir:
-            fallout = dbModels.Fallout(
+            fallout = Fallout(
                 uri=uri,
                 source="user-suggestion",
                 inArchivo=False,
@@ -133,7 +138,7 @@ def vocabInfo():
     ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
     form = InfoForm()
-    allOntos = [ont.uri for ont in db.session.query(dbModels.OfficialOntology).all()]
+    allOntos = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
@@ -141,9 +146,7 @@ def vocabInfo():
         foundUri = stringTools.get_uri_from_index(ontoUri, allOntos)
         if foundUri is None:
             abort(status=404)
-        ont = (
-            db.session.query(dbModels.OfficialOntology).filter_by(uri=foundUri).first()
-        )
+        ont = db.session.query(OfficialOntology).filter_by(uri=foundUri).first()
         general_info = {}
         general_info["hasDev"] = True if ont.devel is not None else False
         group, artifact = stringTools.generateGroupAndArtifactFromUri(
@@ -185,9 +188,9 @@ def vocabInfo():
             }
         else:
             latestFallout = (
-                db.session.query(dbModels.Fallout)
+                db.session.query(Fallout)
                 .filter_by(ontology=ont.uri)
-                .order_by(dbModels.Fallout.date.desc())
+                .order_by(Fallout.date.desc())
                 .first()
             )
             general_info["access"] = {
@@ -219,7 +222,7 @@ def turtleInfo():
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
     if not stringTools.get_uri_from_index(
-        ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(status=404)
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
@@ -231,7 +234,7 @@ def rdfxmlInfo():
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
     if not stringTools.get_uri_from_index(
-        ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(status=404)
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
@@ -243,7 +246,7 @@ def ntriplesInfo():
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
     if not stringTools.get_uri_from_index(
-        ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(status=404)
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
@@ -260,9 +263,9 @@ def onto_list():
     args = request.args
     isDev = True if "dev" in args else False
     if isDev:
-        ontoType = dbModels.DevelopOntology
+        ontoType = DevelopOntology
     else:
-        ontoType = dbModels.OfficialOntology
+        ontoType = OfficialOntology
 
     ontos = retrieve_list_from_database(ontoType)
 
@@ -406,7 +409,7 @@ def downloadHandling(
 ):
     ontoUri = unquote(uri)
     foundURI = stringTools.get_uri_from_index(
-        ontoUri, [ont.uri for ont in db.session.query(dbModels.Ontology).all()]
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     )
     if foundURI is None:
         abort(status=404)
@@ -502,22 +505,39 @@ def deliver_vocab():
 
 def retrieve_list_from_database(ontoType):
 
-    isDev = True if ontoType == dbModels.DevelopOntology else False
+    isDev = True if ontoType == DevelopOntology else False
 
-    query_result = (
-        db.session.query(ontoType, dbModels.Version, dbModels.Fallout)
-        .join(dbModels.Version)
-        .outerjoin(dbModels.Fallout)
-        .order_by(
-            ontoType.uri, dbModels.Version.version.desc(), dbModels.Fallout.date.desc()
-        ).all()
+    # latest_fallout_fun = sa.func.row_number().over(
+    #     order_by=Fallout.date.desc(), partition_by=Fallout.ontology
+    # )
+    # latest_fallout_fun = latest_fallout_fun.label("latest_fallout_fun")
+
+    # fallout_query = db.session.query(Fallout, latest_fallout_fun).filter(
+    #     Fallout.inArchivo == True
+    # )
+
+    # fallout_query = fallout_query.subquery(name="fallout_query", with_labels=True)
+
+    latest_version_fun = sa.func.row_number().over(
+        order_by=Version.version.desc(), partition_by=Version.ontology
     )
-    print(query_result)
+    latest_version_fun = latest_version_fun.label("latest_version_fun")
+
+    version_query = db.session.query(Version, latest_version_fun)
+
+    version_query = version_query.subquery(name="version_query", with_labels=True)
+
+    q = (
+        db.session.query(ontoType, Version)
+        .join(sa.orm.aliased(Version, alias=version_query))
+        .filter(Version.ontology == ontoType.uri)
+    )
+    query_result = q.all()
     result_list = []
 
     last_ont_uri = ""
 
-    for ont, version, fallout in query_result:
+    for ont, version in query_result:
 
         if ont.uri == last_ont_uri:
             continue
@@ -525,6 +545,8 @@ def retrieve_list_from_database(ontoType):
             print(ont.uri, last_ont_uri)
             group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
             databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+            infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
+
 
             # set the crawl error none means no crawl yet
             if ont.crawling_status or ont.crawling_status is None:
@@ -532,9 +554,9 @@ def retrieve_list_from_database(ontoType):
                 crawlError = ""
             else:
                 crawlStatus = False
-                crawlError = f"{str(fallout.date)} : {fallout.error}"
+                # crawlError = f"{str(fallout.date)} : {fallout.error}"
+                crawlError = infoURL
 
-            infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
             downloadURL = (
                 f"/download?o={quote(ont.official)}&dev"
                 if isDev
