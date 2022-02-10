@@ -490,7 +490,6 @@ def deliver_vocab():
 
     # get the mimetype, defaults to html
     mime = request.headers.get("Accept", "text/html")
-    print(mime)
 
     # checks for mimetype in accept header
     if "application/rdf+xml" in mime:
@@ -518,6 +517,8 @@ def retrieve_list_from_database(ontoType):
 
     # fallout_query = fallout_query.subquery(name="fallout_query", with_labels=True)
 
+    # fallout_alias = sa.orm.aliased(Fallout, alias=fallout_query)
+
     latest_version_fun = sa.func.row_number().over(
         order_by=Version.version.desc(), partition_by=Version.ontology
     )
@@ -527,63 +528,62 @@ def retrieve_list_from_database(ontoType):
 
     version_query = version_query.subquery(name="version_query", with_labels=True)
 
+    version_alias = sa.orm.aliased(Version, alias=version_query)
+
     q = (
-        db.session.query(ontoType, Version)
-        .join(sa.orm.aliased(Version, alias=version_query))
-        .filter(Version.ontology == ontoType.uri)
+        db.session.query(ontoType, version_alias)
+        .filter(version_alias.ontology == ontoType.uri)
+        .filter(version_query.c.latest_version_fun == 1)
     )
+
     query_result = q.all()
     result_list = []
-
     last_ont_uri = ""
 
     for ont, version in query_result:
 
-        if ont.uri == last_ont_uri:
-            continue
+        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
+
+
+        # set the crawl error none means no crawl yet
+        if ont.crawling_status or ont.crawling_status is None:
+            crawlStatus = True
+            crawlError = ""
         else:
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
-            databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-            infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
+            crawlStatus = False
+            # crawlError = f"{str(fallout.date)} : {fallout.error}"
+            crawlError = infoURL
 
-
-            # set the crawl error none means no crawl yet
-            if ont.crawling_status or ont.crawling_status is None:
-                crawlStatus = True
-                crawlError = ""
-            else:
-                crawlStatus = False
-                # crawlError = f"{str(fallout.date)} : {fallout.error}"
-                crawlError = infoURL
-
-            downloadURL = (
-                f"/download?o={quote(ont.official)}&dev"
-                if isDev
-                else f"/download?o={quote(ont.uri)}"
-            )
-            result = {
-                "ontology": {
-                    "label": ont.title,
-                    "URL": ont.uri,
-                    "infoURL": infoURL,
-                    "downloadURL": downloadURL,
-                },
-                "addition_date": ont.accessDate.strftime("%Y.%m.%d-%H%M%S"),
-                "databusURI": databus_uri,
-                "source": ont.source,
-                "triples": version.triples,
-                "crawling": {"status": crawlStatus, "error": crawlError},
-                "stars": stringTools.generateStarString(version.stars),
-                "semVersion": version.semanticVersion,
-                "parsing": version.parsing,
-                "minLicense": version.licenseI,
-                "goodLicense": version.licenseII,
-                "consistency": version.consistency,
-                "lodeSeverity": version.lodeSeverity,
-                "latestVersion": version.version.strftime("%Y.%m.%d-%H%M%S"),
-            }
-            result_list.append(result)
-            last_ont_uri = ont.uri
+        downloadURL = (
+            f"/download?o={quote(ont.official)}&dev"
+            if isDev
+            else f"/download?o={quote(ont.uri)}"
+        )
+        result = {
+            "ontology": {
+                "label": ont.title,
+                "URL": ont.uri,
+                "infoURL": infoURL,
+                "downloadURL": downloadURL,
+            },
+            "addition_date": ont.accessDate.strftime("%Y.%m.%d-%H%M%S"),
+            "databusURI": databus_uri,
+            "source": ont.source,
+            "triples": version.triples,
+            "crawling": {"status": crawlStatus, "error": crawlError},
+            "stars": stringTools.generateStarString(version.stars),
+            "semVersion": version.semanticVersion,
+            "parsing": version.parsing,
+            "minLicense": version.licenseI,
+            "goodLicense": version.licenseII,
+            "consistency": version.consistency,
+            "lodeSeverity": version.lodeSeverity,
+            "latestVersion": version.version.strftime("%Y.%m.%d-%H%M%S"),
+        }
+        result_list.append(result)
+        last_ont_uri = ont.uri
 
     return result_list
 
