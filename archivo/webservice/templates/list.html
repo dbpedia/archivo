@@ -86,20 +86,20 @@
         <thead>
             <tr>
                 <th data-sortable="true" data-field="non-information-uri" style="width:30%;">View Archived Ontology</th>
-                <th data-sortable="true" data-field="databus-link" data-searchable="false" class="d-none">Databus URI</th>
-                <th data-sortable="true" data-field="source" class="d-none">Source</th>
+                <th data-sortable="true" data-field="databus-link" data-searchable="false" class="d-none" style="display: none;">Databus URI</th>
+                <th data-sortable="true" data-field="source" class="d-none" style="display: none;">Source</th>
                 <th data-sortable="true" data-field="download-latest">Download Latest</th>
                 <th data-sortable="true" data-field="Triples">Triples</th>
                 <th data-sortable="true" data-field="stars">Stars</th>
-                <th data-sortable="true" data-field="semVersion" class="d-none">Latest Semantic Version</th>
-                <th data-sortable="true" data-field="timestamp" class="d-none">Latest Timestamp</th>
-                <th data-sortable="true" data-field="addition" class="d-none">Addition Date</th>
-                <th data-sortable="true" data-field="parsing" class="d-none">Parsing</th>
-                <th data-sortable="true" data-field="min-license" class="d-none">Min. License</th>
-                <th data-sortable="true" data-field="good-license" class="d-none">Good License</th>
-                <th data-sortable="true" data-field="consistency" class="d-none">Consistency</th>
-                <th data-sortable="true" data-field="lode" class="d-none">LODE Conformity</th>
-                <th data-sortable="true" data-field="crawling-status">Crawling Status</th>
+                <th data-sortable="true" data-field="semVersion" class="d-none" style="display: none;">Latest Semantic Version</th>
+                <th data-sortable="true" data-field="timestamp" class="d-none" style="display: none;">Latest Timestamp</th>
+                <th data-sortable="true" data-field="addition" class="d-none" style="display: none;">Addition Date</th>
+                <th data-sortable="true" data-field="parsing" class="d-none" style="display: none;" data-align="center">Parsing</th>
+                <th data-sortable="true" data-field="min-license" class="d-none" style="display: none;" data-align="center">Min. License</th>
+                <th data-sortable="true" data-field="good-license" class="d-none" style="display: none;" data-align="center">Good License</th>
+                <th data-sortable="true" data-field="consistency" class="d-none" style="display: none;" data-align="center">Consistency</th>
+                <th data-sortable="true" data-field="lode" class="d-none" style="display: none;" data-align="center">LODE Conformity</th>
+                <th data-sortable="true" data-field="crawling-status" data-align="center">Crawling Status</th>
             </tr>
         </thead>
         <tbody>
@@ -109,7 +109,7 @@
             {% for onto in Ontologies %}
             <tr>
                 <td><a href="{{onto.ontology.infoURL}}">{{onto.ontology.label}}</a></td>
-                <td ><a href="{{onto.databusURI}}">Databus Artifact</a></td>
+                <td style="display: none;"><a href="{{onto.databusURI}}">Databus Artifact</a></td>
                 <td >{{onto.source}}</td>
                 <td>
                     <a href="{{onto.ontology.downloadURL}}&f=owl">owl</a>,
@@ -118,40 +118,40 @@
                 </td>
                 <td>{{onto.triples}}</td>
                 <td>{{onto.stars}}</td>
-                <td >{{onto.semVersion}}</td>
-                <td >
+                <td style="display: none;">{{onto.semVersion}}</td>
+                <td style="display: none;">
                     {{ onto.latestVersion }}
                 </td>
-                <td >{{ onto.addition_date }}</td>
-                <td >
+                <td style="display: none;">{{ onto.addition_date }}</td>
+                <td style="display: none;">
                     {% if onto.parsing %}
                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="All good!">✔</button> {% else %}
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="Seems to be an error. Check out the info page for more!">✘</button>{% endif %}
                 </td>
-                <td >
+                <td style="display: none; text-align: center;">
                     {% if onto.minLicense %}
                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="All good!">✔</button> {% else %}
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="Seems to be an error. Check out the info page for more!">✘</button>{% endif %}
                 </td>
-                <td >
+                <td style="display: none; text-align: center;">
                     {% if onto.goodLicense %}
                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="All good!">✔</button> {% else %}
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="Seems to be an error. Check out the info page for more!">✘</button>{% endif %}
                 </td>
-                <td >
+                <td style="display: none; text-align: center;">
                     {% if onto.consistency %}
                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="All good!">✔</button> {% else %}
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="popover" title="Error log"
                         data-bs-content="Seems to be an error. Check out the info page for more!">✘</button>{% endif %}
                 </td>
-                <td >
+                <td style="display: none; text-align: center;">
                     {% if onto.lodeSeverity == 'OK' %}
                     <button class="btn btn-success btn-sm">✔</button>
                     {% elif onto.lodeSeverity == 'INFO' %}
@@ -201,6 +201,7 @@
                 } else {
                     cols[col_no].classList.add('d-none')
                 }
+                //cols[col_no].style.display = do_show ? '' : 'none';
             }
         }
     }
