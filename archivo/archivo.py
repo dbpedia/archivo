@@ -398,11 +398,11 @@ if __name__ == "__main__":
     file_map = {"c-distrib-min10.csv": "LOD-a-lot classes", "p-distrib-min10.csv": "LOD-a-lot properties"}
 
     with open("crawled_iris.txt") as f:
-        discovery_logger.info("Loading already loaded URIs")
         already_crawled_uris = set()
 
         for line in f.readlines():
             already_crawled_uris.add(line.strip())
+        discovery_logger.info(f"Loading already loaded URIs: {len(already_crawled_uris)}")
 
     test_suite = TestSuite(archivo_path)
 
@@ -415,7 +415,7 @@ if __name__ == "__main__":
 
             terms = [line[0] for line in reader]
 
-        discovery_logger.info(f"All uris: {len(terms)}")
+        discovery_logger.info(f"All uris of {source}: {len(terms)}")
         
         deduplicated_terms = stringTools.deduplicate_uri_list_by_fragment(terms)
         
