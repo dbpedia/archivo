@@ -83,10 +83,10 @@ def determine_best_content_type(uri, user_output=[], logger=None):
     return best_header, resp, triple_number
 
 
-def download_rdf_string(uri, acc_header, encoding="utf-8"):
+def download_rdf_string(uri, acc_header, timeout: int = 15, encoding="utf-8"):
     try:
         headers = {"Accept": acc_header}
-        response = requests.get(uri, headers=headers, timeout=30, allow_redirects=True)
+        response = requests.get(uri, headers=headers, timeout=timeout, allow_redirects=True)
         if encoding is not None:
             response.encoding = encoding
         if response.status_code < 400:

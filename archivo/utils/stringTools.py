@@ -152,6 +152,15 @@ def deleteAllFilesInDirAndDir(directory):
 def generateStarString(number: int):
     return "★" * number + "☆" * (4 - number)
 
+def get_defragmented_url(url):
+
+    return urldefrag(url)[0]
+
+
+def deduplicate_uri_list_by_fragment(uri_list):
+    defragmented_uris = map(get_defragmented_url, uri_list)
+    return set(defragmented_uris)
+
 
 def check_uri_equality(uri1, uri2):
     if urldefrag(uri1)[0] == urldefrag(uri2)[0]:
