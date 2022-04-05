@@ -83,20 +83,6 @@
     <label for="addition">Addition Date</label>
 
     <table id="ontologies-table" data-toggle="table" data-search="true" class="table-responsive">
-        <col class="col1" />
-        <col class="col2" />
-        <col class="col3" />
-        <col class="col4" />
-        <col class="col5" />
-        <col class="col6" />
-        <col class="col7" />
-        <col class="col8" />
-        <col class="col9" />
-        <col class="col10" />
-        <col class="col11" />
-        <col class="col12" />
-        <col class="col13" />
-        <col class="col14">
         <thead>
             <tr>
                 <th data-sortable="true" data-field="non-information-uri" style="width:30%;">View Archived Ontology</th>
@@ -108,12 +94,12 @@
                 <th data-sortable="true" data-field="semVersion">Latest Semantic Version</th>
                 <th data-sortable="true" data-field="timestamp">Latest Timestamp</th>
                 <th data-sortable="true" data-field="addition">Addition Date</th>
-                <th data-sortable="true" data-field="parsing">Parsing</th>
-                <th data-sortable="true" data-field="min-license">Min. License</th>
-                <th data-sortable="true" data-field="good-license">Good License</th>
-                <th data-sortable="true" data-field="consistency">Consistency</th>
-                <th data-sortable="true" data-field="lode">LODE Conformity</th>
-                <th data-sortable="true" data-field="crawling-status">Crawling Status</th>
+                <th data-sortable="true" data-field="parsing" data-align="center">Parsing</th>
+                <th data-sortable="true" data-field="min-license" data-align="center">Min. License</th>
+                <th data-sortable="true" data-field="good-license" data-align="center">Good License</th>
+                <th data-sortable="true" data-field="consistency" data-align="center">Consistency</th>
+                <th data-sortable="true" data-field="lode" data-align="center">LODE Conformity</th>
+                <th data-sortable="true" data-field="crawling-status"  data-align="center">Crawling Status</th>
             </tr>
         </thead>
         <tbody>
@@ -179,7 +165,7 @@
                 <td>
                     {% if onto.crawling.status %}
                     <span class="btn btn-success btn-sm">✔</span> {% else %}
-                    <span class="btn btn-danger btn-sm" title="{{onto.crawling.error}}">✘</span> {% endif %}
+                    <a class="btn btn-danger btn-sm" title="Click for more details in the info screen!" href="{{onto.crawling.error}}">✘</a> {% endif %}
                 </td>
             </tr>
             {%endfor%}
