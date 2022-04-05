@@ -24,6 +24,11 @@ defines_properties = [
     "https://archivo.dbpedia.org/onto#defines",
 ]
 
+
+# max. recursion depth of discovery
+# recursion depth of 2 means: uri -> rdf-content -> uri -> rdf-content STOP
+max_recursion_depth = 5
+
 # All the ontologies in this list will not be skipped during update due to performance reasons
 # NOTE: These problems should be investigated, not ignored, so a github issue should be opened to name and shame myself
 diff_skip_onts = ["http://purl.obolibrary.org/obo/dron.owl"]

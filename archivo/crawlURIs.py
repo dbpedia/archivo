@@ -511,7 +511,7 @@ def check_NIR(uri, graph, output=[]):
 
 
 def handleNewUri(
-    vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=list()
+    vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=list(), recursion_depth=0
 ):
     # remove fragment
     vocab_uri = urldefrag(vocab_uri)[0]
@@ -635,16 +635,29 @@ def handleNewUri(
                     "message": f"Found linked URI: {real_ont_uri}",
                 }
             )
-            return handleNewUri(
-                str(real_ont_uri),
-                index,
-                dataPath,
-                testSuite=testSuite,
-                source=source,
-                isNIR=True,
-                logger=logger,
-                user_output=user_output,
-            )
+
+            if recursion_depth <= archivoConfig.max_recursion_depth:
+
+                return handleNewUri(
+                    str(real_ont_uri),
+                    index,
+                    dataPath,
+                    testSuite=testSuite,
+                    source=source,
+                    isNIR=True,
+                    logger=logger,
+                    user_output=user_output,
+                    recursion_depth=recursion_depth+1
+                )
+            else:
+                user_output.append(
+                    {
+                        "status": False,
+                        "step": "Looking for linked ontologies",
+                        "message": f"recursive discovery of content exceeded the number {archivoConfig.max_recursion_depth}",
+                    }
+                )
+                return False, isNIR, None
         else:
             user_output.append(
                 {
@@ -657,16 +670,29 @@ def handleNewUri(
     elif not ont_succ and real_ont_uri is not None:
         # when another URI was discovered -> check it
         isNIR = True
-        return handleNewUri(
-            str(real_ont_uri),
-            index,
-            dataPath,
-            source,
-            True,
-            testSuite=testSuite,
-            logger=logger,
-            user_output=user_output,
-        )
+        if recursion_depth <= archivoConfig.max_recursion_depth:
+
+            return handleNewUri(
+                str(real_ont_uri),
+                index,
+                dataPath,
+                testSuite=testSuite,
+                source=source,
+                isNIR=True,
+                logger=logger,
+                user_output=user_output,
+                recursion_depth=recursion_depth+1
+            )
+
+        else:
+            user_output.append(
+                {
+                    "status": False,
+                    "step": "Looking for linked ontologies",
+                    "message": f"recursive discovery of content exceeded the number {archivoConfig.max_recursion_depth}",
+                }
+            )
+            return False, isNIR, None
 
     # here we go if the uri is NIR and  its resolveable
     isNIR = True
