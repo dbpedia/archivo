@@ -56,7 +56,7 @@ def ontology_discovery():
     discovery_logger.info("Started discovery of VOID URIs...")
     run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")
-    for uri_list in queryDatabus.get_SPOs():
+    for uri_list in queryDatabus.get_SPOs(logger=discovery_logger):
         run_discovery(uri_list, "SPOs", dataPath, testSuite)
 
 

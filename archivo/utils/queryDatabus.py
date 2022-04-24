@@ -723,7 +723,7 @@ def get_last_dev_index():
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
 
 
-def get_SPOs(date=None):
+def get_SPOs(date=None, logger=None):
     # returns spos in a generator which are not olter than two weeks
     if date is None:
         last_week = today - timedelta(days=21)
@@ -757,6 +757,9 @@ def get_SPOs(date=None):
         results = results["results"]["bindings"]
     except KeyError:
         return None
+
+    if len(results) == 0 and logger is not None:
+        logger.error(f"Couldn't find any new SPOs since {deadline_str}")
 
     for binding in results:
         spo_csv_uri = binding["generated"]["value"]
