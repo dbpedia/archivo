@@ -397,7 +397,10 @@ def startup_check():
 if __name__ == "__main__":
     db.create_all()
 
-    file_map = {"c-distrib-min10.csv": "LOD-a-lot classes", "p-distrib-min10.csv": "LOD-a-lot properties"}
+    # file_map = {"c-distrib-min10.csv": "LOD-a-lot classes", "p-distrib-min10.csv": "LOD-a-lot properties"}
+
+    file_map = {"crawl_skipped_uris.csv": "skipped_uris"}
+
 
     with open("crawled_iris.txt") as f:
         already_crawled_uris = set()
