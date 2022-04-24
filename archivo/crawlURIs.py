@@ -643,7 +643,7 @@ def handleNewUri(
 
                 return handleNewUri(
                     str(real_ont_uri),
-                    index,
+                    ont_index_set,
                     dataPath,
                     testSuite=testSuite,
                     source=source,
