@@ -16,6 +16,7 @@ from utils import (
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
+from rdflib import Graph
 from string import Template
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -472,7 +473,7 @@ class ArchivoVersion:
 # ======== END OF CLASS ================
 
 # returns the NIR if frgmant-equivalent, else None
-def check_NIR(uri, graph, output):
+def check_NIR(uri: str, graph: Graph, output):
 
     candidates = inspectVocabs.get_ontology_URIs(graph)
 
@@ -538,7 +539,7 @@ def handleNewUri(
             {
                 "status": True,
                 "step": "Index check",
-                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(foundURI)}>here</a>",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(vocab_uri)}>here</a>",
             }
         )
         return False, isNIR, None
@@ -720,7 +721,7 @@ def handleNewUri(
             {
                 "status": True,
                 "step": "Index check",
-                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(foundURI)}>here</a>",
+                "message": f"This Ontology is already in the Archivo index and can be found at <a href=/info?o={quote(real_ont_uri)}>here</a>",
             }
         )
         return False, isNIR, None
