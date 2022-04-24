@@ -12,6 +12,8 @@ from utils.archivoLogs import (
 from datetime import datetime
 import graphing
 import json
+from typing import Set
+from urllib.parse import urldefrag
 
 # cron = BackgroundScheduler(daemon=True)
 # # Explicitly kick off the background thread
@@ -34,9 +36,9 @@ archivo_path = get_correct_path()
 
 # Chech wether the uri is in archivo uris or a archivo uri is a substring of it
 # True returned when already contained, False otherwise
-def check_uri_containment(uri, archivo_uris):
+def check_uri_containment(uri: str, archivo_uris: Set[str]):
     for au in archivo_uris:
-        if uri == au or au in uri:
+        if uri == au:
             return True
     return False
 
@@ -62,15 +64,15 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
     logger.info(f"Crunching {len(lst)} ontologies....")
     if lst is None:
         return
-    allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+    all_ont_set: Set = {urldefrag(ont.uri)[0] for ont in db.session.query(dbModels.Ontology.uri).all()}
     for uri in lst:
-        if check_uri_containment(uri, allOnts):
+        if urldefrag(uri)[0] in all_ont_set:
             continue
         output = []
         try:
             success, isNir, archivo_version = crawlURIs.handleNewUri(
                 uri,
-                allOnts,
+                all_ont_set,
                 dataPath,
                 source,
                 False,
@@ -96,7 +98,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             db.session.add(dbVersion)
             try:
                 db.session.commit()
-                allOnts.append(archivo_version.nir)
+                all_ont_set.add(urldefrag(archivo_version.nir)[0])
             except Exception:
                 db.session.rollback()
         elif not success and isNir:

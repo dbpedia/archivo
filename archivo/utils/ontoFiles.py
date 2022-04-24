@@ -260,7 +260,7 @@ def stars_from_meta_dict(metadict):
     stars = 0
     if rapperErrors == [] or rapperErrors == "":
         stars = stars + 1
-    if licenseI is True:
+    if licenseI is True and stars > 0:
         stars = stars + 1
 
     if not stars == 2:

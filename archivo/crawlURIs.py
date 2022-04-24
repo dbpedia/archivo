@@ -23,7 +23,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 # determine_best_content_type
 # function used by
 #
-def determine_best_content_type(uri, user_output=[], logger=None):
+def determine_best_content_type(uri, user_output=list(), logger=None):
     header_dict = {}
     for header in stringTools.rdfHeadersMapping:
         response, error = download_rdf_string(uri, acc_header=header)
@@ -472,7 +472,7 @@ class ArchivoVersion:
 # ======== END OF CLASS ================
 
 # returns the NIR if frgmant-equivalent, else None
-def check_NIR(uri, graph, output=[]):
+def check_NIR(uri, graph, output):
 
     candidates = inspectVocabs.get_ontology_URIs(graph)
 
@@ -513,10 +513,11 @@ def check_NIR(uri, graph, output=[]):
 
 
 def handleNewUri(
-    vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=list()
+    vocab_uri, ont_index_set, dataPath, source, isNIR, testSuite, logger, user_output=None
 ):
+    if user_output is None: user_output = []
     # remove fragment
-    vocab_uri = urldefrag(vocab_uri)[0]
+    vocab_uri: str = urldefrag(vocab_uri)[0]
     # testing uri validity
     logger.info(f"Trying to validate {vocab_uri}")
     groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
@@ -531,8 +532,7 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    foundURI = stringTools.get_uri_from_index(vocab_uri, index)
-    if foundURI is not None:
+    if vocab_uri in ont_index_set:
         logger.info("Already known uri, skipping...")
         user_output.append(
             {
@@ -639,7 +639,7 @@ def handleNewUri(
             )
             return handleNewUri(
                 str(real_ont_uri),
-                index,
+                ont_index_set,
                 dataPath,
                 testSuite=testSuite,
                 source=source,
@@ -661,7 +661,7 @@ def handleNewUri(
         isNIR = True
         return handleNewUri(
             str(real_ont_uri),
-            index,
+            ont_index_set,
             dataPath,
             source,
             True,
@@ -688,8 +688,7 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    foundURI = stringTools.get_uri_from_index(real_ont_uri, index)
-    if foundURI is not None:
+    if real_ont_uri in ont_index_set:
         logger.info(f"Already known uri {real_ont_uri}")
         user_output.append(
             {
