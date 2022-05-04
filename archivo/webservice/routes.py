@@ -15,6 +15,7 @@ from flask import (
     jsonify,
     send_from_directory,
     Response,
+    make_response,
 )
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
@@ -32,6 +33,8 @@ import json
 import html
 from flask_cors import cross_origin
 from flask_sqlalchemy import sqlalchemy as sa
+import io
+import csv
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -500,6 +503,26 @@ def deliver_vocab():
         return send_from_directory(app.config["VOCAB_FOLDER"], "vocab.nt")
     else:
         return render_template("vocab.html")
+
+@app.route("/falloutdl")
+def falloutdl():
+
+    fallout_not_in_archivo = db.session.query(Fallout).filter_by(inArchivo=False).order_by(Fallout.date.desc()).all()
+
+    output = io.StringIO()
+    writer: csv.writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+
+
+    for falloutobj in fallout_not_in_archivo:
+
+        writer.writerow((falloutobj.uri, falloutobj.source, str(falloutobj.date), falloutobj.error))
+    
+    resp = make_response(output.getvalue())
+    resp.headers["Content-type"] = "text/csv"
+    resp.headers["Content-Disposition"] = "attachment; filename=archivo-fallout.csv"
+
+    return resp
+
 
 
 def retrieve_list_from_database(ontoType):
