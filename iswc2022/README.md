@@ -1,4 +1,4 @@
-# ESWC 2021 "Reproducibility crisis analysis" provenance information
+# ISWC 2022 "Reproducibility crisis analysis" provenance information
 
 ## Outage Measurement
 
@@ -37,5 +37,15 @@
 
 - Archivo LOD Ontology Coverage Analysis File Collection 
 https://databus.dbpedia.org/ontologies/collections/archivo-reproducibility-analysis/ 
-- [list of covered terms](
-https://docs.google.com/spreadsheets/d/1tv_RZZwhgEc6vv1WPbAowyf6BMxxKbN-QtVYrsQ1Oc4/edit#gid=305977527)
+- [list of covered classes archivo](https://docs.google.com/spreadsheets/d/1tv_RZZwhgEc6vv1WPbAowyf6BMxxKbN-QtVYrsQ1Oc4/edit#gid=1761364766)
+- [list of covered properties archivo](https://docs.google.com/spreadsheets/d/1tv_RZZwhgEc6vv1WPbAowyf6BMxxKbN-QtVYrsQ1Oc4/edit#gid=1761364766)
+- [list of covered classes LOV](https://docs.google.com/spreadsheets/d/1tv_RZZwhgEc6vv1WPbAowyf6BMxxKbN-QtVYrsQ1Oc4/edit#gid=1418696249)
+- [list of covered properties LOV](https://docs.google.com/spreadsheets/d/1tv_RZZwhgEc6vv1WPbAowyf6BMxxKbN-QtVYrsQ1Oc4/edit#gid=33490866)
+- The queries used to retrieve the classes/properties can be found [here](queries)
+
+## Unknown Terms of Archivo 
+
+The data can be found [here](unknown_terms_crawl) and contains the following
+* A table with mappings from terms to occurrence count in LOD cloud to the reason for not being able to be added to Archivo
+* A json file with mappings from term to reason for not being added
+* the script used to generate the stats
