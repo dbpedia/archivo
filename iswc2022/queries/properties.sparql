@@ -1,0 +1,15 @@
+select distinct  ?prop where {
+   { GRAPH ?g {
+      ?prop a ?thing .
+   }
+  # find all subclasses of rdf:Property 
+  ?thing rdfs:subClassOf* rdf:Property .
+} UNION {
+# union with all rdf:Properties
+GRAPH ?g {
+      ?prop a rdf:Property .
+   }
+}
+# filter out blankNodes
+FILTER ( !isBlank(?prop) )
+}

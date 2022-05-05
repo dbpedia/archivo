@@ -1,0 +1,11 @@
+select distinct  ?class where {
+   { GRAPH ?g {
+      ?class a ?thing .
+   }
+  ?thing rdfs:subClassOf* rdfs:Class .
+} UNION {
+GRAPH ?g {
+      ?class a rdfs:Class .
+   }
+}
+}
