@@ -5,7 +5,7 @@
 - [Table of all outages](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=281687190)
 - [Outage per crawl](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=694221323)
 - [Outage per ontology](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=1207680809)
-- [Evaluation functions for generating the data](/archivo/eswc_eval.py)
+- [Evaluation functions for generating the data](/archivo/iswc_eval.py)
 
 ## Archivo Source Evaluation
 - [Ontology by source and addition](https://databus.dbpedia.org/ontologies/archivo-indices/ontologies/2021.11.21-220000/ontologies_type=official.csv)
