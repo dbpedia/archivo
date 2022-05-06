@@ -196,15 +196,13 @@ def generate_term_count_reasoning_mapping(output_filepath: str, write_files: boo
 
 def main():
     print("Loading data...")
-    covered_by_archivo = load_first_column_csv("/home/denis/Workspace/Job/archivo_iswc_2022/archivo-analysis/new_all_archivo_classes.csv")
-
-    # covered_by_archivo = covered_by_archivo + load_first_column_csv("/home/denis/Workspace/Job/archivo_iswc_2022/archivo-analysis/new_all_archivo_classes.csv")
+    covered_by_archivo = load_first_column_csv("all_archivo_classes.csv")
 
     covered_by_archivo = set(covered_by_archivo)
 
     print("Reading the file and filter it...")
 
-    term_count_reason_list = generate_term_count_reasoning_mapping("class_count_reason_mapping.csv", stopset=covered_by_archivo, write_files=True) 
+    term_count_reason_list = generate_term_count_reasoning_mapping("term_count_reason_mapping.csv", stopset=covered_by_archivo, write_files=True) 
 
     num_terms_not_in_archivo = len(term_count_reason_list)
 

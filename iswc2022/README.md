@@ -5,7 +5,7 @@
 - [Table of all outages](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=281687190)
 - [Outage per crawl](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=694221323)
 - [Outage per ontology](https://docs.google.com/spreadsheets/d/1bL0cnzxPP2y46Z-byf56oHNwREnid1cG0affctbD9fI/edit#gid=1207680809)
-- [Evaluation functions for generating the data](/archivo/iswc_eval.py)
+- [Evaluation functions for generating the data](/iswc2022/archivo_data/iswc_eval.py)
 
 ## Archivo Source Evaluation
 - [Ontology by source and addition](https://databus.dbpedia.org/ontologies/archivo-indices/ontologies/2021.11.21-220000/ontologies_type=official.csv)
@@ -45,7 +45,7 @@ https://databus.dbpedia.org/ontologies/collections/archivo-reproducibility-analy
 
 ## Unknown Terms of Archivo 
 
-The data can be found [here](unknown_terms_crawl) and contains the following
+The data can be found [here](unknown_terms_crawl/term_count_reason_mapping.csv) and contains the following
 * A table with mappings from terms to occurrence count in LOD cloud to the reason for not being able to be added to Archivo
 * A json file with mappings from term to reason for not being added
 * the script used to generate the stats
