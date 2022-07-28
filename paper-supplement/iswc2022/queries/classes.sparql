@@ -1,0 +1,15 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct  ?class where {
+   { GRAPH ?g {
+      ?class a ?thing .
+   }
+  # limit the transitive subclasses  
+  ?thing rdfs:subClassOf{1, 6} rdfs:Class .
+} UNION {
+GRAPH ?g {
+      ?class a rdfs:Class .
+   }
+}
+}
