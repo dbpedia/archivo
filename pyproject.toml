@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "archivo"
+version = "0.1.0"
+description = "Web-scale Ontology Archive"
+authors = ["Denis <yum-yab-dev@pm.me>"]
+license = "GNU Affero General Public License v3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyshacl = "^0.20.0"
+SPARQLWrapper = "^2.0.0"
+gunicorn = "^20.1.0"
+requests = "^2.28.1"
+plotly = "^5.10.0"
+Flask = "^2.2.2"
+Flask-WTF = "^1.0.1"
+WTForms = "^3.0.1"
+Markdown = "^3.4.1"
+flask_accept = "^0.0.6"
+APScheduler = "^3.9.1"
+Flask-SQLAlchemy = "^2.5.1"
+aiohttp = "^3.8.3"
+Flask-Cors = "^3.0.10"
+PyYAML = "^6.0"
+pylode = "^3.0.4"
+rdflib = "^6.2.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+autopep8 = "^1.7.0"
+black = "^22.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

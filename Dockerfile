@@ -13,8 +13,14 @@ RUN mvn --version
 RUN git clone https://github.com/stardog-union/pellet.git /usr/lib/pellet/
 RUN mvn clean install -f /usr/lib/pellet/pom.xml -DskipTests=true
 
-# here we go with python 3.9
-FROM python:3.9
+# here we go with python 3.10
+FROM python:3.10
+
+# Configure Poetry
+ENV POETRY_VERSION=1.2.1
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_VENV=/opt/poetry-venv
+ENV POETRY_CACHE_DIR=/opt/.cache
 
 # add archivo user
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -31,30 +37,38 @@ RUN apt-get install -y raptor2-utils maven git zip unzip
 COPY --from=pellet-build /usr/lib/pellet/ /usr/lib/pellet/
 RUN chmod +x /usr/lib/pellet/cli/target/pelletcli/bin/pellet
 
-# load pipenv
-RUN pip install pipenv
+
+# Install poetry separated from system interpreter
+RUN python3 -m venv $POETRY_VENV \
+    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
+
+# Add `poetry` to PATH
+ENV PATH="${PATH}:${POETRY_VENV}/bin"
 
 
 
 # copy local directory
-COPY ./Pipfile /usr/local/src/webapp/archivo/Pipfile
-COPY ./Pipfile.lock /usr/local/src/webapp/archivo/Pipfile.lock
-# COPY . /usr/local/src/webapp/archivo
+COPY poetry.lock pyproject.toml /usr/local/src/webapp/archivo/
 
 # set up project directory
-ENV PROJECT_DIR /usr/local/src/webapp/archivo/archivo
 
-# set workdir as the project dir
-WORKDIR ${PROJECT_DIR}
+ENV WDIR /usr/local/src/webapp/archivo/archivo
+
+ENV REPO_DIR /usr/local/src/webapp/archivo
+
+# set repo dir as working dir for installation
+WORKDIR ${REPO_DIR}
 
 # install packages
-# --system -> dont create venv but install them in containers system python
-# --deploy -> die if Pipfile.lock is out of date
-RUN pipenv install --system --deploy
+RUN poetry install --only main
+
+# set WDIR as working dir for execution
+WORKDIR ${WDIR}
 
 #Expose the required port
 EXPOSE 5000
 
 #Run the command
 # CMD ["./startup.sh"]
-CMD ["/usr/local/bin/gunicorn","--bind", "0.0.0.0:5000", "--workers=6", "archivo:app", "--access-logfile", "./logs/gunicorn-access.log", "--log-file", "./logs/gunicorn-errors.log", "--timeout", "1200", "--preload"]
+CMD ["poetry", "run", "gunicorn","--bind", "0.0.0.0:5000", "--workers=6", "archivo:app", "--access-logfile", "./logs/gunicorn-access.log", "--log-file", "./logs/gunicorn-errors.log", "--timeout", "1200", "--preload"]
