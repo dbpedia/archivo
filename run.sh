@@ -6,9 +6,9 @@
 
 
 
-docker run --restart always -p 5000:5000 --name archivo \
+docker run -p 5000:5000 --name archivo \
     -v $(pwd):/usr/local/src/webapp/archivo/ \
     -v ~/.m2/onto_webid_bundle.p12:/root/.m2/onto_webid_bundle.p12 \
-    -v /data/home/dstreitmatter/data/archivo-data:/usr/local/archivo-data/ \
-    -v /data/home/dstreitmatter/www/archivo:/home/dstreitmatter/www/archivo/ \
+    -v /home/denis/Workspace/Job/datadumps/testdata:/usr/local/archivo-data/ \
+    -v /home/denis/Workspace/Job/datadumps/web_testdata:/home/dstreitmatter/www/archivo/ \
     archivo-build

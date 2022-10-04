@@ -5,19 +5,17 @@ import crawlURIs
 from datetime import datetime
 import os
 import json
-import sys
 import re
 from utils import (
     ontoFiles,
     generatePoms,
     stringTools,
-    queryDatabus,
     archivoConfig,
     docTemplates,
     async_rdf_retrieval,
     inspectVocabs,
 )
-from utils.archivoLogs import diff_logger
+from archivo.logging.archivoLogs import diff_logger
 from string import Template
 
 semanticVersionRegex = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")

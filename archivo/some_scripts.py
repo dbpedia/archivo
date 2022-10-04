@@ -1,8 +1,7 @@
 from utils.validation import TestSuite
-from utils.queryDatabus import latestNtriples, get_last_official_index
+from utils.queryDatabus import get_last_official_index
 import crawlURIs
-from utils.archivoLogs import discovery_logger
-import json
+from archivo.logging.archivoLogs import discovery_logger
 import requests
 import ast
 from utils import inspectVocabs as IV

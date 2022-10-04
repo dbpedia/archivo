@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit, os, crawlURIs, diffOntologies, dbUtils
 from utils import archivoConfig, stringTools, queryDatabus, generatePoms, discovery
 from utils.validation import TestSuite
-from utils.archivoLogs import (
+from archivo.logging.archivoLogs import (
     discovery_logger,
     diff_logger,
     dev_diff_logger,
@@ -389,6 +389,63 @@ def startup_check():
             return False, f"Unavailable Directory: {d}"
 
     return True, None
+
+def forced_admin_inclusion_by_file(nir: str, orig_filepath: str, best_header: str, source: str = "forced-admin-inclusion", access_date = datetime.now(), data_path: str = archivoConfig.localPath, logger=discovery_logger):
+
+    import shutil
+    from requests.models import Response
+
+
+    logger.info(f"Forced submission of {nir}")
+    group, artifact = stringTools.generateGroupAndArtifactFromUri(nir)
+
+    if group is None or artifact is None:
+        logger.warning(f"Malformed Uri {vocab_uri}")
+        return False
+
+    version_str = access_date.strftime("%Y.%m.%d-%H%M%S")
+
+    newVersionPath = os.path.join(dataPath, group, artifact, version_str)
+
+    file_ext = stringTools.file_ending_mapping[bestHeader]
+
+    os.makedirs(newVersionPath, exist_ok=True)
+    if not os.path.isfile(os.path.join(dataPath, group, "pom.xml")):
+        pomString = generatePoms.generateParentPom(
+            groupId=group,
+            packaging="pom",
+            modules=[],
+            packageDirectory=archivoConfig.packDir,
+            downloadUrlPath=archivoConfig.downloadUrl,
+            publisher=archivoConfig.pub,
+            maintainer=archivoConfig.pub,
+            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=group),
+        )
+        with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
+            print(pomString, file=parentPomFile)
+
+    with open(orig_filepath) as f:
+        content = f.read()
+
+    # copy file to orig place
+    new_orig_file_path = os.path.join(newVersionPath, artifact + "_type=orig." + file_ext)
+    shutil.copyfile(orig_filepath, new_orig_file_path)
+    
+    # create fake response
+    response = Response()
+
+    new_version = crawlURIs.ArchivoVersion(
+        nir,
+        new_orig_file_path,
+        response,
+        testSuite,
+        accessDate,
+        bestHeader,
+        logger,
+        source,
+        user_output=user_output,
+        devURI=sourceURI,
+    )
 
 
 if __name__ == "__main__":

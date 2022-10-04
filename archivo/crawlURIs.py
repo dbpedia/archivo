@@ -18,6 +18,7 @@ from urllib.parse import urlparse, urldefrag, quote
 from rdflib.term import Literal, URIRef
 from string import Template
 from SPARQLWrapper import SPARQLWrapper, JSON
+from pylode.ontdoc import OntDoc
 
 
 # determine_best_content_type
@@ -368,6 +369,8 @@ class ArchivoVersion:
                 print(docustring, file=docufile)
 
         # generate pylode docu
+
+        OntDoc(raw_file_path + "_type=parsed.ttl").make_html(destination=raw_file_path + "_type=pyLodeDoc.html")
         # pylode_doc = feature_plugins.get_pyLODE_doc_string(
         #     raw_file_path + "_type=parsed.ttl", self.logger
         # )

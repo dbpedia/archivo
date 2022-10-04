@@ -4,7 +4,9 @@ import json
 import subprocess
 import re
 import csv
-from utils import stringTools, inspectVocabs
+from typing import Dict
+
+from archivo.utils import stringTools, inspectVocabs
 
 rapperErrorsRegex = re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex = re.compile(r"^rapper: Warning.*$")
@@ -250,7 +252,7 @@ def measureStars(
     return stars
 
 
-def stars_from_meta_dict(metadict):
+def stars_from_meta_dict(metadict: Dict[str, Dict]) -> int:
     rapperErrors = metadict["logs"]["rapper-errors"]
     licenseI = metadict["test-results"]["License-I"]
     licenseII = metadict["test-results"]["License-II"]
