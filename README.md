@@ -93,5 +93,5 @@ Archivo uses four different sources of potential ontologies:
 
 1. Ontology Repositories: e.g ontologies listed in [LOV](https://lov.linkeddata.es/dataset/lov/)
 2. Subjects, Predicates and Objects of Ontologies: Every SPO in an Ontology can lead to a potential new ontology, so Archivo can discover new vocabularies by analyzing already listed ontologies
-3. [VOID](https://www.w3.org/TR/void/) Data: Search new ontologies by looking for `rdfs:isDfinedBy` triples in classes and properties used in the whole Databus
+3. [VOID](https://www.w3.org/TR/void/) Data: Search for new ontologies by looking at VoID metadata summaries describing used classes and properties (on the DBpedia Databus) 
 4. [User Suggestions](http://archivo.dbpedia.org/add)
