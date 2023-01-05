@@ -162,6 +162,14 @@ requests = ">=2.28.1,<3.0.0"
 typer = ">=0.6.1,<0.7.0"
 
 [[package]]
+name = "decorator"
+version = "5.1.1"
+description = "Decorators for Humans"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "dominate"
 version = "2.7.0"
 description = "Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API."
@@ -736,6 +744,20 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "p
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
+name = "validators"
+version = "0.20.0"
+description = "Python Data Validation for Humans™."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.dependencies]
+decorator = ">=3.4.0"
+
+[package.extras]
+test = ["flake8 (>=2.4.0)", "isort (>=4.2.2)", "pytest (>=2.2.3)"]
+
+[[package]]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -794,7 +816,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "bb9904ddb80711b070c3fd5e866aca06eefc71860af8234b2a5c71adb9c4fef6"
+content-hash = "d60c22375697a3fa344a72d43db4e66bdfff4a5e61b0fad10a26ffb7d5d60219"
 
 [metadata.files]
 aiohttp = [
@@ -950,6 +972,10 @@ colorama = [
 databusclient = [
     {file = "databusclient-0.8-py3-none-any.whl", hash = "sha256:6bcfef10932f6640b447854c4ac89c6694153dcacad8a132241f626ad1986cf4"},
     {file = "databusclient-0.8.tar.gz", hash = "sha256:6f17899c0abf0422c957d148ebbe08014a69b8ce7cd5cfe5efe39ce5b3b4d231"},
+]
+decorator = [
+    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
+    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
 ]
 dominate = [
     {file = "dominate-2.7.0-py2.py3-none-any.whl", hash = "sha256:5fe4258614687c6d3de67b0bbd881ed435a93a19742ae187344055db17052402"},
@@ -1419,6 +1445,9 @@ tzlocal = [
 urllib3 = [
     {file = "urllib3-1.26.12-py2.py3-none-any.whl", hash = "sha256:b930dd878d5a8afb066a637fbb35144fe7901e3b209d1cd4f524bd0e9deee997"},
     {file = "urllib3-1.26.12.tar.gz", hash = "sha256:3fa96cf423e6987997fc326ae8df396db2a8b7c667747d47ddd8ecba91f4a74e"},
+]
+validators = [
+    {file = "validators-0.20.0.tar.gz", hash = "sha256:24148ce4e64100a2d5e267233e23e7afeb55316b47d30faae7eb6e7292bc226a"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},

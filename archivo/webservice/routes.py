@@ -543,7 +543,7 @@ def retrieve_list_from_database(ontoType):
     # fallout_alias = sa.orm.aliased(Fallout, alias=fallout_query)
 
     latest_version_fun = sa.func.row_number().over(
-        order_by=Version.version.desc(), partition_by=Version.ontology
+        order_by=Version.versionID.desc(), partition_by=Version.ontology
     )
     latest_version_fun = latest_version_fun.label("latest_version_fun")
 
@@ -603,7 +603,7 @@ def retrieve_list_from_database(ontoType):
             "goodLicense": version.licenseII,
             "consistency": version.consistency,
             "lodeSeverity": version.lodeSeverity,
-            "latestVersion": version.version.strftime("%Y.%m.%d-%H%M%S"),
+            "latestVersion": version.versionID.strftime("%Y.%m.%d-%H%M%S"),
         }
         result_list.append(result)
         last_ont_uri = ont.uri

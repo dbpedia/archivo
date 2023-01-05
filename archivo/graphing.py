@@ -8,10 +8,10 @@ import os
 
 def get_latest_stars_before_deadline(ont, deadline):
     sorted_versions = sorted(
-        [v for v in ont.versions], key=lambda v: v.version, reverse=True
+        [v for v in ont.versions], key=lambda v: v.versionID, reverse=True
     )
     for version in sorted_versions:
-        if version.version < deadline:
+        if version.versionID < deadline:
             return version.stars
 
     return None

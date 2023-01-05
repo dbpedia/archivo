@@ -1,0 +1,30 @@
+
+[publishing]
+    [databus]
+        base="https://dev.databus.dbpedia.org"
+        user="ontologies"
+        api_key="MYSTERIOUS"
+    [local]
+        parent_dir="/usr/local/archivo-data/"
+    [metadata]
+
+
+
+[crawling]
+    agent_name="dbpedia-archivo-robot"
+    max_recursion_depth=5
+
+[diff]
+    ignore_props=["http://purl.org/dc/terms/modified", "http://www.w3.org/2002/07/owl#versionInfo"]
+    track_this_props = ["https://archivo.dbpedia.org/onto#trackThis"]
+    skip_ontologies = ["http://purl.obolibrary.org/obo/dron.owl"]
+
+# is the system to fetch defined entities from an ontology
+[fetcher]
+    defnies_props=["http://open.vocab.org/terms/defines", "https://archivo.dbpedia.org/onto#defines"]
+
+[external]
+    [pellet]
+        path="/usr/lib/pellet/cli/target/pelletcli/bin/pellet"
+    [profilechecker]
+        path="/data/home/dstreitmatter/profilechecker-1.1.0.jar"

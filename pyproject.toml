@@ -26,6 +26,7 @@ PyYAML = "^6.0"
 pylode = "^3.0.4"
 rdflib = "^6.2.0"
 databusclient = "^0.8"
+validators = "^0.20.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^5.0.4"
