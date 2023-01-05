@@ -1,3 +1,9 @@
+from os.path import isfile
+from typing import Dict
+
+import hashlib
+
+import databusclient
 import requests
 import os
 import sys
@@ -466,12 +472,160 @@ class ArchivoVersion:
         else:
             return False, None
 
+    def __get_distribution_of_file(self, filename: str) -> str:
+        only_name = filename.split(".")[0]
+        ftype = filename.split(".")[1]
+
+        cv_strings = only_name.split("_")[1:]
+
+        # get cvs from file
+
+        cvs = {}
+
+        for cv_string in cv_strings:
+            key = cv_string.split("=")[0]
+            val = cv_string.split("=")[1]
+            cvs[key] = val
+
+        # shasum and filelength
+        BUF_SIZE = 65536
+
+        file_length = 0
+        sha256sum = hashlib.sha256()
+        with open(os.path.join(self.file_path, filename)) as f:
+            while True:
+                data = f.read(BUF_SIZE)
+                if not data:
+                    break
+                file_length += len(data)
+                sha256sum.update(data)
+
+        distrib = databusclient.create_distribution(
+            url=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}/{filename}",
+            cvs=cvs,
+            file_format=ftype,
+            sha256_length_tuple=(sha256sum.hexdigest(), file_length)
+        )
+        return distrib
+
+    def __get_label(self) -> str:
+        label = self.nir if not self.isDev else self.nir + " DEV"
+
+        if self.graph is not None:
+            label_found = inspectVocabs.getLabel(self.graph)
+            if label_found is not None:
+                label = label_found if not self.isDev else label_found + " DEV"
+        return label
+
+    def __get_comment(self) -> str:
+        comment = Template(docTemplates.default_explaination).safe_substitute(
+            non_information_uri=self.reference_uri
+        )
+
+        if self.graph is not None:
+            found_comment = inspectVocabs.getComment(self.graph)
+            if found_comment is not None:
+                comment = found_comment
+
+        return comment
+
+    def __get_description(self) -> str:
+        timestamp_now = datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
+        description = (
+            Template(docTemplates.description)
+            if not self.isDev
+            else Template(docTemplates.description_dev)
+        )
+
+        if self.graph is not None:
+            found_description = inspectVocabs.getDescription(self.graph)
+            versionIRI = inspectVocabs.getOwlVersionIRI(self.graph)
+            if found_description is not None:
+                description = (
+                        description.safe_substitute(
+                            non_information_uri=self.nir,
+                            snapshot_url=self.location_uri,
+                            owl_version_iri=versionIRI,
+                            date=str(timestamp_now),
+                        )
+                        + "\n\n"
+                        + docTemplates.description_intro
+                        + "\n\n"
+                        + found_description
+                )
+            else:
+                description = description.safe_substitute(
+                    non_information_uri=self.nir,
+                    snapshot_url=self.location_url,
+                    owl_version_iri=versionIRI,
+                    date=str(timestamp_now),
+                )
+
+        return description
+
+    def __get_license(self) -> str:
+
+        found_license = inspectVocabs.getLicense(self.graph)
+        if isinstance(found_license, URIRef):
+            found_license = str(found_license).strip("<>")
+        elif isinstance(found_license, Literal):
+            # if license is literal: error uri
+            found_license = docTemplates.license_literal_uri
+
+        return found_license
+
+    def build_databus_jsonld(self, group_info: Dict[str, str] = {}) -> Dict:
+
+        publish_files = [f for f in os.listdir(self.file_path) if isfile(f)]
+
+        distribs = [self.__get_distribution_of_file(fname) for fname in publish_files]
+
+        title = self.__get_label()
+        comment = self.__get_comment()
+        description = self.__get_description()
+        license_url = self.__get_license()
+        if group_info == {}:
+            dataset = databusclient.createDataset(
+                version_id=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}",
+                title=title,
+                abstract=comment,
+                description=description,
+                license_url=license_url,
+                distributions=distribs
+            )
+        else:
+            dataset = databusclient.createDataset(
+                version_id=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}",
+                title=title,
+                abstract=comment,
+                description=description,
+                license_url=license_url,
+                distributions=distribs,
+                group_title=group_info["title"],
+                group_description=group_info["description"]
+            )
+
+        return dataset
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ======== END OF CLASS ================
 
 # returns the NIR if frgmant-equivalent, else None
-def check_NIR(uri, graph, output=[]):
+def check_NIR(uri, graph, output=None):
 
+    if output is None:
+        output = []
     candidates = inspectVocabs.get_ontology_URIs(graph)
 
     if candidates == []:
@@ -800,22 +954,16 @@ def handleNewUri(
     except NameError:
         retrival_errors = []
 
+    group_info = {}
+
+    # if it is a new group -> generate group info
+    if not os.path.isdir(os.path.join(dataPath, groupId)):
+        group_info["title"] = f"DBpedia Archivo ontologies from the {groupId} domain"
+        group_info["description"] = f"Each artifact in this group deals as the archive for snapshots of one ontology of the DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects. Find out more at http://archivo.dbpedia.org. The description for the individual files in the artifact can be found here."
+
     newVersionPath = os.path.join(dataPath, groupId, artifact, version)
     os.makedirs(newVersionPath, exist_ok=True)
-    # generate parent pom
-    if not os.path.isfile(os.path.join(dataPath, groupId, "pom.xml")):
-        pomString = generatePoms.generateParentPom(
-            groupId=groupId,
-            packaging="pom",
-            modules=[],
-            packageDirectory=archivoConfig.packDir,
-            downloadUrlPath=archivoConfig.downloadUrl,
-            publisher=archivoConfig.pub,
-            maintainer=archivoConfig.pub,
-            groupdocu=Template(docTemplates.groupDoc).safe_substitute(groupid=groupId),
-        )
-        with open(os.path.join(dataPath, groupId, "pom.xml"), "w+") as parentPomFile:
-            print(pomString, file=parentPomFile)
+
     # prepare new release
     fileExt = stringTools.file_ending_mapping[bestHeader]
     new_orig_file_path = os.path.join(
@@ -838,30 +986,13 @@ def handleNewUri(
         user_output=user_output,
     )
     new_version.generateFiles()
-    new_version.generatePomAndDoc()
+    databus_dataset_jsonld = new_version.build_databus_jsonld(group_info)
 
     logger.info("Deploying the data to the databus...")
-    returncode, deployLog = generatePoms.callMaven(
-        os.path.join(dataPath, groupId, artifact, "pom.xml"), "deploy"
-    )
 
-    if returncode > 0:
-        logger.error("There was an Error deploying to the databus")
-        user_output.append(
-            {"status": False, "step": "Deploy to DBpedia Databus", "message": deployLog}
-        )
-        logger.error(deployLog)
-        return False, isNIR, None
-    else:
-        logger.info(f"Successfully deployed the new ontology {real_ont_uri}")
-        user_output.append(
-            {
-                "status": True,
-                "step": "Deploy to DBpedia Databus",
-                "message": f"Deployed the Ontology to the DBpedia Databus, should be accessable at the <a href=https://databus.dbpedia.org/ontologies/{groupId}/{artifact}>databus</a> and at the <a href=/info?o={quote(real_ont_uri)}>Archivo webpage</a> soon.",
-            }
-        )
-        return True, isNIR, new_version
+    databusclient.deploy(databus_dataset_jsonld)
+
+    return True, isNIR, new_version
 
 
 def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=list()):
