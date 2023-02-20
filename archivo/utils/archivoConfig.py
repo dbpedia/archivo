@@ -1,10 +1,8 @@
-# some defaults for the pom generation
-default_parentArtifact = "common-metadata"
-default_repo = "https://databus.dbpedia.org/repo"
-default_version = "0.0.0-notRelevant"
+# Databus 2.0 API config
+DATABUS_API_KEY: str = "blablubb"
 
 # agent name for crawling
-archivo_agent = "dbpedia-archivo-robot"
+archivo_agent: str = "dbpedia-archivo-robot"
 
 # add here properties that should be ignored
 # pls use the full URI and no prefixes since the diff takes place as ntriples

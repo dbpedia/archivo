@@ -1,9 +1,10 @@
 from plotly.utils import PlotlyJSONEncoder
 import plotly.graph_objects as go
-from utils import stringTools
 import datetime
 import json
 import os
+
+from archivo.utils import stringTools
 
 
 def get_latest_stars_before_deadline(ont, deadline):

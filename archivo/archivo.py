@@ -1,17 +1,22 @@
-from webservice import app, db, dbModels
+import atexit
+from archivo.utils import dbUtils, graphing
+from archivo.update import diffOntologies
+import json
+import os
+from datetime import datetime
+
 from apscheduler.schedulers.background import BackgroundScheduler
-import atexit, os, crawlURIs, diffOntologies, dbUtils
-from utils import archivoConfig, stringTools, queryDatabus, generatePoms, discovery
-from utils.validation import TestSuite
+
+from archivo.crawling import discovery, sources
+from utils import archivoConfig, stringTools, queryDatabus, generatePoms
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
     dev_diff_logger,
     webservice_logger,
 )
-from datetime import datetime
-import graphing
-import json
+from utils.validation import TestSuite
+from webservice import app, db, dbModels
 
 cron = BackgroundScheduler(daemon=True)
 # Explicitly kick off the background thread
@@ -19,20 +24,20 @@ cron.start()
 
 
 def get_correct_path() -> str:
-    archivo_path = os.path.dirname(os.path.realpath(__file__))
-    if os.path.isdir(os.path.join(archivo_path, "shacl")) and os.path.isfile(
-        os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar")
+    local_path = os.path.dirname(os.path.realpath(__file__))
+    if os.path.isdir(os.path.join(local_path, "shacl")) and os.path.isfile(
+        os.path.join(local_path, "helpingBinaries", "DisplayAxioms.jar")
     ):
-        return archivo_path
+        return local_path
     else:
-        webservice_logger.error(f"{archivo_path} is not the correct path")
+        webservice_logger.error(f"{local_path} is not the correct path")
         exit(1)
 
 
 archivo_path = get_correct_path()
 
 
-# Chech wether the uri is in archivo uris or a archivo uri is a substring of it
+# Chech wether the uri is in archivo uris or an archivo uri is a substring of it
 # True returned when already contained, False otherwise
 def check_uri_containment(uri, archivo_uris):
     for au in archivo_uris:
@@ -48,9 +53,9 @@ def ontology_discovery():
     testSuite = TestSuite(archivo_path)
 
     discovery_logger.info("Started discovery of LOV URIs...")
-    run_discovery(discovery.getLovUrls(), "LOV", dataPath, testSuite)
+    run_discovery(sources.getLovUrls(), "LOV", dataPath, testSuite)
     discovery_logger.info("Started discovery of prefix.cc URIs...")
-    run_discovery(discovery.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
+    run_discovery(sources.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
     run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")
@@ -68,7 +73,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             continue
         output = []
         try:
-            success, isNir, archivo_version = crawlURIs.handleNewUri(
+            success, isNir, archivo_version = discovery.handleNewUri(
                 uri,
                 allOnts,
                 dataPath,

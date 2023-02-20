@@ -1,23 +1,22 @@
 import subprocess
+
+import databusclient
 from rdflib import compare
 import requests
-import crawlURIs
+from archivo.crawling import discovery
 from datetime import datetime
 import os
 import json
-import sys
 import re
-from utils import (
+from archivo.utils import (
     ontoFiles,
-    generatePoms,
     stringTools,
-    queryDatabus,
     archivoConfig,
     docTemplates,
     async_rdf_retrieval,
     inspectVocabs,
 )
-from utils.archivoLogs import diff_logger
+from archivo.utils.archivoLogs import diff_logger
 from string import Template
 
 semanticVersionRegex = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
@@ -62,7 +61,7 @@ def getSortedNtriples(
                 stderr=subprocess.PIPE,
             )
             nTriples = rapperProcess.stdout
-            errors, warnings = ontoFiles.returnRapperErrors(
+            errors, warnings = ontoFiles.parse_rapper_errors(
                 rapperProcess.stderr.decode("utf-8")
             )
             if errors != []:
@@ -87,7 +86,7 @@ def getSortedNtriples(
             logger.error(f"An error in sorting triples occured: {sortErrors}")
 
         if inputType != "ntriples":
-            return ontoFiles.returnRapperErrors(rapperProcess.stderr.decode("utf-8"))
+            return ontoFiles.parse_rapper_errors(rapperProcess.stderr.decode("utf-8"))
         else:
             return [], []
     except Exception as e:
@@ -198,7 +197,7 @@ def localDiffAndRelease(
         os.makedirs(newVersionPath, exist_ok=True)
         # load the best header with rdf_string and triple number
         output = []
-        newBestHeader, response, triple_number = crawlURIs.determine_best_content_type(
+        newBestHeader, response, triple_number = discovery.determine_best_content_type(
             locURI, user_output=output
         )
 
@@ -256,7 +255,7 @@ def localDiffAndRelease(
                 logger=logger,
             )
 
-            if retrieval_errors != []:
+            if retrieval_errors:
                 error_str = "Failed retrieval for content:\n" + "\n".join(
                     [" -- ".join(tp) for tp in retrieval_errors]
                 )
@@ -376,7 +375,7 @@ def localDiffAndRelease(
             ) as new_diff_file:
                 print("\n".join(newTriples), file=new_diff_file)
 
-            new_version = crawlURIs.ArchivoVersion(
+            new_version = discovery.ArchivoVersion(
                 uri,
                 sourcePath,
                 response,
@@ -391,30 +390,19 @@ def localDiffAndRelease(
             new_version.generateFiles()
             new_version.generatePomAndDoc()
 
-            if not os.path.isfile(os.path.join(groupDir, "pom.xml")):
-                with open(os.path.join(groupDir, "pom.xml"), "w+") as parentPomFile:
-                    pomString = generatePoms.generateParentPom(
-                        groupId=group,
-                        packaging="pom",
-                        modules=[],
-                        packageDirectory=archivoConfig.packDir,
-                        downloadUrlPath=archivoConfig.downloadUrl,
-                        publisher=archivoConfig.pub,
-                        maintainer=archivoConfig.pub,
-                        groupdocu=Template(docTemplates.groupDoc).safe_substitute(
-                            groupid=group
-                        ),
-                    )
-                    print(pomString, file=parentPomFile)
-            status, log = generatePoms.callMaven(
-                os.path.join(artifactDir, "pom.xml"), "deploy"
-            )
-            if status > 0:
-                logger.critical("Couldn't deploy new diff version")
-                logger.info(log)
-                return None, "ERROR: Couldn't deploy to databus!", new_version
-            else:
+            databus_dataset_jsonld = new_version.build_databus_jsonld()
+
+            logger.info("Deploying the data to the databus...")
+
+            try:
+                databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
+                logger.info(f"Successfully deployed the new update of ontology {uri}")
                 return True, success_error_message, new_version
+            except databusclient.client.DeployError as e:
+                logger.error("There was an Error deploying to the databus")
+                logger.error(str(e))
+                return False, "ERROR: Couldn't deploy to databus!", new_version
+
     except FileNotFoundError:
         logger.exception(f"Couldn't find file for {uri}")
         return None, f"INTERNAL ERROR: Couldn't find file for {uri}", None
@@ -514,7 +502,7 @@ def handleDiffForUri(
 
 
 def getNewSemanticVersion(
-    oldSemanticVersion, oldAxiomSet, newAxiomSet, silent=False, logger=diff_logger
+    oldSemanticVersion, oldAxiomSet, newAxiomSet, logger=diff_logger
 ):
 
     both = oldAxiomSet.intersection(newAxiomSet)
@@ -546,7 +534,7 @@ def getNewSemanticVersion(
 
 
 if __name__ == "__main__":
-    from utils.validation import TestSuite
+    from archivo.utils.validation import TestSuite
     import traceback
 
     ts = TestSuite(".")

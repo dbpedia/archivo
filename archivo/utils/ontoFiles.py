@@ -4,7 +4,7 @@ import json
 import subprocess
 import re
 import csv
-from utils import stringTools, inspectVocabs
+from typing import Iterator, Iterable, Tuple, List, Optional
 
 rapperErrorsRegex = re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex = re.compile(r"^rapper: Warning.*$")
@@ -14,29 +14,29 @@ profileCheckerRegex = re.compile(r"(OWL2_DL|OWL2_QL|OWL2_EL|OWL2_RL|OWL2_FULL): 
 pelletInfoProfileRegex = re.compile(r"OWL Profile = (.*)\n")
 
 
-def returnRapperErrors(rapperLog):
-    errorMatches = []
-    warningMatches = []
-    for line in rapperLog.split("\n"):
+def parse_rapper_errors(rapper_log: str) -> Tuple[List[str], List[str]]:
+    error_matches = []
+    warning_matches = []
+    for line in rapper_log.split("\n"):
         if rapperErrorsRegex.match(line):
-            errorMatches.append(line)
+            error_matches.append(line)
         elif rapperWarningsRegex.match(line):
-            warningMatches.append(line)
-    return errorMatches, warningMatches
+            warning_matches.append(line)
+    return error_matches, warning_matches
 
 
-def getTripleNumberFromRapperLog(rapperlog):
+def getTripleNumberFromRapperLog(rapperlog: str) -> Optional[int]:
     match = rapperTriplesRegex.search(rapperlog)
-    if match != None:
+    if match is not None:
         return int(match.group(1))
     else:
         return None
 
 
 def parse_rdf_from_string(
-    rdf_string, base_uri, input_type=None, output_type="ntriples"
-):
-    if input_type == None:
+        rdf_string, base_uri, input_type=None, output_type="ntriples"
+) -> Tuple[str, Optional[int], List[str], List[str]]:
+    if input_type is None:
         command = ["rapper", "-I", base_uri, "-g", "-", "-o", output_type]
     else:
         command = ["rapper", "-I", base_uri, "-i", input_type, "-", "-o", output_type]
@@ -48,9 +48,25 @@ def parse_rdf_from_string(
         input=bytes(rdf_string, "utf-8"),
     )
     triples = getTripleNumberFromRapperLog(process.stderr.decode("utf-8"))
-    errors, warnings = returnRapperErrors(process.stderr.decode("utf-8"))
+    errors, warnings = parse_rapper_errors(process.stderr.decode("utf-8"))
     return process.stdout.decode("utf-8"), triples, errors, warnings
 
+
+def get_parsed_rdf(
+        rdf_string, base_uri, input_type=None, output_type="ntriples"
+) -> str:
+    if input_type is None:
+        command = ["rapper", "-I", base_uri, "-g", "-", "-o", output_type]
+    else:
+        command = ["rapper", "-I", base_uri, "-i", input_type, "-", "-o", output_type]
+
+    process = subprocess.run(
+        command,
+        stdout=subprocess.PIPE,
+        input=bytes(rdf_string, "utf-8"),
+    )
+
+    return process.stdout.decode("utf-8")
 
 def get_triples_from_rdf_string(rdf_string, base_uri, input_type=None):
     if input_type is None:
@@ -65,7 +81,7 @@ def get_triples_from_rdf_string(rdf_string, base_uri, input_type=None):
         input=bytes(rdf_string, "utf-8"),
     )
     triples = getTripleNumberFromRapperLog(process.stderr.decode("utf-8"))
-    errors, _ = returnRapperErrors(process.stderr.decode("utf-8"))
+    errors, _ = parse_rapper_errors(process.stderr.decode("utf-8"))
     return triples, errors
 
 
@@ -100,25 +116,25 @@ def deleteEmptyDirsRecursive(startpath):
 
 
 def altWriteVocabInformation(
-    pathToFile,
-    definedByUri,
-    lastModified,
-    rapperErrors,
-    rapperWarnings,
-    etag,
-    tripleSize,
-    bestHeader,
-    licenseViolationsBool,
-    licenseWarningsBool,
-    consistentWithImports,
-    consistentWithoutImports,
-    lodeConform,
-    accessed,
-    headerString,
-    nirHeader,
-    contentLenght,
-    semVersion,
-    snapshot_url,
+        pathToFile,
+        definedByUri,
+        lastModified,
+        rapperErrors,
+        rapperWarnings,
+        etag,
+        tripleSize,
+        bestHeader,
+        licenseViolationsBool,
+        licenseWarningsBool,
+        consistentWithImports,
+        consistentWithoutImports,
+        lodeConform,
+        accessed,
+        headerString,
+        nirHeader,
+        contentLenght,
+        semVersion,
+        snapshot_url,
 ):
     vocabinfo = {"test-results": {}, "http-data": {}, "ontology-info": {}, "logs": {}}
     vocabinfo["ontology-info"] = {
@@ -181,14 +197,14 @@ def getParsedRdf(sourcefile, sourceUri=None, logger=None, silent=True):
 
 
 def parseRDFSource(
-    sourcefile,
-    filepath,
-    outputType,
-    sourceUri=None,
-    deleteEmpty=True,
-    logger=None,
-    inputFormat=None,
-    silent=True,
+        sourcefile,
+        filepath,
+        outputType,
+        sourceUri=None,
+        deleteEmpty=True,
+        logger=None,
+        inputFormat=None,
+        silent=True,
 ):
     rapperCommand = ["rapper", sourcefile, "-o", outputType]
     if inputFormat == None:
@@ -211,7 +227,7 @@ def parseRDFSource(
             if logger != None and not silent:
                 logger.warning("Parsed file empty, deleting...")
             os.remove(filepath)
-    return returnRapperErrors(stderr)
+    return parse_rapper_errors(stderr)
 
 
 def getParsedTriples(filepath, inputFormat=None):
@@ -228,11 +244,11 @@ def getParsedTriples(filepath, inputFormat=None):
         stderr = process.communicate()[1].decode("utf-8")
     except UnicodeDecodeError:
         return None, None
-    return getTripleNumberFromRapperLog(stderr), returnRapperErrors(stderr)[0]
+    return getTripleNumberFromRapperLog(stderr), parse_rapper_errors(stderr)[0]
 
 
 def measureStars(
-    rapperErrors, licenseI, consistent, consistentWithoutImports, licenseII
+        rapperErrors, licenseI, consistent, consistentWithoutImports, licenseII
 ):
     stars = 0
     if rapperErrors == [] or rapperErrors == "":
@@ -274,7 +290,6 @@ def stars_from_meta_dict(metadict):
 
 
 def inspectMetadata(rootdir):
-
     resultData = {"filenumber": 0}
 
     exptKeys = set(
@@ -305,7 +320,7 @@ def inspectMetadata(rootdir):
                 dir
                 for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir))
                 if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir))
-                and dir != "target"
+                   and dir != "target"
             ]
             if versionDirs == []:
                 print(

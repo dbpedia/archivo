@@ -1,9 +1,9 @@
-from webservice import db
-from webservice.dbModels import OfficialOntology, DevelopOntology, Version, Ontology
-from utils import stringTools, queryDatabus, ontoFiles, archivoConfig
+from archivo.webservice import db
+from archivo.webservice.dbModels import OfficialOntology, DevelopOntology, Version
+from archivo.utils import stringTools, queryDatabus, ontoFiles
 from datetime import datetime
 import csv
-from crawlURIs import ArchivoVersion
+from archivo.crawling.discovery import ArchivoVersion
 
 
 def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
@@ -191,8 +191,8 @@ def update_info_for_ontology(ontology: OfficialOntology):
     for v in [
         vers
         for vers in versions
-        if vers.version
-        not in [available_v.version for available_v in ontology.versions]
+        if vers.versionID
+        not in [available_v.versionID for available_v in ontology.versions]
     ]:
         db.session.add(v)
         try:
@@ -215,8 +215,8 @@ def update_info_for_ontology(ontology: OfficialOntology):
         for v in [
             vers
             for vers in versions
-            if vers.version
-            not in [available_v.version for available_v in dev_ont.versions]
+            if vers.versionID
+            not in [available_v.versionID for available_v in dev_ont.versions]
         ]:
             print("Adds DEV version for", dev_ont.uri, ":", v)
             db.session.add(v)

@@ -1,4 +1,6 @@
 import asyncio
+from typing import Tuple, List
+
 import aiohttp
 from utils import ontoFiles
 from utils.stringTools import rdfHeadersMapping
@@ -14,7 +16,7 @@ async def fetch_one_nt_resource(
     session: aiohttp.ClientSession,
     uri: str,
     acc_header: str,
-    error_list: list,
+    error_list: List[Tuple[str, str]],
     allow_rapper_errors=False,
     **kwargs,
 ) -> (str, str):
@@ -46,16 +48,10 @@ async def fetch_one_nt_resource(
 
 async def collect_linked_content(
     nir, graph, pref_header, concurrent_requests: int, logger=None
-):
+) -> Tuple[List[str], List[Tuple[str, str]]]:
 
     defined_uris = IV.get_defined_URIs(nir, graph)
 
-    # defined_uris = [
-    #     "http://dbpedia.org/ontology/zipCode",
-    #     "http://dbpedia.org/ontology/youthClub",
-    #     "http://dbpedia.org/ontology/year",
-    #     "http://dbpedia.org/ontology/Wrestler",
-    # ]
     all_nt_strings = []
 
     retrieval_errors = []
@@ -87,7 +83,7 @@ async def collect_linked_content(
 
 def gather_linked_content(
     nir, graph, pref_header, concurrent_requests: int, logger=None
-):
+) -> Tuple[List[str], List[Tuple[str, str]]]:
     """Returns a tuple (list_of_nt_strings, retrieval_error_tuples)"""
     return asyncio.run(
         collect_linked_content(
