@@ -1,5 +1,6 @@
 # Databus 2.0 API config
 DATABUS_API_KEY: str = "blablubb"
+DATABUS_BASE: str = "https://dev.databus.dbpedia.org/"
 
 # agent name for crawling
 archivo_agent: str = "dbpedia-archivo-robot"

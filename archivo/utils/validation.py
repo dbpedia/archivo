@@ -1,6 +1,8 @@
+from typing import Tuple
+
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from utils import inspectVocabs, archivoConfig
+from archivo.utils import inspectVocabs, archivoConfig
 import os
 import sys
 import subprocess
@@ -60,7 +62,7 @@ class TestSuite:
             pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
 
-    def archivoConformityTest(self, ontograph):
+    def archivoConformityTest(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.archivoTestGraph,
@@ -74,7 +76,7 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def licenseViolationValidation(self, ontograph):
+    def licenseViolationValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.licenseViolationGraph,
@@ -88,7 +90,7 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def licenseWarningValidation(self, ontograph):
+    def licenseWarningValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.licenseWarningGraph,
@@ -102,7 +104,7 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def lodeReadyValidation(self, ontograph):
+    def lodeReadyValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.lodeTestGraph,
@@ -210,7 +212,7 @@ class TestSuite:
             ),
             "w+",
         ) as minLicenseFile:
-            print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
+            print(inspectVocabs.get_turtle_graph(reportGraphLicense), file=minLicenseFile)
         conformsLode, reportGraphLode, reportTextLode = self.lodeReadyValidation(
             ontoGraph
         )
@@ -220,7 +222,7 @@ class TestSuite:
             ),
             "w+",
         ) as lodeMetaFile:
-            print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
+            print(inspectVocabs.get_turtle_graph(reportGraphLode), file=lodeMetaFile)
         (
             conformsLicense2,
             reportGraphLicense2,
@@ -233,7 +235,7 @@ class TestSuite:
             "w+",
         ) as advLicenseFile:
             print(
-                inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile
+                inspectVocabs.get_turtle_graph(reportGraphLicense2), file=advLicenseFile
             )
         # checks consistency with and without imports
         isConsistent, output = self.getConsistency(

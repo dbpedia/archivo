@@ -44,7 +44,7 @@ def get_graph_of_string(rdf_string, content_type):
     return graph
 
 
-def getTurtleGraph(graph, base=None):
+def get_turtle_graph(graph: rdflib.Graph, base=None) -> str:
     return graph.serialize(format="turtle", encoding="utf-8", base=base).decode("utf-8")
 
 

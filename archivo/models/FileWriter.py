@@ -34,9 +34,9 @@ class FileWriter(DataWriter):
 
     def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         version_dir = os.path.join(self.path_base,
-                                   db_file_metadata.group,
-                                   db_file_metadata.artifact,
-                                   db_file_metadata.version,
+                                   db_file_metadata.version_identifier.group,
+                                   db_file_metadata.version_identifier.artifact,
+                                   db_file_metadata.version_identifier.version,
                                    )
 
         filepath = os.path.join(version_dir, db_file_metadata.get_file_name())
@@ -44,5 +44,5 @@ class FileWriter(DataWriter):
         if self.create_parent_dirs and not os.path.isdir(version_dir):
             os.makedirs(version_dir)
 
-        with open(filepath, "w+") as targetfile:
-            targetfile.write(content)
+        with open(filepath, "w+") as target_file:
+            target_file.write(content)

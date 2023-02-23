@@ -3,15 +3,20 @@ from typing import Dict
 
 
 @dataclass
-class DatabusFileMetadata:
-    """A databus-agnostic representation of Databus file metadata"""
-
+class DatabusVersionIdentifier:
+    user: str
     group: str
     artifact: str
     version: str
 
+
+@dataclass
+class DatabusFileMetadata:
+    """A databus-agnostic representation of Databus file metadata"""
+
+    version_identifier: DatabusVersionIdentifier
     content_variants: Dict[str, str]
-    file_ending: str
+    file_extension: str
 
     sha_256_sum: str
     content_length: int
@@ -20,4 +25,4 @@ class DatabusFileMetadata:
         return "_".join([f"{k}={v}" for k, v in self.content_variants.items()])
 
     def get_file_name(self):
-        return f"{self.artifact}_{self.content_variants_to_string()}.{self.file_ending}"
+        return f"{self.version_identifier.artifact}_{self.content_variants_to_string()}.{self.file_extension}"

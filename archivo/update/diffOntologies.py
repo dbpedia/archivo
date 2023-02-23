@@ -384,11 +384,10 @@ def localDiffAndRelease(
                 newBestHeader,
                 logger,
                 source,
-                semanticVersion=newSemVersion,
-                devURI=devURI,
+                semantic_version=newSemVersion,
+                dev_uri=devURI,
             )
             new_version.generateFiles()
-            new_version.generatePomAndDoc()
 
             databus_dataset_jsonld = new_version.build_databus_jsonld()
 

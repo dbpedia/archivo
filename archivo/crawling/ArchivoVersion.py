@@ -1,166 +1,121 @@
 import hashlib
 import os
 from datetime import datetime
+from logging import Logger
 from string import Template
 from typing import Dict
 import databusclient
 from rdflib import URIRef, Literal
 
 from archivo.crawling.discovery import handleDevURI
+from archivo.models.ContentNegotiation import RDF_Type, get_file_extension, get_accept_header
+from archivo.models.CrawlingResponse import CrawlingResponse
+from archivo.models.DatabusIdentifier import DatabusFileMetadata, DatabusVersionIdentifier
 from archivo.models.FileWriter import DataWriter
 from archivo.utils import ontoFiles, stringTools, inspectVocabs, feature_plugins, docTemplates, generatePoms, \
-    archivoConfig
+    archivoConfig, parsing
+from archivo.utils.validation import TestSuite
 
 
 class ArchivoVersion:
     def __init__(
-        self,
-        nir,
-        pathToOrigFile,
-        response,
-        testSuite,
-        accessDate,
-        bestHeader,
-        logger,
-        source,
-        data_writer: DataWriter,
-        semanticVersion="1.0.0",
-        devURI="",
-        retrieval_errors=None,
-        user_output=None,
+            self,
+            confirmed_nir: str,
+            crawling_result: CrawlingResponse,
+            databus_version_identifier: DatabusVersionIdentifier,
+            test_suite: TestSuite,
+            access_date: datetime,
+            logger: Logger,
+            source: str,
+            data_writer: DataWriter,
+            semantic_version: str = "1.0.0",
+            dev_uri: str = "",
+            retrieval_errors=None,
+            user_output=None,
     ):
         if user_output is None:
             user_output = list()
         if retrieval_errors is None:
             retrieval_errors = list()
-        self.nir = nir
-        self.isDev = False if devURI == "" else True
-        self.original_file = pathToOrigFile
-        self.file_path, _ = os.path.split(pathToOrigFile)
-        self.artifact_path, self.version = os.path.split(self.file_path)
-        self.group_path, self.artifact = os.path.split(self.artifact_path)
-        self.data_path, self.group = os.path.split(self.group_path)
-        self.location_uri = response.url if devURI == "" else devURI
-        self.reference_uri = devURI if self.isDev else nir
-        self.response = response
-        self.test_suite = testSuite
-        self.access_date = accessDate
-        self.best_header = bestHeader
+        # the nir is the identity of the ontology, confirmed by checking for the triple inside the ontology itself
+        # not to be confused with the location of the ontology, or the URI the crawl started with
+        self.nir = confirmed_nir
+        # data writer -> abstraction for handling the writing process
+        self.data_writer = data_writer
+        self.db_version_identifier = databus_version_identifier
+        self.crawling_result = crawling_result
+        self.isDev = False if dev_uri == "" else True
+        self.location_uri = crawling_result.response.url if dev_uri == "" else dev_uri
+        self.reference_uri = dev_uri if self.isDev else self.nir
+        self.test_suite = test_suite
+        self.access_date = access_date
         self.source = source
-        self.semantic_version = semanticVersion
+        self.semantic_version = semantic_version
         self.user_output = user_output
         self.logger = logger
         self.retrieval_errors = retrieval_errors
-        if len(self.response.history) > 0:
-            self.nir_header = str(self.response.history[0].headers)
+        if len(self.crawling_result.response.history) > 0:
+            self.nir_header = str(self.crawling_result.response.history[0].headers)
         else:
             self.nir_header = ""
-        self.location_url = self.response.url
+
+        # initialize a empty dict for the metadata file
+
+        self.metadata_dict = {"test-results": {}, "http-data": {}, "ontology-info": {}, "logs": {}}
+
+        self.stars_dict = {}
 
     def generate_parsed_rdf(self):
-        parsed_rdf_doc: bytes
 
+        for parsing_type in RDF_Type:
+            parsing_result = parsing.parse_rdf_from_string(self.crawling_result.rdf_content,
+                                                           self.nir,
+                                                           self.crawling_result.rdf_type,
+                                                           parsing_type)
+            shasum, content_length = stringTools.get_content_stats(bytes(parsing_result.parsed_rdf))
+            db_file_metadata = DatabusFileMetadata(version_identifier=self.db_version_identifier,
+                                                   content_variants={"type": "parsed"},
+                                                   file_extension=get_file_extension(get_accept_header(parsing_type)),
+                                                   sha_256_sum=shasum,
+                                                   content_length=content_length)
+            self.data_writer.write_databus_file(parsing_result.parsed_rdf, db_file_metadata)
 
+    def generate_shacl_reports(self):
+
+        shacl_report_mappings = {
+            self.test_suite.archivoConformityTest: ("archivoMetadata", None),
+            self.test_suite.licenseViolationValidation: ("minLicense", "License-I"),
+            self.test_suite.licenseWarningValidation: ("goodLicense", "License-II"),
+            self.test_suite.lodeReadyValidation: ("lodeMetadata", "lode-conform")
+        }
+
+        for shacl_report_fun, id_tuple in shacl_report_mappings:
+            validates_cv, report_key = id_tuple
+            (
+                conforms,
+                report_graph,
+                report_text,
+            ) = shacl_report_fun(self.graph)
+
+            serialized_report = inspectVocabs.get_turtle_graph(report_graph)
+            shasum, content_length = stringTools.get_content_stats(bytes(serialized_report))
+            db_file_metadata = DatabusFileMetadata(version_identifier=self.db_version_identifier,
+                                                   content_variants={"type": "shaclReport", "validates": validates_cv},
+                                                   file_extension="ttl",
+                                                   sha_256_sum=shasum,
+                                                   content_length=content_length
+                                                   )
+            self.data_writer.write_databus_file(serialized_report, db_file_metadata)
+
+            if report_key:
+                self.metadata_dict["test-results"][report_key] = conforms
 
     def generateFiles(self):
-        raw_file_path = os.path.join(self.file_path, self.artifact)
-        self.rapper_errors, rapperWarnings = ontoFiles.parseRDFSource(
-            self.original_file,
-            raw_file_path + "_type=parsed.nt",
-            outputType="ntriples",
-            deleteEmpty=True,
-            sourceUri=self.nir,
-            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
-            logger=self.logger,
-        )
-        nt_generated = (
-            True if os.path.isfile(raw_file_path + "_type=parsed.nt") else False
-        )
-        ontoFiles.parseRDFSource(
-            self.original_file,
-            raw_file_path + "_type=parsed.ttl",
-            outputType="turtle",
-            deleteEmpty=True,
-            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
-            logger=self.logger,
-        )
-        ttl_generated = (
-            True if os.path.isfile(raw_file_path + "_type=parsed.ttl") else False
-        )
 
-        ontoFiles.parseRDFSource(
-            self.original_file,
-            raw_file_path + "_type=parsed.owl",
-            outputType="rdfxml",
-            deleteEmpty=True,
-            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
-            logger=self.logger,
-        )
-        owl_generated = (
-            True if os.path.isfile(raw_file_path + "_type=parsed.owl") else False
-        )
-        self.user_output.append(
-            {
-                "status": True,
-                "step": "Generate Formats",
-                "message": f"N-triples: {nt_generated}<br>Turtle: {ttl_generated}<br>RDF+XML: {owl_generated}",
-            }
-        )
-        self.triples = ontoFiles.getParsedTriples(
-            self.original_file,
-            inputFormat=stringTools.rdfHeadersMapping[self.best_header],
-        )[0]
-        self.graph = inspectVocabs.getGraphOfVocabFile(
-            raw_file_path + "_type=parsed.ttl", logger=self.logger
-        )
-        # shacl-validation
-        # uses the turtle file since there were some problems with the blankNodes of rapper and rdflib
-        # no empty parsed files since shacl is valid on empty files.
-        (
-            self.conforms_archivo,
-            reportGraphArchivo,
-            reportTextArchivo,
-        ) = self.test_suite.archivoConformityTest(self.graph)
-        with open(
-            raw_file_path + "_type=shaclReport_validates=archivoMetadata.ttl", "w+"
-        ) as archivoConformityFile:
-            print(
-                inspectVocabs.getTurtleGraph(reportGraphArchivo),
-                file=archivoConformityFile,
-            )
-        (
-            self.conforms_licenseI,
-            reportGraphLicense,
-            reportTextLicense,
-        ) = self.test_suite.licenseViolationValidation(self.graph)
-        with open(
-            raw_file_path + "_type=shaclReport_validates=minLicense.ttl", "w+"
-        ) as minLicenseFile:
-            print(inspectVocabs.getTurtleGraph(reportGraphLicense), file=minLicenseFile)
+        self.generate_parsed_rdf()
+        self.generate_shacl_reports()
 
-        (
-            self.conforms_lode,
-            reportGraphLode,
-            reportTextLode,
-        ) = self.test_suite.lodeReadyValidation(self.graph)
-        self.lode_severity = inspectVocabs.hackyShaclStringInpection(
-            inspectVocabs.getTurtleGraph(reportGraphLode)
-        )
-        with open(
-            raw_file_path + "_type=shaclReport_validates=lodeMetadata.ttl", "w+"
-        ) as lodeMetaFile:
-            print(inspectVocabs.getTurtleGraph(reportGraphLode), file=lodeMetaFile)
-        (
-            self.conforms_licenseII,
-            reportGraphLicense2,
-            reportTextLicense2,
-        ) = self.test_suite.licenseWarningValidation(self.graph)
-        with open(
-            raw_file_path + "_type=shaclReport_validates=goodLicense.ttl", "w+"
-        ) as advLicenseFile:
-            print(
-                inspectVocabs.getTurtleGraph(reportGraphLicense2), file=advLicenseFile
-            )
+
         # checks consistency with and without imports
         self.is_consistent, output = self.test_suite.getConsistency(
             raw_file_path + "_type=parsed.ttl", ignoreImports=False
@@ -169,16 +124,16 @@ class ArchivoVersion:
             raw_file_path + "_type=parsed.ttl", ignoreImports=True
         )
         with open(
-            raw_file_path + "_type=pelletConsistency_imports=FULL.txt", "w+"
+                raw_file_path + "_type=pelletConsistency_imports=FULL.txt", "w+"
         ) as consistencyReport:
             print(output, file=consistencyReport)
         with open(
-            raw_file_path + "_type=pelletConsistency_imports=NONE.txt", "w+"
+                raw_file_path + "_type=pelletConsistency_imports=NONE.txt", "w+"
         ) as consistencyReportNoImports:
             print(outputNoImports, file=consistencyReportNoImports)
         # print pellet info files
         with open(
-            raw_file_path + "_type=pelletInfo_imports=FULL.txt", "w+"
+                raw_file_path + "_type=pelletInfo_imports=FULL.txt", "w+"
         ) as pelletInfoFile:
             print(
                 self.test_suite.getPelletInfo(
@@ -187,7 +142,7 @@ class ArchivoVersion:
                 file=pelletInfoFile,
             )
         with open(
-            raw_file_path + "_type=pelletInfo_imports=NONE.txt", "w+"
+                raw_file_path + "_type=pelletInfo_imports=NONE.txt", "w+"
         ) as pelletInfoFileNoImports:
             print(
                 self.test_suite.getPelletInfo(
@@ -222,7 +177,7 @@ class ArchivoVersion:
             nirHeader=self.nir_header,
             contentLenght=stringTools.getContentLengthFromResponse(self.response),
             semVersion=self.semantic_version,
-            snapshot_url=self.location_url,
+            snapshot_url=self.location_uri,
         )
         # generate lode docu
         docustring, lode_error = feature_plugins.getLodeDocuFile(
@@ -239,70 +194,6 @@ class ArchivoVersion:
         # if pylode_doc is not None:
         #     with open(raw_file_path + "_type=pyLodeDoc.html", "w+") as docufile:
         #         print(pylode_doc, file=docufile)
-
-    def generatePomAndDoc(self):
-        datetime_obj = datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
-        versionIRI = str(None)
-        self.md_label = self.nir if not self.isDev else self.nir + " DEV"
-        md_description = (
-            Template(docTemplates.description)
-            if not self.isDev
-            else Template(docTemplates.description_dev)
-        )
-        md_comment = Template(docTemplates.default_explaination).safe_substitute(
-            non_information_uri=self.reference_uri
-        )
-        license = None
-        if self.graph is not None:
-            label = inspectVocabs.getLabel(self.graph)
-            description = inspectVocabs.getDescription(self.graph)
-            comment = inspectVocabs.getComment(self.graph)
-            versionIRI = inspectVocabs.getOwlVersionIRI(self.graph)
-            if label is not None:
-                self.md_label = label if not self.isDev else label + " DEV"
-
-            if comment is not None:
-                md_comment = comment
-
-            if description is not None:
-                md_description = (
-                    md_description.safe_substitute(
-                        non_information_uri=self.nir,
-                        snapshot_url=self.location_uri,
-                        owl_version_iri=versionIRI,
-                        date=str(datetime_obj),
-                    )
-                    + "\n\n"
-                    + docTemplates.description_intro
-                    + "\n\n"
-                    + description
-                )
-            else:
-                md_description = md_description.safe_substitute(
-                    non_information_uri=self.nir,
-                    snapshot_url=self.location_url,
-                    owl_version_iri=versionIRI,
-                    date=str(datetime_obj),
-                )
-            license = inspectVocabs.getLicense(self.graph)
-            if isinstance(license, URIRef):
-                license = str(license).strip("<>")
-            elif isinstance(license, Literal):
-                # if license is literal: error uri
-                license = docTemplates.license_literal_uri
-
-        childpomString = generatePoms.generateChildPom(
-            groupId=self.group,
-            version=self.version,
-            artifactId=self.artifact,
-            packaging="jar",
-            license=license,
-        )
-        with open(os.path.join(self.artifact_path, "pom.xml"), "w+") as childPomFile:
-            print(childpomString, file=childPomFile)
-        generatePoms.writeMarkdownDescription(
-            self.artifact_path, self.artifact, self.md_label, md_comment, md_description
-        )
 
     def handleTrackThis(self):
         if self.isDev:
@@ -415,7 +306,7 @@ class ArchivoVersion:
             else:
                 description = description.safe_substitute(
                     non_information_uri=self.nir,
-                    snapshot_url=self.location_url,
+                    snapshot_url=self.location_uri,
                     owl_version_iri=versionIRI,
                     date=str(timestamp_now),
                 )

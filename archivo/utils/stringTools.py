@@ -1,21 +1,13 @@
+import hashlib
 import re
 import os
+from typing import Tuple
 from urllib.parse import urlparse, urldefrag
 
 urlRegex = r"https?://(?:www\.)?(.+?)/(.*)"
 
 # regex for parsing the file ending of an url
 uriFileExtensionRegex = re.compile(r"^.*\/.+(\.\w+)$")
-
-# should be extended maybe
-fileTypeDict = {
-    "turtle": ".ttl",
-    "rdf+xml": ".rdf",
-    "ntriples": ".nt",
-    "rdf+n3": ".n3",
-    "html": ".html",
-    "xml": ".xml",
-}
 
 rdfHeadersMapping = {
     "application/rdf+xml": "rdfxml",
@@ -124,22 +116,6 @@ def getContentLengthFromResponse(response):
         return ""
 
 
-def getFileEnding(response):
-    fileEnding = ""
-    if "Content-Type" in response.headers.keys():
-        contentType = response.headers["content-type"]
-        match = contentTypeRegex.search(contentType)
-        if match is not None:
-            fileEnding = fileTypeDict.get(match.group(1), "")
-
-    if fileEnding == "":
-        fileEnding = getFileExtensionFromUri(response.url)
-
-    if fileEnding == "":
-        fileEnding = ".file"
-    return fileEnding
-
-
 def deleteAllFilesInDirAndDir(directory):
     if not os.path.isdir(directory):
         return
@@ -168,10 +144,13 @@ def get_uri_from_index(uri, index):
 
 
 def get_consistency_status(s):
-
     if s == "Yes":
         return "CONSISTENT"
     elif "error" in s.lower():
         return "ERROR"
     else:
         return "INCONSISTENT"
+
+
+def get_content_stats(content: bytes) -> Tuple[str, int]:
+    return hashlib.sha256(content).hexdigest(), len(content)

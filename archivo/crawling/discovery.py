@@ -5,106 +5,27 @@ from typing import Dict, List, Optional, Tuple
 import hashlib
 
 import databusclient
+import rdflib
 import requests
 import os
-import sys
 import traceback
 from datetime import datetime
 
-from databusclient.client import DeployError
 from rdflib import Graph
 from requests import Response
 
 from archivo.crawling.ArchivoVersion import ArchivoVersion
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
-from rdflib.term import Literal, URIRef
-from string import Template
-from SPARQLWrapper import SPARQLWrapper, JSON
 
 from archivo.utils import stringTools, ontoFiles, archivoConfig, inspectVocabs, async_rdf_retrieval
+
+from BestEffortCrawling import determine_best_content_type
 
 
 # determine_best_content_type
 # function used by
 #
-def determine_best_content_type(uri, user_output=None, logger=None):
-    if user_output is None:
-        user_output = []
-    header_dict = {}
-    for header in stringTools.rdfHeadersMapping:
-        response, error = download_rdf_string(uri, acc_header=header)
-        if error is None:
-            try:
-                triple_number, rapper_errors = ontoFiles.get_triples_from_rdf_string(
-                    response.text, uri, input_type=stringTools.rdfHeadersMapping[header]
-                )
-            except Exception as e:
-                if logger is not None:
-                    logger.warning(
-                        f"Couldn't parse {uri} with header {header}: {str(e)}"
-                    )
-                continue
-            if triple_number is not None and triple_number > 0:
-                user_output.append(
-                    {
-                        "status": True,
-                        "step": f"Parsing with header {header}",
-                        "message": f"Triples: {str(triple_number)}",
-                    }
-                )
-                header_dict[header] = (response, triple_number)
-
-                # break for really large ontologies
-                if triple_number > 200000:
-                    break
-            else:
-                if len(rapper_errors) > 20:
-                    rapper_errors = rapper_errors[:20]
-                user_output.append(
-                    {
-                        "status": False,
-                        "step": f"Parsing with header {header}",
-                        "message": "Triples: {} \n{}".format(
-                            str(triple_number), "\n".join(rapper_errors[:20])
-                        ),
-                    }
-                )
-        else:
-            user_output.append(
-                {
-                    "status": False,
-                    "step": f"Parsing with header {header}",
-                    "message": f"{error}",
-                }
-            )
-    if header_dict == {}:
-        return None, None, None
-    best_header = [
-        k
-        for k, v in sorted(
-            header_dict.items(), key=lambda item: item[1][1], reverse=True
-        )
-    ][0]
-    resp, triple_number = header_dict[best_header]
-    return best_header, resp, triple_number
-
-
-def download_rdf_string(uri, acc_header, encoding="utf-8"):
-    try:
-        headers = {"Accept": acc_header}
-        response = requests.get(uri, headers=headers, timeout=30, allow_redirects=True)
-        if encoding is not None:
-            response.encoding = encoding
-        if response.status_code < 400:
-            return response, None
-        else:
-            return response, "Not Accessible - Status " + str(response.status_code)
-    except KeyboardInterrupt:
-        sys.exit(19)
-    except Exception as e:
-        traceback.print_exc(file=sys.stdout)
-        return None, str(e)
 
 
 def checkRobot(uri):
@@ -129,48 +50,13 @@ def checkRobot(uri):
         return False, "Not allowed"
 
 
-def downloadSource(uri, path, name, accHeader, encoding="utf-8"):
-    try:
-        acc_header = {"Accept": accHeader}
-        response = requests.get(
-            uri, headers=acc_header, timeout=30, allow_redirects=True
-        )
-        if encoding is not None:
-            response.encoding = encoding
-        fileEnding = stringTools.getFileEnding(response)
-        filePath = path + os.sep + name + "_type=orig" + fileEnding
-        if response.status_code < 400:
-            with open(filePath, "w+") as ontfile:
-                print(response.text, file=ontfile)
-            return True, filePath, response
-        else:
-            return (
-                False,
-                filePath,
-                "Not Accessible - Status " + str(response.status_code),
-            )
-    except requests.exceptions.TooManyRedirects as e:
-        return False, "", str(e)
-    except TimeoutError as e:
-        return False, "", str(e)
-    except requests.exceptions.ConnectionError as e:
-        return False, "", str(e)
-    except requests.exceptions.ReadTimeout as e:
-        return False, "", str(e)
-    except KeyboardInterrupt:
-        sys.exit(19)
-    except Exception as e:
-        traceback.print_exc(file=sys.stdout)
-        return False, "", str(e)
-
-
 # returns the NIR if frgmant-equivalent, else None
-def check_NIR(uri, graph, output=None):
+def check_NIR(uri: str, graph: rdflib.Graph, output: List[Dict] = None):
     if output is None:
         output = []
     candidates = inspectVocabs.get_ontology_URIs(graph)
 
-    if candidates == []:
+    if not candidates:
         output.append(
             {
                 "status": False,
@@ -330,12 +216,9 @@ def handleNewUri(
         return False, isNIR, None
 
     # load the best header with response and triple number
-    bestHeader, response, triple_number = determine_best_content_type(
-        vocab_uri, user_output=user_output
-    )
+    crawling_result = determine_best_content_type(vocab_uri, user_output=user_output)
 
-    version = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-    if bestHeader is None:
+    if crawling_result is None:
         user_output.append(
             {
                 "status": False,
@@ -345,18 +228,20 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    accessDate = datetime.now()
+    access_date = datetime.now()
+    version = access_date.strftime("%Y.%m.%d-%H%M%S")
+
     user_output.append(
         {
             "status": True,
             "step": "Find Best Header",
-            "message": f"Best Header: {bestHeader} with {triple_number} triples",
+            "message": f"Best Header: {crawling_result} with {crawling_result.triple_number} triples",
         }
     )
 
     # generating the graph and runnning the queries
     try:
-        graph = inspectVocabs.get_graph_of_string(response.text, bestHeader)
+        graph = inspectVocabs.get_graph_of_string(crawling_result.response.text, crawling_result)
     except Exception:
         logger.error(f"Exception in rdflib parsing of URI {vocab_uri}", exc_info=True)
         user_output.append(
@@ -495,7 +380,8 @@ def handleNewUri(
     retrival_errors = []
     if real_ont_uri.endswith("/"):
         additional_ntriple_content, retrieval_errors_by_uri = handle_slash_uris(real_ont_uri, response, graph,
-                                                                                bestHeader, user_output, logger)
+                                                                                crawling_result.rdf_type, user_output,
+                                                                                logger)
 
         # add the errors to the retrival errors list
         for tup in retrieval_errors_by_uri:
@@ -520,7 +406,7 @@ def handleNewUri(
     os.makedirs(newVersionPath, exist_ok=True)
 
     # prepare new release
-    fileExt = stringTools.file_ending_mapping[bestHeader]
+    fileExt = stringTools.file_ending_mapping[crawling_result]
     new_orig_file_path = os.path.join(
         newVersionPath, artifact + "_type=orig." + fileExt
     )
@@ -533,8 +419,8 @@ def handleNewUri(
         new_orig_file_path,
         response,
         testSuite,
-        accessDate,
-        bestHeader,
+        access_date,
+        crawling_result,
         logger,
         source,
         retrieval_errors=retrival_errors,
@@ -665,10 +551,9 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
         logger,
         "DEV",
         user_output=user_output,
-        devURI=sourceURI,
+        dev_uri=sourceURI,
     )
     new_version.generateFiles()
-    new_version.generatePomAndDoc()
 
     logger.info("Deploying the data to the databus...")
     databus_dataset_jsonld = new_version.build_databus_jsonld()

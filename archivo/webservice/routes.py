@@ -1,5 +1,5 @@
-from webservice import app, db
-from webservice.dbModels import (
+from archivo.webservice import app, db
+from archivo.webservice.dbModels import (
     OfficialOntology,
     DevelopOntology,
     Fallout,
@@ -21,8 +21,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
-from utils.validation import TestSuite
-import crawlURIs
+from archivo.utils.validation import TestSuite
+import archivo.crawling.crawlURIs
 from utils import archivoConfig, queryDatabus, stringTools, inspectVocabs
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
@@ -227,7 +227,7 @@ def turtleInfo():
     if not stringTools.get_uri_from_index(
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
-        abort(status=404)
+        abort(404)
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
 
 
@@ -239,7 +239,7 @@ def rdfxmlInfo():
     if not stringTools.get_uri_from_index(
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
-        abort(status=404)
+        abort(404)
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
 
 
