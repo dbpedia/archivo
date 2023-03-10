@@ -1,20 +1,23 @@
 import os
 import sys
+from typing import List, Optional, Dict
+
 import rdflib
 import requests
 from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 import json
 import traceback
-from utils import stringTools, archivoConfig
+from archivo.utils import stringTools, archivoConfig
 from urllib.parse import quote as urlQuote
 from urllib.parse import urlparse
+
+from archivo.utils.ArchivoExceptions import UnknownRDFFormatException
 
 descriptionNamespaceGraph = Graph()
 descriptionNamespaceGraph.bind("dct", DCTERMS)
 descriptionNamespaceGraph.bind("dc", DC)
 descriptionNamespaceGraph.bind("rdfs", RDFS)
-
 
 header_rdflib_mapping = {
     "application/ntriples": "nt",
@@ -24,65 +27,41 @@ header_rdflib_mapping = {
 }
 
 
-def getGraphOfVocabFile(filepath, logger=None):
-    try:
-        rdfFormat = rdflib.util.guess_format(filepath)
-        graph = rdflib.Graph()
-        graph.parse(filepath, format=rdfFormat)
-        return graph
-    except Exception as e:
-        if logger is not None:
-            logger.exception("Exception in rdflib parsing", exc_info=True)
-        else:
-            print(f"Problem parsing {filepath}" + str(e))
-        return None
+def get_graph_by_uri(uri: str, rdf_format: str = None) -> Graph:
+    """Loads the RDF content behind URI into an RDFlib Graph instance"""
+
+    if rdf_format is None:
+        rdf_format = rdflib.util.guess_format(uri)
+    if rdf_format is None:
+        raise UnknownRDFFormatException(f"Could nt determine the rdf format of {uri}")
+
+    graph = rdflib.Graph()
+    graph.parse(uri, format=rdf_format)
+    return graph
 
 
-def get_graph_of_string(rdf_string, content_type):
+def get_graph_of_string(rdf_string: str, content_type: str) -> Graph:
+    """Builds rdflib Graph of the string based on the HTTP content type of the string. Default content type is xml"""
+
     graph = rdflib.Graph()
     graph.parse(data=rdf_string, format=header_rdflib_mapping.get(content_type, "xml"))
     return graph
 
 
-def get_turtle_graph(graph: rdflib.Graph, base=None) -> str:
-    return graph.serialize(format="turtle", encoding="utf-8", base=base).decode("utf-8")
+def serialize_graph(graph: rdflib.Graph, rdf_format: str = "turtle", base=None) -> str:
+    """Serializes an RDFlib Graph as a string"""
+
+    return graph.serialize(format=rdf_format, encoding="utf-8", base=base).decode("utf-8")
 
 
-def getAllClassUris(graph):
-    queryString = (
-        "SELECT DISTINCT ?classUri \n"
-        "WHERE {\n"
-        " VALUES ?prop { void:property void:class }\n"
-        " ?s ?prop ?classUri .\n"
-        "}"
-    )
-    result = graph.query(
-        queryString, initNs={"void": URIRef("http://rdfs.org/ns/void#")}
-    )
-    if result == None:
-        return []
-    else:
-        return [str(line[0]) for line in result if len(line) > 0]
-
-
-def getAllPropsAndClasses(graph):
-    resultSet = set()
-    voidProp = URIRef("http://rdfs.org/ns/void#property")
-    voidClass = URIRef("http://rdfs.org/ns/void#class")
-    for subj, pred, obj in graph:
-        if pred == voidClass or pred == voidProp:
-            resultSet.add(str(obj))
-    return resultSet
-
-
-def get_defined_URIs(nir: str, graph: rdflib.Graph):
-    """Returns a list of defined resources of an ontology.
+def get_defined_uris(nir: str, graph: rdflib.Graph) -> List[str]:
+    """Returns a list of defined resources of an ontology. The defined resources MUST be in the scope of the ontology NIR.
     The subject is not relevant, it considers only the objects of the properties defined in the config."""
 
     prop_string = " ".join(
         [f"<{defines_prop}>" for defines_prop in archivoConfig.defines_properties]
     )
-    queryString = "\n".join(
+    query_string = "\n".join(
         [
             "SELECT DISTINCT ?defResource",
             "WHERE {",
@@ -92,7 +71,7 @@ def get_defined_URIs(nir: str, graph: rdflib.Graph):
         ]
     )
 
-    result = graph.query(queryString)
+    result = graph.query(query_string)
 
     nir_domain = urlparse(nir).netloc
 
@@ -118,7 +97,9 @@ def get_defined_URIs(nir: str, graph: rdflib.Graph):
 # dc:description
 
 
-def getOwlVersionIRI(graph):
+def get_owl_version_iri(graph: Graph) -> Optional[str]:
+    """Returns the value of owl:versionIRI (if available, else None)"""
+
     queryString = (
         "SELECT DISTINCT ?versionIRI\n"
         "WHERE {\n"
@@ -128,14 +109,16 @@ def getOwlVersionIRI(graph):
         "} LIMIT 1"
     )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             return row[0]
     else:
         return None
 
 
-def get_ontology_URIs(graph):
+def get_ontology_uris(graph: Graph) -> List[str]:
+    """Get a List of ontology URIs of an ontology graph. Currently either owl:Ontology or skos:ConceptScheme"""
+
     queryString = (
         "SELECT DISTINCT ?uri\n"
         "WHERE {\n"
@@ -144,31 +127,15 @@ def get_ontology_URIs(graph):
         "}"
     )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         return [str(row[0]) for row in result]
     else:
         return []
 
 
-# returns the NIR-URI if it got a owl:Ontology prop, else None
-def getNIRUri(graph):
-    queryString = (
-        "SELECT DISTINCT ?uri\n"
-        "WHERE {\n"
-        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
-        " ?uri a ?type .\n"
-        "} LIMIT 1"
-    )
-    result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
-    if result != None and len(result) > 0:
-        for row in result:
-            return row[0]
-    else:
-        return None
+def get_label(graph: Graph) -> Optional[str]:
+    """Best effort label finding"""
 
-
-# Returns the possible labels for a ontology
-def getLabel(graph):
     queryString = (
         "SELECT DISTINCT ?prefLabel ?label ?dctTitle ?dcTitle \n"
         "WHERE {\n"
@@ -184,16 +151,18 @@ def getLabel(graph):
         queryString,
         initNs={"owl": OWL, "skos": SKOS, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC},
     )
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             for value in row:
-                if value != None:
-                    return stringTools.getFirstLine(value)
+                if value is not None:
+                    return stringTools.get_first_line(value)
     else:
         return None
 
 
-def getDescription(graph):
+def get_description(graph: Graph) -> Optional[str]:
+    """Best effort description finding"""
+
     resultStrings = []
     queryString = (
         "SELECT DISTINCT ?descProp ?description\n"
@@ -209,7 +178,7 @@ def getDescription(graph):
         queryString,
         initNs={"owl": OWL, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC, "skos": SKOS},
     )
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             descString = (
                 f"### {row[0].n3(descriptionNamespaceGraph.namespace_manager)}\n\n"
@@ -221,7 +190,9 @@ def getDescription(graph):
         return None
 
 
-def getTrackThisURI(graph):
+def get_track_this_uri(graph: Graph) -> Optional[str]:
+    """Tries finding a value for track_this URI defined in the config"""
+
     queryString = (
         "SELECT DISTINCT ?trackURI\n"
         "WHERE {\n"
@@ -231,7 +202,7 @@ def getTrackThisURI(graph):
         "}"
     )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             return str(row[0])
     else:
@@ -241,7 +212,9 @@ def getTrackThisURI(graph):
 # possible rdfs:comments for the databus
 
 
-def getComment(graph):
+def get_comment(graph: Graph) -> Optional[str]:
+    """Best effort comment finding"""
+
     queryString = (
         "SELECT DISTINCT ?dctAbstract ?dctDescription ?dcDescription \n"
         "WHERE {\n"
@@ -257,17 +230,19 @@ def getComment(graph):
         queryString,
         initNs={"owl": OWL, "rdfs": RDFS, "dcterms": DCTERMS, "dc": DC, "skos": SKOS},
     )
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             for value in row:
-                if value != None and str(value).strip() != "":
-                    return stringTools.getFirstSentence(value)
+                if value is not None and str(value).strip() != "":
+                    return stringTools.get_first_sentence(value)
     else:
         return None
 
 
 # returns the license if there is any
-def getLicense(graph):
+def get_license(graph: Graph) -> Optional[str]:
+    """tries finding the license of the ontology using multiple properties"""
+
     queryString = (
         "SELECT DISTINCT ?license \n"
         "WHERE {\n"
@@ -288,7 +263,7 @@ def getLicense(graph):
             "cc": URIRef("http://creativecommons.org/ns#"),
         },
     )
-    if result != None and len(result) > 0:
+    if result is not None and len(result) > 0:
         for row in result:
             return row[0]
     else:
@@ -296,7 +271,9 @@ def getLicense(graph):
 
 
 # returns the non information resource of an ontology, representing the entity of the ontology
-def getDefinedByUri(ontgraph):
+def get_defined_by_uri(graph: Graph) -> Optional[str]:
+    """Fetches the first defined by URI of some entity for further discovery"""
+
     qString = """
         SELECT DISTINCT ?defbyUri
         WHERE {
@@ -304,54 +281,16 @@ def getDefinedByUri(ontgraph):
             ?s ?prop ?defbyUri .
         } LIMIT 1
         """
-    result = ontgraph.query(qString, initNs={"rdfs": RDFS, "skos": SKOS})
-    if result != None and len(result) > 0:
+    result = graph.query(qString, initNs={"rdfs": RDFS, "skos": SKOS})
+    if result is not None and len(result) > 0:
         for row in result:
             return row[0]
     else:
         return None
 
 
-def changeMetadata(rootdir):
-    for groupdir in [
-        dir for dir in os.listdir(rootdir) if os.path.isdir(os.path.join(rootdir, dir))
-    ]:
-        for artifactDir in [
-            dir
-            for dir in os.listdir(os.path.join(rootdir, groupdir))
-            if os.path.isdir(os.path.join(rootdir, groupdir, dir))
-        ]:
-            print("Generating metadata for", groupdir, artifactDir)
-            versionDirs = [
-                dir
-                for dir in os.listdir(os.path.join(rootdir, groupdir, artifactDir))
-                if os.path.isdir(os.path.join(rootdir, groupdir, artifactDir, dir))
-                and dir != "target"
-            ]
-            if versionDirs == []:
-                print("Couldnt find version for", groupdir, artifactDir)
-                continue
-            versionDir = versionDirs[0]
-            # filepath = os.path.join(rootdir, groupdir, artifactDir, versionDir, artifactDir + "_type=parsed.ttl")
-            jsonPath = os.path.join(
-                rootdir,
-                groupdir,
-                artifactDir,
-                versionDir,
-                artifactDir + "_type=meta.json",
-            )
-            if not os.path.isfile(jsonPath):
-                continue
-            with open(jsonPath, "r") as jsonFile:
-                metadata = json.load(jsonFile)
-
-            with open(jsonPath, "w") as jsonFile:
-                metadata["semantic-version"] = "0.0.1"
-                json.dump(metadata, jsonFile, indent=4, sort_keys=True)
-
-
-def checkShaclReport(reportURL):
-    shaclReportGraph = getGraphOfVocabFile(reportURL)
+def checkShaclReport(report_url: str) -> str:
+    shaclReportGraph = get_graph_by_uri(report_url)
     if shaclReportGraph == None:
         return "ERROR"
     violationRef = URIRef("http://www.w3.org/ns/shacl#Violation")
@@ -378,7 +317,7 @@ def checkShaclReport(reportURL):
         return "OK"
 
 
-def hackyShaclStringInpection(text):
+def hacky_shacl_content_severity(text: str) -> str:
     if "sh:resultSeverity sh:Violation" in text:
         return "VIOLATION"
     elif "sh:resultSeverity sh:Warning" in text:
@@ -389,24 +328,16 @@ def hackyShaclStringInpection(text):
         return "OK"
 
 
-def hackyShaclInspection(shaclURL):
-
+def hacky_shacl_report_severity(shacl_report_url: str) -> str:
     try:
-        shaclString = requests.get(shaclURL).text
+        shaclString = requests.get(shacl_report_url).text
     except Exception as e:
         return "ERROR"
 
-    if "sh:resultSeverity sh:Violation" in shaclString:
-        return "VIOLATION"
-    elif "sh:resultSeverity sh:Warning" in shaclString:
-        return "WARNING"
-    elif "sh:resultSeverity sh:Info" in shaclString:
-        return "INFO"
-    else:
-        return "OK"
+    return hacky_shacl_content_severity(shaclString)
 
 
-def interpretShaclGraph(graph):
+def interpret_shacl_graph(graph: Graph) -> Dict[str, Dict[str, List[str]]]:
     violationRef = URIRef("http://www.w3.org/ns/shacl#Violation")
     warningRef = URIRef("http://www.w3.org/ns/shacl#Warning")
     infoRef = URIRef("http://www.w3.org/ns/shacl#Info")
@@ -430,21 +361,21 @@ def interpretShaclGraph(graph):
 
     for node, severity, problemText in result:
         if severity == violationRef:
-            if resultDict["violations"] == None:
+            if resultDict["violations"] is None:
                 resultDict["violations"] = {}
             if str(problemText) in resultDict["violations"]:
                 resultDict["violations"][str(problemText)].append(str(node))
             else:
                 resultDict["violations"][str(problemText)] = [str(node)]
         elif severity == warningRef:
-            if resultDict["warnings"] == None:
+            if resultDict["warnings"] is None:
                 resultDict["warnings"] = {}
             if str(problemText) in resultDict["warnings"]:
                 resultDict["warnings"][str(problemText)].append(str(node))
             else:
                 resultDict["warnings"][str(problemText)] = [str(node)]
         elif severity == infoRef:
-            if resultDict["infos"] == None:
+            if resultDict["infos"] is None:
                 resultDict["infos"] = {}
             if str(problemText) in resultDict["infos"]:
                 resultDict["infos"][str(problemText)].append(str(node))

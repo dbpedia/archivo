@@ -4,12 +4,14 @@ from pathlib import Path
 from typing import Iterator, Dict, List, Optional
 
 from archivo.models.DatabusIdentifier import DatabusFileMetadata
+from archivo.utils.WebDAVUtils import WebDAVHandler
 
 
 class DataWriter(ABC):
     """Wrapper Class for handling the writing of Files and keeping track of the written files"""
 
     written_files: Dict[DatabusFileMetadata, Optional[str]]
+    target_url_base: str
 
     @abstractmethod
     def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
@@ -27,10 +29,11 @@ class DataWriter(ABC):
 
 class FileWriter(DataWriter):
 
-    def __init__(self, path_base: Path, create_parent_dirs: bool = False):
+    def __init__(self, path_base: Path, target_url_base: str, create_parent_dirs: bool = True):
         self.path_base = path_base
         self.create_parent_dirs = create_parent_dirs
         self.written_files = {}
+        self.target_url_base = target_url_base
 
     def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         version_dir = os.path.join(self.path_base,
@@ -46,3 +49,17 @@ class FileWriter(DataWriter):
 
         with open(filepath, "w+") as target_file:
             target_file.write(content)
+
+
+class WebDAVWriter(DataWriter):
+
+    def __init__(self, target_url_base: str, api_key: str):
+        self.written_files = {}
+        self.target_url_base = target_url_base
+        self.api_key = api_key
+        self.webdav_handler = WebDAVHandler(target_url_base, api_key)
+
+    def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
+        new_file_uri = f"{self.target_url_base}/{db_file_metadata}"
+
+        self.webdav_handler.upload_file(new_file_uri, content, create_parent_dirs=True)

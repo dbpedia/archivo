@@ -189,7 +189,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
 
         try:
             archivo_test_url = binding["archivoCheck"]["value"]
-            archiv_test_severity = inspectVocabs.hackyShaclInspection(archivo_test_url)
+            archiv_test_severity = inspectVocabs.hacky_shacl_report_severity(archivo_test_url)
         except KeyError:
             archivo_test_url = None
             archiv_test_severity = None
@@ -221,7 +221,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                     "url": goodLicenseURL,
                 },
                 "lode": {
-                    "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
+                    "severity": inspectVocabs.hacky_shacl_report_severity(lodeShaclURL),
                     "url": lodeShaclURL,
                 },
                 "archivo": {
@@ -581,7 +581,7 @@ def getLatestInfoForAll():
                     "url": goodLicenseURL,
                 },
                 "lode": {
-                    "severity": inspectVocabs.hackyShaclInspection(lodeShaclURL),
+                    "severity": inspectVocabs.hacky_shacl_report_severity(lodeShaclURL),
                     "url": lodeShaclURL,
                 },
                 "version": {"label": version, "url": versionURL},

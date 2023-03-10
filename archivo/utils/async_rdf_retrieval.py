@@ -50,7 +50,7 @@ async def collect_linked_content(
     nir, graph, pref_header, concurrent_requests: int, logger=None
 ) -> Tuple[List[str], List[Tuple[str, str]]]:
 
-    defined_uris = IV.get_defined_URIs(nir, graph)
+    defined_uris = IV.get_defined_uris(nir, graph)
 
     all_nt_strings = []
 

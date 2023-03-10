@@ -72,7 +72,7 @@ def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
         go.Scatter(
             x=x_vals,
             y=[results[d][4] for d in x_vals],
-            name=stringTools.generateStarString(4),
+            name=stringTools.generate_star_string(4),
             stackgroup="one",
             line=dict(width=0.5, color="rgb(34, 139, 34)"),
         )
@@ -82,7 +82,7 @@ def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
         go.Scatter(
             x=x_vals,
             y=[results[d][3] for d in x_vals],
-            name=stringTools.generateStarString(3),
+            name=stringTools.generate_star_string(3),
             stackgroup="one",
             line=dict(width=0.5, color="rgb(124, 252, 0)"),
         )
@@ -92,7 +92,7 @@ def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
         go.Scatter(
             x=x_vals,
             y=[results[d][2] for d in x_vals],
-            name=stringTools.generateStarString(2),
+            name=stringTools.generate_star_string(2),
             stackgroup="one",
             line=dict(width=0.5, color="rgb(255, 215, 0)"),
         )
@@ -102,7 +102,7 @@ def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
         go.Scatter(
             x=x_vals,
             y=[results[d][1] for d in x_vals],
-            name=stringTools.generateStarString(1),
+            name=stringTools.generate_star_string(1),
             stackgroup="one",
             line=dict(width=0.5, color="rgb(255, 165, 0)"),
         )
@@ -112,7 +112,7 @@ def generate_star_graph(ontologies, stats_path, timespan=6, interval=2):
         go.Scatter(
             x=x_vals,
             y=[results[d][0] for d in x_vals],
-            name=stringTools.generateStarString(0),
+            name=stringTools.generate_star_string(0),
             stackgroup="one",
             line=dict(width=0.5, color="rgb(255, 0, 0)"),
         )

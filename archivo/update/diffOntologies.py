@@ -14,7 +14,7 @@ from archivo.utils import (
     archivoConfig,
     docTemplates,
     async_rdf_retrieval,
-    inspectVocabs,
+    graph_handling,
 )
 from archivo.utils.archivoLogs import diff_logger
 from string import Template
@@ -140,9 +140,9 @@ def checkForNewVersion(
     logger.info(f"Checking the header for {vocab_uri}")
     # when both of the old values are not compareable, always download and check
     if (
-        stringTools.isNoneOrEmpty(oldETag)
-        and stringTools.isNoneOrEmpty(oldLastMod)
-        and stringTools.isNoneOrEmpty(oldContentLength)
+        stringTools.is_none_or_empty(oldETag)
+        and stringTools.is_none_or_empty(oldLastMod)
+        and stringTools.is_none_or_empty(oldContentLength)
     ):
         return True, None
     acc_header = {"Accept": bestHeader}
@@ -244,7 +244,7 @@ def localDiffAndRelease(
             if rapper_errors != []:
                 return None, "\n".join(rapper_errors), None
 
-            graph = inspectVocabs.get_graph_of_string(
+            graph = graph_handling.get_graph_of_string(
                 orig_turtle_content, "text/turtle"
             )
             nt_list, retrieval_errors = async_rdf_retrieval.gather_linked_content(
@@ -387,7 +387,7 @@ def localDiffAndRelease(
                 semantic_version=newSemVersion,
                 dev_uri=devURI,
             )
-            new_version.generateFiles()
+            new_version.generate_files()
 
             databus_dataset_jsonld = new_version.build_databus_jsonld()
 
@@ -419,10 +419,10 @@ def handleDiffForUri(
     logger=diff_logger,
 ):
     if devURI != "":
-        groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri, dev=True)
+        groupId, artifact = stringTools.generate_databus_identifier_from_uri(uri, dev=True)
         ontoLocationURI = devURI
     else:
-        groupId, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        groupId, artifact = stringTools.generate_databus_identifier_from_uri(uri)
         ontoLocationURI = uri
     artifactPath = os.path.join(localDir, groupId, artifact)
     lastVersionPath = os.path.join(artifactPath, lastVersion)

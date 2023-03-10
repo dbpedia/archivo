@@ -3,16 +3,17 @@ import os
 from datetime import datetime
 from logging import Logger
 from string import Template
-from typing import Dict
+from typing import Dict, List
 import databusclient
+import rdflib
 from rdflib import URIRef, Literal
 
 from archivo.crawling.discovery import handleDevURI
 from archivo.models.ContentNegotiation import RDF_Type, get_file_extension, get_accept_header
 from archivo.models.CrawlingResponse import CrawlingResponse
 from archivo.models.DatabusIdentifier import DatabusFileMetadata, DatabusVersionIdentifier
-from archivo.models.FileWriter import DataWriter
-from archivo.utils import ontoFiles, stringTools, inspectVocabs, feature_plugins, docTemplates, generatePoms, \
+from archivo.models.DataWriter import DataWriter
+from archivo.utils import ontoFiles, stringTools, graph_handling, feature_plugins, docTemplates, generatePoms, \
     archivoConfig, parsing
 from archivo.utils.validation import TestSuite
 
@@ -22,6 +23,7 @@ class ArchivoVersion:
             self,
             confirmed_nir: str,
             crawling_result: CrawlingResponse,
+            ontology_graph: rdflib.Graph,
             databus_version_identifier: DatabusVersionIdentifier,
             test_suite: TestSuite,
             access_date: datetime,
@@ -44,6 +46,7 @@ class ArchivoVersion:
         self.data_writer = data_writer
         self.db_version_identifier = databus_version_identifier
         self.crawling_result = crawling_result
+        self.ontology_graph = ontology_graph
         self.isDev = False if dev_uri == "" else True
         self.location_uri = crawling_result.response.url if dev_uri == "" else dev_uri
         self.reference_uri = dev_uri if self.isDev else self.nir
@@ -65,7 +68,7 @@ class ArchivoVersion:
 
         self.stars_dict = {}
 
-    def generate_parsed_rdf(self):
+    def __generate_parsed_rdf(self):
 
         for parsing_type in RDF_Type:
             parsing_result = parsing.parse_rdf_from_string(self.crawling_result.rdf_content,
@@ -80,12 +83,12 @@ class ArchivoVersion:
                                                    content_length=content_length)
             self.data_writer.write_databus_file(parsing_result.parsed_rdf, db_file_metadata)
 
-    def generate_shacl_reports(self):
+    def __generate_shacl_reports(self):
 
         shacl_report_mappings = {
-            self.test_suite.archivoConformityTest: ("archivoMetadata", None),
-            self.test_suite.licenseViolationValidation: ("minLicense", "License-I"),
-            self.test_suite.licenseWarningValidation: ("goodLicense", "License-II"),
+            self.test_suite.archivo_conformity_test: ("archivoMetadata", None),
+            self.test_suite.license_existence_check: ("minLicense", "License-I"),
+            self.test_suite.license_property_check: ("goodLicense", "License-II"),
             self.test_suite.lodeReadyValidation: ("lodeMetadata", "lode-conform")
         }
 
@@ -95,25 +98,55 @@ class ArchivoVersion:
                 conforms,
                 report_graph,
                 report_text,
-            ) = shacl_report_fun(self.graph)
+            ) = shacl_report_fun(self.ontology_graph)
 
-            serialized_report = inspectVocabs.get_turtle_graph(report_graph)
+            serialized_report = graph_handling.serialize_graph(report_graph, rdf_format="turtle")
             shasum, content_length = stringTools.get_content_stats(bytes(serialized_report))
             db_file_metadata = DatabusFileMetadata(version_identifier=self.db_version_identifier,
                                                    content_variants={"type": "shaclReport", "validates": validates_cv},
                                                    file_extension="ttl",
                                                    sha_256_sum=shasum,
-                                                   content_length=content_length
+                                                   content_length=content_length,
+                                                   compression=None
                                                    )
             self.data_writer.write_databus_file(serialized_report, db_file_metadata)
 
             if report_key:
                 self.metadata_dict["test-results"][report_key] = conforms
 
-    def generateFiles(self):
+    def __generate_documentation_files(self):
+        """generates the HTML documentation files"""
 
-        self.generate_parsed_rdf()
-        self.generate_shacl_reports()
+        # generate lode docu
+        docustring, lode_error = feature_plugins.getLodeDocuFile(
+            self.location_uri, logger=self.logger
+        )
+
+        if docustring:
+            shasum, content_length = stringTools.get_content_stats(bytes(docustring))
+            db_metadata = DatabusFileMetadata(
+                version_identifier=self.db_version_identifier,
+                content_variants={"type": "generatedDocu"},
+                file_extension="html",
+                sha_256_sum=shasum,
+                content_length=content_length,
+                compression=None,
+            )
+            self.data_writer.write_databus_file(docustring, db_metadata)
+
+        # TODO: Include pylode once they merged my pull request
+
+
+
+
+
+
+
+    def generate_files(self):
+
+        self.__generate_parsed_rdf()
+        self.__generate_shacl_reports()
+        self.__generate_documentation_files()
 
 
         # checks consistency with and without imports
@@ -198,7 +231,7 @@ class ArchivoVersion:
     def handleTrackThis(self):
         if self.isDev:
             return None, None
-        trackThisURI = inspectVocabs.getTrackThisURI(self.graph)
+        trackThisURI = graph_handling.get_track_this_uri(self.ontology_graph)
         if trackThisURI is not None and self.location_uri != trackThisURI:
             self.user_output.append(
                 {
@@ -222,47 +255,30 @@ class ArchivoVersion:
         else:
             return False, None
 
-    def __get_distribution_of_file(self, filename: str) -> str:
-        only_name = filename.split(".")[0]
-        ftype = filename.split(".")[1]
+    def __generate_distributions(self) -> List[str]:
 
-        cv_strings = only_name.split("_")[1:]
+        distributions = []
 
-        # get cvs from file
+        for metadata, error in self.data_writer.written_files.items():
+            if error:
+                self.logger.error(f"Error during writing file {metadata}: {error}")
+            else:
+                dst = databusclient.create_distribution(
+                    url=f"{self.data_writer.target_url_base}/{metadata}",
+                    cvs=metadata.content_variants,
+                    file_format=metadata.file_extension,
+                    compression=metadata.compression,
+                    sha256_length_tuple=(metadata.sha_256_sum, metadata.content_length)
+                )
+                distributions.append(dst)
 
-        cvs = {}
-
-        for cv_string in cv_strings:
-            key = cv_string.split("=")[0]
-            val = cv_string.split("=")[1]
-            cvs[key] = val
-
-        # shasum and filelength
-        BUF_SIZE = 65536
-
-        file_length = 0
-        sha256sum = hashlib.sha256()
-        with open(os.path.join(self.file_path, filename)) as f:
-            while True:
-                data = f.read(BUF_SIZE)
-                if not data:
-                    break
-                file_length += len(data)
-                sha256sum.update(data)
-
-        distrib = databusclient.create_distribution(
-            url=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}/{filename}",
-            cvs=cvs,
-            file_format=ftype,
-            sha256_length_tuple=(sha256sum.hexdigest(), file_length)
-        )
-        return distrib
+        return distributions
 
     def __get_label(self) -> str:
         label = self.nir if not self.isDev else self.nir + " DEV"
 
-        if self.graph is not None:
-            label_found = inspectVocabs.getLabel(self.graph)
+        if self.ontology_graph is not None:
+            label_found = graph_handling.get_label(self.ontology_graph)
             if label_found is not None:
                 label = label_found if not self.isDev else label_found + " DEV"
         return label
@@ -272,31 +288,30 @@ class ArchivoVersion:
             non_information_uri=self.reference_uri
         )
 
-        if self.graph is not None:
-            found_comment = inspectVocabs.getComment(self.graph)
+        if self.ontology_graph is not None:
+            found_comment = graph_handling.get_comment(self.ontology_graph)
             if found_comment is not None:
                 comment = found_comment
 
         return comment
 
     def __get_description(self) -> str:
-        timestamp_now = datetime.strptime(self.version, "%Y.%m.%d-%H%M%S")
         description = (
             Template(docTemplates.description)
             if not self.isDev
             else Template(docTemplates.description_dev)
         )
 
-        if self.graph is not None:
-            found_description = inspectVocabs.getDescription(self.graph)
-            versionIRI = inspectVocabs.getOwlVersionIRI(self.graph)
+        if self.ontology_graph is not None:
+            found_description = graph_handling.get_description(self.ontology_graph)
+            versionIRI = graph_handling.get_owl_version_iri(self.ontology_graph)
             if found_description is not None:
                 description = (
                         description.safe_substitute(
                             non_information_uri=self.nir,
                             snapshot_url=self.location_uri,
                             owl_version_iri=versionIRI,
-                            date=str(timestamp_now),
+                            date=self.db_version_identifier.version,
                         )
                         + "\n\n"
                         + docTemplates.description_intro
@@ -315,7 +330,7 @@ class ArchivoVersion:
 
     def __get_license(self) -> str:
 
-        found_license = inspectVocabs.getLicense(self.graph)
+        found_license = inspectVocabs.get_license(self.ontology_graph)
         if isinstance(found_license, URIRef):
             found_license = str(found_license).strip("<>")
         elif isinstance(found_license, Literal):
@@ -329,9 +344,7 @@ class ArchivoVersion:
         if group_info is None:
             group_info = {}
 
-        publish_files = [f for f in os.listdir(self.file_path) if os.path.isfile(f)]
-
-        distribs = [self.__get_distribution_of_file(fname) for fname in publish_files]
+        distribs = self.__generate_distributions()
 
         title = self.__get_label()
         comment = self.__get_comment()
@@ -339,7 +352,7 @@ class ArchivoVersion:
         license_url = self.__get_license()
         if group_info == {}:
             dataset = databusclient.createDataset(
-                version_id=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}",
+                version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
                 description=description,
@@ -348,7 +361,7 @@ class ArchivoVersion:
             )
         else:
             dataset = databusclient.createDataset(
-                version_id=f"{archivoConfig.download_url_base}/{self.group}/{self.artifact}/{self.version}",
+                version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
                 description=description,

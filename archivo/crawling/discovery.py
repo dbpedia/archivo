@@ -18,7 +18,7 @@ from archivo.crawling.ArchivoVersion import ArchivoVersion
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 
-from archivo.utils import stringTools, ontoFiles, archivoConfig, inspectVocabs, async_rdf_retrieval
+from archivo.utils import stringTools, ontoFiles, archivoConfig, graph_handling, async_rdf_retrieval
 
 from BestEffortCrawling import determine_best_content_type
 
@@ -54,7 +54,7 @@ def checkRobot(uri):
 def check_NIR(uri: str, graph: rdflib.Graph, output: List[Dict] = None):
     if output is None:
         output = []
-    candidates = inspectVocabs.get_ontology_URIs(graph)
+    candidates = graph_handling.get_ontology_uris(graph)
 
     if not candidates:
         output.append(
@@ -186,7 +186,7 @@ def handleNewUri(
     vocab_uri = urldefrag(vocab_uri)[0]
     # testing uri validity
     logger.info(f"Trying to validate {vocab_uri}")
-    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(vocab_uri)
+    groupId, artifact = stringTools.generate_databus_identifier_from_uri(vocab_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
         user_output.append(
@@ -267,7 +267,7 @@ def handleNewUri(
 
     if not ont_succ and real_ont_uri is None:
         # if no or no different ontology URI -> check defined_by
-        real_ont_uri = inspectVocabs.getDefinedByUri(graph)
+        real_ont_uri = graph_handling.get_defined_by_uri(graph)
         if real_ont_uri is None:
             logger.info("No Ontology discoverable")
             user_output.append(
@@ -351,7 +351,7 @@ def handleNewUri(
     if isNIR and vocab_uri != real_ont_uri:
         logger.warning(f"unexpected value for real uri: {real_ont_uri}")
 
-    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(real_ont_uri)
+    groupId, artifact = stringTools.generate_databus_identifier_from_uri(real_ont_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
         user_output.append(
@@ -426,7 +426,7 @@ def handleNewUri(
         retrieval_errors=retrival_errors,
         user_output=user_output,
     )
-    new_version.generateFiles()
+    new_version.generate_files()
     databus_dataset_jsonld = new_version.build_databus_jsonld(group_info)
 
     logger.info("Deploying the data to the databus...")
@@ -516,7 +516,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
 
     # here we go if the uri is NIR and  its resolveable
 
-    groupId, artifact = stringTools.generateGroupAndArtifactFromUri(nir, dev=True)
+    groupId, artifact = stringTools.generate_databus_identifier_from_uri(nir, dev=True)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {sourceURI}")
         user_output.append(
@@ -553,7 +553,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
         user_output=user_output,
         dev_uri=sourceURI,
     )
-    new_version.generateFiles()
+    new_version.generate_files()
 
     logger.info("Deploying the data to the databus...")
     databus_dataset_jsonld = new_version.build_databus_jsonld()

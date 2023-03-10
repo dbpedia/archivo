@@ -189,7 +189,7 @@ def callMaven(pomfilePath, command):
 def updateParentPoms(rootdir, index):
 
     for uri in index:
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+        group, artifact = stringTools.generate_databus_identifier_from_uri(uri)
 
         parentPomPath = os.path.join(rootdir, group, "pom.xml")
         if not os.path.exists(parentPomPath):

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 
 @dataclass
@@ -9,6 +9,9 @@ class DatabusVersionIdentifier:
     artifact: str
     version: str
 
+    def __str__(self) -> str:
+        return f"{self.user}/{self.group}/{self.artifact}/{self.version}"
+
 
 @dataclass
 class DatabusFileMetadata:
@@ -17,6 +20,7 @@ class DatabusFileMetadata:
     version_identifier: DatabusVersionIdentifier
     content_variants: Dict[str, str]
     file_extension: str
+    compression: Optional[str]
 
     sha_256_sum: str
     content_length: int
@@ -25,4 +29,11 @@ class DatabusFileMetadata:
         return "_".join([f"{k}={v}" for k, v in self.content_variants.items()])
 
     def get_file_name(self):
-        return f"{self.version_identifier.artifact}_{self.content_variants_to_string()}.{self.file_extension}"
+
+        if self.compression:
+            return f"{self.version_identifier.artifact}_{self.content_variants_to_string()}.{self.file_extension}.{self.compression}"
+        else:
+            return f"{self.version_identifier.artifact}_{self.content_variants_to_string()}.{self.file_extension}"
+
+    def __str__(self) -> str:
+        return f"{self.version_identifier}/{self.get_file_name()}"

@@ -7,7 +7,7 @@ from archivo.crawling.discovery import ArchivoVersion
 
 
 def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(
+    group, artifact = stringTools.generate_databus_identifier_from_uri(
         uri, dev=True if dev != "" else False
     )
     title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
@@ -70,7 +70,7 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+            group, artifact = stringTools.generate_databus_identifier_from_uri(uri)
             ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
@@ -95,7 +95,7 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(
+            group, artifact = stringTools.generate_databus_identifier_from_uri(
                 official_uri, dev=True
             )
             ontology, versions = buildDatabaseObjectFromDatabus(
@@ -143,7 +143,7 @@ def update_database():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
-            group, artifact = stringTools.generateGroupAndArtifactFromUri(uri)
+            group, artifact = stringTools.generate_databus_identifier_from_uri(uri)
             ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
@@ -184,7 +184,7 @@ def write_dev_index(filepath):
 
 def update_info_for_ontology(ontology: OfficialOntology):
 
-    group, artifact = stringTools.generateGroupAndArtifactFromUri(ontology.uri)
+    group, artifact = stringTools.generate_databus_identifier_from_uri(ontology.uri)
     _, versions = buildDatabaseObjectFromDatabus(
         ontology.uri, ontology.source, ontology.accessDate
     )
@@ -203,7 +203,7 @@ def update_info_for_ontology(ontology: OfficialOntology):
 
     if ontology.devel is not None:
         dev_ont = ontology.devel
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(
+        group, artifact = stringTools.generate_databus_identifier_from_uri(
             ontology.uri, dev=True
         )
         _, versions = buildDatabaseObjectFromDatabus(

@@ -1,8 +1,9 @@
 from typing import Tuple
 
+import rdflib
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from archivo.utils import inspectVocabs, archivoConfig
+from archivo.utils import graph_handling, archivoConfig, stringTools
 import os
 import sys
 import subprocess
@@ -14,55 +15,42 @@ import re
 consistencyRegex = re.compile(r"Consistent: (Yes|No)")
 
 
-def loadShaclGraph(filename, pubId=None):
-    shaclgraph = Graph()
-    with open(
-        os.path.abspath(os.path.dirname(sys.argv[0]))
-        + os.sep
-        + "shacl"
-        + os.sep
-        + filename,
-        "r",
-    ) as shaclFile:
-        shaclgraph.parse(shaclFile, format="turtle", publicID=pubId)
-    return shaclgraph
-
-
 # needed for gunicorn
-def loadShacl(filepath, pubId=None):
-    shaclgraph = Graph()
+def load_shacl_graph(filepath: str, pub_id: str = None) -> rdflib.Graph:
+    shacl_graph = Graph()
     with open(filepath, "r") as shaclfile:
-        shaclgraph.parse(shaclfile, format="turtle", publicID=pubId)
-    return shaclgraph
+        shacl_graph.parse(shaclfile, format="turtle", publicID=pub_id)
+    return shacl_graph
 
 
 class TestSuite:
-
     pelletPath = archivoConfig.pelletPath
     profileCheckerJar = archivoConfig.profileCheckerJar
 
-    def __init__(self, archivoPath):
-        self.licenseViolationGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "license-I.ttl"),
-            pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl",
+    def __init__(self):
+        archivo_path = stringTools.get_local_directory()
+
+        self.licenseViolationGraph = load_shacl_graph(
+            os.path.join(archivo_path, "shacl", "license-I.ttl"),
+            pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-I.ttl",
         )
-        self.licenseWarningGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "license-II.ttl"),
-            pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl",
+        self.licenseWarningGraph = load_shacl_graph(
+            os.path.join(archivo_path, "shacl", "license-II.ttl"),
+            pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/license-II.ttl",
         )
-        self.lodeTestGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "LODE.ttl"),
-            pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
+        self.lodeTestGraph = load_shacl_graph(
+            os.path.join(archivo_path, "shacl", "LODE.ttl"),
+            pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/LODE.ttl",
         )
         self.displayAxiomsPath = os.path.join(
-            archivoPath, "helpingBinaries", "DisplayAxioms.jar"
+            archivo_path, "helpingBinaries", "DisplayAxioms.jar"
         )
-        self.archivoTestGraph = loadShacl(
-            os.path.join(archivoPath, "shacl", "archivo.ttl"),
-            pubId="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
+        self.archivoTestGraph = load_shacl_graph(
+            os.path.join(archivo_path, "shacl", "archivo.ttl"),
+            pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
 
-    def archivoConformityTest(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
+    def archivo_conformity_test(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.archivoTestGraph,
@@ -76,7 +64,7 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def licenseViolationValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
+    def license_existence_check(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.licenseViolationGraph,
@@ -90,7 +78,7 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def licenseWarningValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
+    def license_property_check(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
             shacl_graph=self.licenseWarningGraph,
@@ -126,7 +114,9 @@ class TestSuite:
         )
         return process.stdout.decode("utf-8"), process.stderr.decode("utf-8")
 
-    def runPelletCommand(self, ontofile, command, parameters=[]):
+    def runPelletCommand(self, ontofile, command, parameters=None):
+        if parameters is None:
+            parameters = []
         pelletCommand = [self.pelletPath, command]
         for parameter in parameters:
             pelletCommand.append(parameter)
@@ -197,85 +187,3 @@ class TestSuite:
         else:
             success = False
             return success, stderr.decode("utf-8").split("\n")
-
-    def runAllTests(self, pathToRdfFile, artifact):
-        ontoGraph = inspectVocabs.getGraphOfVocabFile(pathToRdfFile)
-        filePath, _ = os.path.split(pathToRdfFile)
-        (
-            conformsLicense,
-            reportGraphLicense,
-            reportTextLicense,
-        ) = self.licenseViolationValidation(ontoGraph)
-        with open(
-            os.path.join(
-                filePath, artifact + "_type=shaclReport_validates=minLicense.ttl"
-            ),
-            "w+",
-        ) as minLicenseFile:
-            print(inspectVocabs.get_turtle_graph(reportGraphLicense), file=minLicenseFile)
-        conformsLode, reportGraphLode, reportTextLode = self.lodeReadyValidation(
-            ontoGraph
-        )
-        with open(
-            os.path.join(
-                filePath, artifact + "_type=shaclReport_validates=lodeMetadata.ttl"
-            ),
-            "w+",
-        ) as lodeMetaFile:
-            print(inspectVocabs.get_turtle_graph(reportGraphLode), file=lodeMetaFile)
-        (
-            conformsLicense2,
-            reportGraphLicense2,
-            reportTextLicense2,
-        ) = self.licenseWarningValidation(ontoGraph)
-        with open(
-            os.path.join(
-                filePath, artifact + "_type=shaclReport_validates=goodLicense.ttl"
-            ),
-            "w+",
-        ) as advLicenseFile:
-            print(
-                inspectVocabs.get_turtle_graph(reportGraphLicense2), file=advLicenseFile
-            )
-        # checks consistency with and without imports
-        isConsistent, output = self.getConsistency(
-            os.path.join(filePath, artifact + "_type=parsed.ttl"), ignoreImports=False
-        )
-        isConsistentNoImports, outputNoImports = self.getConsistency(
-            os.path.join(filePath, artifact + "_type=parsed.ttl"), ignoreImports=True
-        )
-        with open(
-            os.path.join(
-                filePath, artifact + "_type=pelletConsistency_imports=FULL.txt"
-            ),
-            "w+",
-        ) as consistencyReport:
-            print(output, file=consistencyReport)
-        with open(
-            os.path.join(
-                filePath, artifact + "_type=pelletConsistency_imports=NONE.txt"
-            ),
-            "w+",
-        ) as consistencyReportNoImports:
-            print(outputNoImports, file=consistencyReportNoImports)
-        # print pellet info files
-        with open(
-            os.path.join(filePath, artifact + "_type=pelletInfo_imports=FULL.txt"), "w+"
-        ) as pelletInfoFile:
-            print(
-                self.getPelletInfo(
-                    os.path.join(filePath, artifact + "_type=parsed.ttl"),
-                    ignoreImports=False,
-                ),
-                file=pelletInfoFile,
-            )
-        with open(
-            os.path.join(filePath, artifact + "_type=pelletInfo_imports=NONE.txt"), "w+"
-        ) as pelletInfoFileNoImports:
-            print(
-                self.getPelletInfo(
-                    os.path.join(filePath, artifact + "_type=parsed.ttl"),
-                    ignoreImports=True,
-                ),
-                file=pelletInfoFileNoImports,
-            )

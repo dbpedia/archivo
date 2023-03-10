@@ -1,4 +1,6 @@
 import atexit
+from typing import List
+
 from archivo.utils import dbUtils, graphing
 from archivo.update import diffOntologies
 import json
@@ -23,23 +25,9 @@ cron = BackgroundScheduler(daemon=True)
 cron.start()
 
 
-def get_correct_path() -> str:
-    local_path = os.path.dirname(os.path.realpath(__file__))
-    if os.path.isdir(os.path.join(local_path, "shacl")) and os.path.isfile(
-        os.path.join(local_path, "helpingBinaries", "DisplayAxioms.jar")
-    ):
-        return local_path
-    else:
-        webservice_logger.error(f"{local_path} is not the correct path")
-        exit(1)
-
-
-archivo_path = get_correct_path()
-
-
-# Chech wether the uri is in archivo uris or an archivo uri is a substring of it
+# Check whether the uri is in archivo uris or an archivo uri is a substring of it
 # True returned when already contained, False otherwise
-def check_uri_containment(uri, archivo_uris):
+def check_uri_containment(uri: str, archivo_uris: List[str]) -> bool:
     for au in archivo_uris:
         if uri == au or au in uri:
             return True
@@ -50,7 +38,7 @@ def check_uri_containment(uri, archivo_uris):
 def ontology_discovery():
     # init parameters
     dataPath = archivoConfig.localPath
-    testSuite = TestSuite(archivo_path)
+    testSuite = TestSuite()
 
     discovery_logger.info("Started discovery of LOV URIs...")
     run_discovery(sources.getLovUrls(), "LOV", dataPath, testSuite)
@@ -123,18 +111,18 @@ def ontology_official_update():
         )
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
-    testSuite = TestSuite(archivo_path)
+    testSuite = TestSuite()
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
 
         # skip problematic ontologies
         if ont.uri in archivoConfig.diff_skip_onts:
             diff_logger.info(
-                f"{str(i+1)}: Skipped ontology {ont.uri} due to earlier problems..."
+                f"{str(i + 1)}: Skipped ontology {ont.uri} due to earlier problems..."
             )
             continue
 
-        diff_logger.info(f"{str(i+1)}: Handling ontology: {ont.uri}")
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(ont.uri)
+        diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
+        group, artifact = stringTools.generate_databus_identifier_from_uri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         try:
             urlInfo = allOntologiesInfo[databusURL]
@@ -196,9 +184,9 @@ def ontology_official_update():
                     db.session.add(dev_version)
                     # change old dev versions to new one
                     for v in (
-                        db.session.query(dbModels.Version)
-                        .filter_by(ontology=ont.devel)
-                        .all()
+                            db.session.query(dbModels.Version)
+                                    .filter_by(ontology=ont.devel)
+                                    .all()
                     ):
                         v.ontology = dev_ont.uri
                     #
@@ -229,10 +217,10 @@ def ontology_dev_update():
     dev_diff_logger.info(
         "Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S")
     )
-    testSuite = TestSuite(archivo_path)
+    testSuite = TestSuite()
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
-        group, artifact = stringTools.generateGroupAndArtifactFromUri(
+        group, artifact = stringTools.generate_databus_identifier_from_uri(
             ont.official, dev=True
         )
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -285,7 +273,7 @@ def ontology_dev_update():
 
 # updates the star graph json every midnight
 def update_star_graph():
-    stats_path = os.path.join(archivo_path, "stats")
+    stats_path = os.path.join(stringTools.get_local_directory(), "stats")
     graphing.generate_star_graph(
         db.session.query(dbModels.OfficialOntology).all(), stats_path
     )
@@ -321,7 +309,7 @@ def deploy_index():
     os.makedirs(indexpath, exist_ok=True)
     # write parent pom if not existent
     if not os.path.isfile(
-        os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")
+            os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")
     ):
         pomString = generatePoms.generateParentPom(
             groupId="archivo-indices",
@@ -334,14 +322,14 @@ def deploy_index():
             groupdocu="This dataset contains the index of all ontologies from DBpedia Archivo",
         )
         with open(
-            os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+"
+                os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+"
         ) as parentPomFile:
             print(pomString, file=parentPomFile)
     # write new md description of artifact
     if not os.path.isfile(
-        os.path.join(
-            archivoConfig.localPath, "archivo-indices", "ontologies", "ontologies.md"
-        )
+            os.path.join(
+                archivoConfig.localPath, "archivo-indices", "ontologies", "ontologies.md"
+            )
     ):
         generatePoms.writeMarkdownDescription(
             artifactPath,
@@ -378,10 +366,9 @@ def deploy_index():
 
 # checks if everything is configured correctly
 def startup_check():
-
     available_files = [
         archivoConfig.pelletPath,
-        os.path.join(archivo_path, "helpingBinaries", "DisplayAxioms.jar"),
+        os.path.join(stringTools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"),
     ]
     available_dirs = [archivoConfig.localPath]
 

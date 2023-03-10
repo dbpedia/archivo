@@ -64,9 +64,9 @@ class WebDAVHandler:
         return responses
 
     def upload_file(
-            self, path: str, data: bytes, create_parent_dirs: bool = False
+            self, path: str, data: str, create_parent_dirs: bool = False
     ) -> requests.Response:
-        """upload data in bytes to a path, optionally creating parent dirs."""
+        """upload content as string to a path, optionally creating parent dirs."""
 
         if create_parent_dirs:
             dirpath = path.rsplit("/", 1)[0]
