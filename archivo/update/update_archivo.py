@@ -1,4 +1,5 @@
 import subprocess
+from typing import Tuple, List, Set
 
 import databusclient
 from rdflib import compare
@@ -16,19 +17,14 @@ from archivo.utils import (
     async_rdf_retrieval,
     graph_handling,
 )
+from archivo.utils.ArchivoExceptions import UnavailableContentException
 from archivo.utils.archivoLogs import diff_logger
 from string import Template
 
-semanticVersionRegex = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
+__SEMANTIC_VERSION_REGEX = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 
-myenv = os.environ.copy()
-myenv["LC_ALL"] = "C"
-
-
-def graphDiff(oldGraph, newGraph):
-    oldIsoGraph = compare.to_isomorphic(oldGraph)
-    newIsoGraph = compare.to_isomorphic(newGraph)
-    return compare.graph_diff(oldIsoGraph, newIsoGraph)
+__ENVIRONMENT = os.environ.copy()
+__ENVIRONMENT["LC_ALL"] = "C"
 
 
 def getSortedNtriples(
@@ -74,7 +70,7 @@ def getSortedNtriples(
                 input=nTriples,
                 stdout=sortedNtriples,
                 stderr=subprocess.PIPE,
-                env=myenv,
+                env=__ENVIRONMENT,
             )
             sortErrors = sortProcess.stderr.decode("utf-8")
         if not os.path.isfile(targetPath) or os.stat(targetPath).st_size == 0:
@@ -101,13 +97,20 @@ def containsIgnoredProps(line):
     return False
 
 
-def commDiff(oldFile, newFile, logger=diff_logger):
+def diff_content(old_triples: List[str], new_triples: List[str]) -> Tuple[List[str], List[str]]:
+    old_set = set(old_triples)
+    new_set = set(new_triples)
+
+    return list(old_set - new_set), list(new_set - old_set)
+
+
+def comm_diff(oldFile, newFile, logger=diff_logger):
     command = ["comm", "-3", oldFile, newFile]
     try:
         oldTriples = []
         newTriples = []
         process = subprocess.run(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=myenv
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=__ENVIRONMENT
         )
         diffErrors = process.stderr.decode("utf-8")
         commOutput = process.stdout.decode("utf-8")
@@ -134,39 +137,42 @@ def commDiff(oldFile, newFile, logger=diff_logger):
         logger.error("Exeption during diffing with comm", exc_info=True)
 
 
-def checkForNewVersion(
-    vocab_uri, oldETag, oldLastMod, oldContentLength, bestHeader, logger=diff_logger
-):
-    logger.info(f"Checking the header for {vocab_uri}")
-    # when both of the old values are not compareable, always download and check
+def check_for_new_version(
+        vocab_uri: str, old_e_tag: str, old_last_mod: str, old_content_length, best_header: str
+) -> bool:
+    """Check the location of the vocab with a HEAD request and check if new content is available.
+    Returns true if new version is available, else false."""
+
     if (
-        stringTools.is_none_or_empty(oldETag)
-        and stringTools.is_none_or_empty(oldLastMod)
-        and stringTools.is_none_or_empty(oldContentLength)
+        stringTools.is_none_or_empty(old_e_tag) and
+        stringTools.is_none_or_empty(old_last_mod) and
+        stringTools.is_none_or_empty(old_content_length)
     ):
-        return True, None
-    acc_header = {"Accept": bestHeader}
-    try:
-        response = requests.head(
-            vocab_uri, headers=acc_header, timeout=30, allow_redirects=True
-        )
-        if response.status_code < 400:
-            newETag = stringTools.getEtagFromResponse(response)
-            newLastMod = stringTools.getLastModifiedFromResponse(response)
-            newContentLength = stringTools.getContentLengthFromResponse(response)
-            if (
-                oldETag == newETag
-                and oldLastMod == newLastMod
-                and oldContentLength == newContentLength
-            ):
-                return False, None
-            else:
-                return True, None
-        else:
-            return None, f"No Access - Status {str(response.status_code)}"
-    except Exception as e:
-        logger.warning("Too many redirects, cancel parsing...")
-        return None, str(e)
+        # if none of the old versions are compareable -> full download diff is always needed
+        return True
+
+    response = requests.head(
+        vocab_uri, headers={"Accept": best_header}, timeout=30, allow_redirects=True
+    )
+
+    if response.status_code > 400:
+        raise UnavailableContentException(response)
+
+    new_e_tag = stringTools.getEtagFromResponse(response)
+    new_last_mod = stringTools.getLastModifiedFromResponse(response)
+    new_content_length = stringTools.getContentLengthFromResponse(response)
+    if (
+            old_e_tag == new_e_tag
+            and old_last_mod == new_last_mod
+            and old_content_length == new_content_length
+    ):
+        return False
+    else:
+        return True
+
+
+
+
 
 
 def localDiffAndRelease(
@@ -321,7 +327,7 @@ def localDiffAndRelease(
         getSortedNtriples(
             oldNtriples, old_sorted_nt_path, uri, inputType="ntriples", logger=logger
         )
-        isEqual, oldTriples, newTriples = commDiff(
+        isEqual, oldTriples, newTriples = comm_diff(
             old_sorted_nt_path, new_sorted_nt_path, logger=logger
         )
         # if len(old) == 0 and len(new) == 0:
@@ -335,7 +341,7 @@ def localDiffAndRelease(
             oldSuccess, oldAxioms = testSuite.getAxiomsOfOntology(old_sorted_nt_path)
             newSuccess, newAxioms = testSuite.getAxiomsOfOntology(new_sorted_nt_path)
             if oldSuccess and newSuccess:
-                newSemVersion, oldAxioms, newAxioms = getNewSemanticVersion(
+                newSemVersion, oldAxioms, newAxioms = build_new_semantic_version(
                     lastSemVersion, oldAxioms, newAxioms
                 )
             else:
@@ -464,24 +470,22 @@ def handleDiffForUri(
     # this is for handling slash URIs explicitly with related content
     if uri.endswith("/"):
         # in the case of slash uris -> directly jump to the content diff
-        isDiff = True
+        is_diff = True
     else:
         # check headers if something changed
-        isDiff, error = checkForNewVersion(
-            ontoLocationURI,
-            oldETag,
-            oldLastMod,
-            contentLength,
-            bestHeader,
-            logger=logger,
-        )
-    # isDiff, error = checkForNewVersion(
-    #     ontoLocationURI, oldETag, oldLastMod, contentLength, bestHeader, logger=logger
-    # )
-    if isDiff is None:
-        logger.warning("Header Access: " + error)
-        return None, "Header Access: " + error, None
-    if isDiff:
+        try:
+            is_diff = check_for_new_version(
+                ontoLocationURI,
+                oldETag,
+                oldLastMod,
+                contentLength,
+                bestHeader,
+            )
+        except [UnavailableContentException, requests.TooManyRedirects] as e:
+            logger.warning(e)
+            return None, str(e), None
+
+    if is_diff:
         logger.info(f"Fond potential different version for {ontoLocationURI}")
         return localDiffAndRelease(
             uri,
@@ -500,20 +504,19 @@ def handleDiffForUri(
         return False, f"No different version for {uri}", None
 
 
-def getNewSemanticVersion(
-    oldSemanticVersion, oldAxiomSet, newAxiomSet, logger=diff_logger
+def build_new_semantic_version(
+    old_semantic_version: str, old_axiom_set: Set[str], new_axiom_set: Set[str], logger=diff_logger
 ):
 
-    both = oldAxiomSet.intersection(newAxiomSet)
-    old = oldAxiomSet - newAxiomSet
-    new = newAxiomSet - oldAxiomSet
+    old = old_axiom_set - new_axiom_set
+    new = new_axiom_set - old_axiom_set
 
     logger.info("Old Axioms:\n" + "\n".join(old))
     logger.info("New Axioms:\n" + "\n".join(new))
 
-    match = semanticVersionRegex.match(oldSemanticVersion)
+    match = __SEMANTIC_VERSION_REGEX.match(old_semantic_version)
     if match is None:
-        logger.warning(f"Bad format of semantic version: {oldSemanticVersion}")
+        logger.warning(f"Bad format of semantic version: {old_semantic_version}")
         return (
             "ERROR: Can't build new semantic version because last is broken",
             old,
@@ -536,7 +539,7 @@ if __name__ == "__main__":
     from archivo.utils.validation import TestSuite
     import traceback
 
-    ts = TestSuite(".")
+    ts = TestSuite()
     try:
         success, msg, archivoVersion = handleDiffForUri(
             "http://www.bbc.co.uk/ontologies/bbc",

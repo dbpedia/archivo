@@ -2,7 +2,7 @@ import atexit
 from typing import List
 
 from archivo.utils import dbUtils, graphing
-from archivo.update import diffOntologies
+from archivo.update import update_archivo
 import json
 import os
 from datetime import datetime

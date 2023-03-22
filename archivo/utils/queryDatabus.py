@@ -2,8 +2,8 @@ import requests, sys, requests, traceback, rdflib
 from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
-from utils import ontoFiles, inspectVocabs, stringTools
-from utils.stringTools import generateStarString
+from archivo.utils import ontoFiles, graph_handling, stringTools
+from archivo.utils.stringTools import generateStarString
 from datetime import datetime, timedelta
 import csv
 
@@ -189,7 +189,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
 
         try:
             archivo_test_url = binding["archivoCheck"]["value"]
-            archiv_test_severity = inspectVocabs.hacky_shacl_report_severity(archivo_test_url)
+            archiv_test_severity = graph_handling.hacky_shacl_report_severity(archivo_test_url)
         except KeyError:
             archivo_test_url = None
             archiv_test_severity = None

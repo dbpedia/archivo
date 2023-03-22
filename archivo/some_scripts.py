@@ -1,11 +1,10 @@
 from utils.validation import TestSuite
-from utils.queryDatabus import latestNtriples, get_last_official_index
-import crawlURIs
+from utils.queryDatabus import get_last_official_index
+from archivo.crawling import discovery
 from utils.archivoLogs import discovery_logger
-import json
 import requests
 import ast
-from utils import inspectVocabs as IV
+from utils import graph_handling as IV
 from utils import ontoFiles
 import rdflib
 from io import StringIO
@@ -100,7 +99,7 @@ def retrieve_defined_graph_as_nt(uri, header, permit_rapper_errors=False):
 
 def concat_defined_graphs(ont_nt_str, graph, pref_header):
 
-    defined_uris = IV.get_defined_URIs(graph)
+    defined_uris = IV.get_defined_uris(graph)
 
     all_nt_strings = []
     all_nt_strings.append(ont_nt_str)
