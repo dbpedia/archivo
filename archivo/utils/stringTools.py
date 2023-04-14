@@ -53,8 +53,10 @@ def generateGroupAndArtifactFromUri(url, dev=False):
         .replace("~", "--")
         .replace(":", "--")
     )
-    if artifact == "" or len(artifact) <= 3:
+    if artifact == "":
         artifact = "defaultArtifact"
+    elif len(artifact) <= 3:
+        artifact = f"{artifact}--artifact"
 
     if group.startswith("www."):
         group = group.replace("www.", "", 1)
