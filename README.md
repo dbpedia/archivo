@@ -9,7 +9,7 @@ Archivo is an online ontology interface and augmented archive, that discovers, c
 * **Testing & Rating:** Archivo runs some test to check the usability of a ontology, for example parsing, licenses or consistency. For this Archivo introduced a [star-rating](#Stars). 
 Check out <http://archivo.dbpedia.org/info> for a detailed view of the versions of each ontology with the test results.
 
-## Accessing a Ontology on Archivo
+## Accessing an Ontology on Archivo
 
 ### Simple
 To download the latest version use 
