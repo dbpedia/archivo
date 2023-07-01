@@ -28,7 +28,7 @@ downloads the latest version of the Cinelab ontology as Turtle file.
 
 By using a GET request with the implemented formats (`application/rdf+xml`, `application/n-triples` or `text/turtle`) as Accept-Headers returns all information about all versions of this URI as RDF.
 
-## Ontologies included in Archivo
+## Browse, Find and Search Ontologies included in Archivo
 
 There are multiple options to find an ontology (snapshot):
 
@@ -38,7 +38,7 @@ There are multiple options to find an ontology (snapshot):
     * A collection of the latest original files: [here](https://databus.dbpedia.org/jfrey/collections/archivo-latest-original-ontology-snapshots)
     * A collecttion of the latest parsed files: [here](https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots)
 
-## Adding an ontology to Archivo
+## Adding an Ontology to Archivo
 
 Ontologies can be added to Archivo using the [add-service](http://archivo.dbpedia.org/add) of the frontend. But the ontology must fulfill two requirements to be added:
 * The URI must be accessible and the RDF content of the ontology must be reachable via content negotiation from there in any of these formats: RDF+XML, N-Triples, Turtle
@@ -67,7 +67,7 @@ If the ontology fulfills the baseline, it can earn two further stars by using go
 ## Archivo Documentation
 
 
-### Files
+### Augmentation Files (on the Databus)
 
 Archivo provides for each version different files:
 
@@ -85,11 +85,9 @@ Archivo provides for each version different files:
 | diff | axioms={old,new} | These file contain the added/deleted triples | 
 
 
-
-
 ### Ontology Sources
 
-Archivo uses four different sources of potential ontologies:
+Archivo uses four different sources to find potential ontologies:
 
 1. Ontology Repositories: e.g ontologies listed in [LOV](https://lov.linkeddata.es/dataset/lov/)
 2. Subjects, Predicates and Objects of Ontologies: Every SPO in an Ontology can lead to a potential new ontology, so Archivo can discover new vocabularies by analyzing already listed ontologies
