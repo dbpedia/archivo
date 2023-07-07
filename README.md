@@ -9,14 +9,14 @@ Archivo is an online ontology interface and augmented archive, that discovers, c
 * **Testing & Rating:** Archivo runs some test to check the usability of a ontology, for example parsing, licenses or consistency. For this Archivo introduced a [star-rating](#Stars). 
 Check out <http://archivo.dbpedia.org/info> for a detailed view of the versions of each ontology with the test results.
 
-## Accessing a Ontology on Archivo
+## Accessing an Ontology (Version) via Archivo
 
 ### Simple
 To download the latest version use 
 
 `http://archivo.dbpedia.org/download?o={ontology-URI}&f={file-extension}`
 
-and Archivo redirects to the latest version.
+and Archivo redirects to the latest version that is backed up.
 
 The format can be set by using `f={ttl,owl,nt}` (optional, default: owl) or by setting the Accept-Header (first one overwrites the latter).
 
@@ -28,7 +28,7 @@ downloads the latest version of the Cinelab ontology as Turtle file.
 
 By using a GET request with the implemented formats (`application/rdf+xml`, `application/n-triples` or `text/turtle`) as Accept-Headers returns all information about all versions of this URI as RDF.
 
-## Ontologies included in Archivo
+## Browse, Find and Search Ontologies included in Archivo
 
 There are multiple options to find an ontology (snapshot):
 
@@ -38,13 +38,13 @@ There are multiple options to find an ontology (snapshot):
     * A collection of the latest original files: [here](https://databus.dbpedia.org/jfrey/collections/archivo-latest-original-ontology-snapshots)
     * A collecttion of the latest parsed files: [here](https://databus.dbpedia.org/jfrey/collections/archivo-latest-ontology-snapshots)
 
-## Adding a ontology to Archivo
+## Adding an Ontology to Archivo
 
 Ontologies can be added to Archivo using the [add-service](http://archivo.dbpedia.org/add) of the frontend. But the ontology must fulfill two requirements to be added:
 * The URI must be accessible and the RDF content of the ontology must be reachable via content negotiation from there in any of these formats: RDF+XML, N-Triples, Turtle
 * The URI defined in the a owl:Ontology (or skos:ConceptScheme) triple must be the same as the one provided here. If that's not the case Archivo tries to handle the new URI just like the one entered.
 
-## Stars
+## Star Rating
 
 Archivo provides a basic star-rating (not to be confused with the 5 stars of linked data).
 
@@ -67,7 +67,7 @@ If the ontology fulfills the baseline, it can earn two further stars by using go
 ## Archivo Documentation
 
 
-### Files
+### Augmentation Files (on the Databus)
 
 Archivo provides for each version different files:
 
@@ -85,13 +85,11 @@ Archivo provides for each version different files:
 | diff | axioms={old,new} | These file contain the added/deleted triples | 
 
 
-
-
 ### Ontology Sources
 
-Archivo uses four different sources of potential ontologies:
+Archivo uses four different sources to find potential ontologies:
 
 1. Ontology Repositories: e.g ontologies listed in [LOV](https://lov.linkeddata.es/dataset/lov/)
 2. Subjects, Predicates and Objects of Ontologies: Every SPO in an Ontology can lead to a potential new ontology, so Archivo can discover new vocabularies by analyzing already listed ontologies
-3. [VOID](https://www.w3.org/TR/void/) Data: Search new ontologies by looking for `rdfs:isDfinedBy` triples in classes and properties used in the whole Databus
+3. [VOID](https://www.w3.org/TR/void/) Data: Search for new ontologies by looking at VoID metadata summaries describing used classes and properties (on the DBpedia Databus) 
 4. [User Suggestions](http://archivo.dbpedia.org/add)
