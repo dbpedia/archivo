@@ -1,13 +1,14 @@
-from typing import Tuple
+from typing import Optional, Tuple, Set
 
 import rdflib
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from archivo.utils import graph_handling, archivoConfig, stringTools
+from archivo.utils import graph_handling, archivoConfig, string_tools
 import os
 import sys
 import subprocess
 import re
+from archivo.utils.ArchivoExceptions import UnparseableRDFException
 
 # from owlready2 import get_ontology, sync_reasoner_pellet
 
@@ -16,7 +17,7 @@ consistencyRegex = re.compile(r"Consistent: (Yes|No)")
 
 
 # needed for gunicorn
-def load_shacl_graph(filepath: str, pub_id: str = None) -> rdflib.Graph:
+def load_shacl_graph(filepath: str, pub_id: Optional[str] = None) -> rdflib.Graph:
     shacl_graph = Graph()
     with open(filepath, "r") as shaclfile:
         shacl_graph.parse(shaclfile, format="turtle", publicID=pub_id)
@@ -50,10 +51,12 @@ class TestSuite:
             pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
 
-    def archivo_conformity_test(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
+    def __run_local_shacl_test(
+        self, ontograph: Graph, testgraph: Graph
+    ) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
-            shacl_graph=self.archivoTestGraph,
+            shacl_graph=testgraph,
             ont_graph=None,
             inference="none",
             abort_on_error=False,
@@ -63,48 +66,18 @@ class TestSuite:
         )
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
+
+    def archivo_conformity_test(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
+        return self.__run_local_shacl_test(ontograph, self.archivoTestGraph)
 
     def license_existence_check(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
-        success, report_graph, report_text = validate(
-            ontograph,
-            shacl_graph=self.licenseViolationGraph,
-            ont_graph=None,
-            inference="none",
-            abort_on_error=False,
-            meta_shacl=False,
-            debug=False,
-            advanced=True,
-        )
-        report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
-        return success, report_graph, report_text
+        return self.__run_local_shacl_test(ontograph, self.licenseViolationGraph)
 
     def license_property_check(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
-        success, report_graph, report_text = validate(
-            ontograph,
-            shacl_graph=self.licenseWarningGraph,
-            ont_graph=None,
-            inference="none",
-            abort_on_error=False,
-            meta_shacl=False,
-            debug=False,
-            advanced=True,
-        )
-        report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
-        return success, report_graph, report_text
+        return self.__run_local_shacl_test(ontograph, self.licenseWarningGraph)
 
     def lodeReadyValidation(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
-        success, report_graph, report_text = validate(
-            ontograph,
-            shacl_graph=self.lodeTestGraph,
-            ont_graph=None,
-            inference="none",
-            abort_on_error=False,
-            meta_shacl=False,
-            debug=False,
-            advanced=True,
-        )
-        report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
-        return success, report_graph, report_text
+        return self.__run_local_shacl_test(ontograph, self.lodeTestGraph)
 
     def getProfileCheck(self, ontofile):
         process = subprocess.run(
@@ -187,3 +160,18 @@ class TestSuite:
         else:
             success = False
             return success, stderr.decode("utf-8").split("\n")
+
+    def get_axioms_of_rdf_ontology(self, ontology_content: str) -> Set[str]:
+        process = subprocess.run(
+            ["java", "-jar", self.displayAxiomsPath],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            input=bytes(ontology_content, "utf-8"),
+        )
+
+        axiomSet = process.stdout.decode("utf-8").split("\n")
+
+        if process.returncode == 0:
+            return set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
+        else:
+            raise UnparseableRDFException(process.stderr.decode("utf-8"))

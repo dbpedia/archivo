@@ -10,7 +10,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from archivo.crawling import discovery, sources
-from utils import archivoConfig, stringTools, queryDatabus, generatePoms
+from utils import archivoConfig, string_tools, query_databus, generatePoms
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
@@ -122,7 +122,7 @@ def ontology_official_update():
             continue
 
         diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
-        group, artifact = stringTools.generate_databus_identifier_from_uri(ont.uri)
+        group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         try:
             urlInfo = allOntologiesInfo[databusURL]
@@ -220,7 +220,7 @@ def ontology_dev_update():
     testSuite = TestSuite()
     for ont in db.session.query(dbModels.DevelopOntology).all():
         dev_diff_logger.info(f"Handling ontology: {ont.official} (DEV)")
-        group, artifact = stringTools.generate_databus_identifier_from_uri(
+        group, artifact = string_tools.generate_databus_identifier_from_uri(
             ont.official, dev=True
         )
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -273,7 +273,7 @@ def ontology_dev_update():
 
 # updates the star graph json every midnight
 def update_star_graph():
-    stats_path = os.path.join(stringTools.get_local_directory(), "stats")
+    stats_path = os.path.join(string_tools.get_local_directory(), "stats")
     graphing.generate_star_graph(
         db.session.query(dbModels.OfficialOntology).all(), stats_path
     )
@@ -368,7 +368,7 @@ def deploy_index():
 def startup_check():
     available_files = [
         archivoConfig.pelletPath,
-        os.path.join(stringTools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"),
+        os.path.join(string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"),
     ]
     available_dirs = [archivoConfig.localPath]
 

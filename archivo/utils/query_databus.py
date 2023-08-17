@@ -2,8 +2,8 @@ import requests, sys, requests, traceback, rdflib
 from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
-from archivo.utils import ontoFiles, graph_handling, stringTools
-from archivo.utils.stringTools import generateStarString
+from archivo.utils import ontoFiles, graph_handling, string_tools
+from archivo.utils.string_tools import generateStarString
 from datetime import datetime, timedelta
 import csv
 

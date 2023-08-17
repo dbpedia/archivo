@@ -14,13 +14,13 @@ from datetime import datetime
 from rdflib import Graph
 from requests import Response
 
-from archivo.crawling.ArchivoVersion import ArchivoVersion
+from archivo.crawling.archivo_version import ArchivoVersion
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 
-from archivo.utils import stringTools, ontoFiles, archivoConfig, graph_handling, async_rdf_retrieval
+from archivo.utils import string_tools, ontoFiles, archivoConfig, graph_handling, async_rdf_retrieval
 
-from BestEffortCrawling import determine_best_content_type
+from best_effort_crawling import determine_best_content_type
 
 
 # determine_best_content_type

@@ -1,6 +1,12 @@
+from dataclasses import dataclass
+from logging import Logger
 import subprocess
-from typing import Tuple, List, Set
+from pathlib import Path
+from typing import Tuple, List, Set, Optional, Dict
 
+from archivo.crawling.archivo_version import ArchivoVersion
+from archivo.models import content_negotiation
+from archivo.models.data_writer import DataWriter
 import databusclient
 from rdflib import compare
 import requests
@@ -11,20 +17,39 @@ import json
 import re
 from archivo.utils import (
     ontoFiles,
-    stringTools,
+    string_tools,
     archivoConfig,
     docTemplates,
     async_rdf_retrieval,
     graph_handling,
+    validation,
+    parsing,
 )
-from archivo.utils.ArchivoExceptions import UnavailableContentException
+from archivo.utils.ArchivoExceptions import (
+    UnavailableContentException,
+    UnparseableRDFException,
+)
 from archivo.utils.archivoLogs import diff_logger
-from string import Template
+from archivo.models.databus_identifier import (
+    DatabusVersionIdentifier,
+    DatabusFileMetadata,
+)
+from archivo.utils.validation import TestSuite
+from archivo.utils.parsing import RapperParsingResult, RapperParsingInfo
 
 __SEMANTIC_VERSION_REGEX = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 
 __ENVIRONMENT = os.environ.copy()
 __ENVIRONMENT["LC_ALL"] = "C"
+
+
+@dataclass
+class DiffResult:
+    is_diff: bool
+    old_content: str
+    new_content: str
+    old_triples: Set[str]
+    new_triples: Set[str]
 
 
 def getSortedNtriples(
@@ -90,18 +115,35 @@ def getSortedNtriples(
         return [str(e)], []
 
 
-def containsIgnoredProps(line):
+def contains_ignored_props(line):
     for prop in archivoConfig.ignore_props:
         if prop in line:
             return True
     return False
 
 
-def diff_content(old_triples: List[str], new_triples: List[str]) -> Tuple[List[str], List[str]]:
-    old_set = set(old_triples)
-    new_set = set(new_triples)
+def diff_content(old_triples: List[str], new_triples: List[str]) -> DiffResult:
+    """Checks the diff with python builtins. Also handles deduplication and empty lines. Returns a DiffResult"""
 
-    return list(old_set - new_set), list(new_set - old_set)
+    def filterfun(x: str):
+        """Kicking out empty lines"""
+        return x.strip() != ""
+
+    old_set_filtered = set(filter(filterfun, set(old_triples)))
+    new_set_filtered = set(filter(filterfun, set(new_triples)))
+
+    new_triples = new_set_filtered - old_set_filtered
+    old_triples = old_set_filtered - new_set_filtered
+
+    is_diff = not old_triples and not new_triples
+
+    return DiffResult(
+        is_diff,
+        "\n".join(old_triples),
+        "\n".join(new_triples),
+        old_triples,
+        new_triples,
+    )
 
 
 def comm_diff(oldFile, newFile, logger=diff_logger):
@@ -120,9 +162,9 @@ def comm_diff(oldFile, newFile, logger=diff_logger):
         for line in commLines:
             if line.strip() == "":
                 continue
-            if line.startswith("\t") and not containsIgnoredProps(line):
+            if line.startswith("\t") and not contains_ignored_props(line):
                 newTriples.append(line)
-            elif not containsIgnoredProps(line):
+            elif not contains_ignored_props(line):
                 oldTriples.append(line)
 
         if oldTriples == [] and newTriples == []:
@@ -138,15 +180,19 @@ def comm_diff(oldFile, newFile, logger=diff_logger):
 
 
 def check_for_new_version(
-        vocab_uri: str, old_e_tag: str, old_last_mod: str, old_content_length, best_header: str
+    vocab_uri: str,
+    old_e_tag: str,
+    old_last_mod: str,
+    old_content_length: str,
+    best_header: str,
 ) -> bool:
     """Check the location of the vocab with a HEAD request and check if new content is available.
     Returns true if new version is available, else false."""
 
     if (
-        stringTools.is_none_or_empty(old_e_tag) and
-        stringTools.is_none_or_empty(old_last_mod) and
-        stringTools.is_none_or_empty(old_content_length)
+        string_tools.is_none_or_empty(old_e_tag)
+        and string_tools.is_none_or_empty(old_last_mod)
+        and string_tools.is_none_or_empty(old_content_length)
     ):
         # if none of the old versions are compareable -> full download diff is always needed
         return True
@@ -158,21 +204,273 @@ def check_for_new_version(
     if response.status_code > 400:
         raise UnavailableContentException(response)
 
-    new_e_tag = stringTools.getEtagFromResponse(response)
-    new_last_mod = stringTools.getLastModifiedFromResponse(response)
-    new_content_length = stringTools.getContentLengthFromResponse(response)
+    new_e_tag = string_tools.getEtagFromResponse(response)
+    new_last_mod = string_tools.getLastModifiedFromResponse(response)
+    new_content_length = string_tools.getContentLengthFromResponse(response)
     if (
-            old_e_tag == new_e_tag
-            and old_last_mod == new_last_mod
-            and old_content_length == new_content_length
+        old_e_tag == new_e_tag
+        and old_last_mod == new_last_mod
+        and old_content_length == new_content_length
     ):
         return False
     else:
         return True
 
 
+def handle_slash_uris(
+    uri: str, header: str, response: requests.Response, logger: Logger
+) -> RapperParsingResult:
+
+    # parse it as turtle because rdflib used to have problems with parsing from ntriples
+    turtle_parsing_result = parsing.parse_rdf_from_string(
+        response.text,
+        uri,
+        input_type=content_negotiation.get_rdf_type(header),
+        output_type=content_negotiation.RDF_Type.TURTLE,
+    )
+
+    if turtle_parsing_result.parsing_info.errors:
+        raise UnparseableRDFException(
+            f"Found {len(turtle_parsing_result.parsing_info.errors)} Errors during parsing:\n"
+            + "\n".join(turtle_parsing_result.parsing_info.errors)
+        )
+
+    graph = graph_handling.get_graph_of_string(
+        turtle_parsing_result.parsed_rdf, "text/turtle"
+    )
+
+    crawl_parsing_results, retrieval_errors = async_rdf_retrieval.gather_linked_content(
+        uri,
+        graph,
+        pref_header=header,
+        concurrent_requests=50,
+        logger=logger,
+    )
+
+    error_str = "Failed retrieval for content:\n" + "\n".join(
+        [" -- ".join(tp) for tp in retrieval_errors]
+    )
+
+    if retrieval_errors:
+        logger.warning(error_str)
+
+    if len(crawl_parsing_results) <= 0:
+        return RapperParsingResult(
+            response.text,
+            content_negotiation.get_rdf_type(header),
+            turtle_parsing_result.parsing_info,
+        )
+
+    async_rdf_retrieval.join_ntriples_results(crawl_parsing_results)
+
+    nt_parsing_result = parsing.parse_rdf_from_string(
+        response.text,
+        uri,
+        input_type=content_negotiation.get_rdf_type(header),
+        output_type=content_negotiation.RDF_Type.N_TRIPLES,
+    )
+
+    # append original nt content to retrieved content
+    crawl_parsing_results.append(nt_parsing_result)
+
+    return async_rdf_retrieval.join_ntriples_results(crawl_parsing_results)
 
 
+def get_old_nt_content(
+    local_path_base: Optional[str], nt_file_metadata: DatabusFileMetadata
+) -> str:
+    # check if the old file can be loaded from disk
+    local_file_path = Path(f"{local_path_base}/{nt_file_metadata}")
+
+    if local_path_base and local_file_path.is_file():
+        with open(local_file_path) as old_nt_file:
+            return old_nt_file.read()
+    else:
+        old_file_resp = requests.get(f"{archivoConfig.DATABUS_BASE}/{nt_file_metadata}")
+
+        if old_file_resp.status_code >= 400:
+            raise UnavailableContentException(old_file_resp)
+        else:
+            return old_file_resp.text
+
+
+def diff_check_new_file(
+    uri: str,
+    old_metadata: Dict,
+    old_nt_file_path: Optional[str],
+    dev_uri: Optional[str],
+    logger: Logger,
+) -> Tuple[Optional[DiffResult], str]:
+
+    if dev_uri is None:
+        locURI = uri
+    else:
+        locURI = dev_uri
+
+    oldETag = old_metadata["http-data"]["e-tag"]
+    oldLastMod = old_metadata["http-data"]["lastModified"]
+    bestHeader = old_metadata["http-data"]["best-header"]
+    contentLength = old_metadata["http-data"]["content-length"]
+
+    has_new_version = check_for_new_version(
+        locURI, oldETag, oldLastMod, contentLength, bestHeader
+    )
+
+    if not uri.endswith("/") and not has_new_version:
+        # if there are no possible further values, we are done
+        return None, ""
+
+    output = []
+
+    newBestHeader, response, triple_number = discovery.determine_best_content_type(
+        locURI, user_output=output
+    )
+
+    if newBestHeader is None:
+        error_str = "\n".join(
+            [d.get("step", "None") + "  " + d.get("message", "None") for d in output]
+        )
+        logger.warning(f"{locURI} Couldn't parse new version")
+        logger.warning(error_str)
+        raise UnavailableContentException(error_str)
+
+    parsing_result = (
+        handle_slash_uris(uri, bestHeader, response, logger)
+        if uri.endswith("/")
+        else parsing.parse_rdf_from_string(
+            response.text,
+            uri,
+            input_type=content_negotiation.get_rdf_type(newBestHeader),
+            output_type=content_negotiation.RDF_Type.N_TRIPLES,
+        )
+    )
+
+    original_content = parsing_result.parsed_rdf if uri.endswith("/") else response.text
+
+    # raising an exception if there are no triples in the result
+    if parsing_result.parsing_info.triple_number <= 0:
+        raise UnparseableRDFException("\n".join(parsing_result.parsing_info.errors))
+
+    # TODO: this needs to be accessible even remote
+    with open(old_nt_file_path) as old_nt_file:
+        old_file_nt_content = old_nt_file.read()
+
+    old_content_triples = "\n".split(old_file_nt_content)
+    new_content_triples = "\n".split(parsing_result.parsed_rdf)
+
+    diff_result = diff_content(old_content_triples, new_content_triples)
+
+    return diff_result, original_content
+
+
+def create_diff_files(
+    data_writer: DataWriter,
+    diff_result: DiffResult,
+    databus_version_id: DatabusVersionIdentifier,
+    old_axioms: Set[str],
+    new_axioms: Set[str],
+) -> None:
+
+    # create diff triples
+
+    for triples_type, content in [
+        ("new", diff_result.new_content),
+        ("old", diff_result.old_content),
+    ]:
+
+        shasum, content_length = string_tools.get_content_stats(bytes(content, "utf-8"))
+        db_file_metadata = DatabusFileMetadata(
+            version_identifier=databus_version_id,
+            content_length=content_length,
+            sha_256_sum=shasum,
+            compression=None,
+            content_variants={"type": "diff", "triples": triples_type},
+            file_extension="nt",
+        )
+
+        data_writer.write_databus_file(
+            db_file_metadata=db_file_metadata, content=content
+        )
+
+    for axiom_type, content in [("new", new_axioms), ("old", old_axioms)]:
+        content = "\n".join(content)
+        shasum, content_length = string_tools.get_content_stats(
+            bytes("\n".join(content), "utf-8")
+        )
+        db_file_metadata = DatabusFileMetadata(
+            version_identifier=databus_version_id,
+            content_length=content_length,
+            sha_256_sum=shasum,
+            compression=None,
+            content_variants={"type": "diff", "axioms": axiom_type},
+            file_extension="dl",
+        )
+
+        data_writer.write_databus_file(
+            content=content, db_file_metadata=db_file_metadata
+        )
+
+
+def update_for_ontology_uri(
+    uri: str,
+    last_metafile_url: str,
+    last_nt_file_url: str,
+    last_version_timestamp: str,
+    data_writer: DataWriter,
+    test_suite: TestSuite,
+    dev_uri: Optional[str],
+    logger: Logger = diff_logger,
+) -> Tuple[bool, str, Optional[ArchivoVersion]]:
+    try:
+        metadata, old_nt_path, old_version_id = prepare_diff_for_ontology(
+            uri=uri,
+            last_metafile_url=last_metafile_url,
+            last_ntriples_url=last_nt_file_url,
+            last_version_timestamp=last_version_timestamp,
+            data_writer=data_writer,
+            dev_uri=dev_uri,
+        )
+        diff_result, original_content = diff_check_new_file(
+            uri=uri,
+            dev_uri=dev_uri,
+            logger=logger,
+            old_metadata=metadata,
+            old_nt_file_path=old_nt_path,
+        )
+    except Exception as e:
+        return False, str(e), None
+
+    if not diff_result.is_diff:
+        return False, f"No different version for {uri}", None
+    # New version!
+
+    new_version_identifier = DatabusVersionIdentifier(
+        archivoConfig.DATABUS_USER,
+        old_version_id.group,
+        old_version_id.artifact,
+        datetime.now().strftime("%Y.%m.%d-%H%M%S"),
+    )
+
+    old_ont_axioms = test_suite.get_axioms_of_rdf_ontology(diff_result.old_content)
+    new_ont_axioms = test_suite.get_axioms_of_rdf_ontology(diff_result.new_content)
+
+    old_sem_version = metadata["ontology-info"]["semantic-version"]
+
+    new_sem_version, old_diff_axioms, new_diff_axioms = build_new_semantic_version(
+        old_sem_version, old_ont_axioms, new_ont_axioms, logger=logger
+    )
+
+    create_diff_files(
+        data_writer,
+        diff_result,
+        new_version_identifier,
+        old_diff_axioms,
+        new_diff_axioms,
+    )
+
+    new_version = ArchivoVersion(
+        confirmed_nir=uri,
+    )
 
 
 def localDiffAndRelease(
@@ -224,7 +522,7 @@ def localDiffAndRelease(
             newVersionPath,
             artifactName
             + "_type=orig."
-            + stringTools.file_ending_mapping[newBestHeader],
+            + string_tools.file_ending_mapping[newBestHeader],
         )
 
         # This message is used to show errors of the linked data content gathering
@@ -243,7 +541,7 @@ def localDiffAndRelease(
             ) = ontoFiles.parse_rdf_from_string(
                 response.text,
                 uri,
-                input_type=stringTools.rdfHeadersMapping[newBestHeader],
+                input_type=string_tools.rdfHeadersMapping[newBestHeader],
                 output_type="turtle",
             )
 
@@ -271,7 +569,7 @@ def localDiffAndRelease(
             (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
                 response.text,
                 uri,
-                input_type=stringTools.rdfHeadersMapping[newBestHeader],
+                input_type=string_tools.rdfHeadersMapping[newBestHeader],
                 output_type="ntriples",
             )
             if len(nt_list) > 0:
@@ -295,7 +593,7 @@ def localDiffAndRelease(
                     "\n".join(triple_set),
                     uri,
                     input_type="ntriples",
-                    output_type=stringTools.rdfHeadersMapping[newBestHeader],
+                    output_type=string_tools.rdfHeadersMapping[newBestHeader],
                 )
 
                 with open(sourcePath, "w+") as new_orig_file:
@@ -315,13 +613,13 @@ def localDiffAndRelease(
             sourcePath,
             new_sorted_nt_path,
             uri,
-            inputType=stringTools.rdfHeadersMapping[newBestHeader],
+            inputType=string_tools.rdfHeadersMapping[newBestHeader],
             logger=logger,
         )
         if not os.path.isfile(new_sorted_nt_path) or errors != []:
             logger.warning(f"File of {uri} not parseable")
             logger.warning(errors)
-            stringTools.deleteAllFilesInDirAndDir(newVersionPath)
+            string_tools.deleteAllFilesInDirAndDir(newVersionPath)
             return None, f"Couldn't parse File: {errors}", None
         old_sorted_nt_path = os.path.join(newVersionPath, "oldVersionSorted.nt")
         getSortedNtriples(
@@ -333,7 +631,7 @@ def localDiffAndRelease(
         # if len(old) == 0 and len(new) == 0:
         if isEqual:
             logger.info("No new version")
-            stringTools.deleteAllFilesInDirAndDir(newVersionPath)
+            string_tools.deleteAllFilesInDirAndDir(newVersionPath)
             return False, "No new Version", None
         else:
             logger.info("New Version!")
@@ -400,10 +698,12 @@ def localDiffAndRelease(
             logger.info("Deploying the data to the databus...")
 
             try:
-                databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
+                databusclient.deploy(
+                    databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY
+                )
                 logger.info(f"Successfully deployed the new update of ontology {uri}")
                 return True, success_error_message, new_version
-            except databusclient.client.DeployError as e:
+            except Exception as e:
                 logger.error("There was an Error deploying to the databus")
                 logger.error(str(e))
                 return False, "ERROR: Couldn't deploy to databus!", new_version
@@ -413,52 +713,107 @@ def localDiffAndRelease(
         return None, f"INTERNAL ERROR: Couldn't find file for {uri}", None
 
 
-def handleDiffForUri(
-    uri,
-    localDir,
-    metafileUrl,
-    lastNtURL,
-    lastVersion,
-    testSuite,
-    source,
-    devURI="",
-    logger=diff_logger,
-):
-    if devURI != "":
-        groupId, artifact = stringTools.generate_databus_identifier_from_uri(uri, dev=True)
-        ontoLocationURI = devURI
-    else:
-        groupId, artifact = stringTools.generate_databus_identifier_from_uri(uri)
-        ontoLocationURI = uri
-    artifactPath = os.path.join(localDir, groupId, artifact)
-    lastVersionPath = os.path.join(artifactPath, lastVersion)
-    lastMetaFile = os.path.join(lastVersionPath, artifact + "_type=meta.json")
-    lastNtFile = os.path.join(lastVersionPath, lastNtURL.rpartition("/")[2])
-    if not os.path.isfile(lastMetaFile):
-        os.makedirs(lastVersionPath, exist_ok=True)
-        try:
-            metadata = requests.get(metafileUrl).json()
-        except requests.exceptions.RequestException:
-            logger.error(
-                "There was an error downloading the latest metadata-file, skipping this ontology..."
-            )
-            return (
-                None,
-                "There was an error downloading the latest metadata-file, skipping this ontology...",
-                None,
-            )
+def prepare_diff_for_ontology(
+    uri: str,
+    last_metafile_url: str,
+    last_ntriples_url: str,
+    last_version_timestamp: str,
+    data_writer: DataWriter,
+    dev_uri: Optional[str] = None,
+    local_path: str = None,
+) -> Tuple[Dict, str, DatabusVersionIdentifier]:
+    """Prepares the local structure for the diff"""
 
-        with open(lastMetaFile, "w+") as latestMetaFile:
+    groupId, artifact = string_tools.generate_databus_identifier_from_uri(
+        uri, dev=bool(dev_uri)
+    )
+
+    artifactPath = os.path.join(local_path, groupId, artifact)
+    lastVersionPath = os.path.join(artifactPath, last_version_timestamp)
+    last_meta_file_path = os.path.join(lastVersionPath, artifact + "_type=meta.json")
+    last_nt_file_path = os.path.join(
+        lastVersionPath, last_ntriples_url.rpartition("/")[2]
+    )
+
+    old_db_verison_id = DatabusVersionIdentifier(
+        user="ontologies",
+        group=groupId,
+        artifact=artifact,
+        version=last_version_timestamp,
+    )
+
+    if not os.path.isfile(last_meta_file_path):
+        os.makedirs(lastVersionPath, exist_ok=True)
+        metadata = requests.get(last_metafile_url).json()
+
+        old_metadata_file_metadata = DatabusFileMetadata(
+            old_db_verison_id,
+            sha_256_sum="",
+            content_length=-1,
+            content_variants={"type": "meta"},
+            file_extension="json",
+            compression=None,
+        )
+
+        data_writer.write_databus_file(
+            json.dumps(metadata, indent=4, sort_keys=True),
+            old_metadata_file_metadata,
+            log_file=False,
+        )
+
+        with open(last_meta_file_path, "w+") as latestMetaFile:
             json.dump(metadata, latestMetaFile, indent=4, sort_keys=True)
     else:
-        with open(lastMetaFile, "r") as latestMetaFile:
+        with open(last_meta_file_path, "r") as latestMetaFile:
             metadata = json.load(latestMetaFile)
 
-    if not os.path.isfile(lastNtFile):
-        oldOntologyResponse = requests.get(lastNtURL)
+    if not os.path.isfile(last_nt_file_path):
+        oldOntologyResponse = requests.get(last_ntriples_url)
         oldOntologyResponse.encoding = "utf-8"
-        with open(lastNtFile, "w") as origFile:
-            print(oldOntologyResponse.text, file=origFile)
+
+        if oldOntologyResponse.status_code >= 400:
+            raise UnavailableContentException(oldOntologyResponse)
+
+        old_nt_file_metadata = DatabusFileMetadata(
+            old_db_verison_id,
+            sha_256_sum="",
+            content_length=-1,
+            content_variants={"type": "parsed"},
+            file_extension="nt",
+            compression=None,
+        )
+
+        data_writer.write_databus_file(
+            oldOntologyResponse.text, old_nt_file_metadata, log_file=False
+        )
+
+    return metadata, last_nt_file_path, old_db_verison_id
+
+
+def handleDiffForUri(
+    uri: str,
+    data_writer: DataWriter,
+    metafileUrl: str,
+    lastNtURL: str,
+    last_version_timestamp: str,
+    test_suite: validation.TestSuite,
+    source: str,
+    dev_uri: str = "",
+    logger: Logger = diff_logger,
+) -> Tuple[bool, str, Optional[ArchivoVersion]]:
+    try:
+        metadata, last_nt_file_path = prepare_diff_for_ontology(
+            uri,
+            metafileUrl,
+            lastNtURL,
+            last_version_timestamp,
+            dev_uri=dev_uri,
+            local_path=archivoConfig.localPath,
+            logger=logger,
+        )
+    except Exception as e:
+        message = f"Could not prepare for diff: {e}"
+        return False, message, None
 
     oldETag = metadata["http-data"]["e-tag"]
     oldLastMod = metadata["http-data"]["lastModified"]
@@ -493,10 +848,10 @@ def handleDiffForUri(
             bestHeader,
             lastVersionPath,
             semVersion,
-            testSuite,
+            test_suite,
             source,
             old_triple_count,
-            devURI=devURI,
+            devURI=dev_uri,
             logger=logger,
         )
     else:
@@ -505,9 +860,11 @@ def handleDiffForUri(
 
 
 def build_new_semantic_version(
-    old_semantic_version: str, old_axiom_set: Set[str], new_axiom_set: Set[str], logger=diff_logger
-):
-
+    old_semantic_version: str,
+    old_axiom_set: Set[str],
+    new_axiom_set: Set[str],
+    logger=diff_logger,
+) -> Tuple[str, Set[str], Set[str]]:
     old = old_axiom_set - new_axiom_set
     new = new_axiom_set - old_axiom_set
 
@@ -528,11 +885,11 @@ def build_new_semantic_version(
     patch = int(match.group(3))
 
     if old == set() and new == set():
-        return f"{str(major)}.{str(minor)}.{str(patch+1)}", old, new
+        return f"{str(major)}.{str(minor)}.{str(patch + 1)}", old, new
     elif new != set() and old == set():
-        return f"{str(major)}.{str(minor+1)}.{str(0)}", old, new
+        return f"{str(major)}.{str(minor + 1)}.{str(0)}", old, new
     else:
-        return f"{str(major+1)}.{str(0)}.{str(0)}", old, new
+        return f"{str(major + 1)}.{str(0)}.{str(0)}", old, new
 
 
 if __name__ == "__main__":

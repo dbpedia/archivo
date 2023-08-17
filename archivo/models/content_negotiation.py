@@ -1,5 +1,6 @@
 from enum import Enum
-
+from functools import singledispatch
+from typing import Optional
 
 class RDF_Type(Enum):
     RDF_XML = 1
@@ -29,18 +30,24 @@ def get_rapper_name(rdf_type: RDF_Type) -> str:
             return "ntriples"
 
 
-def get_file_extension(header: str) -> str:
-    """Returns the RaptorRDF name for the supported RDF types"""
+def get_file_extension(rdf_type: RDF_Type) -> str:
+    """Returns the file extension for the supported RDF types"""
+    match rdf_type:
+        case RDF_Type.RDF_XML:
+            return "owl"
+        case RDF_Type.TURTLE:
+            return "ttl"
+        case RDF_Type.N_TRIPLES:
+            return "nt"
+
+def get_rdf_type(header: str) -> Optional[RDF_Type]:
+    """Returns the file extension for the supported RDF types"""
     match header:
         case "application/rdf+xml":
-            return "owl"
+            return RDF_Type.RDF_XML
         case "application/ntriples":
-            return "nt"
+            return RDF_Type.N_TRIPLES
         case "text/turtle":
-            return "ttl"
-        case "application/xhtml":
-            return "html"
-        case "*/*":
-            return "file"
+            return RDF_Type.TURTLE
         case _:
-            return "file"
+            return None

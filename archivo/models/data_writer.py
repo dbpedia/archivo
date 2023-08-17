@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Iterator, Dict, List, Optional
 
-from archivo.models.DatabusIdentifier import DatabusFileMetadata
+from archivo.models.databus_identifier import DatabusFileMetadata
 from archivo.utils.WebDAVUtils import WebDAVHandler
 
 
@@ -18,29 +18,35 @@ class DataWriter(ABC):
         """Writing the data to the resource identifier"""
         pass
 
-    def write_databus_file(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
+    def write_databus_file(
+        self, content: str, db_file_metadata: DatabusFileMetadata, log_file: bool = True
+    ) -> None:
 
         try:
             self.__write_data(content, db_file_metadata)
-            self.written_files[db_file_metadata] = None
+            if log_file:
+                self.written_files[db_file_metadata] = None
         except Exception as e:
-            self.written_files[db_file_metadata] = str(e)
+            if log_file:
+                self.written_files[db_file_metadata] = str(e)
 
 
 class FileWriter(DataWriter):
-
-    def __init__(self, path_base: Path, target_url_base: str, create_parent_dirs: bool = True):
+    def __init__(
+        self, path_base: Path, target_url_base: str, create_parent_dirs: bool = True
+    ):
         self.path_base = path_base
         self.create_parent_dirs = create_parent_dirs
         self.written_files = {}
         self.target_url_base = target_url_base
 
     def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
-        version_dir = os.path.join(self.path_base,
-                                   db_file_metadata.version_identifier.group,
-                                   db_file_metadata.version_identifier.artifact,
-                                   db_file_metadata.version_identifier.version,
-                                   )
+        version_dir = os.path.join(
+            self.path_base,
+            db_file_metadata.version_identifier.group,
+            db_file_metadata.version_identifier.artifact,
+            db_file_metadata.version_identifier.version,
+        )
 
         filepath = os.path.join(version_dir, db_file_metadata.get_file_name())
 
@@ -52,7 +58,6 @@ class FileWriter(DataWriter):
 
 
 class WebDAVWriter(DataWriter):
-
     def __init__(self, target_url_base: str, api_key: str):
         self.written_files = {}
         self.target_url_base = target_url_base

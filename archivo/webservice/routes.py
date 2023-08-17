@@ -23,7 +23,7 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
 from archivo.utils.validation import TestSuite
-from archivo.utils import archivoConfig, queryDatabus, stringTools, graph_handling, dbUtils
+from archivo.utils import archivoConfig, query_databus, string_tools, graph_handling, dbUtils
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
 from archivo.utils.archivoLogs import webservice_logger

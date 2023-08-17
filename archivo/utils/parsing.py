@@ -1,9 +1,15 @@
 import re
+from archivo.utils import string_tools
 import subprocess
 from typing import Tuple, List, Optional
 from dataclasses import dataclass
 
-from archivo.models.ContentNegotiation import RDF_Type, get_rapper_name
+from archivo.models.content_negotiation import RDF_Type, get_rapper_name
+
+from archivo.models.databus_identifier import (
+    DatabusFileMetadata,
+    DatabusVersionIdentifier,
+)
 
 rapperErrorsRegex = re.compile(r"^rapper: Error.*$")
 rapperWarningsRegex = re.compile(r"^rapper: Warning.*$")
@@ -14,13 +20,20 @@ pelletInfoProfileRegex = re.compile(r"OWL Profile = (.*)\n")
 
 
 @dataclass
+class RapperParsingInfo:
+    """Metadata of rapper parsing process"""
+
+    triple_number: int
+    warnings: List[str]
+    errors: List[str]
+
+
+@dataclass
 class RapperParsingResult:
 
     parsed_rdf: str
     rdf_type: RDF_Type
-    triple_number: int
-    warnings: List[str]
-    errors: List[str]
+    parsing_info: RapperParsingInfo
 
 
 def parse_rapper_errors(rapper_log: str) -> Tuple[List[str], List[str]]:
@@ -43,14 +56,23 @@ def triple_number_from_rapper_log(rapper_log: str) -> int:
 
 
 def parse_rdf_from_string(
-        rdf_string: str, base_uri: str, input_type: RDF_Type = None, output_type: RDF_Type = RDF_Type.N_TRIPLES
+    rdf_string: str,
+    base_uri: str,
+    input_type: RDF_Type,
+    output_type: RDF_Type = RDF_Type.N_TRIPLES,
 ) -> RapperParsingResult:
     """Parses RDF content in string with Raptor RDF"""
 
-    if input_type is None:
-        command = ["rapper", "-I", base_uri, "-g", "-", "-o", get_rapper_name(output_type)]
-    else:
-        command = ["rapper", "-I", base_uri, "-i", get_rapper_name(input_type), "-", "-o", get_rapper_name(output_type)]
+    command = [
+        "rapper",
+        "-I",
+        base_uri,
+        "-i",
+        get_rapper_name(input_type),
+        "-",
+        "-o",
+        get_rapper_name(output_type),
+    ]
 
     process = subprocess.run(
         command,
@@ -63,17 +85,15 @@ def parse_rdf_from_string(
     return RapperParsingResult(
         process.stdout.decode("utf-8"),
         output_type,
-        triples,
-        warnings,
-        errors
+        RapperParsingInfo(triple_number=triples, warnings=warnings, errors=errors),
     )
 
 
-def get_triples_from_rdf_string(rdf_string: str, base_uri: str, input_type: RDF_Type = None) -> Tuple[int, List[str]]:
-    if input_type is None:
-        command = ["rapper", "-I", base_uri, "-g", "-"]
-    else:
-        command = ["rapper", "-I", base_uri, "-i", get_rapper_name(input_type), "-"]
+def get_triples_from_rdf_string(
+    rdf_string: str, base_uri: str, input_type: RDF_Type
+) -> RapperParsingInfo:
+    """Counts triples of an rdf string. Returns triple number and a list of errors (rapper warnings are ignored)"""
+    command = ["rapper", "-I", base_uri, "-i", get_rapper_name(input_type), "-"]
 
     process = subprocess.run(
         command,
@@ -82,5 +102,22 @@ def get_triples_from_rdf_string(rdf_string: str, base_uri: str, input_type: RDF_
         input=bytes(rdf_string, "utf-8"),
     )
     triples = triple_number_from_rapper_log(process.stderr.decode("utf-8"))
-    errors, _ = parse_rapper_errors(process.stderr.decode("utf-8"))
-    return triples, errors
+    errors, warnings = parse_rapper_errors(process.stderr.decode("utf-8"))
+    return RapperParsingInfo(triples, warnings, errors)
+
+
+def generate_metadata_for_parsing_result(
+    db_version_identifier: DatabusVersionIdentifier, parsing_result: RapperParsingResult
+) -> DatabusFileMetadata:
+
+    shasum, content_length = stringTools.get_content_stats(
+        bytes(parsing_result.parsed_rdf, "utf-8")
+    )
+    db_file_metadata = DatabusFileMetadata(
+        version_identifier=self.db_version_identifier,
+        content_variants={"type": "parsed"},
+        file_extension=get_file_extension(get_accept_header(parsing_type)),
+        sha_256_sum=shasum,
+        content_length=content_length,
+        compression=None,
+    )

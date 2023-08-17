@@ -9,36 +9,49 @@ import rdflib
 from rdflib import URIRef, Literal
 
 from archivo.crawling.discovery import handleDevURI
-from archivo.models.ContentNegotiation import RDF_Type, get_file_extension, get_accept_header
-from archivo.models.CrawlingResponse import CrawlingResponse
-from archivo.models.DatabusIdentifier import DatabusFileMetadata, DatabusVersionIdentifier
-from archivo.models.DataWriter import DataWriter
-from archivo.utils import ontoFiles, stringTools, graph_handling, feature_plugins, docTemplates, generatePoms, \
-    archivoConfig, parsing
+from archivo.models.content_negotiation import (
+    RDF_Type,
+    get_file_extension,
+    get_accept_header,
+)
+from archivo.models.crawling_response import CrawlingResponse
+from archivo.models.databus_identifier import (
+    DatabusFileMetadata,
+    DatabusVersionIdentifier,
+)
+from archivo.models.data_writer import DataWriter
+from archivo.utils import (
+    string_tools,
+    graph_handling,
+    feature_plugins,
+    docTemplates,
+    archivoConfig,
+    parsing,
+)
 from archivo.utils.validation import TestSuite
 
 
 class ArchivoVersion:
     def __init__(
-            self,
-            confirmed_nir: str,
-            crawling_result: CrawlingResponse,
-            ontology_graph: rdflib.Graph,
-            databus_version_identifier: DatabusVersionIdentifier,
-            test_suite: TestSuite,
-            access_date: datetime,
-            logger: Logger,
-            source: str,
-            data_writer: DataWriter,
-            semantic_version: str = "1.0.0",
-            dev_uri: str = "",
-            retrieval_errors=None,
-            user_output=None,
+        self,
+        confirmed_nir: str,
+        crawling_result: CrawlingResponse,
+        parsing_result: parsing.RapperParsingResult,
+        ontology_graph: rdflib.Graph,
+        databus_version_identifier: DatabusVersionIdentifier,
+        test_suite: TestSuite,
+        access_date: datetime,
+        logger: Logger,
+        source: str,
+        data_writer: DataWriter,
+        semantic_version: str = "1.0.0",
+        dev_uri: str = "",
+        user_output=None,
     ):
         if user_output is None:
             user_output = list()
-        if retrieval_errors is None:
-            retrieval_errors = list()
+
+        self.parsing_result = parsing_result
         # the nir is the identity of the ontology, confirmed by checking for the triple inside the ontology itself
         # not to be confused with the location of the ontology, or the URI the crawl started with
         self.nir = confirmed_nir
@@ -56,7 +69,6 @@ class ArchivoVersion:
         self.semantic_version = semantic_version
         self.user_output = user_output
         self.logger = logger
-        self.retrieval_errors = retrieval_errors
         if len(self.crawling_result.response.history) > 0:
             self.nir_header = str(self.crawling_result.response.history[0].headers)
         else:
@@ -64,24 +76,39 @@ class ArchivoVersion:
 
         # initialize a empty dict for the metadata file
 
-        self.metadata_dict = {"test-results": {}, "http-data": {}, "ontology-info": {}, "logs": {}}
+        self.metadata_dict = {
+            "test-results": {},
+            "http-data": {},
+            "ontology-info": {},
+            "logs": {},
+        }
 
         self.stars_dict = {}
 
     def __generate_parsed_rdf(self):
 
         for parsing_type in RDF_Type:
-            parsing_result = parsing.parse_rdf_from_string(self.crawling_result.rdf_content,
-                                                           self.nir,
-                                                           self.crawling_result.rdf_type,
-                                                           parsing_type)
-            shasum, content_length = stringTools.get_content_stats(bytes(parsing_result.parsed_rdf))
-            db_file_metadata = DatabusFileMetadata(version_identifier=self.db_version_identifier,
-                                                   content_variants={"type": "parsed"},
-                                                   file_extension=get_file_extension(get_accept_header(parsing_type)),
-                                                   sha_256_sum=shasum,
-                                                   content_length=content_length)
-            self.data_writer.write_databus_file(parsing_result.parsed_rdf, db_file_metadata)
+            if parsing_type == self.parsing_result.rdf_type:
+                db_file_metadata = parsing.generate_metadata_for_parsing_result(
+                    self.db_version_identifier, self.parsing_result
+                )
+                self.data_writer.write_databus_file(
+                    self.parsing_result.parsed_rdf, db_file_metadata
+                )
+            else:
+                new_parsing_result = parsing.parse_rdf_from_string(
+                    self.crawling_result.response.text,
+                    self.nir,
+                    self.crawling_result.rdf_type,
+                    parsing_type,
+                )
+
+                db_file_metadata = parsing.generate_metadata_for_parsing_result(
+                    self.db_version_identifier, new_parsing_result
+                )
+                self.data_writer.write_databus_file(
+                    new_parsing_result.parsed_rdf, db_file_metadata
+                )
 
     def __generate_shacl_reports(self):
 
@@ -89,26 +116,32 @@ class ArchivoVersion:
             self.test_suite.archivo_conformity_test: ("archivoMetadata", None),
             self.test_suite.license_existence_check: ("minLicense", "License-I"),
             self.test_suite.license_property_check: ("goodLicense", "License-II"),
-            self.test_suite.lodeReadyValidation: ("lodeMetadata", "lode-conform")
+            self.test_suite.lodeReadyValidation: ("lodeMetadata", "lode-conform"),
         }
 
-        for shacl_report_fun, id_tuple in shacl_report_mappings:
+        for shacl_report_fun, id_tuple in shacl_report_mappings.items():
             validates_cv, report_key = id_tuple
             (
                 conforms,
                 report_graph,
-                report_text,
+                _,
             ) = shacl_report_fun(self.ontology_graph)
 
-            serialized_report = graph_handling.serialize_graph(report_graph, rdf_format="turtle")
-            shasum, content_length = stringTools.get_content_stats(bytes(serialized_report))
-            db_file_metadata = DatabusFileMetadata(version_identifier=self.db_version_identifier,
-                                                   content_variants={"type": "shaclReport", "validates": validates_cv},
-                                                   file_extension="ttl",
-                                                   sha_256_sum=shasum,
-                                                   content_length=content_length,
-                                                   compression=None
-                                                   )
+            serialized_report = graph_handling.serialize_graph(
+                report_graph, rdf_format="turtle"
+            )
+            shasum, content_length = string_tools.get_content_stats(
+                bytes(serialized_report, "utf-8")
+            )
+            db_file_metadata = DatabusFileMetadata(
+                version_identifier=self.db_version_identifier,
+                content_variants={"type": "shaclReport", "validates": validates_cv},
+                file_extension="ttl",
+                sha_256_sum=shasum,
+                content_length=content_length,
+                compression=None,
+            )
+
             self.data_writer.write_databus_file(serialized_report, db_file_metadata)
 
             if report_key:
@@ -123,7 +156,9 @@ class ArchivoVersion:
         )
 
         if docustring:
-            shasum, content_length = stringTools.get_content_stats(bytes(docustring))
+            shasum, content_length = string_tools.get_content_stats(
+                bytes(docustring, "utf-8")
+            )
             db_metadata = DatabusFileMetadata(
                 version_identifier=self.db_version_identifier,
                 content_variants={"type": "generatedDocu"},
@@ -136,42 +171,42 @@ class ArchivoVersion:
 
         # TODO: Include pylode once they merged my pull request
 
+    def __write_vocab_information_file(self):
+        # set http metadata
+        http_dict = self.metadata_dict["http-data"]
+        http_dict["e-tag"] = string_tools.getEtagFromResponse(
+            self.crawling_result.response
+        )
+        http_dict["accessed"] = self.access_date
+        http_dict["content-length"] = string_tools.getContentLengthFromResponse(
+            self.crawling_result.response
+        )
+        http_dict["best-header"] = get_accept_header(self.crawling_result.rdf_type)
+        http_dict["lastModified"] = string_tools.getLastModifiedFromResponse(
+            self.crawling_result.response
+        )
 
+        # set parsing logs
+        logs_dict = self.metadata_dict["logs"]
+        logs_dict["nir_header"] = self.nir_header
+        logs_dict["rapper-errors"] = self.parsing_result.parsing_info.errors
+        logs_dict["rapper-warnings"] = self.parsing_result.parsing_info.warnings
+        logs_dict["resource-header"] = str(self.crawling_result.response.headers)
 
-
-
-
+        # set ontology info
+        info_dict = self.metadata_dict["ontology-info"]
+        info_dict["non-information-uri"] = self.reference_uri
+        info_dict["semantic-version"] = self.semantic_version
+        info_dict["snapshot-url"] = self.location_uri
+        info_dict["triples"] = self.parsing_result.parsing_info.triple_number
+        # info_dict["stars"] =
 
     def generate_files(self):
 
         self.__generate_parsed_rdf()
         self.__generate_shacl_reports()
         self.__generate_documentation_files()
-
-
-
-        # write the metadata json file
-        ontoFiles.altWriteVocabInformation(
-            pathToFile=raw_file_path + "_type=meta.json",
-            definedByUri=self.reference_uri,
-            lastModified=stringTools.getLastModifiedFromResponse(self.response),
-            rapperErrors=self.retrieval_errors + self.rapper_errors,
-            rapperWarnings=rapperWarnings,
-            etag=stringTools.getEtagFromResponse(self.response),
-            tripleSize=self.triples,
-            bestHeader=self.best_header,
-            licenseViolationsBool=self.conforms_licenseI,
-            licenseWarningsBool=self.conforms_licenseII,
-            consistentWithImports=self.is_consistent,
-            consistentWithoutImports=self.is_consistent_noimports,
-            lodeConform=self.conforms_lode,
-            accessed=self.access_date,
-            headerString=str(self.response.headers),
-            nirHeader=self.nir_header,
-            contentLenght=stringTools.getContentLengthFromResponse(self.response),
-            semVersion=self.semantic_version,
-            snapshot_url=self.location_uri,
-        )
+        self.__write_vocab_information_file()
 
     def handleTrackThis(self):
         if self.isDev:
@@ -213,7 +248,7 @@ class ArchivoVersion:
                     cvs=metadata.content_variants,
                     file_format=metadata.file_extension,
                     compression=metadata.compression,
-                    sha256_length_tuple=(metadata.sha_256_sum, metadata.content_length)
+                    sha256_length_tuple=(metadata.sha_256_sum, metadata.content_length),
                 )
                 distributions.append(dst)
 
@@ -252,30 +287,30 @@ class ArchivoVersion:
             versionIRI = graph_handling.get_owl_version_iri(self.ontology_graph)
             if found_description is not None:
                 description = (
-                        description.safe_substitute(
-                            non_information_uri=self.nir,
-                            snapshot_url=self.location_uri,
-                            owl_version_iri=versionIRI,
-                            date=self.db_version_identifier.version,
-                        )
-                        + "\n\n"
-                        + docTemplates.description_intro
-                        + "\n\n"
-                        + found_description
+                    description.safe_substitute(
+                        non_information_uri=self.nir,
+                        snapshot_url=self.location_uri,
+                        owl_version_iri=versionIRI,
+                        date=self.db_version_identifier.version,
+                    )
+                    + "\n\n"
+                    + docTemplates.description_intro
+                    + "\n\n"
+                    + found_description
                 )
             else:
                 description = description.safe_substitute(
                     non_information_uri=self.nir,
                     snapshot_url=self.location_uri,
                     owl_version_iri=versionIRI,
-                    date=str(timestamp_now),
+                    date=str(self.access_date),
                 )
 
         return description
 
     def __get_license(self) -> str:
 
-        found_license = inspectVocabs.get_license(self.ontology_graph)
+        found_license = graph_handling.get_license(self.ontology_graph)
         if isinstance(found_license, URIRef):
             found_license = str(found_license).strip("<>")
         elif isinstance(found_license, Literal):
@@ -296,16 +331,16 @@ class ArchivoVersion:
         description = self.__get_description()
         license_url = self.__get_license()
         if group_info == {}:
-            dataset = databusclient.createDataset(
+            dataset = databusclient.create_dataset(
                 version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
                 description=description,
                 license_url=license_url,
-                distributions=distribs
+                distributions=distribs,
             )
         else:
-            dataset = databusclient.createDataset(
+            dataset = databusclient.create_dataset(
                 version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
@@ -313,7 +348,7 @@ class ArchivoVersion:
                 license_url=license_url,
                 distributions=distribs,
                 group_title=group_info["title"],
-                group_description=group_info["description"]
+                group_description=group_info["description"],
             )
 
         return dataset

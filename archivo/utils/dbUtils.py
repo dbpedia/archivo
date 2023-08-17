@@ -1,6 +1,6 @@
 from archivo.webservice import db
 from archivo.webservice.dbModels import OfficialOntology, DevelopOntology, Version
-from archivo.utils import stringTools, queryDatabus, ontoFiles
+from archivo.utils import string_tools, query_databus, ontoFiles
 from datetime import datetime
 import csv
 from archivo.crawling.discovery import ArchivoVersion

@@ -8,7 +8,7 @@ from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 import json
 import traceback
-from archivo.utils import stringTools, archivoConfig
+from archivo.utils import string_tools, archivoConfig
 from urllib.parse import quote as urlQuote
 from urllib.parse import urlparse
 
@@ -155,7 +155,7 @@ def get_label(graph: Graph) -> Optional[str]:
         for row in result:
             for value in row:
                 if value is not None:
-                    return stringTools.get_first_line(value)
+                    return string_tools.get_first_line(value)
     else:
         return None
 
@@ -234,7 +234,7 @@ def get_comment(graph: Graph) -> Optional[str]:
         for row in result:
             for value in row:
                 if value is not None and str(value).strip() != "":
-                    return stringTools.get_first_sentence(value)
+                    return string_tools.get_first_sentence(value)
     else:
         return None
 

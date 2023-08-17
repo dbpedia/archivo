@@ -1,9 +1,11 @@
 # Databus 2.0 API config
 DATABUS_API_KEY: str = "blablubb"
-DATABUS_BASE: str = "https://dev.databus.dbpedia.org/"
+DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
+DATABUS_USER: str = "ontologies"
 
 # agent name for crawling
 archivo_agent: str = "dbpedia-archivo-robot"
+
 
 # add here properties that should be ignored
 # pls use the full URI and no prefixes since the diff takes place as ntriples

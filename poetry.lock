@@ -302,14 +302,14 @@ files = [
 
 [[package]]
 name = "databusclient"
-version = "0.10"
+version = "0.12"
 description = "A simple client for submitting data to the DBpedia Databus"
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "databusclient-0.10-py3-none-any.whl", hash = "sha256:906c0ae5196611f86469c8b4ff05e013494e4c4cd316f90879a8bf4d36734d7f"},
-    {file = "databusclient-0.10.tar.gz", hash = "sha256:c43739066513c363bec485b60d4b664977f602987ef1ee63c78958c05ea209a5"},
+    {file = "databusclient-0.12-py3-none-any.whl", hash = "sha256:7a9a40a3eaaae0c9f2b8063bc070e09cb083807c3483d1c445f61b8a22b6c7c9"},
+    {file = "databusclient-0.12.tar.gz", hash = "sha256:77709d61796c50a304872ca8a0d2220801cfcc570bd452cd53e9ea0102335eed"},
 ]
 
 [package.dependencies]
@@ -1495,4 +1495,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4ab772962e913431886d1de29aa56264096743a8fd14e9d35049596fd264115f"
+content-hash = "f4d0c1eb60b9e363e712b2ca53e57e999ff6793b9ac8df655fb8c3cff3fd12a6"
