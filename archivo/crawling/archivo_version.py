@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from logging import Logger
 from string import Template
-from typing import Dict, List
+from typing import Dict, List, Optional
 import databusclient
 import rdflib
 from rdflib import URIRef, Literal
@@ -20,6 +20,7 @@ from archivo.models.databus_identifier import (
     DatabusVersionIdentifier,
 )
 from archivo.models.data_writer import DataWriter
+from archivo.models.user_interaction import UserOutput, LogLevel
 from archivo.utils import (
     string_tools,
     graph_handling,
@@ -34,19 +35,18 @@ from archivo.utils.validation import TestSuite
 class ArchivoVersion:
     def __init__(
         self,
-        confirmed_nir: str,
         crawling_result: CrawlingResponse,
         parsing_result: parsing.RapperParsingResult,
-        ontology_graph: rdflib.Graph,
         databus_version_identifier: DatabusVersionIdentifier,
         test_suite: TestSuite,
         access_date: datetime,
         logger: Logger,
         source: str,
         data_writer: DataWriter,
+        ontology_graph: rdflib.Graph = None,
         semantic_version: str = "1.0.0",
         dev_uri: str = "",
-        user_output=None,
+        user_output: List[UserOutput] = None,
     ):
         if user_output is None:
             user_output = list()
@@ -54,12 +54,19 @@ class ArchivoVersion:
         self.parsing_result = parsing_result
         # the nir is the identity of the ontology, confirmed by checking for the triple inside the ontology itself
         # not to be confused with the location of the ontology, or the URI the crawl started with
-        self.nir = confirmed_nir
+        self.nir = crawling_result.nir
         # data writer -> abstraction for handling the writing process
         self.data_writer = data_writer
         self.db_version_identifier = databus_version_identifier
         self.crawling_result = crawling_result
-        self.ontology_graph = ontology_graph
+
+        if ontology_graph is None:
+            self.ontology_graph: rdflib.Graph = graph_handling.get_graph_of_string(
+                parsing_result.parsed_rdf, parsing_result.rdf_type
+            )
+        else:
+            self.ontology_graph: rdflib.Graph = ontology_graph
+
         self.isDev = False if dev_uri == "" else True
         self.location_uri = crawling_result.response.url if dev_uri == "" else dev_uri
         self.reference_uri = dev_uri if self.isDev else self.nir
@@ -214,11 +221,11 @@ class ArchivoVersion:
         trackThisURI = graph_handling.get_track_this_uri(self.ontology_graph)
         if trackThisURI is not None and self.location_uri != trackThisURI:
             self.user_output.append(
-                {
-                    "status": True,
-                    "step": "Check for Dev version link",
-                    "message": f"Found dev version at: {trackThisURI}",
-                }
+                UserOutput(
+                    status=LogLevel.INFO,
+                    stepname="Check for Dev version link",
+                    message=f"Found dev version at: {trackThisURI}",
+                )
             )
             try:
                 return handleDevURI(

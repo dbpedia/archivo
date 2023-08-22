@@ -1,17 +1,14 @@
-import os
-import sys
 from typing import List, Optional, Dict
 
 import rdflib
 import requests
-from rdflib import OWL, RDFS, RDF, URIRef, ConjunctiveGraph, Graph
+from rdflib import OWL, RDFS, RDF, URIRef, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
-import json
-import traceback
-from archivo.utils import string_tools, archivoConfig
-from urllib.parse import quote as urlQuote
-from urllib.parse import urlparse
 
+from archivo.models.content_negotiation import RDF_Type
+from archivo.utils import string_tools, archivoConfig
+from urllib.parse import urlparse
+from archivo.models.content_negotiation import get_rdflib_string
 from archivo.utils.ArchivoExceptions import UnknownRDFFormatException
 
 descriptionNamespaceGraph = Graph()
@@ -40,18 +37,23 @@ def get_graph_by_uri(uri: str, rdf_format: str = None) -> Graph:
     return graph
 
 
-def get_graph_of_string(rdf_string: str, content_type: str) -> Graph:
+def get_graph_of_string(rdf_string: str, content_type: RDF_Type) -> Graph:
     """Builds rdflib Graph of the string based on the HTTP content type of the string. Default content type is xml"""
 
     graph = rdflib.Graph()
-    graph.parse(data=rdf_string, format=header_rdflib_mapping.get(content_type, "xml"))
+    graph.parse(
+        data=rdf_string,
+        format=header_rdflib_mapping.get(get_rdflib_string(content_type), "xml"),
+    )
     return graph
 
 
 def serialize_graph(graph: rdflib.Graph, rdf_format: str = "turtle", base=None) -> str:
     """Serializes an RDFlib Graph as a string"""
 
-    return graph.serialize(format=rdf_format, encoding="utf-8", base=base).decode("utf-8")
+    return graph.serialize(format=rdf_format, encoding="utf-8", base=base).decode(
+        "utf-8"
+    )
 
 
 def get_defined_uris(nir: str, graph: rdflib.Graph) -> List[str]:

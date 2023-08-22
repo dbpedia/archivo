@@ -18,7 +18,13 @@ from archivo.crawling.archivo_version import ArchivoVersion
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 
-from archivo.utils import string_tools, ontoFiles, archivoConfig, graph_handling, async_rdf_retrieval
+from archivo.utils import (
+    string_tools,
+    ontoFiles,
+    archivoConfig,
+    graph_handling,
+    async_rdf_retrieval,
+)
 
 from best_effort_crawling import determine_best_content_type
 
@@ -69,7 +75,7 @@ def check_NIR(uri: str, graph: rdflib.Graph, output: List[Dict] = None):
     found_nir = None
 
     for nir in candidates:
-        if stringTools.check_uri_equality(uri, nir):
+        if string_tools.check_uri_equality(uri, nir):
             found_nir = nir
 
     if found_nir is None:
@@ -92,8 +98,14 @@ def check_NIR(uri: str, graph: rdflib.Graph, output: List[Dict] = None):
         return True, found_nir
 
 
-def handle_slash_uris(real_ont_uri: str, fetch_response: Response, graph: Graph, best_header: str,
-                      user_output: List[Dict], logger: Logger) -> Tuple[Optional[str], List[Tuple[str, str]]]:
+def handle_slash_uris(
+    real_ont_uri: str,
+    fetch_response: Response,
+    graph: Graph,
+    best_header: str,
+    user_output: List[Dict],
+    logger: Logger,
+) -> Tuple[Optional[str], List[Tuple[str, str]]]:
     """Handles the slash uris by concurrently fetching the RDF data from the slashes. Returns an Optional[str] of N-Triples
     if successfull and a list of errors"""
 
@@ -108,7 +120,7 @@ def handle_slash_uris(real_ont_uri: str, fetch_response: Response, graph: Graph,
     (orig_nt_content, _, _, _,) = ontoFiles.parse_rdf_from_string(
         fetch_response.text,
         real_ont_uri,
-        input_type=stringTools.rdfHeadersMapping[best_header],
+        input_type=string_tools.rdfHeadersMapping[best_header],
         output_type="ntriples",
     )
 
@@ -126,7 +138,7 @@ def handle_slash_uris(real_ont_uri: str, fetch_response: Response, graph: Graph,
             "\n".join(nt_content_list),
             real_ont_uri,
             input_type="ntriples",
-            output_type=stringTools.rdfHeadersMapping[best_header],
+            output_type=string_tools.rdfHeadersMapping[best_header],
         )
         if len(retrieval_error_list) > 0:
             user_output.append(
@@ -153,7 +165,9 @@ def handle_slash_uris(real_ont_uri: str, fetch_response: Response, graph: Graph,
         return None, retrieval_error_list
 
 
-def perform_robot_check(vocab_uri: str, user_output: List[Dict], logger: Logger) -> bool:
+def perform_robot_check(
+    vocab_uri: str, user_output: List[Dict], logger: Logger
+) -> bool:
     allowed, message = checkRobot(vocab_uri)
     logger.info(f"Robot allowed: {allowed}")
     if not allowed:
@@ -178,7 +192,15 @@ def perform_robot_check(vocab_uri: str, user_output: List[Dict], logger: Logger)
 
 
 def handleNewUri(
-        vocab_uri, index, dataPath, source, isNIR, testSuite, logger, user_output=None, recursion_depth=0
+    vocab_uri,
+    index,
+    dataPath,
+    source,
+    isNIR,
+    testSuite,
+    logger,
+    user_output=None,
+    recursion_depth=0,
 ) -> Tuple[bool, bool, Optional[ArchivoVersion]]:
     if user_output is None:
         user_output = list()
@@ -186,7 +208,7 @@ def handleNewUri(
     vocab_uri = urldefrag(vocab_uri)[0]
     # testing uri validity
     logger.info(f"Trying to validate {vocab_uri}")
-    groupId, artifact = stringTools.generate_databus_identifier_from_uri(vocab_uri)
+    groupId, artifact = string_tools.generate_databus_identifier_from_uri(vocab_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
         user_output.append(
@@ -198,7 +220,7 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    foundURI = stringTools.get_uri_from_index(vocab_uri, index)
+    foundURI = string_tools.get_uri_from_index(vocab_uri, index)
     if foundURI is not None:
         logger.info("Already known uri, skipping...")
         user_output.append(
@@ -241,7 +263,9 @@ def handleNewUri(
 
     # generating the graph and runnning the queries
     try:
-        graph = inspectVocabs.get_graph_of_string(crawling_result.response.text, crawling_result)
+        graph = inspectVocabs.get_graph_of_string(
+            crawling_result.response.text, crawling_result
+        )
     except Exception:
         logger.error(f"Exception in rdflib parsing of URI {vocab_uri}", exc_info=True)
         user_output.append(
@@ -278,7 +302,7 @@ def handleNewUri(
                 }
             )
             return False, isNIR, None
-        if not stringTools.check_uri_equality(vocab_uri, str(real_ont_uri)):
+        if not string_tools.check_uri_equality(vocab_uri, str(real_ont_uri)):
             user_output.append(
                 {
                     "status": True,
@@ -298,7 +322,7 @@ def handleNewUri(
                     isNIR=True,
                     logger=logger,
                     user_output=user_output,
-                    recursion_depth=recursion_depth + 1
+                    recursion_depth=recursion_depth + 1,
                 )
             else:
                 user_output.append(
@@ -332,7 +356,7 @@ def handleNewUri(
                 isNIR=True,
                 logger=logger,
                 user_output=user_output,
-                recursion_depth=recursion_depth + 1
+                recursion_depth=recursion_depth + 1,
             )
 
         else:
@@ -351,7 +375,7 @@ def handleNewUri(
     if isNIR and vocab_uri != real_ont_uri:
         logger.warning(f"unexpected value for real uri: {real_ont_uri}")
 
-    groupId, artifact = stringTools.generate_databus_identifier_from_uri(real_ont_uri)
+    groupId, artifact = string_tools.generate_databus_identifier_from_uri(real_ont_uri)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {vocab_uri}")
         user_output.append(
@@ -363,7 +387,7 @@ def handleNewUri(
         )
         return False, isNIR, None
 
-    foundURI = stringTools.get_uri_from_index(real_ont_uri, index)
+    foundURI = string_tools.get_uri_from_index(real_ont_uri, index)
     if foundURI is not None:
         logger.info(f"Already known uri {real_ont_uri}")
         user_output.append(
@@ -379,9 +403,9 @@ def handleNewUri(
 
     retrival_errors = []
     if real_ont_uri.endswith("/"):
-        additional_ntriple_content, retrieval_errors_by_uri = handle_slash_uris(real_ont_uri, response, graph,
-                                                                                crawling_result.rdf_type, user_output,
-                                                                                logger)
+        additional_ntriple_content, retrieval_errors_by_uri = handle_slash_uris(
+            real_ont_uri, response, graph, crawling_result.rdf_type, user_output, logger
+        )
 
         # add the errors to the retrival errors list
         for tup in retrieval_errors_by_uri:
@@ -400,13 +424,14 @@ def handleNewUri(
     if not os.path.isdir(os.path.join(dataPath, groupId)):
         group_info["title"] = f"DBpedia Archivo ontologies from the {groupId} domain"
         group_info[
-            "description"] = f"Each artifact in this group deals as the archive for snapshots of one ontology of the DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects. Find out more at http://archivo.dbpedia.org. The description for the individual files in the artifact can be found here."
+            "description"
+        ] = f"Each artifact in this group deals as the archive for snapshots of one ontology of the DBpedia Archivo - A Web-Scale Interface for Ontology Archiving under Consumer-oriented Aspects. Find out more at http://archivo.dbpedia.org. The description for the individual files in the artifact can be found here."
 
     newVersionPath = os.path.join(dataPath, groupId, artifact, version)
     os.makedirs(newVersionPath, exist_ok=True)
 
     # prepare new release
-    fileExt = stringTools.file_ending_mapping[crawling_result]
+    fileExt = string_tools.file_ending_mapping[crawling_result]
     new_orig_file_path = os.path.join(
         newVersionPath, artifact + "_type=orig." + fileExt
     )
@@ -502,7 +527,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
 
     # generating the graph and runnning the queries
     try:
-        _ = inspectVocabs.get_graph_of_string(response.text, bestHeader)
+        _ = graph_handling.get_graph_of_string(response.text, bestHeader)
     except Exception:
         logger.error("Exception in rdflib parsing", exc_info=True)
         user_output.append(
@@ -516,7 +541,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
 
     # here we go if the uri is NIR and  its resolveable
 
-    groupId, artifact = stringTools.generate_databus_identifier_from_uri(nir, dev=True)
+    groupId, artifact = string_tools.generate_databus_identifier_from_uri(nir, dev=True)
     if groupId is None or artifact is None:
         logger.warning(f"Malformed Uri {sourceURI}")
         user_output.append(
@@ -533,7 +558,7 @@ def handleDevURI(nir, sourceURI, dataPath, testSuite, logger, user_output=None):
     newVersionPath = os.path.join(dataPath, groupId, artifact, version)
     os.makedirs(newVersionPath, exist_ok=True)
     # prepare new release
-    fileExt = stringTools.file_ending_mapping[bestHeader]
+    fileExt = string_tools.file_ending_mapping[bestHeader]
     new_orig_file_path = os.path.join(
         newVersionPath, artifact + "_type=orig." + fileExt
     )

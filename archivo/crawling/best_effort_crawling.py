@@ -9,7 +9,7 @@ from archivo.models.crawling_response import CrawlingResponse
 from archivo.utils import parsing
 from sqlalchemy.sql.functions import user
 
-from models.UserInteraction import LogLevel, UserOutput
+from archivo.models.user_interaction import LogLevel, UserOutput
 
 
 class UnavailableException(Exception):

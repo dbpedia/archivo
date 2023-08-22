@@ -4,7 +4,11 @@ import subprocess
 from typing import Tuple, List, Optional
 from dataclasses import dataclass
 
-from archivo.models.content_negotiation import RDF_Type, get_rapper_name
+from archivo.models.content_negotiation import (
+    RDF_Type,
+    get_rapper_name,
+    get_file_extension,
+)
 
 from archivo.models.databus_identifier import (
     DatabusFileMetadata,
@@ -110,13 +114,13 @@ def generate_metadata_for_parsing_result(
     db_version_identifier: DatabusVersionIdentifier, parsing_result: RapperParsingResult
 ) -> DatabusFileMetadata:
 
-    shasum, content_length = stringTools.get_content_stats(
+    shasum, content_length = string_tools.get_content_stats(
         bytes(parsing_result.parsed_rdf, "utf-8")
     )
-    db_file_metadata = DatabusFileMetadata(
-        version_identifier=self.db_version_identifier,
+    return DatabusFileMetadata(
+        version_identifier=db_version_identifier,
         content_variants={"type": "parsed"},
-        file_extension=get_file_extension(get_accept_header(parsing_type)),
+        file_extension=get_file_extension(parsing_result.rdf_type),
         sha_256_sum=shasum,
         content_length=content_length,
         compression=None,
