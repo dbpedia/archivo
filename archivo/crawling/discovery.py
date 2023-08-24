@@ -19,6 +19,7 @@ from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 
 from archivo.models.content_negotiation import RDF_Type
+from archivo.models.data_writer import FileWriter
 from archivo.models.databus_identifier import DatabusVersionIdentifier
 from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import (
@@ -29,6 +30,7 @@ from archivo.utils import (
     async_rdf_retrieval,
     parsing,
 )
+from archivo.utils.validation import TestSuite
 
 from best_effort_crawling import determine_best_content_type
 
@@ -290,6 +292,8 @@ def searching_for_linked_ontologies(
 def discover_new_uri(
     uri: str,
     vocab_uri_cache: List[str],
+    test_suite: TestSuite,
+    source: str,
     logger: Logger,
     process_log: List[ProcessStepLog] = None,
     recursion_depth: int = 1,
@@ -423,12 +427,21 @@ def discover_new_uri(
     )
 
     # generate new version
-
+    data_writer = FileWriter(
+        path_base=archivoConfig.LOCAL_PATH,
+        target_url_base=archivoConfig.PUBLIC_URL_BASE,
+    )
     archivo_version = ArchivoVersion(
         confirmed_ontology_id=ontology_id_uri,
         crawling_result=crawling_result,
         parsing_result=parsing_result_turtle,
         databus_version_identifier=databus_version_id,
+        access_date=access_date,
+        test_suite=test_suite,
+        logger=logger,
+        source=source,
+        data_writer=data_writer,
+
     )
 
 

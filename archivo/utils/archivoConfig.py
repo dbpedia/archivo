@@ -6,6 +6,11 @@ DATABUS_USER: str = "ontologies"
 # agent name for crawling
 archivo_agent: str = "dbpedia-archivo-robot"
 
+# deployment config for server
+
+LOCAL_PATH = "/usr/local/archivo-data/"
+
+PUBLIC_URL_BASE = "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo"
 
 # add here properties that should be ignored
 # pls use the full URI and no prefixes since the diff takes place as ntriples

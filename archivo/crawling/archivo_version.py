@@ -327,7 +327,7 @@ class ArchivoVersion:
 
         return found_license
 
-    def build_databus_jsonld(self, group_info=None) -> Dict:
+    def build_databus_jsonld(self, group_info: Dict[str, str] = None) -> Dict:
 
         if group_info is None:
             group_info = {}
