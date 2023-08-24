@@ -20,7 +20,7 @@ from archivo.models.databus_identifier import (
     DatabusVersionIdentifier,
 )
 from archivo.models.data_writer import DataWriter
-from archivo.models.user_interaction import UserOutput, LogLevel
+from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import (
     string_tools,
     graph_handling,
@@ -35,6 +35,7 @@ from archivo.utils.validation import TestSuite
 class ArchivoVersion:
     def __init__(
         self,
+        confirmed_ontology_id: str,
         crawling_result: CrawlingResponse,
         parsing_result: parsing.RapperParsingResult,
         databus_version_identifier: DatabusVersionIdentifier,
@@ -46,7 +47,7 @@ class ArchivoVersion:
         ontology_graph: rdflib.Graph = None,
         semantic_version: str = "1.0.0",
         dev_uri: str = "",
-        user_output: List[UserOutput] = None,
+        user_output: List[ProcessStepLog] = None,
     ):
         if user_output is None:
             user_output = list()
@@ -54,7 +55,7 @@ class ArchivoVersion:
         self.parsing_result = parsing_result
         # the nir is the identity of the ontology, confirmed by checking for the triple inside the ontology itself
         # not to be confused with the location of the ontology, or the URI the crawl started with
-        self.nir = crawling_result.nir
+        self.nir = confirmed_ontology_id
         # data writer -> abstraction for handling the writing process
         self.data_writer = data_writer
         self.db_version_identifier = databus_version_identifier
@@ -221,7 +222,7 @@ class ArchivoVersion:
         trackThisURI = graph_handling.get_track_this_uri(self.ontology_graph)
         if trackThisURI is not None and self.location_uri != trackThisURI:
             self.user_output.append(
-                UserOutput(
+                ProcessStepLog(
                     status=LogLevel.INFO,
                     stepname="Check for Dev version link",
                     message=f"Found dev version at: {trackThisURI}",

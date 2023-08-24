@@ -2,7 +2,7 @@ import hashlib
 import re
 import os
 from pathlib import Path
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Set
 from urllib.parse import urlparse, urldefrag
 
 __URL_REGEX = r"https?://(?:www\.)?(.+?)/(.*)"
@@ -31,6 +31,7 @@ sentenceRegex = re.compile(r"(.*?\.) [A-Z]")
 
 class SetupException(Exception):
     """Risen when something during setup went wrong"""
+
     pass
 
 
@@ -40,14 +41,16 @@ def get_local_directory() -> str:
     utils_path = Path(os.path.realpath(__file__))
     local_path = str(utils_path.parent.parent.absolute())
     if os.path.isdir(os.path.join(local_path, "shacl")) and os.path.isfile(
-            os.path.join(local_path, "helpingBinaries", "DisplayAxioms.jar")
+        os.path.join(local_path, "helpingBinaries", "DisplayAxioms.jar")
     ):
         return local_path
     else:
         raise SetupException(f"Wrong local path: {local_path}")
 
 
-def generate_databus_identifier_from_uri(url: str, dev: bool = False) -> Tuple[Optional[str], Optional[str]]:
+def generate_databus_identifier_from_uri(
+    url: str, dev: bool = False
+) -> Tuple[Optional[str], Optional[str]]:
     parsed_obj = urlparse(url)
     # replacing the port with --
     group = parsed_obj.netloc.replace(":", "--")
@@ -144,8 +147,8 @@ def check_uri_equality(uri1: str, uri2: str) -> bool:
         return False
 
 
-def get_uri_from_index(uri: str, index: List[str]) -> Optional[str]:
-    for indexUri in index:
+def get_uri_from_index(uri: str, uri_cache: List[str]) -> Optional[str]:
+    for indexUri in uri_cache:
         if check_uri_equality(uri, indexUri):
             return indexUri
     return None

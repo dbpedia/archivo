@@ -9,7 +9,7 @@ from archivo.models.crawling_response import CrawlingResponse
 from archivo.utils import parsing
 from sqlalchemy.sql.functions import user
 
-from archivo.models.user_interaction import LogLevel, UserOutput
+from archivo.models.user_interaction import LogLevel, ProcessStepLog
 
 
 class UnavailableException(Exception):
@@ -42,7 +42,7 @@ def handle_parsing(
     uri: str,
     response: requests.Response,
     rdf_type: content_negotiation.RDF_Type,
-    user_output: Optional[List[UserOutput]] = None,
+    user_output: Optional[List[ProcessStepLog]] = None,
 ) -> CrawlingResponse:
     """Parses the rdf out of a given response and the supposed RDF serialisation type"""
 
@@ -62,7 +62,7 @@ def handle_parsing(
     message = f"Triples Parsed: {str(parsing_info.triple_number)} \nErrors during parsing: \n{error_message}"
     status = LogLevel.INFO if parsing_info.triple_number > 0 else LogLevel.WARNING
     user_output.append(
-        UserOutput(
+        ProcessStepLog(
             status=status,
             stepname=f"Parsing with header {header_string}",
             message=message,
@@ -73,7 +73,7 @@ def handle_parsing(
 
 
 def determine_best_content_type(
-    uri: str, user_output: List[UserOutput]
+    uri: str, user_output: List[ProcessStepLog]
 ) -> Optional[CrawlingResponse]:
     """Tests multiple RDF content types for the most yielding triples"""
 
@@ -91,7 +91,7 @@ def determine_best_content_type(
             )
         except Exception as e:
             user_output.append(
-                UserOutput(
+                ProcessStepLog(
                     status=LogLevel.ERROR,
                     stepname=f"Loading and parsing from {uri} with header {header}",
                     message=f"{str(e)}",
@@ -101,7 +101,22 @@ def determine_best_content_type(
             results.append(crawling_result)
             # break if the ontology is really huge
             if crawling_result.parsing_info.triple_number > 200000:
+                user_output.append(
+                    ProcessStepLog(
+                        status=LogLevel.INFO,
+                        stepname=f"Loading and parsing from {uri} with header {header}",
+                        message=f"Parsed {crawling_result.parsing_info.triple_number} triples with {len(crawling_result.parsing_info.errors)} Errors and {len(crawling_result.parsing_info.warnings)} Warnings. Since this is a huge ontology other formats wont be tested.",
+                    )
+                )
                 break
+            else:
+                user_output.append(
+                    ProcessStepLog(
+                        status=LogLevel.INFO,
+                        stepname=f"Loading and parsing from {uri} with header {header}",
+                        message=f"Parsed {crawling_result.parsing_info.triple_number} triples with {len(crawling_result.parsing_info.errors)} Errors and {len(crawling_result.parsing_info.warnings)} Warnings.",
+                    )
+                )
 
     # find best result
     parseable_results = [r for r in results if r.parsing_info.triple_number > 0]

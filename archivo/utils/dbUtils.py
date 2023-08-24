@@ -7,10 +7,10 @@ from archivo.crawling.discovery import ArchivoVersion
 
 
 def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
-    group, artifact = stringTools.generate_databus_identifier_from_uri(
+    group, artifact = string_tools.generate_databus_identifier_from_uri(
         uri, dev=True if dev != "" else False
     )
-    title, comment, versions_info = queryDatabus.getInfoForArtifact(group, artifact)
+    title, comment, versions_info = query_databus.getInfoForArtifact(group, artifact)
     if title is None:
         return None, None
     if type(timestamp) != datetime and type(timestamp) == str:
@@ -54,7 +54,7 @@ def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
 def rebuildDatabase():
     db.create_all()
     # urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
-    oldIndex = queryDatabus.get_last_official_index()
+    oldIndex = query_databus.get_last_official_index()
     print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
 
     for i, tp in enumerate(oldIndex):
@@ -70,7 +70,7 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
-            group, artifact = stringTools.generate_databus_identifier_from_uri(uri)
+            group, artifact = string_tools.generate_databus_identifier_from_uri(uri)
             ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
@@ -86,7 +86,7 @@ def rebuildDatabase():
             continue
 
     # rebuild dev data
-    dev_index = queryDatabus.get_last_dev_index()
+    dev_index = query_databus.get_last_dev_index()
     print(f"Rebuilding dev data. Found {len(dev_index)} DEV URIs.")
     for dev_uri, source, date, official_uri in dev_index:
         try:
@@ -95,7 +95,7 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-            group, artifact = stringTools.generate_databus_identifier_from_uri(
+            group, artifact = string_tools.generate_databus_identifier_from_uri(
                 official_uri, dev=True
             )
             ontology, versions = buildDatabaseObjectFromDatabus(
@@ -119,7 +119,7 @@ def update_database():
     all_onts = db.session.query(OfficialOntology).all()
     listed_uris = [ont.uri for ont in all_onts]
     print(f"Current index size: {len(all_onts)}")
-    oldIndex = queryDatabus.get_last_official_index()
+    oldIndex = query_databus.get_last_official_index()
     print(f"Loaded last index. Found {len(oldIndex)} ontology URIs.")
 
     missing_ontologies = [
@@ -143,7 +143,7 @@ def update_database():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
-            group, artifact = stringTools.generate_databus_identifier_from_uri(uri)
+            group, artifact = string_tools.generate_databus_identifier_from_uri(uri)
             ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
@@ -184,7 +184,7 @@ def write_dev_index(filepath):
 
 def update_info_for_ontology(ontology: OfficialOntology):
 
-    group, artifact = stringTools.generate_databus_identifier_from_uri(ontology.uri)
+    group, artifact = string_tools.generate_databus_identifier_from_uri(ontology.uri)
     _, versions = buildDatabaseObjectFromDatabus(
         ontology.uri, ontology.source, ontology.accessDate
     )
@@ -203,7 +203,7 @@ def update_info_for_ontology(ontology: OfficialOntology):
 
     if ontology.devel is not None:
         dev_ont = ontology.devel
-        group, artifact = stringTools.generate_databus_identifier_from_uri(
+        group, artifact = string_tools.generate_databus_identifier_from_uri(
             ontology.uri, dev=True
         )
         _, versions = buildDatabaseObjectFromDatabus(
