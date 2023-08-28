@@ -23,7 +23,7 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
 from archivo.utils.validation import TestSuite
-from archivo.utils import archivoConfig, query_databus, string_tools, graph_handling, dbUtils
+from archivo.utils import archivo_config, query_databus, string_tools, graph_handling, dbUtils
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
 from archivo.utils.archivoLogs import webservice_logger
@@ -80,7 +80,7 @@ def addOntology():
         success, isNir, archivo_version = discovery.handleNewUri(
             uri,
             allOnts,
-            archivoConfig.localPath,
+            archivo_config.localPath,
             "user-suggestion",
             False,
             testSuite=testingSuite,
@@ -88,7 +88,7 @@ def addOntology():
             user_output=output,
         )
         if success:
-            succ, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handle_track_this()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)

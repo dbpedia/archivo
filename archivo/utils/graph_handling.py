@@ -6,10 +6,10 @@ from rdflib import OWL, RDFS, RDF, URIRef, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 
 from archivo.models.content_negotiation import RDF_Type
-from archivo.utils import string_tools, archivoConfig
+from archivo.utils import string_tools, archivo_config
 from urllib.parse import urlparse
 from archivo.models.content_negotiation import get_rdflib_string
-from archivo.utils.ArchivoExceptions import UnknownRDFFormatException
+from archivo.utils.archivo_exceptions import UnknownRDFFormatException
 
 descriptionNamespaceGraph = Graph()
 descriptionNamespaceGraph.bind("dct", DCTERMS)
@@ -61,7 +61,7 @@ def get_defined_uris(nir: str, graph: rdflib.Graph) -> List[str]:
     The subject is not relevant, it considers only the objects of the properties defined in the config."""
 
     prop_string = " ".join(
-        [f"<{defines_prop}>" for defines_prop in archivoConfig.defines_properties]
+        [f"<{defines_prop}>" for defines_prop in archivo_config.defines_properties]
     )
     query_string = "\n".join(
         [
@@ -200,7 +200,7 @@ def get_track_this_uri(graph: Graph) -> Optional[str]:
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
-        f" ?uri <{archivoConfig.track_this_uri}> ?trackURI ."
+        f" ?uri <{archivo_config.track_this_uri}> ?trackURI ."
         "}"
     )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})

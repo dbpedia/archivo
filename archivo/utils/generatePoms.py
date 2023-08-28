@@ -1,7 +1,7 @@
 import os
 import sys
 import subprocess
-from utils import stringTools, archivoConfig, docTemplates
+from utils import stringTools, archivo_config, docTemplates
 from string import Template
 
 
@@ -15,9 +15,9 @@ def generateParentPom(
     maintainer,
     groupdocu,
     license=docTemplates.default_license,
-    deployRepoURL=archivoConfig.default_repo,
-    version=archivoConfig.default_version,
-    artifactId=archivoConfig.default_parentArtifact,
+    deployRepoURL=archivo_config.default_repo,
+    version=archivo_config.default_version,
+    artifactId=archivo_config.default_parentArtifact,
 ):
 
     modlueStrings = [f"    <module>{module}</module>" for module in modules]
@@ -92,8 +92,8 @@ def generateChildPom(
     packaging,
     version,
     license=None,
-    parentArtifactId=archivoConfig.default_parentArtifact,
-    parentVersion=archivoConfig.default_version,
+    parentArtifactId=archivo_config.default_parentArtifact,
+    parentVersion=archivo_config.default_version,
 ):
     if version == None or version == "":
         versionString = ""
@@ -163,7 +163,7 @@ def writeMarkdownFromTemplate(
                 date=str(dateTimeObj),
             )
             + "\n\n"
-            + archivoConfig.description_intro
+            + archivo_config.description_intro
             + "\n\n"
             + description
         )
@@ -211,10 +211,10 @@ def updateParentPoms(rootdir, index):
                 groupId=group,
                 packaging="pom",
                 modules=artifactDirs,
-                packageDirectory=archivoConfig.packDir,
-                downloadUrlPath=archivoConfig.downloadUrl,
-                publisher=archivoConfig.pub,
-                maintainer=archivoConfig.pub,
+                packageDirectory=archivo_config.packDir,
+                downloadUrlPath=archivo_config.downloadUrl,
+                publisher=archivo_config.pub,
+                maintainer=archivo_config.pub,
                 groupdocu=Template(docTemplates.groupDoc).safe_substitute(
                     groupid=group
                 ),

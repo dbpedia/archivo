@@ -1,0 +1,23 @@
+databus:
+  api-key: "blablubb"
+  base_url: "https://dev.databus.dbpedia.org"
+  user: "ontologies"
+
+discovery:
+  track_this_property: "https://archivo.dbpedia.org/onto#trackThis"
+  defines_properties:
+    - "http://open.vocab.org/terms/defines"
+    - "https://archivo.dbpedia.org/onto#defines"
+  max_recursion_depth: 5
+
+update_crawling:
+  diff_skip_ontologies:
+    - "http://purl.obolibrary.org/obo/dron.owl"
+  diff_ignore_properties:
+    - "http://purl.org/dc/terms/modified"
+    - "http://www.w3.org/2002/07/owl#versionInfo"
+
+release:
+  public_url_base: "https://downloads.dbpedia.org/archivo"
+  generate_files: true
+  local_path: "/usr/local/archivo-data/"

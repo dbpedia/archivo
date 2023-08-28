@@ -17,13 +17,13 @@ import json
 import re
 from archivo.utils import (
     string_tools,
-    archivoConfig,
+    archivo_config,
     async_rdf_retrieval,
     graph_handling,
     parsing,
     content_access,
 )
-from archivo.utils.ArchivoExceptions import (
+from archivo.utils.archivo_exceptions import (
     UnavailableContentException,
     UnparseableRDFException,
 )
@@ -51,7 +51,7 @@ class DiffResult:
 
 
 def no_ignored_props_in_line(line: str):
-    for prop in archivoConfig.ignore_props:
+    for prop in archivo_config.ignore_props:
         if prop in line:
             return False
     return True
@@ -332,7 +332,7 @@ def update_for_ontology_uri(
     # New version!
 
     new_version_identifier = DatabusVersionIdentifier(
-        archivoConfig.DATABUS_USER,
+        archivo_config.DATABUS_USER,
         old_version_id.group,
         old_version_id.artifact,
         datetime.now().strftime("%Y.%m.%d-%H%M%S"),
@@ -373,7 +373,7 @@ def update_for_ontology_uri(
     logger.info("Deploying the data to the databus...")
 
     try:
-        databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
+        databusclient.deploy(databus_dataset_jsonld, archivo_config.DATABUS_API_KEY)
         logger.info(f"Successfully deployed the new update of ontology {uri}")
         return (
             True,

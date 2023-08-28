@@ -10,7 +10,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from archivo.crawling import discovery, sources
-from utils import archivoConfig, string_tools, query_databus, generatePoms
+from utils import archivo_config, string_tools, query_databus, generatePoms
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
@@ -37,7 +37,7 @@ def check_uri_containment(uri: str, archivo_uris: List[str]) -> bool:
 # This is the discovery process
 def ontology_discovery():
     # init parameters
-    dataPath = archivoConfig.localPath
+    dataPath = archivo_config.localPath
     testSuite = TestSuite()
 
     discovery_logger.info("Started discovery of LOV URIs...")
@@ -45,9 +45,9 @@ def ontology_discovery():
     discovery_logger.info("Started discovery of prefix.cc URIs...")
     run_discovery(sources.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
-    run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
+    run_discovery(query_databus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")
-    for uri_list in queryDatabus.get_SPOs(logger=discovery_logger):
+    for uri_list in query_databus.get_SPOs(logger=discovery_logger):
         run_discovery(uri_list, "SPOs", dataPath, testSuite)
 
 
@@ -77,7 +77,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
             )
             continue
         if success:
-            succ, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handle_track_this()
             dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             if succ:
                 dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
@@ -103,7 +103,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
 
 
 def ontology_official_update():
-    dataPath = archivoConfig.localPath
+    dataPath = archivo_config.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
     if allOntologiesInfo is None:
         diff_logger.warning(
@@ -115,7 +115,7 @@ def ontology_official_update():
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
 
         # skip problematic ontologies
-        if ont.uri in archivoConfig.diff_skip_onts:
+        if ont.uri in archivo_config.diff_skip_onts:
             diff_logger.info(
                 f"{str(i + 1)}: Skipped ontology {ont.uri} due to earlier problems..."
             )
@@ -168,7 +168,7 @@ def ontology_official_update():
                 db.session.add(dbFallout)
 
             # check for new trackThis URI
-            succ, dev_version = archivo_version.handleTrackThis()
+            succ, dev_version = archivo_version.handle_track_this()
             _, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
             db.session.add(dbVersion)
             if succ:
@@ -207,7 +207,7 @@ def ontology_official_update():
 
 
 def ontology_dev_update():
-    dataPath = archivoConfig.localPath
+    dataPath = archivo_config.localPath
     allOntologiesInfo = queryDatabus.latestNtriples()
     if allOntologiesInfo is None:
         dev_diff_logger.warning(
@@ -280,11 +280,11 @@ def update_star_graph():
 
 
 def updateOntologyIndex():
-    old_officials = queryDatabus.get_last_official_index()
+    old_officials = query_databus.get_last_official_index()
     old_official_uris = [uri for uri, src, date in old_officials]
     new_officials = db.session.query(dbModels.OfficialOntology).all()
 
-    old_devs = queryDatabus.get_last_dev_index()
+    old_devs = query_databus.get_last_dev_index()
     old_dev_uris = [uri for uri, _, _, _ in old_devs]
     new_devs = db.session.query(dbModels.DevelopOntology).all()
     official_diff = [
@@ -303,32 +303,32 @@ def updateOntologyIndex():
 def deploy_index():
     newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
     artifactPath = os.path.join(
-        archivoConfig.localPath, "archivo-indices", "ontologies"
+        archivo_config.localPath, "archivo-indices", "ontologies"
     )
     indexpath = os.path.join(artifactPath, newVersionString)
     os.makedirs(indexpath, exist_ok=True)
     # write parent pom if not existent
     if not os.path.isfile(
-            os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")
+            os.path.join(archivo_config.localPath, "archivo-indices", "pom.xml")
     ):
         pomString = generatePoms.generateParentPom(
             groupId="archivo-indices",
             packaging="pom",
             modules=[],
-            packageDirectory=archivoConfig.packDir,
-            downloadUrlPath=archivoConfig.downloadUrl,
-            publisher=archivoConfig.pub,
-            maintainer=archivoConfig.pub,
+            packageDirectory=archivo_config.packDir,
+            downloadUrlPath=archivo_config.downloadUrl,
+            publisher=archivo_config.pub,
+            maintainer=archivo_config.pub,
             groupdocu="This dataset contains the index of all ontologies from DBpedia Archivo",
         )
         with open(
-                os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+"
+                os.path.join(archivo_config.localPath, "archivo-indices", "pom.xml"), "w+"
         ) as parentPomFile:
             print(pomString, file=parentPomFile)
     # write new md description of artifact
     if not os.path.isfile(
             os.path.join(
-                archivoConfig.localPath, "archivo-indices", "ontologies", "ontologies.md"
+                archivo_config.localPath, "archivo-indices", "ontologies", "ontologies.md"
             )
     ):
         generatePoms.writeMarkdownDescription(
@@ -367,10 +367,10 @@ def deploy_index():
 # checks if everything is configured correctly
 def startup_check():
     available_files = [
-        archivoConfig.pelletPath,
+        archivo_config.pelletPath,
         os.path.join(string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"),
     ]
-    available_dirs = [archivoConfig.localPath]
+    available_dirs = [archivo_config.localPath]
 
     for f in available_files:
         if not os.path.isfile(f):
