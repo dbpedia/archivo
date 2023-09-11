@@ -18,7 +18,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from archivo.crawling import discovery, sources
-from utils import archivoConfig, string_tools, query_databus
+from utils import archivo_config, string_tools, query_databus
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
@@ -84,8 +84,8 @@ def run_discovery(
         output = []
 
         data_writer = FileWriter(
-            path_base=archivoConfig.localPath,
-            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+            path_base=archivo_config.localPath,
+            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
         try:
             archivo_version = discovery.discover_new_uri(
@@ -132,7 +132,7 @@ def run_discovery(
 
 
 def ontology_official_update():
-    dataPath = archivoConfig.localPath
+    dataPath = archivo_config.localPath
     allOntologiesInfo = query_databus.latestNtriples()
     if allOntologiesInfo is None:
         diff_logger.warning(
@@ -151,8 +151,8 @@ def ontology_official_update():
             continue
 
         data_writer = FileWriter(
-            path_base=archivoConfig.localPath,
-            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+            path_base=archivo_config.localPath,
+            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
 
         diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
@@ -265,8 +265,8 @@ def ontology_dev_update():
             continue
 
         data_writer = FileWriter(
-            path_base=archivoConfig.localPath,
-            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+            path_base=archivo_config.localPath,
+            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
 
         try:
@@ -344,15 +344,15 @@ def deploy_index():
     new_version_timestamp = datetime.now().strftime("%Y.%m.%d-%H%M%S")
 
     version_id = DatabusVersionIdentifier(
-        user=archivoConfig.DATABUS_USER,
+        user=archivo_config.DATABUS_USER,
         group="archivo-indices",
         artifact="ontologies",
         version=new_version_timestamp,
     )
 
     data_writer = FileWriter(
-        path_base=archivoConfig.localPath,
-        target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+        path_base=archivo_config.localPath,
+        target_url_base=archivo_config.DOWNLOAD_URL_BASE,
     )
 
     indices = {
@@ -379,7 +379,7 @@ def deploy_index():
     distributions = data_writer.generate_distributions()
 
     dataset = databusclient.create_dataset(
-        version_id=f"{archivoConfig.DATABUS_BASE}/{version_id}",
+        version_id=f"{archivo_config.DATABUS_BASE}/{version_id}",
         title="Archivo Ontologies",
         abstract="A complete list of all ontologies in DBpedia Archivo.",
         description="# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**.",
@@ -391,7 +391,7 @@ def deploy_index():
     )
 
     try:
-        databusclient.deploy(dataset, archivoConfig.DATABUS_API_KEY)
+        databusclient.deploy(dataset, archivo_config.DATABUS_API_KEY)
         discovery_logger.info("Deployed new index to databus")
     except Exception as e:
         discovery_logger.error(f"Failed deploying to databus: {e}")
@@ -400,7 +400,7 @@ def deploy_index():
 # checks if everything is configured correctly
 def startup_check():
     available_files = [
-        archivoConfig.pelletPath,
+        archivo_config.pelletPath,
         os.path.join(
             string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"
         ),

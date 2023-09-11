@@ -29,7 +29,7 @@ class TestSuite:
     profileCheckerJar = archivo_config.profileCheckerJar
 
     def __init__(self):
-        archivo_path = stringTools.get_local_directory()
+        archivo_path = string_tools.get_local_directory()
 
         self.licenseViolationGraph = load_shacl_graph(
             os.path.join(archivo_path, "shacl", "license-I.ttl"),

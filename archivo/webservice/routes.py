@@ -24,7 +24,7 @@ from wtforms import validators
 import os
 from archivo.utils.validation import TestSuite
 from archivo.utils import (
-    archivoConfig,
+    archivo_config,
     query_databus,
     string_tools,
     graph_handling,

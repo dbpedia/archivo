@@ -19,12 +19,12 @@ from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
 
 from archivo.models.content_negotiation import RDF_Type
-from archivo.models.data_writer import DataWriter
+from archivo.models.data_writer import DataWriter, FileWriter
 from archivo.models.databus_identifier import DatabusVersionIdentifier
 from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import (
     string_tools,
-    archivoConfig,
+    archivo_config,
     graph_handling,
     parsing,
 )
@@ -382,7 +382,7 @@ def discover_new_uri(
             ProcessStepLog(
                 status=LogLevel.INFO,
                 stepname="Deployment to Databus",
-                message=f"Sucessfully deployed to the Databus: <a href={archivoConfig.DATABUS_BASE}/{archivoConfig.DATABUS_USER}/{group_id}/{artifact_id}>{archivoConfig.DATABUS_BASE}/{archivoConfig.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
             )
         )
         return archivo_version
@@ -457,7 +457,7 @@ def handle_track_this_uri(
     )
 
     databus_version_id = DatabusVersionIdentifier(
-        user=archivoConfig.DATABUS_USER,
+        user=archivo_config.DATABUS_USER,
         group=group_id,
         artifact=artifact_id,
         version=version_id,
@@ -485,7 +485,7 @@ def handle_track_this_uri(
             ProcessStepLog(
                 status=LogLevel.INFO,
                 stepname="Deployment to Databus",
-                message=f"Sucessfully deployed to the Databus: <a href={archivoConfig.DATABUS_BASE}/{archivoConfig.DATABUS_USER}/{group_id}/{artifact_id}>{archivoConfig.DATABUS_BASE}/{archivoConfig.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
             )
         )
         return archivo_version

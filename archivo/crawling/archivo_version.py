@@ -356,4 +356,4 @@ class ArchivoVersion:
         databus_dataset_jsonld = self.build_databus_jsonld(group_info=group_info)
 
         self.logger.info("Deploying the data to the databus...")
-        databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
+        databusclient.deploy(databus_dataset_jsonld, archivo_config.DATABUS_API_KEY)
