@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Set
+from typing import Optional, Tuple, Set, List
 
 import rdflib
 from pyshacl import validate
@@ -175,3 +175,26 @@ class TestSuite:
             return set([axiom.strip() for axiom in axiomSet if axiom.strip() != ""])
         else:
             raise UnparseableRDFException(process.stderr.decode("utf-8"))
+
+
+def measure_stars(
+    rapper_errors: List[str],
+    license_1_check: bool,
+    license_2_check: bool,
+    consistency_check: str,
+    consistenty_check_without_imports: str,
+) -> int:
+    stars = 0
+    if rapper_errors == [] or rapper_errors == "":
+        stars = stars + 1
+    if license_1_check:
+        stars = stars + 1
+
+    if not stars == 2:
+        return stars
+
+    if consistency_check == "Yes" or consistenty_check_without_imports == "Yes":
+        stars = stars + 1
+    if license_2_check:
+        stars = stars + 1
+    return stars

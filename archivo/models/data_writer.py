@@ -3,7 +3,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Iterator, Dict, List, Optional
 
+import databusclient
+
 from archivo.models.databus_identifier import DatabusFileMetadata
+from archivo.utils import archivoConfig
 from archivo.utils.WebDAVUtils import WebDAVHandler
 
 
@@ -18,6 +21,9 @@ class DataWriter(ABC):
         """Writing the data to the resource identifier"""
         pass
 
+    def clear_history(self):
+        self.written_files = {}
+
     def write_databus_file(
         self, content: str, db_file_metadata: DatabusFileMetadata, log_file: bool = True
     ) -> None:
@@ -29,6 +35,23 @@ class DataWriter(ABC):
         except Exception as e:
             if log_file:
                 self.written_files[db_file_metadata] = str(e)
+
+    def generate_distributions(self) -> List[str]:
+
+        distributions = []
+
+        for metadata, error in self.written_files.items():
+
+            dst = databusclient.create_distribution(
+                url=f"{self.target_url_base}/{metadata}",
+                cvs=metadata.content_variants,
+                file_format=metadata.file_extension,
+                compression=metadata.compression,
+                sha256_length_tuple=(metadata.sha_256_sum, metadata.content_length),
+            )
+            distributions.append(dst)
+
+        return distributions
 
 
 class FileWriter(DataWriter):

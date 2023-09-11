@@ -1,6 +1,14 @@
 import atexit
-from typing import List
+from typing import List, Iterable
 
+import databusclient
+
+from archivo.models.data_writer import FileWriter
+from archivo.models.databus_identifier import (
+    DatabusFileMetadata,
+    DatabusVersionIdentifier,
+)
+from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import dbUtils, graphing
 from archivo.update import update_archivo
 import json
@@ -10,7 +18,7 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from archivo.crawling import discovery, sources
-from utils import archivoConfig, string_tools, query_databus, generatePoms
+from utils import archivoConfig, string_tools, query_databus
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
@@ -34,6 +42,19 @@ def check_uri_containment(uri: str, archivo_uris: List[str]) -> bool:
     return False
 
 
+def check_ontology_based_on_log(process_log: List[ProcessStepLog]) -> bool:
+
+    for step_log in process_log:
+        if (
+            step_log.stepname
+            == "Determine non-information resource (ID of the ontology)"
+            and step_log.status == LogLevel.INFO
+        ):
+            return True
+
+    return False
+
+
 # This is the discovery process
 def ontology_discovery():
     # init parameters
@@ -45,14 +66,15 @@ def ontology_discovery():
     discovery_logger.info("Started discovery of prefix.cc URIs...")
     run_discovery(sources.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
-    run_discovery(queryDatabus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
+    run_discovery(query_databus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
     discovery_logger.info("Started discovery of Databus SPOs...")
-    for uri_list in queryDatabus.get_SPOs(logger=discovery_logger):
+    for uri_list in query_databus.get_SPOs(logger=discovery_logger):
         run_discovery(uri_list, "SPOs", dataPath, testSuite)
 
 
-def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
-    logger.info(f"Crunching {len(lst)} ontologies....")
+def run_discovery(
+    lst: Iterable[str], source: str, test_suite: TestSuite, logger=discovery_logger
+):
     if lst is None:
         return
     allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
@@ -60,27 +82,31 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
         if check_uri_containment(uri, allOnts):
             continue
         output = []
+
+        data_writer = FileWriter(
+            path_base=archivoConfig.localPath,
+            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+        )
         try:
-            success, isNir, archivo_version = discovery.handleNewUri(
-                uri,
-                allOnts,
-                dataPath,
-                source,
-                False,
-                testSuite=testSuite,
+            archivo_version = discovery.discover_new_uri(
+                uri=uri,
+                vocab_uri_cache=allOnts,
+                data_writer=data_writer,
+                test_suite=test_suite,
+                source=source,
                 logger=logger,
-                user_output=output,
+                process_log=output,
             )
         except Exception:
             discovery_logger.exception(
                 f"Problem during validating {uri}", exc_info=True
             )
             continue
-        if success:
-            succ, dev_version = archivo_version.handleTrackThis()
-            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
-            if succ:
-                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+        if archivo_version:
+            dev_version = archivo_version.handle_dev_version()
+            dbOnt, dbVersion = dbUtils.get_database_entries(archivo_version)
+            if dev_version:
+                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
                 db.session.add(dev_ont)
                 db.session.add(dev_version)
                 dbOnt.devel = dev_ont.uri
@@ -91,9 +117,12 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
                 allOnts.append(archivo_version.nir)
             except Exception:
                 db.session.rollback()
-        elif not success and isNir:
+        elif check_ontology_based_on_log(output):
             fallout = dbModels.Fallout(
-                uri=uri, source=source, inArchivo=False, error=json.dumps(output)
+                uri=uri,
+                source=source,
+                inArchivo=False,
+                error=json.dumps([step.to_dict() for step in output]),
             )
             db.session.add(fallout)
             try:
@@ -104,7 +133,7 @@ def run_discovery(lst, source, dataPath, testSuite, logger=discovery_logger):
 
 def ontology_official_update():
     dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestNtriples()
+    allOntologiesInfo = query_databus.latestNtriples()
     if allOntologiesInfo is None:
         diff_logger.warning(
             "There seems to be an error with the databus, no official diff possible"
@@ -121,6 +150,11 @@ def ontology_official_update():
             )
             continue
 
+        data_writer = FileWriter(
+            path_base=archivoConfig.localPath,
+            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+        )
+
         diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
         group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
@@ -130,14 +164,15 @@ def ontology_official_update():
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
         try:
-            success, message, archivo_version = diffOntologies.handleDiffForUri(
-                ont.uri,
-                dataPath,
-                urlInfo["meta"],
-                urlInfo["ntFile"],
-                urlInfo["version"],
-                testSuite,
-                ont.source,
+            success, message, archivo_version = update_archivo.update_for_ontology_uri(
+                uri=ont.uri,
+                last_metafile_url=urlInfo["meta"],
+                last_nt_file_url=urlInfo["ntFile"],
+                last_version_timestamp=urlInfo["version"],
+                test_suite=testSuite,
+                source=ont.source,
+                data_writer=data_writer,
+                logger=diff_logger,
             )
         except Exception:
             diff_logger.exception(f"There was an error handling {str(ont)}")
@@ -168,11 +203,11 @@ def ontology_official_update():
                 db.session.add(dbFallout)
 
             # check for new trackThis URI
-            succ, dev_version = archivo_version.handleTrackThis()
-            _, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            succ, dev_version = archivo_version.handle_dev_version()
+            _, dbVersion = dbUtils.get_database_entries(archivo_version)
             db.session.add(dbVersion)
             if succ:
-                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
                 # update with new trackThis URI
                 if ont.devel is not None and ont.devel != dev_ont.uri:
                     old_dev_obj = (
@@ -184,9 +219,9 @@ def ontology_official_update():
                     db.session.add(dev_version)
                     # change old dev versions to new one
                     for v in (
-                            db.session.query(dbModels.Version)
-                                    .filter_by(ontology=ont.devel)
-                                    .all()
+                        db.session.query(dbModels.Version)
+                        .filter_by(ontology=ont.devel)
+                        .all()
                     ):
                         v.ontology = dev_ont.uri
                     #
@@ -207,8 +242,7 @@ def ontology_official_update():
 
 
 def ontology_dev_update():
-    dataPath = archivoConfig.localPath
-    allOntologiesInfo = queryDatabus.latestNtriples()
+    allOntologiesInfo = query_databus.latestNtriples()
     if allOntologiesInfo is None:
         dev_diff_logger.warning(
             "There seems to be an error with the databus, no dev diff possible"
@@ -229,17 +263,23 @@ def ontology_dev_update():
         except KeyError:
             dev_diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
+
+        data_writer = FileWriter(
+            path_base=archivoConfig.localPath,
+            target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
+        )
+
         try:
-            success, message, archivo_version = diffOntologies.handleDiffForUri(
-                ont.official,
-                dataPath,
-                urlInfo["meta"],
-                urlInfo["ntFile"],
-                urlInfo["version"],
-                testSuite,
-                ont.source,
-                devURI=ont.uri,
-                logger=dev_diff_logger,
+            success, message, archivo_version = update_archivo.update_for_ontology_uri(
+                uri=ont.official,
+                last_metafile_url=urlInfo["meta"],
+                last_nt_file_url=urlInfo["ntFile"],
+                last_version_timestamp=urlInfo["version"],
+                test_suite=testSuite,
+                source=ont.source,
+                data_writer=data_writer,
+                logger=diff_logger,
+                dev_uri=ont.uri,
             )
         except Exception:
             dev_diff_logger.exception(f"Problem handling {str(ont)}")
@@ -256,7 +296,7 @@ def ontology_dev_update():
             db.session.add(dbFallout)
         elif success:
             ont.crawling_status = True
-            _, dev_version = dbUtils.getDatabaseEntry(archivo_version)
+            _, dev_version = dbUtils.get_database_entries(archivo_version)
             db.session.add(dev_version)
             try:
                 db.session.commit()
@@ -280,11 +320,11 @@ def update_star_graph():
 
 
 def updateOntologyIndex():
-    old_officials = queryDatabus.get_last_official_index()
+    old_officials = query_databus.get_last_official_index()
     old_official_uris = [uri for uri, src, date in old_officials]
     new_officials = db.session.query(dbModels.OfficialOntology).all()
 
-    old_devs = queryDatabus.get_last_dev_index()
+    old_devs = query_databus.get_last_dev_index()
     old_dev_uris = [uri for uri, _, _, _ in old_devs]
     new_devs = db.session.query(dbModels.DevelopOntology).all()
     official_diff = [
@@ -301,74 +341,69 @@ def updateOntologyIndex():
 
 
 def deploy_index():
-    newVersionString = datetime.now().strftime("%Y.%m.%d-%H%M%S")
-    artifactPath = os.path.join(
-        archivoConfig.localPath, "archivo-indices", "ontologies"
+    new_version_timestamp = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+
+    version_id = DatabusVersionIdentifier(
+        user=archivoConfig.DATABUS_USER,
+        group="archivo-indices",
+        artifact="ontologies",
+        version=new_version_timestamp,
     )
-    indexpath = os.path.join(artifactPath, newVersionString)
-    os.makedirs(indexpath, exist_ok=True)
-    # write parent pom if not existent
-    if not os.path.isfile(
-            os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml")
-    ):
-        pomString = generatePoms.generateParentPom(
-            groupId="archivo-indices",
-            packaging="pom",
-            modules=[],
-            packageDirectory=archivoConfig.packDir,
-            downloadUrlPath=archivoConfig.downloadUrl,
-            publisher=archivoConfig.pub,
-            maintainer=archivoConfig.pub,
-            groupdocu="This dataset contains the index of all ontologies from DBpedia Archivo",
-        )
-        with open(
-                os.path.join(archivoConfig.localPath, "archivo-indices", "pom.xml"), "w+"
-        ) as parentPomFile:
-            print(pomString, file=parentPomFile)
-    # write new md description of artifact
-    if not os.path.isfile(
-            os.path.join(
-                archivoConfig.localPath, "archivo-indices", "ontologies", "ontologies.md"
-            )
-    ):
-        generatePoms.writeMarkdownDescription(
-            artifactPath,
-            "ontologies",
-            "Archivo Ontologies",
-            "A complete list of all ontologies in DBpedia Archivo.",
-            "# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**.",
-        )
-    # update pom
-    with open(os.path.join(artifactPath, "pom.xml"), "w+") as pomfile:
-        pomstring = generatePoms.generateChildPom(
-            groupId="archivo-indices",
-            artifactId="ontologies",
-            version=newVersionString,
-            license="http://creativecommons.org/licenses/by-sa/3.0/",
-            packaging="jar",
-        )
-        print(pomstring, file=pomfile)
-    # write new index
-    dbUtils.write_official_index(
-        os.path.join(indexpath, "ontologies_type=official.csv")
+
+    data_writer = FileWriter(
+        path_base=archivoConfig.localPath,
+        target_url_base=archivoConfig.DOWNLOAD_URL_BASE,
     )
-    dbUtils.write_dev_index(os.path.join(indexpath, "ontologies_type=dev.csv"))
-    # deploy
-    status_code, log = generatePoms.callMaven(
-        os.path.join(artifactPath, "pom.xml"), "deploy"
+
+    indices = {
+        "official": dbUtils.get_official_index_as_csv,
+        "dev": dbUtils.get_dev_index_as_csv,
+    }
+
+    for label, getfun in indices.items():
+
+        content = getfun()
+        shasum, content_length = string_tools.get_content_stats(bytes(content, "utf-8"))
+
+        index_metadata = DatabusFileMetadata(
+            version_identifier=version_id,
+            content_variants={"type": label},
+            sha_256_sum=shasum,
+            content_length=content_length,
+            file_extension="csv",
+            compression=None,
+        )
+
+        data_writer.write_databus_file(content, index_metadata)
+
+    distributions = data_writer.generate_distributions()
+
+    dataset = databusclient.create_dataset(
+        version_id=f"{archivoConfig.DATABUS_BASE}/{version_id}",
+        title="Archivo Ontologies",
+        abstract="A complete list of all ontologies in DBpedia Archivo.",
+        description="# All Ontologies\nThere are two different Files:\n- **official**: All Official Ontologies discovered.\n- **dev**: All develop stage URIs of ontologies related to **official**.",
+        license_url="http://creativecommons.org/licenses/by-sa/3.0/",
+        distributions=distributions,
+        group_title="Archivo Indices",
+        group_abstract="This group contains all the indices Archivo produces",
+        group_description="This group contains all the indices Archivo produces",
     )
-    if status_code == 0:
+
+    try:
+        databusclient.deploy(dataset, archivoConfig.DATABUS_API_KEY)
         discovery_logger.info("Deployed new index to databus")
-    else:
-        discovery_logger.warning("Failed deploying to databus")
-        discovery_logger.warning(log)
+    except Exception as e:
+        discovery_logger.error(f"Failed deploying to databus: {e}")
 
 
 # checks if everything is configured correctly
 def startup_check():
     available_files = [
         archivoConfig.pelletPath,
-        os.path.join(string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"),
+        os.path.join(
+            string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"
+        ),
     ]
     available_dirs = [archivoConfig.localPath]
 

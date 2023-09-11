@@ -23,7 +23,13 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
 from archivo.utils.validation import TestSuite
-from archivo.utils import archivoConfig, query_databus, string_tools, graph_handling, dbUtils
+from archivo.utils import (
+    archivoConfig,
+    query_databus,
+    string_tools,
+    graph_handling,
+    dbUtils,
+)
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
 from archivo.utils.archivoLogs import webservice_logger
@@ -31,6 +37,7 @@ from urllib.error import HTTPError, URLError
 import json
 import html
 from flask_cors import cross_origin
+
 # from flask_sqlalchemy import sqlalchemy as sa
 import sqlalchemy
 from sqlalchemy.orm import aliased
@@ -52,7 +59,7 @@ class InfoForm(FlaskForm):
     uris = SelectField(
         "Enter a URI",
         choices=[("", "")]
-                + [(ont.uri, ont.uri) for ont in db.session.query(OfficialOntology).all()],
+        + [(ont.uri, ont.uri) for ont in db.session.query(OfficialOntology).all()],
         validators=[validators.InputRequired()],
     )
     submit = SubmitField(label="Get Info")
@@ -88,10 +95,10 @@ def addOntology():
             user_output=output,
         )
         if success:
-            succ, dev_version = archivo_version.handleTrackThis()
-            dbOnt, dbVersion = dbUtils.getDatabaseEntry(archivo_version)
+            succ, dev_version = archivo_version.handle_dev_version()
+            dbOnt, dbVersion = dbUtils.get_database_entries(archivo_version)
             if succ:
-                dev_ont, dev_version = dbUtils.getDatabaseEntry(dev_version)
+                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
                 db.session.add(dev_ont)
                 db.session.add(dev_version)
                 dbOnt.devel = dev_ont.uri
@@ -147,17 +154,17 @@ def vocabInfo():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
     if ontoUri != "":
-        foundUri = stringTools.get_uri_from_index(ontoUri, allOntos)
+        foundUri = string_tools.get_uri_from_index(ontoUri, allOntos)
         if foundUri is None:
             abort(status=404)
         ont = db.session.query(OfficialOntology).filter_by(uri=foundUri).first()
         general_info = {}
         general_info["hasDev"] = True if ont.devel is not None else False
-        group, artifact = stringTools.generate_databus_identifier_from_uri(
+        group, artifact = string_tools.generate_databus_identifier_from_uri(
             foundUri, dev=isDev
         )
         try:
-            title, comment, versions_info = queryDatabus.getInfoForArtifact(
+            title, comment, versions_info = query_databus.getInfoForArtifact(
                 group, artifact
             )
         except HTTPError as e:
@@ -202,7 +209,7 @@ def vocabInfo():
                 "message": latestFallout.error,
             }
         for v in versions_info:
-            v["stars"] = stringTools.generate_star_string(v["stars"])
+            v["stars"] = string_tools.generate_star_string(v["stars"])
         return render_template(
             "info.html",
             versions_info=sorted(
@@ -225,8 +232,8 @@ def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not stringTools.get_uri_from_index(
-            ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
+    if not string_tools.get_uri_from_index(
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(404)
     return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
@@ -237,8 +244,8 @@ def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not stringTools.get_uri_from_index(
-            ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
+    if not string_tools.get_uri_from_index(
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(404)
     return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
@@ -249,8 +256,8 @@ def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
-    if not stringTools.get_uri_from_index(
-            ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
+    if not string_tools.get_uri_from_index(
+        ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(status=404)
     return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
@@ -300,7 +307,7 @@ def generateInfoDict(metadata, source, databusLink, latestReleaseLink):
 
 
 def getRDFInfoLink(ontologyUrl, mimeType):
-    group, artifact = stringTools.generate_databus_identifier_from_uri(ontologyUrl)
+    group, artifact = string_tools.generate_databus_identifier_from_uri(ontologyUrl)
     databusArtifact = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
     queryString = "\n".join(
         (
@@ -409,17 +416,19 @@ def getCorrectScheme(scheme):
 
 
 def downloadHandling(
-        uri, isDev=False, version="", rdfFormat="owl", sourceSchema="http"
+    uri, isDev=False, version="", rdfFormat="owl", sourceSchema="http"
 ):
     ontoUri = unquote(uri)
-    foundURI = stringTools.get_uri_from_index(
+    foundURI = string_tools.get_uri_from_index(
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     )
     if foundURI is None:
         abort(status=404)
-    group, artifact = stringTools.generate_databus_identifier_from_uri(foundURI, dev=isDev)
+    group, artifact = string_tools.generate_databus_identifier_from_uri(
+        foundURI, dev=isDev
+    )
     try:
-        downloadLink = queryDatabus.getDownloadURL(
+        downloadLink = query_databus.getDownloadURL(
             group, artifact, fileExt=rdfFormat, version=version
         )
     except URLError as e:
@@ -478,7 +487,7 @@ def faq():
 
 def get_star_stats():
     with open(
-            os.path.join(archivoPath, "stats", "stars_over_time.json"), "r"
+        os.path.join(archivoPath, "stats", "stars_over_time.json"), "r"
     ) as json_file:
         json_data = json.load(json_file)
     return json.dumps(json_data)
@@ -507,13 +516,20 @@ def deliver_vocab():
 
 @app.route("/falloutdl")
 def falloutdl():
-    fallout_not_in_archivo = db.session.query(Fallout).filter_by(inArchivo=False).order_by(Fallout.date.desc()).all()
+    fallout_not_in_archivo = (
+        db.session.query(Fallout)
+        .filter_by(inArchivo=False)
+        .order_by(Fallout.date.desc())
+        .all()
+    )
 
     output = io.StringIO()
     writer: csv.writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
     for falloutobj in fallout_not_in_archivo:
-        writer.writerow((falloutobj.uri, falloutobj.source, str(falloutobj.date), falloutobj.error))
+        writer.writerow(
+            (falloutobj.uri, falloutobj.source, str(falloutobj.date), falloutobj.error)
+        )
 
     resp = make_response(output.getvalue())
     resp.headers["Content-type"] = "text/csv"
@@ -561,7 +577,7 @@ def retrieve_list_from_database(ontoType):
 
     for ont, version in query_result:
 
-        group, artifact = stringTools.generate_databus_identifier_from_uri(ont.uri)
+        group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
         databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
 
@@ -591,7 +607,7 @@ def retrieve_list_from_database(ontoType):
             "source": ont.source,
             "triples": version.triples,
             "crawling": {"status": crawlStatus, "error": crawlError},
-            "stars": stringTools.generate_star_string(version.stars),
+            "stars": string_tools.generate_star_string(version.stars),
             "semVersion": version.semanticVersion,
             "parsing": version.parsing,
             "minLicense": version.licenseI,

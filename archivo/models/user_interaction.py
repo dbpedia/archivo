@@ -1,5 +1,7 @@
+import json
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict
 
 
 class LogLevel(Enum):
@@ -17,3 +19,11 @@ class ProcessStepLog:
     status: LogLevel
     stepname: str
     message: str
+
+    def to_dict(self) -> dict[str, str]:
+
+        return {
+            "status": str(self.status),
+            "stepname": self.stepname,
+            "message": self.message,
+        }

@@ -308,7 +308,7 @@ def update_for_ontology_uri(
     last_version_timestamp: str,
     data_writer: DataWriter,
     test_suite: TestSuite,
-    dev_uri: Optional[str],
+    dev_uri: Optional[str] = None,
     logger: Logger = diff_logger,
 ) -> Tuple[bool, str, Optional[ArchivoVersion]]:
     try:
@@ -356,6 +356,7 @@ def update_for_ontology_uri(
     )
 
     new_version = ArchivoVersion(
+        confirmed_ontology_id=uri,
         crawling_result=crawling_response,
         parsing_result=parsing_result,
         databus_version_identifier=new_version_identifier,
@@ -366,14 +367,10 @@ def update_for_ontology_uri(
         logger=logger,
     )
 
-    new_version.generate_files()
-
-    databus_dataset_jsonld = new_version.build_databus_jsonld()
-
     logger.info("Deploying the data to the databus...")
 
     try:
-        databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
+        new_version.deploy(True)
         logger.info(f"Successfully deployed the new update of ontology {uri}")
         return (
             True,

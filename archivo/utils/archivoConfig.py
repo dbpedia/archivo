@@ -41,7 +41,7 @@ pub = "https://yum-yab.github.io/webid.ttl#onto"
 
 # new databus
 
-download_url_base = "https://downloads.dbpedia.org/archivo"
+DOWNLOAD_URL_BASE = "https://downloads.dbpedia.org/archivo"
 
 # paths for external services
 pelletPath = "/usr/lib/pellet/cli/target/pelletcli/bin/pellet"

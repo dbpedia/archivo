@@ -2,8 +2,7 @@ import requests, sys, requests, traceback, rdflib
 from SPARQLWrapper import SPARQLWrapper, JSON
 from io import StringIO
 from urllib.error import URLError
-from archivo.utils import ontoFiles, graph_handling, string_tools
-from archivo.utils.string_tools import generateStarString
+from archivo.utils import graph_handling, string_tools
 from datetime import datetime, timedelta
 import csv
 
@@ -189,7 +188,9 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
 
         try:
             archivo_test_url = binding["archivoCheck"]["value"]
-            archiv_test_severity = graph_handling.hacky_shacl_report_severity(archivo_test_url)
+            archiv_test_severity = graph_handling.hacky_shacl_report_severity(
+                archivo_test_url
+            )
         except KeyError:
             archivo_test_url = None
             archiv_test_severity = None
@@ -209,7 +210,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
             or metadata["logs"]["rapper-errors"] == ""
             else False
         )
-        stars = ontoFiles.stars_from_meta_dict(metadata)
+        stars = string_tools.stars_from_meta_dict(metadata)
         version_infos.append(
             {
                 "minLicense": {
@@ -221,7 +222,9 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                     "url": goodLicenseURL,
                 },
                 "lode": {
-                    "severity": inspectVocabs.hacky_shacl_report_severity(lodeShaclURL),
+                    "severity": graph_handling.hacky_shacl_report_severity(
+                        lodeShaclURL
+                    ),
                     "url": lodeShaclURL,
                 },
                 "archivo": {
@@ -230,7 +233,7 @@ SELECT DISTINCT ?title ?comment ?versionURL ?version ?metafile ?minLicense ?good
                 },
                 "version": {"label": version, "url": versionURL},
                 "consistent": {
-                    "status": stringTools.get_consistency_status(
+                    "status": string_tools.get_consistency_status(
                         metadata["test-results"]["consistent"]
                     ),
                     "url": consistencyURL,
@@ -474,134 +477,6 @@ def latestNtriples():
     return result
 
 
-def getLatestInfoForAll():
-    query = "\n".join(
-        (
-            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
-            "PREFIX dct:    <http://purl.org/dc/terms/>",
-            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
-            "PREFIX db:     <https://databus.dbpedia.org/>",
-            "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
-            "SELECT DISTINCT ?art ?title ?comment ?latestVersion ?metafile ?minLicense ?goodLicense ?lode ?consistencyFile ?docuURL WHERE {",
-            "?dataset dataid:account db:ontologies .",
-            "?dataset dataid:artifact ?art .",
-            "?dataset dcat:distribution ?metaDst .",
-            "?metaDst dataid-cv:type 'meta'^^xsd:string .",
-            "?metaDst dcat:downloadURL ?metafile .",
-            "?dataset dcat:distribution ?shaclMinLicense .",
-            "?dataset dcat:distribution ?consistencyReport .",
-            "?consistencyReport dataid-cv:type 'pelletConsistency'^^xsd:string .",
-            "?consistencyReport dataid-cv:imports 'FULL'^^xsd:string .",
-            "?consistencyReport dcat:downloadURL ?consistencyFile .",
-            "?shaclMinLicense dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclMinLicense dataid-cv:validates 'minLicense'^^xsd:string .",
-            "?shaclMinLicense dcat:downloadURL ?minLicense .",
-            "?dataset dcat:distribution ?shaclGoodLicense .",
-            "?shaclGoodLicense dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclGoodLicense dataid-cv:validates 'goodLicense'^^xsd:string .",
-            "?shaclGoodLicense dcat:downloadURL ?goodLicense .",
-            "?dataset dcat:distribution ?shaclLode .",
-            "?shaclLode dataid-cv:type 'shaclReport'^^xsd:string .",
-            "?shaclLode dataid-cv:validates 'lodeMetadata'^^xsd:string .",
-            "?shaclLode dcat:downloadURL ?lode .",
-            "OPTIONAL {" "?dataset dcat:distribution ?docuDst .",
-            "?docuDst dataid-cv:type 'generatedDocu'^^xsd:string .",
-            "?docuDst dcat:downloadURL ?docuURL .",
-            "}",
-            "{",
-            "SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
-            "?dataset dataid:account db:ontologies .",
-            "?dataset dataid:artifact ?art .",
-            "?dataset dct:hasVersion ?v .",
-            "}",
-            "}",
-            "?dataset dct:hasVersion ?latestVersion.",
-            "?dataset dct:title ?title .",
-            "?dataset rdfs:comment ?comment .",
-            "}",
-        )
-    )
-    sparql = SPARQLWrapper(databusRepoUrl)
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
-
-    info_dict = {}
-
-    try:
-        results = results["results"]["bindings"]
-    except KeyError:
-        return False, version_infos, f"No data found for {databusLink}"
-
-    for binding in results:
-
-        artifactURL = binding.get("art", {"value": ""})["value"]
-        info_dict[artifactURL] = {}
-
-        info_dict[artifactURL]["title"] = binding.get("title", {"value": ""})["value"]
-        info_dict[artifactURL]["version"] = binding.get("latestVersion", {"value": ""})[
-            "value"
-        ]
-        info_dict[artifactURL]["metafile"] = binding.get("metafile", {"value": ""})[
-            "value"
-        ]
-        info_dict[artifactURL]["minLicenseURL"] = binding.get(
-            "minLicense", {"value": ""}
-        )["value"]
-        info_dict[artifactURL]["goodLicenseURL"] = binding.get(
-            "goodLicense", {"value": ""}
-        )["value"]
-        lodeShaclURL = binding.get("lode", {"value": ""})["value"]
-        consistencyURL = binding["consistencyFile"]["value"]
-        try:
-            docuURL = binding["docuURL"]["value"]
-        except KeyError:
-            docuURL = None
-
-        parsing = True if metadata["logs"]["rapper-errors"] == "" else False
-        stars = ontoFiles.measureStars(
-            metadata["logs"]["rapper-errors"],
-            metadata["test-results"]["License-I"],
-            metadata["test-results"]["consistent"],
-            metadata["test-results"]["consistent-without-imports"],
-            metadata["test-results"]["License-II"],
-        )
-        isConsistent = lambda s: True if s == "Yes" else False
-        version_infos.append(
-            {
-                "minLicense": {
-                    "conforms": metadata["test-results"]["License-I"],
-                    "url": minLicenseURL,
-                },
-                "goodLicense": {
-                    "conforms": metadata["test-results"]["License-II"],
-                    "url": goodLicenseURL,
-                },
-                "lode": {
-                    "severity": inspectVocabs.hacky_shacl_report_severity(lodeShaclURL),
-                    "url": lodeShaclURL,
-                },
-                "version": {"label": version, "url": versionURL},
-                "consistent": {
-                    "conforms": isConsistent(metadata["test-results"]["consistent"]),
-                    "url": consistencyURL,
-                },
-                "triples": metadata["ontology-info"]["triples"],
-                "parsing": {
-                    "conforms": parsing,
-                    "errors": metadata["logs"]["rapper-errors"],
-                },
-                "semversion": metadata["ontology-info"]["semantic-version"],
-                "stars": stars,
-                "docuURL": docuURL,
-            }
-        )
-    return title, comment, version_infos
-
-
 def loadLastIndex():
     query = "\n".join(
         (
@@ -724,7 +599,8 @@ def get_last_dev_index():
 
 
 def get_SPOs(date=None, logger=None):
-    # returns spos in a generator which are not olter than two weeks
+    # returns spos in a generator which are not older than two weeks
+    today = datetime.today()
     if date is None:
         last_week = today - timedelta(days=21)
         deadline_str = last_week.strftime("%Y.%m.%d-%H%M%S")
@@ -774,7 +650,7 @@ def get_SPOs(date=None, logger=None):
                 uri = tp[0]
             except Exception:
                 continue
-            if stringTools.get_uri_from_index(uri, distinct_spo_uris) is None:
+            if string_tools.get_uri_from_index(uri, distinct_spo_uris) is None:
                 distinct_spo_uris.append(uri)
         yield distinct_spo_uris
 

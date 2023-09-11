@@ -1,12 +1,26 @@
+from io import StringIO
+from typing import Tuple, List, Optional
+
+from archivo.models.data_writer import DataWriter
+from archivo.models.databus_identifier import DatabusFileMetadata
 from archivo.webservice import db
-from archivo.webservice.dbModels import OfficialOntology, DevelopOntology, Version
-from archivo.utils import string_tools, query_databus, ontoFiles
+from archivo.webservice.dbModels import (
+    OfficialOntology,
+    DevelopOntology,
+    Version,
+    Ontology,
+)
+from archivo.utils import string_tools, query_databus, validation
 from datetime import datetime
 import csv
 from archivo.crawling.discovery import ArchivoVersion
 
 
-def buildDatabaseObjectFromDatabus(uri, source, timestamp, dev=""):
+def db_objects_from_databus(
+    uri: str, source: str, timestamp, dev=""
+) -> Tuple[Optional[Ontology], Optional[List[Version]]]:
+    """Builds the database objects for a certain ontology by uri"""
+
     group, artifact = string_tools.generate_databus_identifier_from_uri(
         uri, dev=True if dev != "" else False
     )
@@ -71,7 +85,7 @@ def rebuildDatabase():
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
             group, artifact = string_tools.generate_databus_identifier_from_uri(uri)
-            ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
+            ontology, versions = db_objects_from_databus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
                 db.session.add(v)
@@ -98,7 +112,7 @@ def rebuildDatabase():
             group, artifact = string_tools.generate_databus_identifier_from_uri(
                 official_uri, dev=True
             )
-            ontology, versions = buildDatabaseObjectFromDatabus(
+            ontology, versions = db_objects_from_databus(
                 official_uri, source, timestamp, dev=dev_uri
             )
             db.session.add(ontology)
@@ -144,7 +158,7 @@ def update_database():
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
             group, artifact = string_tools.generate_databus_identifier_from_uri(uri)
-            ontology, versions = buildDatabaseObjectFromDatabus(uri, source, timestamp)
+            ontology, versions = db_objects_from_databus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
                 db.session.add(v)
@@ -159,33 +173,38 @@ def update_database():
             continue
 
 
-def write_official_index(filepath):
-    with open(filepath, "w+") as csvIndex:
-        writer = csv.writer(csvIndex)
-        for uri, source, accessDate in db.session.query(
-            OfficialOntology.uri, OfficialOntology.source, OfficialOntology.accessDate
-        ):
-            writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
+def get_official_index_as_csv() -> str:
+
+    output = StringIO()
+    writer = csv.writer(output)
+    for uri, source, accessDate in db.session.query(
+        OfficialOntology.uri, OfficialOntology.source, OfficialOntology.accessDate
+    ):
+        writer.writerow((uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S")))
+
+    return str(output)
 
 
-def write_dev_index(filepath):
-    with open(filepath, "w+") as csvIndex:
-        writer = csv.writer(csvIndex)
-        for uri, source, accessDate, official in db.session.query(
-            DevelopOntology.uri,
-            DevelopOntology.source,
-            DevelopOntology.accessDate,
-            DevelopOntology.official,
-        ):
-            writer.writerow(
-                (uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S"), official)
-            )
+def get_dev_index_as_csv() -> str:
+
+    output = StringIO()
+    writer = csv.writer(output)
+    for uri, source, accessDate, official in db.session.query(
+        DevelopOntology.uri,
+        DevelopOntology.source,
+        DevelopOntology.accessDate,
+        DevelopOntology.official,
+    ):
+        writer.writerow(
+            (uri, source, accessDate.strftime("%Y-%m-%d %H:%M:%S"), official)
+        )
+    return str(output)
 
 
 def update_info_for_ontology(ontology: OfficialOntology):
 
     group, artifact = string_tools.generate_databus_identifier_from_uri(ontology.uri)
-    _, versions = buildDatabaseObjectFromDatabus(
+    _, versions = db_objects_from_databus(
         ontology.uri, ontology.source, ontology.accessDate
     )
     for v in [
@@ -206,7 +225,7 @@ def update_info_for_ontology(ontology: OfficialOntology):
         group, artifact = string_tools.generate_databus_identifier_from_uri(
             ontology.uri, dev=True
         )
-        _, versions = buildDatabaseObjectFromDatabus(
+        _, versions = db_objects_from_databus(
             ontology.uri,
             dev_ont.source,
             dev_ont.accessDate,
@@ -227,13 +246,13 @@ def update_info_for_ontology(ontology: OfficialOntology):
                 db.session.rollback()
 
 
-def getDatabaseEntry(archivo_version: ArchivoVersion):
+def get_database_entries(archivo_version: ArchivoVersion) -> Tuple[Ontology, Version]:
     if archivo_version.isDev:
         dbOntology = DevelopOntology(
             uri=archivo_version.reference_uri,
             source="DEV",
             accessDate=archivo_version.access_date,
-            title=archivo_version.md_label,
+            title=archivo_version.get_label(),
             official=archivo_version.nir,
         )
     else:
@@ -241,28 +260,28 @@ def getDatabaseEntry(archivo_version: ArchivoVersion):
             uri=archivo_version.reference_uri,
             source=archivo_version.source,
             accessDate=archivo_version.access_date,
-            title=archivo_version.md_label,
+            title=archivo_version.get_label(),
             devel=None,
         )
-    consistencyCheck = lambda s: True if s == "Yes" else False
+
     dbVersion = Version(
-        version=datetime.strptime(archivo_version.version, "%Y.%m.%d-%H%M%S"),
+        version=archivo_version.access_date,
         semanticVersion=archivo_version.semantic_version,
-        stars=ontoFiles.measureStars(
-            archivo_version.rapper_errors,
-            archivo_version.conforms_licenseI,
-            archivo_version.is_consistent,
-            archivo_version.is_consistent_noimports,
-            archivo_version.conforms_licenseII,
+        stars=validation.measure_stars(
+            rapper_errors=archivo_version.parsing_result.parsing_info.errors,
+            license_1_check=archivo_version.metadata_dict["test-results"]["License-I"],
+            consistency_check="Yes",
+            consistenty_check_without_imports="",
+            license_2_check=archivo_version.metadata_dict["test-results"]["License-II"],
         ),
-        triples=archivo_version.triples,
+        triples=archivo_version.parsing_result.parsing_info.triple_number,
         parsing=True
-        if archivo_version.rapper_errors == "" or archivo_version.rapper_errors == []
+        if len(archivo_version.parsing_result.parsing_info.errors) == 0
         else False,
-        licenseI=archivo_version.conforms_licenseI,
-        licenseII=archivo_version.conforms_licenseII,
-        consistency=consistencyCheck(archivo_version.is_consistent),
-        lodeSeverity=archivo_version.lode_severity,
+        licenseI=archivo_version.metadata_dict["test-results"]["License-I"],
+        licenseII=archivo_version.metadata_dict["test-results"]["License-II"],
+        consistency="Yes",
+        lodeSeverity=archivo_version.metadata_dict["test-results"]["lode-conform"],
         ontology=archivo_version.reference_uri,
     )
     return dbOntology, dbVersion

@@ -2,7 +2,7 @@ import hashlib
 import re
 import os
 from pathlib import Path
-from typing import Tuple, Optional, List, Set
+from typing import Tuple, Optional, List, Set, Dict
 from urllib.parse import urlparse, urldefrag
 
 __URL_REGEX = r"https?://(?:www\.)?(.+?)/(.*)"
@@ -46,6 +46,29 @@ def get_local_directory() -> str:
         return local_path
     else:
         raise SetupException(f"Wrong local path: {local_path}")
+
+
+def stars_from_meta_dict(metadict: Dict) -> int:
+    rapperErrors = metadict["logs"]["rapper-errors"]
+    licenseI = metadict["test-results"]["License-I"]
+    licenseII = metadict["test-results"]["License-II"]
+    consistent = metadict["test-results"]["consistent"]
+    consistent_without_imports = metadict["test-results"]["consistent-without-imports"]
+    # measure stars
+    stars = 0
+    if rapperErrors == [] or rapperErrors == "":
+        stars = stars + 1
+    if licenseI:
+        stars = stars + 1
+
+    if not stars == 2:
+        return stars
+
+    if consistent == "Yes" or consistent_without_imports == "Yes":
+        stars = stars + 1
+    if licenseII:
+        stars = stars + 1
+    return stars
 
 
 def generate_databus_identifier_from_uri(

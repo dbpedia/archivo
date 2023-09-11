@@ -1,5 +1,4 @@
-import hashlib
-import os
+from __future__ import annotations
 from datetime import datetime
 from logging import Logger
 from string import Template
@@ -8,7 +7,7 @@ import databusclient
 import rdflib
 from rdflib import URIRef, Literal
 
-from archivo.crawling.discovery import handleDevURI
+from archivo.crawling.discovery import handle_track_this_uri
 from archivo.models.content_negotiation import (
     RDF_Type,
     get_file_extension,
@@ -155,6 +154,10 @@ class ArchivoVersion:
             if report_key:
                 self.metadata_dict["test-results"][report_key] = conforms
 
+    def __run_consistency_checks(self):
+
+        self.test_suite.getConsistency()
+
     def __generate_documentation_files(self):
         """generates the HTML documentation files"""
 
@@ -216,53 +219,37 @@ class ArchivoVersion:
         self.__generate_documentation_files()
         self.__write_vocab_information_file()
 
-    def handleTrackThis(self):
+    def handle_dev_version(self) -> Optional[ArchivoVersion]:
         if self.isDev:
-            return None, None
-        trackThisURI = graph_handling.get_track_this_uri(self.ontology_graph)
-        if trackThisURI is not None and self.location_uri != trackThisURI:
+            return None
+        track_this_uri = graph_handling.get_track_this_uri(self.ontology_graph)
+        if track_this_uri is not None and self.location_uri != track_this_uri:
             self.user_output.append(
                 ProcessStepLog(
                     status=LogLevel.INFO,
                     stepname="Check for Dev version link",
-                    message=f"Found dev version at: {trackThisURI}",
+                    message=f"Found dev version at: {track_this_uri}",
                 )
             )
             try:
-                return handleDevURI(
-                    self.nir,
-                    trackThisURI,
-                    self.data_path,
-                    self.test_suite,
-                    self.logger,
-                    user_output=self.user_output,
+                # clear history for new
+                self.data_writer.clear_history()
+
+                return handle_track_this_uri(
+                    original_nir=self.nir,
+                    dev_version_location=track_this_uri,
+                    test_suite=self.test_suite,
+                    data_writer=self.data_writer,
+                    logger=self.logger,
+                    process_log=self.user_output,
                 )
             except Exception as e:
                 self.logger.exception("Problem during handling trackThis")
-                return None, None
+                return None
         else:
-            return False, None
+            return None
 
-    def __generate_distributions(self) -> List[str]:
-
-        distributions = []
-
-        for metadata, error in self.data_writer.written_files.items():
-            if error:
-                self.logger.error(f"Error during writing file {metadata}: {error}")
-            else:
-                dst = databusclient.create_distribution(
-                    url=f"{self.data_writer.target_url_base}/{metadata}",
-                    cvs=metadata.content_variants,
-                    file_format=metadata.file_extension,
-                    compression=metadata.compression,
-                    sha256_length_tuple=(metadata.sha_256_sum, metadata.content_length),
-                )
-                distributions.append(dst)
-
-        return distributions
-
-    def __get_label(self) -> str:
+    def get_label(self) -> str:
         label = self.nir if not self.isDev else self.nir + " DEV"
 
         if self.ontology_graph is not None:
@@ -332,9 +319,9 @@ class ArchivoVersion:
         if group_info is None:
             group_info = {}
 
-        distribs = self.__generate_distributions()
+        distribs = self.data_writer.generate_distributions()
 
-        title = self.__get_label()
+        title = self.get_label()
         comment = self.__get_comment()
         description = self.__get_description()
         license_url = self.__get_license()
@@ -360,3 +347,13 @@ class ArchivoVersion:
             )
 
         return dataset
+
+    def deploy(self, generate_files: bool, group_info: Optional[Dict[str, str]] = None):
+
+        if generate_files:
+            self.generate_files()
+
+        databus_dataset_jsonld = self.build_databus_jsonld(group_info=group_info)
+
+        self.logger.info("Deploying the data to the databus...")
+        databusclient.deploy(databus_dataset_jsonld, archivoConfig.DATABUS_API_KEY)
