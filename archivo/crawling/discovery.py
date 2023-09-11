@@ -49,7 +49,7 @@ def check_robot(uri: str) -> Tuple[Optional[bool], Optional[str]]:
     rp = RobotFileParser()
     rp.set_url(robotsUrl)
     rp.parse(req.text.split("\n"))
-    if rp.can_fetch(archivoConfig.archivo_agent, uri):
+    if rp.can_fetch(archivo_config.archivo_agent, uri):
         return True, None
     else:
         return False, "Not allowed"
@@ -109,12 +109,12 @@ def perform_robot_check(
     allowed, message = check_robot(vocab_uri)
     logger.info(f"Robot allowed: {allowed}")
     if not allowed:
-        logger.warning(f"{archivoConfig.archivo_agent} not allowed")
+        logger.warning(f"{archivo_config.archivo_agent} not allowed")
         user_output.append(
             ProcessStepLog(
                 status=LogLevel.ERROR,
                 stepname="Robot allowance check",
-                message=f"Archivo-Agent {archivoConfig.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>",
+                message=f"Archivo-Agent {archivo_config.archivo_agent} is not allowed to access the ontology at <a href={vocab_uri}>{vocab_uri}</a>",
             )
         )
         return False
@@ -123,7 +123,7 @@ def perform_robot_check(
             ProcessStepLog(
                 status=LogLevel.INFO,
                 stepname="Robot allowance check",
-                message=f"Archivo-Agent {archivoConfig.archivo_agent} is allowed.",
+                message=f"Archivo-Agent {archivo_config.archivo_agent} is allowed.",
             )
         )
         return True
@@ -200,7 +200,7 @@ def searching_for_linked_ontologies(
                     message=f"The document given at {uri} links to itself via an <code>rdfs:isDefinedBy</code> or <code>skos:inScheme</code> triple, bit is no ontology",
                 )
             )
-            if recursion_depth <= archivoConfig.max_recursion_depth:
+            if recursion_depth <= archivo_config.max_recursion_depth:
                 return discover_new_uri(
                     uri=nir,
                     vocab_uri_cache=vocab_uri_cache,
@@ -214,7 +214,7 @@ def searching_for_linked_ontologies(
                     ProcessStepLog(
                         status=LogLevel.ERROR,
                         stepname="Searching for linked ontologies",
-                        message=f"Maximum recursion depth of {archivoConfig.max_recursion_depth} reached",
+                        message=f"Maximum recursion depth of {archivo_config.max_recursion_depth} reached",
                     )
                 )
                 return None
@@ -352,14 +352,17 @@ def discover_new_uri(
     }
 
     databus_version_id = DatabusVersionIdentifier(
-        user=archivoConfig.DATABUS_USER,
+        user=archivo_config.DATABUS_USER,
         group=group_id,
         artifact=artifact_id,
         version=version_id,
     )
 
     # generate new version
-
+    data_writer = FileWriter(
+        path_base=archivo_config.LOCAL_PATH,
+        target_url_base=archivo_config.PUBLIC_URL_BASE,
+    )
     archivo_version = ArchivoVersion(
         confirmed_ontology_id=ontology_id_uri,
         crawling_result=crawling_result,

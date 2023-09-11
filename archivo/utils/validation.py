@@ -3,12 +3,12 @@ from typing import Optional, Tuple, Set, List
 import rdflib
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from archivo.utils import graph_handling, archivoConfig, string_tools
+from archivo.utils import graph_handling, archivo_config, string_tools
 import os
 import sys
 import subprocess
 import re
-from archivo.utils.ArchivoExceptions import UnparseableRDFException
+from archivo.utils.archivo_exceptions import UnparseableRDFException
 
 # from owlready2 import get_ontology, sync_reasoner_pellet
 
@@ -25,8 +25,8 @@ def load_shacl_graph(filepath: str, pub_id: Optional[str] = None) -> rdflib.Grap
 
 
 class TestSuite:
-    pelletPath = archivoConfig.pelletPath
-    profileCheckerJar = archivoConfig.profileCheckerJar
+    pelletPath = archivo_config.pelletPath
+    profileCheckerJar = archivo_config.profileCheckerJar
 
     def __init__(self):
         archivo_path = stringTools.get_local_directory()

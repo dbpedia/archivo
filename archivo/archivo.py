@@ -58,7 +58,7 @@ def check_ontology_based_on_log(process_log: List[ProcessStepLog]) -> bool:
 # This is the discovery process
 def ontology_discovery():
     # init parameters
-    dataPath = archivoConfig.localPath
+    dataPath = archivo_config.localPath
     testSuite = TestSuite()
 
     discovery_logger.info("Started discovery of LOV URIs...")
@@ -144,7 +144,7 @@ def ontology_official_update():
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
 
         # skip problematic ontologies
-        if ont.uri in archivoConfig.diff_skip_onts:
+        if ont.uri in archivo_config.diff_skip_onts:
             diff_logger.info(
                 f"{str(i + 1)}: Skipped ontology {ont.uri} due to earlier problems..."
             )
@@ -405,7 +405,7 @@ def startup_check():
             string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"
         ),
     ]
-    available_dirs = [archivoConfig.localPath]
+    available_dirs = [archivo_config.localPath]
 
     for f in available_files:
         if not os.path.isfile(f):

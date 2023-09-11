@@ -31,7 +31,7 @@ Steps for running the service with docker:
 - Clone the repository: `git clone https://github.com/dbpedia/archivo.git`
 - Edit the `../run.sh` script:
     - create a docker volume named archivo-data: `docker volume create archivo-data`
-    - change the destined path of packaged Databus files to your desire in the line `-v /data/home/dstreitmatter/www/archivo:/home/dstreitmatter/www/archivo/ \` (left part of ":") **NOTE:** if you do this you need to also change the variables `downloadUrl` and `packDir` in `utils/archivoConfig`
+    - change the destined path of packaged Databus files to your desire in the line `-v /data/home/dstreitmatter/www/archivo:/home/dstreitmatter/www/archivo/ \` (left part of ":") **NOTE:** if you do this you need to also change the variables `downloadUrl` and `packDir` in `utils/archivo_config`
 - Start in the directory with the file `Dockerfile` and run:
     - `docker build -t archivo-system .` for building the docker image
     - `chmod +x run.sh`

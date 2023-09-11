@@ -87,7 +87,7 @@ def addOntology():
         success, isNir, archivo_version = discovery.handleNewUri(
             uri,
             allOnts,
-            archivoConfig.localPath,
+            archivo_config.localPath,
             "user-suggestion",
             False,
             testSuite=testingSuite,

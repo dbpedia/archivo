@@ -25,7 +25,7 @@ from archivo.utils import (
     graph_handling,
     feature_plugins,
     docTemplates,
-    archivoConfig,
+    archivo_config,
     parsing,
 )
 from archivo.utils.validation import TestSuite
@@ -279,13 +279,13 @@ class ArchivoVersion:
 
         if self.ontology_graph is not None:
             found_description = graph_handling.get_description(self.ontology_graph)
-            versionIRI = graph_handling.get_owl_version_iri(self.ontology_graph)
+            version_iri = graph_handling.get_owl_version_iri(self.ontology_graph)
             if found_description is not None:
                 description = (
                     description.safe_substitute(
                         non_information_uri=self.nir,
                         snapshot_url=self.location_uri,
-                        owl_version_iri=versionIRI,
+                        owl_version_iri=version_iri,
                         date=self.db_version_identifier.version,
                     )
                     + "\n\n"
@@ -297,7 +297,7 @@ class ArchivoVersion:
                 description = description.safe_substitute(
                     non_information_uri=self.nir,
                     snapshot_url=self.location_uri,
-                    owl_version_iri=versionIRI,
+                    owl_version_iri=version_iri,
                     date=str(self.access_date),
                 )
 
@@ -314,7 +314,7 @@ class ArchivoVersion:
 
         return found_license
 
-    def build_databus_jsonld(self, group_info=None) -> Dict:
+    def build_databus_jsonld(self, group_info: Dict[str, str] = None) -> Dict:
 
         if group_info is None:
             group_info = {}
@@ -327,7 +327,7 @@ class ArchivoVersion:
         license_url = self.__get_license()
         if group_info == {}:
             dataset = databusclient.create_dataset(
-                version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
+                version_id=f"{archivo_config.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
                 description=description,
@@ -336,7 +336,7 @@ class ArchivoVersion:
             )
         else:
             dataset = databusclient.create_dataset(
-                version_id=f"{archivoConfig.DATABUS_BASE}/{self.db_version_identifier}",
+                version_id=f"{archivo_config.DATABUS_BASE}/{self.db_version_identifier}",
                 title=title,
                 abstract=comment,
                 description=description,
