@@ -1,0 +1,290 @@
+import requests
+from typing import Callable, Optional, Dict, List
+
+from SPARQLWrapper import SPARQLWrapper, JSON
+from io import StringIO
+
+from archivo.models.databus_responses import (
+    ArtifactInformation,
+    VersionInformation,
+    BooleanTestResult,
+    SeverityTestResult,
+    ContentTestResult,
+    Link,
+)
+from archivo.utils import string_tools, archivo_config
+from archivo.querying import graph_handling, query_templates
+from datetime import datetime, timedelta
+import csv
+
+__DATABUS_REPO_URL = f"{archivo_config.DATABUS_BASE}/sparql"
+
+__MOD_ENDPOINT = "https://mods.tools.dbpedia.org/sparql"
+
+
+def get_value_of_key_fun(key: str) -> Callable:
+    return lambda binding: binding[key]["value"]
+
+
+def get_info_for_artifact(group: str, artifact: str) -> Optional[ArtifactInformation]:
+    """Returns the info for a given group and artifact"""
+
+    artifact_url = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
+
+    query = query_templates.artifact_info_query.safe_substitute(artifact=artifact_url)
+    sparql = SPARQLWrapper(__DATABUS_REPO_URL)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    version_infos = []
+
+    get_version_val = get_value_of_key_fun("version")
+
+    title = sorted(results, key=get_version_val, reverse=True)[0]["title"]["value"]
+    comment = sorted(results, key=get_version_val, reverse=True)[0]["comment"]["value"]
+
+    results = results["results"]["bindings"]
+
+    for binding in results:
+        version = binding.get("version", {"value": ""})["value"]
+        versionURL = binding.get("versionURL", {"value": ""})["value"]
+        metafile = binding.get("metafile", {"value": ""})["value"]
+        minLicenseURL = binding.get("minLicense", {"value": ""})["value"]
+        goodLicenseURL = binding.get("goodLicense", {"value": ""})["value"]
+        lodeShaclURL = binding.get("lode", {"value": ""})["value"]
+        consistencyURL = binding["consistencyFile"]["value"]
+
+        metadata = requests.get(metafile).json()
+
+        try:
+            archivo_test_url = binding["archivoCheck"]["value"]
+            archivo_test_severity = graph_handling.hacky_shacl_report_severity(
+                archivo_test_url
+            )
+        except KeyError:
+            archivo_test_url = None
+            archivo_test_severity = None
+
+        parsing = (
+            True
+            if metadata["logs"]["rapper-errors"] == []
+            or metadata["logs"]["rapper-errors"] == ""
+            else False
+        )
+        # select docu url, pref pylode doc
+        docuURL = binding.get("pylodeURL", {}).get("value", None)
+        if docuURL is None:
+            docuURL = binding.get("docuURL", {}).get("value", None)
+
+        version_infos.append(
+            VersionInformation(
+                min_license=BooleanTestResult(
+                    metadata["test-results"]["License-I"], minLicenseURL
+                ),
+                good_license=BooleanTestResult(
+                    metadata["test-results"]["License-II"], goodLicenseURL
+                ),
+                lode_conformity=SeverityTestResult(
+                    graph_handling.hacky_shacl_report_severity(lodeShaclURL),
+                    lodeShaclURL,
+                ),
+                archivo_conformity=SeverityTestResult(
+                    archivo_test_severity, archivo_test_url
+                ),
+                consistency=SeverityTestResult(
+                    string_tools.get_consistency_status(
+                        metadata["test-results"]["consistent"]
+                    ),
+                    consistencyURL,
+                ),
+                parsing=ContentTestResult(
+                    parsing, "\n".join(metadata["logs"]["rapper-errors"])
+                ),
+                version=Link(version, versionURL),
+                triples=metadata["ontology-info"]["triples"],
+                semantic_version=metadata["ontology-info"]["semantic-version"],
+                stars=string_tools.stars_from_meta_dict(metadata),
+                documentation_url=docuURL,
+            )
+        )
+
+    return ArtifactInformation(
+        title=title, description=comment, version_infos=version_infos
+    )
+
+
+def get_download_url(
+    group: str, artifact: str, file_extension: str = "owl", version: str = None
+) -> Optional[str]:
+
+    artifact_id = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
+    queryString = [
+        "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
+        "PREFIX dct:    <http://purl.org/dc/terms/>",
+        "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
+        "PREFIX db:     <https://databus.dbpedia.org/>",
+        "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+        "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "",
+        "SELECT DISTINCT ?file WHERE {",
+        "VALUES ?art { <%s> } ." % artifact_id,
+        "   ?dataset dataid:account db:ontologies .",
+        "   ?dataset dataid:artifact ?art .",
+        "   ?dataset dcat:distribution ?distribution .",
+        "   ?distribution dataid-cv:type 'parsed'^^xsd:string .",
+        "   ?distribution dataid:formatExtension '%s'^^xsd:string ." % file_extension,
+        "   ?distribution dcat:downloadURL ?file .",
+    ]
+    if version is None:
+        queryString.extend(
+            [
+                "   ?dataset dct:hasVersion ?latestVersion .",
+                "{",
+                "   SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {",
+                "    ?dataset dataid:account db:ontologies .",
+                "    ?dataset dataid:artifact ?art .",
+                "    ?dataset dct:hasVersion ?v .",
+                "}",
+                "}",
+            ]
+        )
+    else:
+        queryString.append("   ?dataset dct:hasVersion '%s'^^xsd:string ." % version)
+    queryString.append("}")
+    sparql = SPARQLWrapper(__DATABUS_REPO_URL)
+    sparql.setQuery("\n".join(queryString))
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    try:
+        return results["results"]["bindings"][0]["file"]["value"]
+    except KeyError:
+        return None
+    except IndexError:
+        return None
+
+
+def nir_to_latest_version_files() -> Dict[str, Dict[str, str]]:
+    """Returns a dict with the NIR being the key and value being another dict with entries:
+    ntFile -> URL of the parsed ntriples of the ontology
+    meta -> URL of the metadata json file
+    version -> databus version string (YYYY.MM.DD-HHMMSS)"""
+
+    sparql = SPARQLWrapper(__DATABUS_REPO_URL)
+    sparql.setQuery(query_templates.nir_to_lates_versions_query)
+    sparql.setReturnFormat(JSON)
+
+    query_response = sparql.query().convert()
+    result = {}
+    for binding in query_response["results"]["bindings"]:
+        try:
+            databusUri = binding["art"]["value"]
+            if databusUri not in result:
+                result[databusUri] = {
+                    "ntFile": binding["ntFile"]["value"],
+                    "meta": binding["metafile"]["value"],
+                    "version": binding["latestVersion"]["value"],
+                }
+        except KeyError:
+            continue
+
+    return result
+
+
+def get_last_official_index() -> Optional[List[List[str]]]:
+    query = query_templates.get_last_index_template.safe_substitute(
+        indextype="official"
+    )
+    sparql = SPARQLWrapper(__DATABUS_REPO_URL)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    try:
+        downloadURL = results["results"]["bindings"][0]["downloadURL"]["value"]
+    except (KeyError, IndexError):
+        return None
+
+    csvString = requests.get(downloadURL).text
+    csvIO = StringIO(csvString)
+
+    return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
+
+def get_last_dev_index() -> Optional[List[List[str]]]:
+    query = query_templates.get_last_index_template.safe_substitute(indextype="dev")
+    sparql = SPARQLWrapper(__DATABUS_REPO_URL)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    try:
+        downloadURL = results["results"]["bindings"][0]["downloadURL"]["value"]
+    except (KeyError, IndexError):
+        return None
+
+    csvString = requests.get(downloadURL).text
+    csvIO = StringIO(csvString)
+
+    return [tp for tp in csv.reader(csvIO, delimiter=",")]
+
+
+def get_SPOs(date=None, logger=None):
+    # returns spos in a generator which are not older than two weeks
+    today = datetime.today()
+    if date is None:
+        last_week = today - timedelta(days=21)
+        deadline_str = last_week.strftime("%Y.%m.%d-%H%M%S")
+    else:
+        deadline_str = date.strftime("%Y.%m.%d-%H%M%S")
+
+    query = query_templates.get_spo_file_template.safe_substitute(version=date)
+    sparql = SPARQLWrapper(__MOD_ENDPOINT)
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    try:
+        results = results["results"]["bindings"]
+    except KeyError:
+        return None
+
+    if len(results) == 0 and logger is not None:
+        logger.error(f"Couldn't find any new SPOs since {deadline_str}")
+
+    for binding in results:
+        spo_csv_uri = binding["generated"]["value"]
+        try:
+            csv_doc = requests.get(spo_csv_uri).text
+        except Exception:
+            continue
+        csv_IO = StringIO(csv_doc)
+        distinct_spo_uris = []
+        for tp in csv.reader(csv_IO, delimiter=";"):
+            try:
+                uri = tp[0]
+            except Exception:
+                continue
+            if string_tools.get_uri_from_index(uri, distinct_spo_uris) is None:
+                distinct_spo_uris.append(uri)
+        yield distinct_spo_uris
+
+
+# returns a distinct list of VOID classes and properties
+def get_distinct_void_uris() -> List[str]:
+
+    sparql = SPARQLWrapper(__MOD_ENDPOINT)
+    sparql.setQuery(query_templates.void_uris_query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    if "results" not in results:
+        return []
+    return [binding["URI"]["value"] for binding in results["results"]["bindings"]]
+
+
+if __name__ == "__main__":
+    get_download_url(
+        "datashapes.org", "dash", file_extension="ttl", version="2020.07.16-115603"
+    )

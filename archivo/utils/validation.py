@@ -3,9 +3,8 @@ from typing import Optional, Tuple, Set, List
 import rdflib
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from archivo.utils import graph_handling, archivo_config, string_tools
+from archivo.utils import archivo_config, string_tools
 import os
-import sys
 import subprocess
 import re
 from archivo.utils.archivo_exceptions import UnparseableRDFException
@@ -51,8 +50,9 @@ class TestSuite:
             pub_id="https://raw.githubusercontent.com/dbpedia/Archivo/master/shacl-library/archivo.ttl",
         )
 
+    @staticmethod
     def __run_local_shacl_test(
-        self, ontograph: Graph, testgraph: Graph
+        ontograph: Graph, testgraph: Graph
     ) -> Tuple[bool, Graph, str]:
         success, report_graph, report_text = validate(
             ontograph,
@@ -67,8 +67,8 @@ class TestSuite:
         report_graph.namespace_manager.bind("sh", URIRef("http://www.w3.org/ns/shacl#"))
         return success, report_graph, report_text
 
-    def archivo_conformity_test(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
-        return self.__run_local_shacl_test(ontograph, self.archivoTestGraph)
+    def archivo_conformity_test(self, ontology_graph: Graph) -> Tuple[bool, Graph, str]:
+        return self.__run_local_shacl_test(ontology_graph, self.archivoTestGraph)
 
     def license_existence_check(self, ontograph: Graph) -> Tuple[bool, Graph, str]:
         return self.__run_local_shacl_test(ontograph, self.licenseViolationGraph)
@@ -87,13 +87,15 @@ class TestSuite:
         )
         return process.stdout.decode("utf-8"), process.stderr.decode("utf-8")
 
-    def runPelletCommand(self, ontofile, command, parameters=None):
+    def run_pellet_command(
+        self, ontology_url: str, command: str, parameters: List[str] = None
+    ):
         if parameters is None:
             parameters = []
         pelletCommand = [self.pelletPath, command]
         for parameter in parameters:
             pelletCommand.append(parameter)
-        pelletCommand.append(ontofile)
+        pelletCommand.append(ontology_url)
 
         try:
             process = subprocess.run(
@@ -116,17 +118,17 @@ class TestSuite:
         params = ["-v"]
         if ignoreImports:
             params.append("--ignore-imports")
-        stdout, stderr, returncode = self.runPelletCommand(
+        stdout, stderr, returncode = self.run_pellet_command(
             ontofile, "info", parameters=params
         )
         return stderr + "\n\n" + stdout
 
-    def getConsistency(self, ontofile, ignoreImports=False):
+    def get_consistency(self, ontology_url: str, ignore_imports: bool = False):
         params = ["-v", "--loader", "Jena"]
-        if ignoreImports:
+        if ignore_imports:
             params.append("--ignore-imports")
-        stdout, stderr, returncode = self.runPelletCommand(
-            ontofile, "consistency", parameters=params
+        stdout, stderr, returncode = self.run_pellet_command(
+            ontology_url, "consistency", parameters=params
         )
         if returncode == 0:
             match = consistencyRegex.search(stdout)
@@ -177,6 +179,13 @@ class TestSuite:
             raise UnparseableRDFException(process.stderr.decode("utf-8"))
 
 
+def check_if_consistent(consistent: str, consistent_without_imports: str) -> bool:
+    if consistent == "Yes" or consistent_without_imports == "Yes":
+        return True
+    else:
+        return False
+
+
 def measure_stars(
     rapper_errors: List[str],
     license_1_check: bool,
@@ -193,7 +202,7 @@ def measure_stars(
     if not stars == 2:
         return stars
 
-    if consistency_check == "Yes" or consistenty_check_without_imports == "Yes":
+    if check_if_consistent(consistency_check, consistenty_check_without_imports):
         stars = stars + 1
     if license_2_check:
         stars = stars + 1

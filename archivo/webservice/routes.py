@@ -1,3 +1,5 @@
+from typing import Dict, Optional
+
 from archivo.crawling import discovery
 from archivo.webservice import app, db
 from archivo.webservice.dbModels import (
@@ -25,11 +27,9 @@ import os
 from archivo.utils.validation import TestSuite
 from archivo.utils import (
     archivo_config,
-    query_databus,
     string_tools,
-    graph_handling,
-    dbUtils,
 )
+from archivo.querying import query_databus, graph_handling
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
 from archivo.utils.archivoLogs import webservice_logger
@@ -140,6 +140,30 @@ def addOntology():
     )
 
 
+def build_correct_access_info(
+    ontology_uri: str, crawling_status: Optional[bool]
+) -> Dict:
+
+    if crawling_status:
+        return {"status": crawling_status, "message": ""}
+    elif crawling_status is None:
+        return {
+            "status": True,
+            "message": "No database entry -> no crawling happened",
+        }
+    else:
+        latestFallout = (
+            db.session.query(Fallout)
+            .filter_by(ontology=ontology_uri)
+            .order_by(Fallout.date.desc())
+            .first()
+        )
+        return {
+            "status": crawling_status,
+            "message": latestFallout.error,
+        }
+
+
 @app.route("/info/", methods=["GET", "POST"])
 @app.route("/info", methods=["GET", "POST"])
 @accept("text/html")
@@ -153,20 +177,24 @@ def vocabInfo():
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
-    if ontoUri != "":
+    if ontoUri == "":
+        return render_template(
+            "info.html",
+            general_info={},
+            form=form,
+            title="Archivo - Ontology Info",
+        )
+    else:
         foundUri = string_tools.get_uri_from_index(ontoUri, allOntos)
         if foundUri is None:
-            abort(status=404)
+            abort(code=404)
         ont = db.session.query(OfficialOntology).filter_by(uri=foundUri).first()
-        general_info = {}
-        general_info["hasDev"] = True if ont.devel is not None else False
+        general_info = {"hasDev": True if ont.devel is not None else False}
         group, artifact = string_tools.generate_databus_identifier_from_uri(
             foundUri, dev=isDev
         )
         try:
-            title, comment, versions_info = query_databus.getInfoForArtifact(
-                group, artifact
-            )
+            artifact_info = query_databus.get_info_for_artifact(group, artifact)
         except HTTPError as e:
             general_info[
                 "message"
@@ -180,51 +208,32 @@ def vocabInfo():
         if isDev:
             ont = ont.devel
             general_info["sourceURI"] = ont.uri
+
         general_info["source"] = ont.source
         general_info["isDev"] = isDev
-        general_info["archivement"] = ont.accessDate
-        general_info["title"] = title
-        general_info["comment"] = comment
+        general_info["achievement"] = ont.accessDate
+        general_info["title"] = artifact_info.title
+        general_info["comment"] = artifact_info.description
         general_info[
             "databusArtifact"
         ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
         # check latest crawling status
-        if ont.crawling_status:
-            general_info["access"] = {"status": ont.crawling_status, "message": ""}
-        elif ont.crawling_status is None:
-            general_info["access"] = {
-                "status": True,
-                "message": "No database entry -> no crawling happened",
-            }
-        else:
-            latestFallout = (
-                db.session.query(Fallout)
-                .filter_by(ontology=ont.uri)
-                .order_by(Fallout.date.desc())
-                .first()
-            )
-            general_info["access"] = {
-                "status": ont.crawling_status,
-                "message": latestFallout.error,
-            }
-        for v in versions_info:
-            v["stars"] = string_tools.generate_star_string(v["stars"])
+        general_info["access"] = build_correct_access_info(ont.uri, ont.crawling_status)
+
+        # there is a type error but it is ok since its only gets displayed
+        for v_info in artifact_info.version_infos:
+            v_info.stars = string_tools.generate_star_string(v_info.stars)
+        artifact_info.version_infos = sorted(
+            artifact_info.version_infos, key=lambda v: v.version.label, reverse=True
+        )
         return render_template(
             "info.html",
-            versions_info=sorted(
-                versions_info, key=lambda d: d["version"]["label"], reverse=True
-            ),
+            artifact_info=artifact_info,
             general_info=general_info,
             form=form,
             title=f"Archivo - Info about {title}",
         )
-    return render_template(
-        "info.html",
-        general_info={},
-        form=form,
-        title="Archivo - Ontology Info",
-    )
 
 
 @vocabInfo.support("text/turtle")
@@ -348,7 +357,7 @@ def downloadOntology():
     ontoUri = unquote(ontoUri)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
-    return downloadHandling(
+    return download_handling(
         uri=ontoUri,
         isDev=isDev,
         version=version,
@@ -365,7 +374,7 @@ def turtleDownload():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
-    return downloadHandling(
+    return download_handling(
         uri=ontoUri,
         isDev=isDev,
         version=version,
@@ -382,7 +391,7 @@ def rdfxmlDownload():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
-    return downloadHandling(
+    return download_handling(
         uri=ontoUri,
         isDev=isDev,
         version=version,
@@ -399,7 +408,7 @@ def ntriplesDownload():
     version = args.get("v", None)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
-    return downloadHandling(
+    return download_handling(
         uri=ontoUri,
         isDev=isDev,
         version=version,
@@ -415,7 +424,7 @@ def getCorrectScheme(scheme):
         return "https"
 
 
-def downloadHandling(
+def download_handling(
     uri, isDev=False, version="", rdfFormat="owl", sourceSchema="http"
 ):
     ontoUri = unquote(uri)
@@ -428,8 +437,8 @@ def downloadHandling(
         foundURI, dev=isDev
     )
     try:
-        downloadLink = query_databus.getDownloadURL(
-            group, artifact, fileExt=rdfFormat, version=version
+        downloadLink = query_databus.get_download_url(
+            group, artifact, file_extension=rdfFormat, version=version
         )
     except URLError as e:
         abort(

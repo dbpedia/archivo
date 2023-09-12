@@ -4,12 +4,11 @@ from typing import Tuple, List, Optional
 import aiohttp
 
 from archivo.models.content_negotiation import RDF_Type
-from archivo.utils import graph_handling
+from archivo.querying import graph_handling
 
 from archivo.models import content_negotiation
 from archivo.utils import parsing
 from archivo.utils.parsing import RapperParsingResult, RapperParsingInfo
-import itertools
 
 
 def chunk_list(lst, size):

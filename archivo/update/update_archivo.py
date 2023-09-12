@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from logging import Logger
-from pathlib import Path
 from typing import Tuple, List, Set, Optional, Dict
 
 from archivo.crawling.archivo_version import ArchivoVersion
@@ -8,7 +7,6 @@ from archivo.models import content_negotiation
 from archivo.models.content_negotiation import RDF_Type
 from archivo.models.crawling_response import CrawlingResponse
 from archivo.models.data_writer import DataWriter
-import databusclient
 import requests
 from archivo.crawling import discovery
 from datetime import datetime
@@ -19,10 +17,10 @@ from archivo.utils import (
     string_tools,
     archivo_config,
     async_rdf_retrieval,
-    graph_handling,
     parsing,
     content_access,
 )
+from archivo.querying import graph_handling
 from archivo.utils.archivo_exceptions import (
     UnavailableContentException,
     UnparseableRDFException,

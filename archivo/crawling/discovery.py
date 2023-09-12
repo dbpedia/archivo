@@ -1,18 +1,10 @@
 from logging import Logger
-from os.path import isfile
-from typing import Dict, List, Optional, Tuple, Set
+from typing import List, Optional, Tuple
 
-import hashlib
-
-import databusclient
 import rdflib
 import requests
-import os
 import traceback
 from datetime import datetime
-
-from rdflib import Graph
-from requests import Response
 
 from archivo.crawling.archivo_version import ArchivoVersion
 from urllib.robotparser import RobotFileParser
@@ -25,9 +17,9 @@ from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import (
     string_tools,
     archivo_config,
-    graph_handling,
     parsing,
 )
+from archivo.querying import graph_handling
 from archivo.utils.validation import TestSuite
 
 from best_effort_crawling import determine_best_content_type

@@ -1,8 +1,6 @@
 from io import StringIO
 from typing import Tuple, List, Optional
 
-from archivo.models.data_writer import DataWriter
-from archivo.models.databus_identifier import DatabusFileMetadata
 from archivo.webservice import db
 from archivo.webservice.dbModels import (
     OfficialOntology,
@@ -10,7 +8,8 @@ from archivo.webservice.dbModels import (
     Version,
     Ontology,
 )
-from archivo.utils import string_tools, query_databus, validation
+from archivo.utils import string_tools, validation
+from archivo.querying import query_databus
 from datetime import datetime
 import csv
 from archivo.crawling.discovery import ArchivoVersion
@@ -24,15 +23,15 @@ def db_objects_from_databus(
     group, artifact = string_tools.generate_databus_identifier_from_uri(
         uri, dev=True if dev != "" else False
     )
-    title, comment, versions_info = query_databus.getInfoForArtifact(group, artifact)
-    if title is None:
+    artifact_info = query_databus.get_info_for_artifact(group, artifact)
+    if artifact_info is None:
         return None, None
     if type(timestamp) != datetime and type(timestamp) == str:
         timestamp = datetime.strptime(timestamp, "%Y.%m.%d-%H%M%S")
     if dev != "":
         ontology = DevelopOntology(
             uri=dev,
-            title=title,
+            title=artifact_info.title,
             source=source,
             accessDate=timestamp,
             official=uri,
@@ -40,28 +39,13 @@ def db_objects_from_databus(
     else:
         ontology = OfficialOntology(
             uri=uri,
-            title=title,
+            title=artifact_info.title,
             source=source,
             accessDate=timestamp,
         )
     versions = []
-    for info_dict in versions_info:
-        versions.append(
-            Version(
-                version=datetime.strptime(
-                    info_dict["version"]["label"], "%Y.%m.%d-%H%M%S"
-                ),
-                semanticVersion=info_dict["semversion"],
-                stars=info_dict["stars"],
-                triples=info_dict["triples"],
-                parsing=info_dict["parsing"]["conforms"],
-                licenseI=info_dict["minLicense"]["conforms"],
-                licenseII=info_dict["goodLicense"]["conforms"],
-                consistency=info_dict["consistent"]["conforms"],
-                lodeSeverity=str(info_dict["lode"]["severity"]),
-                ontology=ontology.uri,
-            )
-        )
+    for version_info in artifact_info.version_infos:
+        versions.append(Version.build_from_version_info(ontology.uri, version_info))
     return ontology, versions
 
 
@@ -270,8 +254,12 @@ def get_database_entries(archivo_version: ArchivoVersion) -> Tuple[Ontology, Ver
         stars=validation.measure_stars(
             rapper_errors=archivo_version.parsing_result.parsing_info.errors,
             license_1_check=archivo_version.metadata_dict["test-results"]["License-I"],
-            consistency_check="Yes",
-            consistenty_check_without_imports="",
+            consistency_check=archivo_version.metadata_dict["test-results"][
+                "consistent"
+            ],
+            consistenty_check_without_imports=archivo_version.metadata_dict[
+                "test-results"
+            ]["consistent-without-imports"],
             license_2_check=archivo_version.metadata_dict["test-results"]["License-II"],
         ),
         triples=archivo_version.parsing_result.parsing_info.triple_number,
@@ -280,7 +268,10 @@ def get_database_entries(archivo_version: ArchivoVersion) -> Tuple[Ontology, Ver
         else False,
         licenseI=archivo_version.metadata_dict["test-results"]["License-I"],
         licenseII=archivo_version.metadata_dict["test-results"]["License-II"],
-        consistency="Yes",
+        consistency=validation.check_if_consistent(
+            archivo_version.metadata_dict["test-results"]["consistent"],
+            archivo_version.metadata_dict["test-results"]["consistent-without-imports"],
+        ),
         lodeSeverity=archivo_version.metadata_dict["test-results"]["lode-conform"],
         ontology=archivo_version.reference_uri,
     )

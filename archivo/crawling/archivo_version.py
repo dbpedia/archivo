@@ -10,7 +10,6 @@ from rdflib import URIRef, Literal
 from archivo.crawling.discovery import handle_track_this_uri
 from archivo.models.content_negotiation import (
     RDF_Type,
-    get_file_extension,
     get_accept_header,
 )
 from archivo.models.crawling_response import CrawlingResponse
@@ -22,12 +21,13 @@ from archivo.models.data_writer import DataWriter
 from archivo.models.user_interaction import ProcessStepLog, LogLevel
 from archivo.utils import (
     string_tools,
-    graph_handling,
     feature_plugins,
     docTemplates,
     archivo_config,
     parsing,
+    content_access,
 )
+from archivo.querying import graph_handling
 from archivo.utils.validation import TestSuite
 
 
@@ -137,15 +137,12 @@ class ArchivoVersion:
             serialized_report = graph_handling.serialize_graph(
                 report_graph, rdf_format="turtle"
             )
-            shasum, content_length = string_tools.get_content_stats(
-                bytes(serialized_report, "utf-8")
-            )
-            db_file_metadata = DatabusFileMetadata(
+
+            db_file_metadata = DatabusFileMetadata.build_from_content(
+                content=serialized_report,
                 version_identifier=self.db_version_identifier,
                 content_variants={"type": "shaclReport", "validates": validates_cv},
                 file_extension="ttl",
-                sha_256_sum=shasum,
-                content_length=content_length,
                 compression=None,
             )
 
@@ -156,7 +153,43 @@ class ArchivoVersion:
 
     def __run_consistency_checks(self):
 
-        self.test_suite.getConsistency()
+        # looks in the data writer for the written parsed version of the ontology
+        file_metadata = None
+        for metadata, error in self.data_writer.written_files.items():
+            if (
+                metadata.file_extension == "ttl"
+                and metadata.content_variants["type"] == "parsed"
+            ):
+                file_metadata = metadata
+                break
+
+        if file_metadata:
+
+            url = content_access.get_location_url(file_metadata)
+
+            for ignore_imports in [True, False]:
+
+                imports_cv = "NONE" if ignore_imports else "FULL"
+                metadata_key = (
+                    "consistent-without-imports" if ignore_imports else "consistent"
+                )
+
+                consistency, output = self.test_suite.get_consistency(
+                    ontology_url=url, ignore_imports=False
+                )
+                self.metadata_dict["test-results"][metadata_key] = consistency
+
+                file_metadata = DatabusFileMetadata.build_from_content(
+                    content=output,
+                    version_identifier=self.db_version_identifier,
+                    content_variants={
+                        "type": "pelletConsistency",
+                        "imports": imports_cv,
+                    },
+                    file_extension="txt",
+                )
+
+                self.data_writer.write_databus_file(output, file_metadata)
 
     def __generate_documentation_files(self):
         """generates the HTML documentation files"""
@@ -218,6 +251,8 @@ class ArchivoVersion:
         self.__generate_shacl_reports()
         self.__generate_documentation_files()
         self.__write_vocab_information_file()
+        # this needs to be run AFTER the parsed generation since it requires the file to be written
+        self.__run_consistency_checks()
 
     def handle_dev_version(self) -> Optional[ArchivoVersion]:
         if self.isDev:

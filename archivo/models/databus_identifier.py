@@ -1,5 +1,9 @@
+from __future__ import annotations
+import encodings
 from dataclasses import dataclass
 from typing import Dict, Optional
+
+from archivo.utils import string_tools
 
 
 @dataclass
@@ -37,3 +41,24 @@ class DatabusFileMetadata:
 
     def __str__(self) -> str:
         return f"{self.version_identifier}/{self.get_file_name()}"
+
+    @staticmethod
+    def build_from_content(
+        content: str,
+        version_identifier: DatabusVersionIdentifier,
+        content_variants: Dict[str, str],
+        file_extension: str,
+        compression: Optional[str] = None,
+    ) -> DatabusFileMetadata:
+
+        shasum, content_length = string_tools.get_content_stats(
+            bytes(content, encodings.utf_8)
+        )
+        return DatabusFileMetadata(
+            version_identifier=version_identifier,
+            content_variants=content_variants,
+            file_extension=file_extension,
+            compression=compression,
+            sha_256_sum=shasum,
+            content_length=content_length,
+        )

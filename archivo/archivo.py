@@ -9,7 +9,7 @@ from archivo.models.databus_identifier import (
     DatabusVersionIdentifier,
 )
 from archivo.models.user_interaction import ProcessStepLog, LogLevel
-from archivo.utils import dbUtils, graphing
+from archivo.utils import graphing
 from archivo.update import update_archivo
 import json
 import os
@@ -18,12 +18,12 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from archivo.crawling import discovery, sources
-from utils import archivo_config, string_tools, query_databus
+from utils import archivo_config, string_tools
+from archivo.querying import query_databus
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
     dev_diff_logger,
-    webservice_logger,
 )
 from utils.validation import TestSuite
 from webservice import app, db, dbModels
@@ -66,7 +66,9 @@ def ontology_discovery():
     discovery_logger.info("Started discovery of prefix.cc URIs...")
     run_discovery(sources.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
     discovery_logger.info("Started discovery of VOID URIs...")
-    run_discovery(query_databus.get_VOID_URIs(), "VOID mod", dataPath, testSuite)
+    run_discovery(
+        query_databus.get_distinct_void_uris(), "VOID mod", dataPath, testSuite
+    )
     discovery_logger.info("Started discovery of Databus SPOs...")
     for uri_list in query_databus.get_SPOs(logger=discovery_logger):
         run_discovery(uri_list, "SPOs", dataPath, testSuite)
@@ -133,7 +135,7 @@ def run_discovery(
 
 def ontology_official_update():
     dataPath = archivo_config.localPath
-    allOntologiesInfo = query_databus.latestNtriples()
+    allOntologiesInfo = query_databus.nir_to_latest_version_files()
     if allOntologiesInfo is None:
         diff_logger.warning(
             "There seems to be an error with the databus, no official diff possible"
@@ -242,7 +244,7 @@ def ontology_official_update():
 
 
 def ontology_dev_update():
-    allOntologiesInfo = query_databus.latestNtriples()
+    allOntologiesInfo = query_databus.nir_to_latest_version_files()
     if allOntologiesInfo is None:
         dev_diff_logger.warning(
             "There seems to be an error with the databus, no dev diff possible"
