@@ -39,12 +39,6 @@ max_recursion_depth = 5
 # NOTE: These problems should be investigated, not ignored, so a github issue should be opened to name and shame myself
 diff_skip_onts = ["http://purl.obolibrary.org/obo/dron.owl"]
 
-# edit for your dataset
-downloadUrl = "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/${project.groupId}/${project.artifactId}/${project.version}/"
-packDir = "/home/dstreitmatter/www/archivo/${project.groupId}/${project.artifactId}/"
-pub = "https://yum-yab.github.io/webid.ttl#onto"
-
-# new databus
 
 DOWNLOAD_URL_BASE = "https://downloads.dbpedia.org/archivo"
 
