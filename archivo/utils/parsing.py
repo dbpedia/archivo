@@ -1,16 +1,16 @@
 import re
-from archivo.utils import string_tools
+from utils import string_tools
 import subprocess
-from typing import Tuple, List, Optional
+from typing import Tuple, List
 from dataclasses import dataclass
 
-from archivo.models.content_negotiation import (
+from models.content_negotiation import (
     RDF_Type,
     get_rapper_name,
     get_file_extension,
 )
 
-from archivo.models.databus_identifier import (
+from models.databus_identifier import (
     DatabusFileMetadata,
     DatabusVersionIdentifier,
 )

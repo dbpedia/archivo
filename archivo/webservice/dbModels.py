@@ -1,6 +1,6 @@
 from __future__ import annotations
-from archivo.models.databus_responses import VersionInformation
-from archivo.webservice import db
+from models.databus_responses import VersionInformation
+from webservice import db
 from datetime import datetime
 
 

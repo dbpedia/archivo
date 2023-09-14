@@ -2,9 +2,9 @@ from pathlib import Path
 
 import requests
 
-from archivo.models.databus_identifier import DatabusFileMetadata
-from archivo.utils import archivo_config
-from archivo.utils.archivo_exceptions import UnavailableContentException
+from models.databus_identifier import DatabusFileMetadata
+from utils import archivo_config
+from utils.archivo_exceptions import UnavailableContentException
 
 
 def get_databus_file(file_metadata: DatabusFileMetadata) -> str:

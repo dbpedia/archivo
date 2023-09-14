@@ -3,23 +3,23 @@ from typing import List, Iterable
 
 import databusclient
 
-from archivo.models.data_writer import FileWriter
-from archivo.models.databus_identifier import (
+import models.data_writer
+from models.databus_identifier import (
     DatabusFileMetadata,
     DatabusVersionIdentifier,
 )
-from archivo.models.user_interaction import ProcessStepLog, LogLevel
-from archivo.utils import graphing
-from archivo.update import update_archivo
+from models.user_interaction import ProcessStepLog, LogLevel
+from utils import graphing
+from update import update_archivo
 import json
 import os
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from archivo.crawling import discovery, sources
-from utils import archivo_config, string_tools
-from archivo.querying import query_databus
+from crawling import discovery, sources
+from utils import archivo_config, string_tools, database_utils
+from querying import query_databus
 from utils.archivoLogs import (
     discovery_logger,
     diff_logger,
@@ -85,7 +85,7 @@ def run_discovery(
             continue
         output = []
 
-        data_writer = FileWriter(
+        data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
             target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
@@ -106,9 +106,9 @@ def run_discovery(
             continue
         if archivo_version:
             dev_version = archivo_version.handle_dev_version()
-            dbOnt, dbVersion = dbUtils.get_database_entries(archivo_version)
+            dbOnt, dbVersion = database_utils.get_database_entries(archivo_version)
             if dev_version:
-                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
+                dev_ont, dev_version = database_utils.get_database_entries(dev_version)
                 db.session.add(dev_ont)
                 db.session.add(dev_version)
                 dbOnt.devel = dev_ont.uri
@@ -152,7 +152,7 @@ def ontology_official_update():
             )
             continue
 
-        data_writer = FileWriter(
+        data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
             target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
@@ -206,10 +206,10 @@ def ontology_official_update():
 
             # check for new trackThis URI
             succ, dev_version = archivo_version.handle_dev_version()
-            _, dbVersion = dbUtils.get_database_entries(archivo_version)
+            _, dbVersion = database_utils.get_database_entries(archivo_version)
             db.session.add(dbVersion)
             if succ:
-                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
+                dev_ont, dev_version = database_utils.get_database_entries(dev_version)
                 # update with new trackThis URI
                 if ont.devel is not None and ont.devel != dev_ont.uri:
                     old_dev_obj = (
@@ -266,7 +266,7 @@ def ontology_dev_update():
             dev_diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
 
-        data_writer = FileWriter(
+        data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
             target_url_base=archivo_config.DOWNLOAD_URL_BASE,
         )
@@ -298,7 +298,7 @@ def ontology_dev_update():
             db.session.add(dbFallout)
         elif success:
             ont.crawling_status = True
-            _, dev_version = dbUtils.get_database_entries(archivo_version)
+            _, dev_version = database_utils.get_database_entries(archivo_version)
             db.session.add(dev_version)
             try:
                 db.session.commit()
@@ -352,14 +352,14 @@ def deploy_index():
         version=new_version_timestamp,
     )
 
-    data_writer = FileWriter(
+    data_writer = models.data_writer.FileWriter(
         path_base=archivo_config.localPath,
         target_url_base=archivo_config.DOWNLOAD_URL_BASE,
     )
 
     indices = {
-        "official": dbUtils.get_official_index_as_csv,
-        "dev": dbUtils.get_dev_index_as_csv,
+        "official": database_utils.get_official_index_as_csv,
+        "dev": database_utils.get_dev_index_as_csv,
     }
 
     for label, getfun in indices.items():

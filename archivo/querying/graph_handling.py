@@ -5,11 +5,11 @@ import requests
 from rdflib import OWL, RDFS, RDF, URIRef, Graph
 from rdflib.namespace import DCTERMS, DC, SKOS
 
-from archivo.models.content_negotiation import RDF_Type
-from archivo.utils import string_tools, archivo_config
+from models.content_negotiation import RDF_Type
+from utils import string_tools, archivo_config
 from urllib.parse import urlparse
-from archivo.models.content_negotiation import get_rdflib_string
-from archivo.utils.archivo_exceptions import UnknownRDFFormatException
+from models.content_negotiation import get_rdflib_string
+from utils.archivo_exceptions import UnknownRDFFormatException
 
 descriptionNamespaceGraph = Graph()
 descriptionNamespaceGraph.bind("dct", DCTERMS)

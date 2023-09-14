@@ -5,8 +5,8 @@ from typing import Iterator, Dict, List, Optional
 
 import databusclient
 
-from archivo.models.databus_identifier import DatabusFileMetadata
-from archivo.utils.WebDAVUtils import WebDAVHandler
+from models.databus_identifier import DatabusFileMetadata
+from utils.WebDAVUtils import WebDAVHandler
 
 
 class DataWriter(ABC):

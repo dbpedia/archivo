@@ -3,7 +3,7 @@ import encodings
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from archivo.utils import string_tools
+from utils import string_tools
 
 
 @dataclass

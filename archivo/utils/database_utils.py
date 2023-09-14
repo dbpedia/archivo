@@ -1,18 +1,18 @@
 from io import StringIO
 from typing import Tuple, List, Optional
 
-from archivo.webservice import db
-from archivo.webservice.dbModels import (
+from webservice import db
+from webservice.dbModels import (
     OfficialOntology,
     DevelopOntology,
     Version,
     Ontology,
 )
-from archivo.utils import string_tools, validation
-from archivo.querying import query_databus
+from utils import string_tools, validation
+from querying import query_databus
 from datetime import datetime
 import csv
-from archivo.crawling.discovery import ArchivoVersion
+from crawling.discovery import ArchivoVersion
 
 
 def db_objects_from_databus(

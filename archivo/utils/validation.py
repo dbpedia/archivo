@@ -3,11 +3,11 @@ from typing import Optional, Tuple, Set, List
 import rdflib
 from pyshacl import validate
 from rdflib import Graph, URIRef
-from archivo.utils import archivo_config, string_tools
+from utils import archivo_config, string_tools
 import os
 import subprocess
 import re
-from archivo.utils.archivo_exceptions import UnparseableRDFException
+from utils.archivo_exceptions import UnparseableRDFException
 
 # from owlready2 import get_ontology, sync_reasoner_pellet
 

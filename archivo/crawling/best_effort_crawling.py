@@ -1,15 +1,10 @@
-from logging import Logger
-from typing import List, Dict, Optional
-from dataclasses import dataclass
-
+from typing import List, Optional
 import requests
+from models import content_negotiation
+from models.crawling_response import CrawlingResponse
+from utils import parsing
 
-from archivo.models import content_negotiation
-from archivo.models.crawling_response import CrawlingResponse
-from archivo.utils import parsing
-from sqlalchemy.sql.functions import user
-
-from archivo.models.user_interaction import LogLevel, ProcessStepLog
+from models.user_interaction import LogLevel, ProcessStepLog
 
 
 class UnavailableException(Exception):

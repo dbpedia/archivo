@@ -2,36 +2,36 @@ from dataclasses import dataclass
 from logging import Logger
 from typing import Tuple, List, Set, Optional, Dict
 
-from archivo.crawling.archivo_version import ArchivoVersion
-from archivo.models import content_negotiation
-from archivo.models.content_negotiation import RDF_Type
-from archivo.models.crawling_response import CrawlingResponse
-from archivo.models.data_writer import DataWriter
+from crawling.discovery import ArchivoVersion
+from models import content_negotiation
+from models.content_negotiation import RDF_Type
+from models.crawling_response import CrawlingResponse
+from models.data_writer import DataWriter
 import requests
-from archivo.crawling import discovery
+from crawling import discovery
 from datetime import datetime
 import os
 import json
 import re
-from archivo.utils import (
+from utils import (
     string_tools,
     archivo_config,
     async_rdf_retrieval,
     parsing,
     content_access,
 )
-from archivo.querying import graph_handling
-from archivo.utils.archivo_exceptions import (
+from querying import graph_handling
+from utils.archivo_exceptions import (
     UnavailableContentException,
     UnparseableRDFException,
 )
-from archivo.utils.archivoLogs import diff_logger
-from archivo.models.databus_identifier import (
+from utils.archivoLogs import diff_logger
+from models.databus_identifier import (
     DatabusVersionIdentifier,
     DatabusFileMetadata,
 )
-from archivo.utils.validation import TestSuite
-from archivo.utils.parsing import RapperParsingResult
+from utils.validation import TestSuite
+from utils.parsing import RapperParsingResult
 
 __SEMANTIC_VERSION_REGEX = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
 

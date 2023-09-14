@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 import requests
 
-from archivo.models.content_negotiation import RDF_Type
-from archivo.utils.parsing import RapperParsingInfo
+from models.content_negotiation import RDF_Type
+from utils.parsing import RapperParsingInfo
 
 
 @dataclass

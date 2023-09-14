@@ -1,6 +1,6 @@
 # Databus 2.0 API config
 DATABUS_API_KEY: str = "blablubb"
-DATABUS_BASE: str = "https://dev.databus.dbpedia.org"
+DATABUS_BASE: str = "https://databus.dbpedia.org"
 DATABUS_USER: str = "ontologies"
 
 # agent name for crawling
