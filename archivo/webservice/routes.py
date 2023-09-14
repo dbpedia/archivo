@@ -69,7 +69,7 @@ class InfoForm(FlaskForm):
 @app.route("/add", methods=["GET", "POST"])
 def addOntology():
     form = SuggestionForm()
-    allOnts = [ont.uri for ont in db.session.query(Ontology.uri).all()]
+    all_ontology_uris = [ont.uri for ont in db.session.query(Ontology.uri).all()]
 
     suggested_uri = None
 
@@ -85,15 +85,13 @@ def addOntology():
         output = []
         testingSuite = TestSuite()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        success, isNir, archivo_version = discovery.handleNewUri(
-            uri,
-            allOnts,
-            archivo_config.localPath,
-            "user-suggestion",
-            False,
-            testSuite=testingSuite,
+        success, isNir, archivo_version = discovery.discover_new_uri(
+            uri=uri,
+            vocab_uri_cache=all_ontology_uris,
+            source="user-suggestion",
+            test_suite=testingSuite,
             logger=webservice_logger,
-            user_output=output,
+            process_log=output,
         )
         if success:
             succ, dev_version = archivo_version.handle_dev_version()

@@ -589,13 +589,11 @@ def searching_for_linked_ontologies(
 def discover_new_uri(
     uri: str,
     vocab_uri_cache: List[str],
-    data_writer: DataWriter,
     test_suite: TestSuite,
     source: str,
     logger: Logger,
     process_log: List[ProcessStepLog] = None,
     recursion_depth: int = 1,
-    is_develop_version: bool = False,
 ) -> Optional[ArchivoVersion]:
 
     if process_log is None:
