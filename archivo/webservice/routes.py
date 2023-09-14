@@ -1,8 +1,8 @@
 from typing import Dict, Optional
 
-from archivo.crawling import discovery
-from archivo.webservice import app, db
-from archivo.webservice.dbModels import (
+from crawling import discovery
+from webservice import app, db
+from webservice.dbModels import (
     OfficialOntology,
     DevelopOntology,
     Fallout,
@@ -24,15 +24,16 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
-from archivo.utils.validation import TestSuite
-from archivo.utils import (
+from utils.validation import TestSuite
+from utils import (
     archivo_config,
     string_tools,
+    database_utils
 )
-from archivo.querying import query_databus, graph_handling
+from querying import query_databus, graph_handling
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
-from archivo.utils.archivoLogs import webservice_logger
+from utils.archivoLogs import webservice_logger
 from urllib.error import HTTPError, URLError
 import json
 import html
@@ -96,9 +97,9 @@ def addOntology():
         )
         if success:
             succ, dev_version = archivo_version.handle_dev_version()
-            dbOnt, dbVersion = dbUtils.get_database_entries(archivo_version)
+            dbOnt, dbVersion = database_utils.get_database_entries(archivo_version)
             if succ:
-                dev_ont, dev_version = dbUtils.get_database_entries(dev_version)
+                dev_ont, dev_version = database_utils.get_database_entries(dev_version)
                 db.session.add(dev_ont)
                 db.session.add(dev_version)
                 dbOnt.devel = dev_ont.uri
@@ -232,7 +233,7 @@ def vocabInfo():
             artifact_info=artifact_info,
             general_info=general_info,
             form=form,
-            title=f"Archivo - Info about {title}",
+            title=f"Archivo - Info about {artifact_info.title}",
         )
 
 

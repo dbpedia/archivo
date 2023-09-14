@@ -4,7 +4,7 @@ import datetime
 import json
 import os
 
-from archivo.utils import string_tools
+from utils import string_tools
 
 
 def get_latest_stars_before_deadline(ont, deadline):

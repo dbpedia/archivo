@@ -6,4 +6,4 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 
-# from webservice import routes, dbModels
+from webservice import routes, dbModels

@@ -40,12 +40,12 @@ def get_info_for_artifact(group: str, artifact: str) -> Optional[ArtifactInforma
     results = sparql.query().convert()
     version_infos = []
 
-    get_version_val = get_value_of_key_fun("version")
-
-    title = sorted(results, key=get_version_val, reverse=True)[0]["title"]["value"]
-    comment = sorted(results, key=get_version_val, reverse=True)[0]["comment"]["value"]
+    def get_version_val(b) -> str:
+        return b["version"]["value"]
 
     results = results["results"]["bindings"]
+    title = sorted(results, key=get_version_val, reverse=True)[0]["title"]["value"]
+    comment = sorted(results, key=get_version_val, reverse=True)[0]["abstract"]["value"]
 
     for binding in results:
         version = binding.get("version", {"value": ""})["value"]
