@@ -69,7 +69,7 @@ class InfoForm(FlaskForm):
 
 
 @app.route("/add", methods=["GET", "POST"])
-def addOntology():
+def suggest_ontology():
     form = SuggestionForm()
     all_ontology_uris = [ont.uri for ont in db.session.query(Ontology.uri).all()]
 

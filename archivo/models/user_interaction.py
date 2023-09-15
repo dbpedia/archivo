@@ -5,7 +5,7 @@ from typing import Dict, List
 
 
 class LogLevel(Enum):
-    """This enum consists of the four log levels: DEBUG, INFO, WARNING, ERROR. Ordered asceding."""
+    """This enum consists of the four log levels: DEBUG, INFO, WARNING, ERROR. Ordered ascending."""
 
     DEBUG = 1
     INFO = 2
@@ -20,7 +20,7 @@ class ProcessStepLog:
     stepname: str
     message: str
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> Dict[str, str]:
 
         return {
             "status": str(self.status),

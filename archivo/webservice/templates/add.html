@@ -74,7 +74,7 @@
   <h3>{{report_heading}}</h3>
   <p>{{ main_comment | safe}}</p>
   <p>
-    Note that orange/red panels are not necessarily critical but we suggest fixing them in the future.
+    Note that orange/red panels are not necessarily critical, but we suggest fixing them in the future.
   </p>
   <h4>Processing log:</h4>
   <div class="accordion" id="suggestion-report">
@@ -91,7 +91,7 @@
     {% if not loop.last %}
     <div id="collapse{{loop.index}}" class="accordion-collapse collapse" aria-labelledby="step{{loop.index}}"
       data-bs-parent="#suggestion-report">
-      {% else %}
+    {% else %}
       <div id="collapse{{loop.index}}" class="accordion-collapse collapse show" aria-labelledby="step{{loop.index}}"
         data-bs-parent="#suggestion-report">
         {% endif %}
