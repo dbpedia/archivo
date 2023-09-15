@@ -43,7 +43,7 @@ def get_graph_of_string(rdf_string: str, content_type: RDF_Type) -> Graph:
     graph = rdflib.Graph()
     graph.parse(
         data=rdf_string,
-        format=header_rdflib_mapping.get(get_rdflib_string(content_type), "xml"),
+        format=get_rdflib_string(content_type),
     )
     return graph
 

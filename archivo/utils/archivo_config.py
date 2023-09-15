@@ -8,7 +8,7 @@ archivo_agent: str = "dbpedia-archivo-robot"
 
 # deployment config for server
 
-LOCAL_PATH = "/usr/local/archivo-data/"
+LOCAL_PATH = "/home/denis/workspace/job/archivo_project/archivo/archivo/archivo-datadump"
 
 PUBLIC_URL_BASE = "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo"
 
@@ -43,9 +43,11 @@ diff_skip_onts = ["http://purl.obolibrary.org/obo/dron.owl"]
 DOWNLOAD_URL_BASE = "https://downloads.dbpedia.org/archivo"
 
 # paths for external services
-pelletPath = "/usr/lib/pellet/cli/target/pelletcli/bin/pellet"
-profileCheckerJar = "/data/home/dstreitmatter/profilechecker-1.1.0.jar"
+pelletPath = "/home/denis/workspace/job/pellet/cli/target/pelletcli/bin/pellet"
+profileCheckerJar = "/home/denis/Downloads/profilechecker-1.1.0.jar"
+
 
 
 # local paths
-localPath = "/usr/local/archivo-data/"
+localPath = "/home/denis/workspace/job/archivo_project/archivo/archivo/archivo-datadump"
+

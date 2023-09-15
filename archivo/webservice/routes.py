@@ -1,5 +1,6 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
+from querying import query_templates
 from crawling import discovery
 from webservice import app, db
 from webservice.dbModels import (
@@ -25,11 +26,7 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms import validators
 import os
 from utils.validation import TestSuite
-from utils import (
-    archivo_config,
-    string_tools,
-    database_utils
-)
+from utils import archivo_config, string_tools, database_utils
 from querying import query_databus, graph_handling
 from flask_accept import accept, accept_fallback
 from urllib.parse import quote, unquote
@@ -45,7 +42,7 @@ from sqlalchemy.orm import aliased
 import io
 import csv
 
-from models.user_interaction import check_is_nir_based_on_log, LogLevel
+from models.user_interaction import check_is_nir_based_on_log, LogLevel, ProcessStepLog
 
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
@@ -84,7 +81,7 @@ def suggest_ontology():
 
     if suggested_uri is not None:
         uri = suggested_uri
-        output = []
+        output: List[ProcessStepLog] = []
         testingSuite = TestSuite()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
         archivo_version = discovery.discover_new_uri(
@@ -122,7 +119,7 @@ def suggest_ontology():
             main_comment = f"Check out this <a href=/info?o={quote(archivo_version.nir)}>page</a> for the overview over the suggested ontology!"
         elif not archivo_version and output[-1].status == LogLevel.INFO:
             report_heading = "The Ontology is already part of Archivo!"
-            main_comment = output[-1]["message"]
+            main_comment = output[-1].message
         else:
             report_heading = "The Ontology has been rejected!"
             main_comment = "Check out the log below for the reason. Click on the boxes for further details!"
@@ -247,7 +244,7 @@ def turtleInfo():
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(404)
-    return redirect(getRDFInfoLink(ontoUri, "text/turtle"), code=307)
+    return redirect(get_info_as_rdf(ontoUri, "text/turtle"), code=307)
 
 
 @vocabInfo.support("application/rdf+xml")
@@ -259,7 +256,7 @@ def rdfxmlInfo():
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(404)
-    return redirect(getRDFInfoLink(ontoUri, "application/rdf+xml"), code=307)
+    return redirect(get_info_as_rdf(ontoUri, "application/rdf+xml"), code=307)
 
 
 @vocabInfo.support("application/n-triples")
@@ -271,7 +268,7 @@ def ntriplesInfo():
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     ):
         abort(status=404)
-    return redirect(getRDFInfoLink(ontoUri, "application/n-triples"), code=307)
+    return redirect(get_info_as_rdf(ontoUri, "application/n-triples"), code=307)
 
 
 @app.route("/home", methods=["GET"])
@@ -301,57 +298,25 @@ def onto_list():
     )
 
 
-def generateInfoDict(metadata, source, databusLink, latestReleaseLink):
-    info = {}
-    info["parseable"] = True if metadata["ontology-info"]["triples"] > 0 else False
-    info["databusLink"] = databusLink
-    info["latestRelease"] = latestReleaseLink
-    info["source"] = source
-    info["semVersion"] = metadata["ontology-info"]["semantic-version"]
-    info["stars"] = str(metadata["ontology-info"]["stars"])
-    info["triples"] = str(metadata["ontology-info"]["triples"])
-    info["accessed"] = metadata["http-data"]["accessed"]
-    info["licenseI"] = metadata["test-results"]["License-I"]
-    info["licenseII"] = metadata["test-results"]["License-II"]
-    info["consistent"] = metadata["test-results"]["consistent"]
-    return info
-
-
-def getRDFInfoLink(ontologyUrl, mimeType):
-    group, artifact = string_tools.generate_databus_identifier_from_uri(ontologyUrl)
-    databusArtifact = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-    queryString = "\n".join(
-        (
-            "PREFIX dcterm: <http://purl.org/dc/terms/>",
-            "PREFIX owl: <http://www.w3.org/2002/07/owl#>",
-            "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
-            "PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>",
-            "PREFIX dct:    <http://purl.org/dc/terms/>",
-            "PREFIX dcat:   <http://www.w3.org/ns/dcat#>",
-            "PREFIX db:     <https://databus.dbpedia.org/>",
-            "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-            "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-            "PREFIX archivo: <http://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo/>",
-            "",
-            "CONSTRUCT {?s ?p ?o . ?dist ?p2 ?o2 . }",
-            "{?s dataid:artifact <%s>." % databusArtifact,
-            "?s ?p ?o . ?s dcat:distribution ?dist . ?dist ?p2 ?o2 . }&format=%s&timeout=0&debug=on"
-            % mimeType,
-        )
+def get_info_as_rdf(ontology_url: str, mime_type: str):
+    group, artifact = string_tools.generate_databus_identifier_from_uri(ontology_url)
+    databus_artifact = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+    query_string = query_templates.constrict_info_graph_template.safe_substitute(
+        ARTIFACT=databus_artifact
     )
-    encodedString = quote(queryString, safe="&=")
-    return f"https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query={encodedString}"
+    encodedString = quote(query_string, safe="&=")
+    return f"https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query={encodedString}&format={mime_type}&timeout=0&debug=on"
 
 
 @app.route("/sys/licenses")
-def licensesPage():
+def licenses_page():
     return render_template("licenses.html", title="Archivo - Licenses")
 
 
 @app.route("/download", methods=["GET"])
 @accept_fallback
 @cross_origin()
-def downloadOntology():
+def download_ontology():
     args = request.args
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "owl")
@@ -361,15 +326,15 @@ def downloadOntology():
     isDev = True if "dev" in args else False
     return download_handling(
         uri=ontoUri,
-        isDev=isDev,
+        is_dev=isDev,
         version=version,
-        rdfFormat=rdfFormat,
-        sourceSchema=scheme,
+        rdf_format=rdfFormat,
+        source_schema=scheme,
     )
 
 
-@downloadOntology.support("text/turtle")
-def turtleDownload():
+@download_ontology.support("text/turtle")
+def turtle_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "ttl")
@@ -378,15 +343,15 @@ def turtleDownload():
     version = args.get("v", None)
     return download_handling(
         uri=ontoUri,
-        isDev=isDev,
+        is_dev=isDev,
         version=version,
-        rdfFormat=rdfFormat,
-        sourceSchema=scheme,
+        rdf_format=rdfFormat,
+        source_schema=scheme,
     )
 
 
-@downloadOntology.support("application/rdf+xml")
-def rdfxmlDownload():
+@download_ontology.support("application/rdf+xml")
+def rdfxml_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "owl")
@@ -395,15 +360,15 @@ def rdfxmlDownload():
     version = args.get("v", None)
     return download_handling(
         uri=ontoUri,
-        isDev=isDev,
+        is_dev=isDev,
         version=version,
-        rdfFormat=rdfFormat,
-        sourceSchema=scheme,
+        rdf_format=rdfFormat,
+        source_schema=scheme,
     )
 
 
-@downloadOntology.support("application/n-triples")
-def ntriplesDownload():
+@download_ontology.support("application/n-triples")
+def ntriples_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "nt")
@@ -412,10 +377,10 @@ def ntriplesDownload():
     isDev = True if "dev" in args else False
     return download_handling(
         uri=ontoUri,
-        isDev=isDev,
+        is_dev=isDev,
         version=version,
-        rdfFormat=rdfFormat,
-        sourceSchema=scheme,
+        rdf_format=rdfFormat,
+        source_schema=scheme,
     )
 
 
@@ -427,20 +392,20 @@ def getCorrectScheme(scheme):
 
 
 def download_handling(
-    uri, isDev=False, version="", rdfFormat="owl", sourceSchema="http"
+    uri, is_dev=False, version="", rdf_format="owl", source_schema="http"
 ):
     ontoUri = unquote(uri)
     foundURI = string_tools.get_uri_from_index(
         ontoUri, [ont.uri for ont in db.session.query(Ontology).all()]
     )
     if foundURI is None:
-        abort(status=404)
+        abort(code=404)
     group, artifact = string_tools.generate_databus_identifier_from_uri(
-        foundURI, dev=isDev
+        foundURI, dev=is_dev
     )
     try:
         downloadLink = query_databus.get_download_url(
-            group, artifact, file_extension=rdfFormat, version=version
+            group, artifact, file_extension=rdf_format, version=version
         )
     except URLError as e:
         abort(
@@ -448,8 +413,8 @@ def download_handling(
             f"There seems to be an error with the DBpedia Databus. Try again later. {str(e)}",
         )
     if downloadLink is not None:
-        correctUrl = str(sourceSchema) + "://" + str(downloadLink.split("://")[1])
-        correct_mimetype = get_mimetype_of_fileExt(rdfFormat)
+        correctUrl = str(source_schema) + "://" + str(downloadLink.split("://")[1])
+        correct_mimetype = get_mimetype_of_fileExt(rdf_format)
         resp = Response(  # type: ignore
             '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n'
             "<title>Redirecting...</title>\n"
@@ -463,7 +428,7 @@ def download_handling(
         resp.headers["Location"] = correctUrl
         return resp
     else:
-        abort(status=404)
+        abort(code=404)
 
 
 @app.route("/about")
@@ -477,7 +442,7 @@ def api_page():
 
 
 @app.route("/shaclVisualisation")
-def shaclVisualisation():
+def shacl_visualisation():
     args = request.args
     shaclURI = args["r"] if "r" in args else None
     if shaclURI is not None:
@@ -488,7 +453,7 @@ def shaclVisualisation():
         except Exception:
             return render_template("shaclReport.html", report=None, link=shaclURI)
     else:
-        return abort(status=404)
+        return abort(code=404)
 
 
 @app.route("/faq")
@@ -526,7 +491,7 @@ def deliver_vocab():
 
 
 @app.route("/falloutdl")
-def falloutdl():
+def fallout_download():
     fallout_not_in_archivo = (
         db.session.query(Fallout)
         .filter_by(inArchivo=False)
@@ -549,21 +514,8 @@ def falloutdl():
     return resp
 
 
-def retrieve_list_from_database(ontoType):
-    isDev = True if ontoType == DevelopOntology else False
-
-    # latest_fallout_fun = sa.func.row_number().over(
-    #     order_by=Fallout.date.desc(), partition_by=Fallout.ontology
-    # )
-    # latest_fallout_fun = latest_fallout_fun.label("latest_fallout_fun")
-
-    # fallout_query = db.session.query(Fallout, latest_fallout_fun).filter(
-    #     Fallout.inArchivo == True
-    # )
-
-    # fallout_query = fallout_query.subquery(name="fallout_query", with_labels=True)
-
-    # fallout_alias = sa.orm.aliased(Fallout, alias=fallout_query)
+def retrieve_list_from_database(onto_type: type[Ontology]):
+    isDev = True if onto_type == DevelopOntology else False
 
     latest_version_fun = sqlalchemy.func.row_number().over(
         order_by=Version.version.desc(), partition_by=Version.ontology
@@ -577,8 +529,8 @@ def retrieve_list_from_database(ontoType):
     version_alias = aliased(Version, alias=version_query)
 
     q = (
-        db.session.query(ontoType, version_alias)
-        .filter(version_alias.ontology == ontoType.uri)
+        db.session.query(onto_type, version_alias)
+        .filter(version_alias.ontology == onto_type.uri)
         .filter(version_query.c.latest_version_fun == 1)
     )
 

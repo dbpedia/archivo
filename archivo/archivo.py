@@ -72,7 +72,7 @@ def run_discovery(
     for uri in lst:
         if check_uri_containment(uri, all_onts):
             continue
-        output = []
+        output : List[ProcessStepLog] = []
 
         try:
             archivo_version = discovery.discover_new_uri(

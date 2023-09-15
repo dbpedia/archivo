@@ -251,17 +251,7 @@ def get_database_entries(archivo_version: ArchivoVersion) -> Tuple[Ontology, Ver
     dbVersion = Version(
         version=archivo_version.access_date,
         semanticVersion=archivo_version.semantic_version,
-        stars=validation.measure_stars(
-            rapper_errors=archivo_version.parsing_result.parsing_info.errors,
-            license_1_check=archivo_version.metadata_dict["test-results"]["License-I"],
-            consistency_check=archivo_version.metadata_dict["test-results"][
-                "consistent"
-            ],
-            consistenty_check_without_imports=archivo_version.metadata_dict[
-                "test-results"
-            ]["consistent-without-imports"],
-            license_2_check=archivo_version.metadata_dict["test-results"]["License-II"],
-        ),
+        stars=archivo_version.metadata_dict["ontology_info"]["stars"],
         triples=archivo_version.parsing_result.parsing_info.triple_number,
         parsing=True
         if len(archivo_version.parsing_result.parsing_info.errors) == 0

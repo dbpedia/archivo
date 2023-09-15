@@ -114,12 +114,12 @@ class TestSuite:
         except subprocess.TimeoutExpired:
             return "", "Timeout in pellet", 999
 
-    def getPelletInfo(self, ontofile, ignoreImports=False):
+    def get_pellet_info(self, ontology_url: str, ignore_imports: bool = False):
         params = ["-v"]
-        if ignoreImports:
+        if ignore_imports:
             params.append("--ignore-imports")
         stdout, stderr, returncode = self.run_pellet_command(
-            ontofile, "info", parameters=params
+            ontology_url, "info", parameters=params
         )
         return stderr + "\n\n" + stdout
 
@@ -184,26 +184,3 @@ def check_if_consistent(consistent: str, consistent_without_imports: str) -> boo
         return True
     else:
         return False
-
-
-def measure_stars(
-    rapper_errors: List[str],
-    license_1_check: bool,
-    license_2_check: bool,
-    consistency_check: str,
-    consistenty_check_without_imports: str,
-) -> int:
-    stars = 0
-    if rapper_errors == [] or rapper_errors == "":
-        stars = stars + 1
-    if license_1_check:
-        stars = stars + 1
-
-    if not stars == 2:
-        return stars
-
-    if check_if_consistent(consistency_check, consistenty_check_without_imports):
-        stars = stars + 1
-    if license_2_check:
-        stars = stars + 1
-    return stars

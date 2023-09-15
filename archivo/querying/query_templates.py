@@ -9,7 +9,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dataid-cv: <https://dataid.dbpedia.org/databus-cv#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX databus: <https://dataid.dbpedia.org/databus#>
+PREFIX databus: <https://dataid.dbpedia.org/databus#>\n
 """
 
 artifact_info_query = Template(
@@ -148,4 +148,12 @@ void:class ?URI
 }
 }
 """
+)
+
+constrict_info_graph_template = Template(
+    general_purpose_prefixes
+    + """
+CONSTRUCT {?s ?p ?o . ?dist ?p2 ?o2 . }
+{?s dataid:artifact <$ARTIFACT>.
+?s ?p ?o . ?s dcat:distribution ?dist . ?dist ?p2 ?o2 . }"""
 )

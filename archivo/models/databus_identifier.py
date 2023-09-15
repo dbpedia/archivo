@@ -52,7 +52,7 @@ class DatabusFileMetadata:
     ) -> DatabusFileMetadata:
 
         shasum, content_length = string_tools.get_content_stats(
-            bytes(content, encodings.utf_8)
+            bytes(content, "utf-8")
         )
         return DatabusFileMetadata(
             version_identifier=version_identifier,

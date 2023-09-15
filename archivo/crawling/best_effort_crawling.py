@@ -94,11 +94,19 @@ def determine_best_content_type(
             )
         else:
             results.append(crawling_result)
+            # determine log lavel based on the result
+            if crawling_result.parsing_info.triple_number > 0 and len(crawling_result.parsing_info.errors) == 0 and len(crawling_result.parsing_info.warnings) == 0:
+                log_level = LogLevel.INFO
+            elif crawling_result.parsing_info.triple_number > 0 and len(crawling_result.parsing_info.errors) == 0 and len(crawling_result.parsing_info.warnings) > 0:
+                log_level = LogLevel.WARNING
+            else:
+                log_level = LogLevel.ERROR
+
             # break if the ontology is really huge
             if crawling_result.parsing_info.triple_number > 200000:
                 user_output.append(
                     ProcessStepLog(
-                        status=LogLevel.INFO,
+                        status=log_level,
                         stepname=f"Loading and parsing from {uri} with header {header}",
                         message=f"Parsed {crawling_result.parsing_info.triple_number} triples with {len(crawling_result.parsing_info.errors)} Errors and {len(crawling_result.parsing_info.warnings)} Warnings. Since this is a huge ontology other formats wont be tested.",
                     )
@@ -107,7 +115,7 @@ def determine_best_content_type(
             else:
                 user_output.append(
                     ProcessStepLog(
-                        status=LogLevel.INFO,
+                        status=log_level,
                         stepname=f"Loading and parsing from {uri} with header {header}",
                         message=f"Parsed {crawling_result.parsing_info.triple_number} triples with {len(crawling_result.parsing_info.errors)} Errors and {len(crawling_result.parsing_info.warnings)} Warnings.",
                     )

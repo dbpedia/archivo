@@ -1,7 +1,8 @@
 import os
 from abc import ABC, abstractmethod
+from logging import Logger
 from pathlib import Path
-from typing import Iterator, Dict, List, Optional
+from typing import Iterator, Dict, List, Optional, Tuple
 
 import databusclient
 
@@ -12,34 +13,36 @@ from utils.WebDAVUtils import WebDAVHandler
 class DataWriter(ABC):
     """Wrapper Class for handling the writing of Files and keeping track of the written files"""
 
-    written_files: Dict[DatabusFileMetadata, Optional[str]]
+    written_files: List[Tuple[DatabusFileMetadata, Optional[str]]]
     target_url_base: str
+    logger: Logger
 
     @abstractmethod
-    def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
+    def write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         """Writing the data to the resource identifier"""
-        pass
+        raise NotImplementedError
 
     def clear_history(self):
-        self.written_files = {}
+        self.written_files = []
 
     def write_databus_file(
         self, content: str, db_file_metadata: DatabusFileMetadata, log_file: bool = True
     ) -> None:
 
         try:
-            self.__write_data(content, db_file_metadata)
+            self.write_data(content, db_file_metadata)
             if log_file:
-                self.written_files[db_file_metadata] = None
+                self.written_files.append((db_file_metadata, None))
         except Exception as e:
+            self.logger.error(f"Error writing file {db_file_metadata}:", e)
             if log_file:
-                self.written_files[db_file_metadata] = str(e)
+                self.written_files.append((db_file_metadata, str(e)))
 
     def generate_distributions(self) -> List[str]:
 
         distributions = []
 
-        for metadata, error in self.written_files.items():
+        for metadata, error in self.written_files:
 
             dst = databusclient.create_distribution(
                 url=f"{self.target_url_base}/{metadata}",
@@ -55,14 +58,19 @@ class DataWriter(ABC):
 
 class FileWriter(DataWriter):
     def __init__(
-        self, path_base: Path, target_url_base: str, create_parent_dirs: bool = True
+        self,
+        path_base: Path,
+        target_url_base: str,
+        logger: Logger,
+        create_parent_dirs: bool = True,
     ):
         self.path_base = path_base
         self.create_parent_dirs = create_parent_dirs
-        self.written_files = {}
+        self.written_files = []
         self.target_url_base = target_url_base
+        self.logger = logger
 
-    def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
+    def write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         version_dir = os.path.join(
             self.path_base,
             db_file_metadata.version_identifier.group,
@@ -81,12 +89,12 @@ class FileWriter(DataWriter):
 
 class WebDAVWriter(DataWriter):
     def __init__(self, target_url_base: str, api_key: str):
-        self.written_files = {}
+        self.written_files = []
         self.target_url_base = target_url_base
         self.api_key = api_key
         self.webdav_handler = WebDAVHandler(target_url_base, api_key)
 
-    def __write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
+    def write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         new_file_uri = f"{self.target_url_base}/{db_file_metadata}"
 
         self.webdav_handler.upload_file(new_file_uri, content, create_parent_dirs=True)

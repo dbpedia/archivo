@@ -8,6 +8,7 @@ import traceback
 
 from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse, urldefrag, quote
+
 from crawling.best_effort_crawling import determine_best_content_type
 from datetime import datetime
 from logging import Logger
@@ -19,6 +20,7 @@ from rdflib import URIRef, Literal
 from models.content_negotiation import (
     RDF_Type,
     get_accept_header,
+    get_file_extension,
 )
 from models.crawling_response import CrawlingResponse
 from models.databus_identifier import (
@@ -37,24 +39,25 @@ from utils import (
 )
 from querying import graph_handling
 from utils.validation import TestSuite
+from utils.string_tools import stars_from_meta_dict
 
 
 class ArchivoVersion:
     def __init__(
-            self,
-            confirmed_ontology_id: str,
-            crawling_result: CrawlingResponse,
-            parsing_result: parsing.RapperParsingResult,
-            databus_version_identifier: DatabusVersionIdentifier,
-            test_suite: TestSuite,
-            access_date: datetime,
-            logger: Logger,
-            source: str,
-            data_writer: DataWriter,
-            ontology_graph: rdflib.Graph = None,
-            semantic_version: str = "1.0.0",
-            dev_uri: str = "",
-            user_output: List[ProcessStepLog] = None,
+        self,
+        confirmed_ontology_id: str,
+        crawling_result: CrawlingResponse,
+        parsing_result: parsing.RapperParsingResult,
+        databus_version_identifier: DatabusVersionIdentifier,
+        test_suite: TestSuite,
+        access_date: datetime,
+        logger: Logger,
+        source: str,
+        data_writer: DataWriter,
+        ontology_graph: rdflib.Graph = None,
+        semantic_version: str = "1.0.0",
+        dev_uri: str = "",
+        user_output: List[ProcessStepLog] = None,
     ):
         if user_output is None:
             user_output = list()
@@ -99,6 +102,18 @@ class ArchivoVersion:
         }
 
         self.stars_dict = {}
+
+    def __write_original_file(self):
+        db_file_metadata = DatabusFileMetadata.build_from_content(
+            content=self.crawling_result.response.text,
+            version_identifier=self.db_version_identifier,
+            content_variants={"type": "orig"},
+            file_extension=get_file_extension(self.crawling_result.rdf_type),
+        )
+
+        self.data_writer.write_databus_file(
+            self.crawling_result.response.text, db_file_metadata
+        )
 
     def __generate_parsed_rdf(self):
 
@@ -163,10 +178,10 @@ class ArchivoVersion:
 
         # looks in the data writer for the written parsed version of the ontology
         file_metadata = None
-        for metadata, error in self.data_writer.written_files.items():
+        for metadata, error in self.data_writer.written_files:
             if (
-                    metadata.file_extension == "ttl"
-                    and metadata.content_variants["type"] == "parsed"
+                metadata.file_extension == "ttl"
+                and metadata.content_variants["type"] == "parsed"
             ):
                 file_metadata = metadata
                 break
@@ -192,6 +207,41 @@ class ArchivoVersion:
                     version_identifier=self.db_version_identifier,
                     content_variants={
                         "type": "pelletConsistency",
+                        "imports": imports_cv,
+                    },
+                    file_extension="txt",
+                )
+
+                self.data_writer.write_databus_file(output, file_metadata)
+
+    def __run_pellet_info(self):
+
+        file_metadata = None
+        for metadata, error in self.data_writer.written_files:
+            if (
+                metadata.file_extension == "ttl"
+                and metadata.content_variants["type"] == "parsed"
+            ):
+                file_metadata = metadata
+                break
+
+        if file_metadata:
+
+            url = content_access.get_location_url(file_metadata)
+
+            for ignore_imports in [True, False]:
+
+                imports_cv = "NONE" if ignore_imports else "FULL"
+
+                output = self.test_suite.get_pellet_info(
+                    ontology_url=url, ignore_imports=False
+                )
+
+                file_metadata = DatabusFileMetadata.build_from_content(
+                    content=output,
+                    version_identifier=self.db_version_identifier,
+                    content_variants={
+                        "type": "pelletInfo",
                         "imports": imports_cv,
                     },
                     file_extension="txt",
@@ -229,7 +279,7 @@ class ArchivoVersion:
         http_dict["e-tag"] = string_tools.getEtagFromResponse(
             self.crawling_result.response
         )
-        http_dict["accessed"] = self.access_date
+        http_dict["accessed"] = self.access_date.strftime("%Y.%m.%d-%H%M%S")
         http_dict["content-length"] = string_tools.getContentLengthFromResponse(
             self.crawling_result.response
         )
@@ -251,16 +301,30 @@ class ArchivoVersion:
         info_dict["semantic-version"] = self.semantic_version
         info_dict["snapshot-url"] = self.location_uri
         info_dict["triples"] = self.parsing_result.parsing_info.triple_number
-        # info_dict["stars"] =
+        info_dict["stars"] = stars_from_meta_dict(self.metadata_dict)
+
+        content = json.dumps(self.metadata_dict, indent=4)
+
+        db_file_metadata = DatabusFileMetadata.build_from_content(
+            content=content,
+            version_identifier=self.db_version_identifier,
+            content_variants={"type": "meta"},
+            file_extension="json",
+        )
+
+        self.data_writer.write_databus_file(content, db_file_metadata)
 
     def generate_files(self):
 
+        self.__write_original_file()
         self.__generate_parsed_rdf()
         self.__generate_shacl_reports()
         self.__generate_documentation_files()
-        self.__write_vocab_information_file()
         # this needs to be run AFTER the parsed generation since it requires the file to be written
         self.__run_consistency_checks()
+        self.__run_pellet_info()
+        # This needs to be run last since all the other checks need to run first
+        self.__write_vocab_information_file()
 
     def handle_dev_version(self) -> Optional[ArchivoVersion]:
         if self.isDev:
@@ -325,16 +389,16 @@ class ArchivoVersion:
             version_iri = graph_handling.get_owl_version_iri(self.ontology_graph)
             if found_description is not None:
                 description = (
-                        description.safe_substitute(
-                            non_information_uri=self.nir,
-                            snapshot_url=self.location_uri,
-                            owl_version_iri=version_iri,
-                            date=self.db_version_identifier.version,
-                        )
-                        + "\n\n"
-                        + docTemplates.description_intro
-                        + "\n\n"
-                        + found_description
+                    description.safe_substitute(
+                        non_information_uri=self.nir,
+                        snapshot_url=self.location_uri,
+                        owl_version_iri=version_iri,
+                        date=self.db_version_identifier.version,
+                    )
+                    + "\n\n"
+                    + docTemplates.description_intro
+                    + "\n\n"
+                    + found_description
                 )
             else:
                 description = description.safe_substitute(
@@ -401,6 +465,7 @@ class ArchivoVersion:
         self.logger.info("Deploying the data to the databus...")
         databusclient.deploy(databus_dataset_jsonld, archivo_config.DATABUS_API_KEY)
 
+
 def check_robot(uri: str) -> Tuple[Optional[bool], Optional[str]]:
     parsedUrl = urlparse(uri)
     if parsedUrl.scheme == "" or parsedUrl.netloc == "":
@@ -465,7 +530,7 @@ def check_ontology_id_uri(
             ProcessStepLog(
                 status=LogLevel.INFO,
                 stepname="Determine non-information resource (ID of the ontology)",
-                message=f"Found non-information resource: {found_nir}",
+                message=f"Found non-information resource: {found_nir} corresponding with {uri}",
             )
         )
         return True, found_nir
@@ -516,6 +581,8 @@ def searching_for_linked_ontologies(
     logger: Logger,
     process_log: List[ProcessStepLog],
     recursion_depth: int,
+    source: str,
+    test_suite: TestSuite,
 ) -> Optional[ArchivoVersion]:
 
     match found_ontology_id:
@@ -547,7 +614,8 @@ def searching_for_linked_ontologies(
                         logger=logger,
                         process_log=process_log,
                         recursion_depth=recursion_depth + 1,
-                        is_develop_version=False,
+                        source=source,
+                        test_suite=test_suite,
                     )
                 case def_by_uri if string_tools.check_uri_equality(def_by_uri, uri):
                     process_log.append(
@@ -575,7 +643,8 @@ def searching_for_linked_ontologies(
                     logger=logger,
                     process_log=process_log,
                     recursion_depth=recursion_depth + 1,
-                    is_develop_version=False,
+                    source=source,
+                    test_suite=test_suite,
                 )
             else:
                 process_log.append(
@@ -672,16 +741,11 @@ def discover_new_uri(
             logger=logger,
             process_log=process_log,
             recursion_depth=recursion_depth,
+            source=source,
+            test_suite=test_suite,
         )
 
     # Now from here on it is a confirmed ontology
-    process_log.append(
-        ProcessStepLog(
-            status=LogLevel.INFO,
-            stepname="Determine non-information resource (ID of the ontology)",
-            message=f"Successfully identified Ontology from {uri} with ID {ontology_id_uri}",
-        )
-    )
 
     # overwrite generated databus identifiers
     group_id, artifact_id = string_tools.generate_databus_identifier_from_uri(
@@ -740,7 +804,12 @@ def discover_new_uri(
         source=source,
         test_suite=test_suite,
     )
-    print(json.dumps(archivo_version.build_databus_jsonld(group_info=group_info), indent=4))
+    archivo_version.generate_files()
+    print(
+        json.dumps(
+            archivo_version.build_databus_jsonld(group_info=group_info), indent=4
+        )
+    )
     # try:
     #     archivo_version.deploy(generate_files=True, group_info=group_info)
     #     logger.info(f"Successfully deployed the new update of ontology {uri}")
