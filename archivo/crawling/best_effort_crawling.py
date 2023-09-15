@@ -119,5 +119,5 @@ def determine_best_content_type(
     if len(parseable_results) == 0:
         return None
     else:
-        results.sort(key=lambda x: x.triple_number, reverse=True)
-        return results[0]
+        parseable_results.sort(key=lambda x: x.parsing_info.triple_number, reverse=True)
+        return parseable_results[0]

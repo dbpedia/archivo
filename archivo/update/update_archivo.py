@@ -301,8 +301,6 @@ def create_diff_files(
 def update_for_ontology_uri(
     uri: str,
     source: str,
-    last_metafile_url: str,
-    last_nt_file_url: str,
     last_version_timestamp: str,
     data_writer: DataWriter,
     test_suite: TestSuite,

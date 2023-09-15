@@ -45,6 +45,8 @@ from sqlalchemy.orm import aliased
 import io
 import csv
 
+from models.user_interaction import check_is_nir_based_on_log, LogLevel
+
 # small hack for the correct path
 archivoPath = os.path.split(os.path.dirname(os.path.realpath(__file__)))[0]
 
@@ -85,7 +87,7 @@ def addOntology():
         output = []
         testingSuite = TestSuite()
         flash("Suggested URL {} for Archivo".format(form.suggestUrl.data))
-        success, isNir, archivo_version = discovery.discover_new_uri(
+        archivo_version = discovery.discover_new_uri(
             uri=uri,
             vocab_uri_cache=all_ontology_uris,
             source="user-suggestion",
@@ -93,10 +95,10 @@ def addOntology():
             logger=webservice_logger,
             process_log=output,
         )
-        if success:
-            succ, dev_version = archivo_version.handle_dev_version()
+        if archivo_version:
+            dev_version = archivo_version.handle_dev_version()
             dbOnt, dbVersion = database_utils.get_database_entries(archivo_version)
-            if succ:
+            if dev_version:
                 dev_ont, dev_version = database_utils.get_database_entries(dev_version)
                 db.session.add(dev_ont)
                 db.session.add(dev_version)
@@ -104,20 +106,21 @@ def addOntology():
             db.session.add(dbOnt)
             db.session.add(dbVersion)
             db.session.commit()
-        elif not success and isNir:
+        elif check_is_nir_based_on_log(output):
             fallout = Fallout(
                 uri=uri,
                 source="user-suggestion",
                 inArchivo=False,
-                error="\n".join(map(str, output)),
+                error=json.dumps([step.to_dict() for step in output]),
             )
+
             db.session.add(fallout)
             db.session.commit()
         # Adding info about the process
-        if success:
+        if archivo_version:
             report_heading = "The Ontology has been accepted and added to Archivo!"
             main_comment = f"Check out this <a href=/info?o={quote(archivo_version.nir)}>page</a> for the overview over the suggested ontology!"
-        elif not success and output[-1]["status"]:
+        elif not archivo_version and output[-1].status == LogLevel.INFO:
             report_heading = "The Ontology is already part of Archivo!"
             main_comment = output[-1]["message"]
         else:

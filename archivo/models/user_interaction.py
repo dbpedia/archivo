@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict
+from typing import Dict, List
 
 
 class LogLevel(Enum):
@@ -27,3 +27,16 @@ class ProcessStepLog:
             "stepname": self.stepname,
             "message": self.message,
         }
+
+
+def check_is_nir_based_on_log(process_log: List[ProcessStepLog]) -> bool:
+
+    for step_log in process_log:
+        if (
+            step_log.stepname
+            == "Determine non-information resource (ID of the ontology)"
+            and step_log.status == LogLevel.INFO
+        ):
+            return True
+
+    return False

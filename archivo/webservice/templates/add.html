@@ -83,8 +83,8 @@
       <h2 class="accordion-header" id="step{{loop.index}}">
         <button class="accordion-button {% if not loop.last %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapse{{loop.index}}" aria-expanded="{% if not loop.last %}false{% else %}true{% endif %}" aria-controls="collapse{{loop.index}}"
-          style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %}; color: black;">
-          {{step.step }}
+          style="background:{% if step.status == 'INFO' %}rgb(107, 245, 61){% elif step.status == 'WARNING' %}{% else %}rgb(255, 112, 77){% endif %}; color: black;">
+          {{step.stepname }}
         </button>
       </h2>
     </div>

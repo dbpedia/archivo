@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import json
 from typing import List, Optional, Tuple
 
 import requests
@@ -738,29 +740,29 @@ def discover_new_uri(
         source=source,
         test_suite=test_suite,
     )
-
-    try:
-        archivo_version.deploy(generate_files=True, group_info=group_info)
-        logger.info(f"Successfully deployed the new update of ontology {uri}")
-        process_log.append(
-            ProcessStepLog(
-                status=LogLevel.INFO,
-                stepname="Deployment to Databus",
-                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
-            )
-        )
-        return archivo_version
-    except Exception as e:
-        logger.error("There was an Error deploying to the databus")
-        logger.error(str(e))
-        process_log.append(
-            ProcessStepLog(
-                status=LogLevel.ERROR,
-                stepname="Deployment to Databus",
-                message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
-            )
-        )
-        return None
+    print(json.dumps(archivo_version.build_databus_jsonld(group_info=group_info), indent=4))
+    # try:
+    #     archivo_version.deploy(generate_files=True, group_info=group_info)
+    #     logger.info(f"Successfully deployed the new update of ontology {uri}")
+    #     process_log.append(
+    #         ProcessStepLog(
+    #             status=LogLevel.INFO,
+    #             stepname="Deployment to Databus",
+    #             message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+    #         )
+    #     )
+    #     return archivo_version
+    # except Exception as e:
+    #     logger.error("There was an Error deploying to the databus")
+    #     logger.error(str(e))
+    #     process_log.append(
+    #         ProcessStepLog(
+    #             status=LogLevel.ERROR,
+    #             stepname="Deployment to Databus",
+    #             message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
+    #         )
+    #     )
+    #     return None
 
 
 def handle_track_this_uri(

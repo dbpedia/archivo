@@ -8,7 +8,7 @@ from models.databus_identifier import (
     DatabusFileMetadata,
     DatabusVersionIdentifier,
 )
-from models.user_interaction import ProcessStepLog, LogLevel
+from models.user_interaction import ProcessStepLog, LogLevel, check_is_nir_based_on_log
 from utils import graphing
 from update import update_archivo
 import json
@@ -42,17 +42,6 @@ def check_uri_containment(uri: str, archivo_uris: List[str]) -> bool:
     return False
 
 
-def check_ontology_based_on_log(process_log: List[ProcessStepLog]) -> bool:
-
-    for step_log in process_log:
-        if (
-            step_log.stepname
-            == "Determine non-information resource (ID of the ontology)"
-            and step_log.status == LogLevel.INFO
-        ):
-            return True
-
-    return False
 
 
 # This is the discovery process
@@ -79,21 +68,16 @@ def run_discovery(
 ):
     if lst is None:
         return
-    allOnts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+    all_onts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
     for uri in lst:
-        if check_uri_containment(uri, allOnts):
+        if check_uri_containment(uri, all_onts):
             continue
         output = []
 
-        data_writer = models.data_writer.FileWriter(
-            path_base=archivo_config.localPath,
-            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
-        )
         try:
             archivo_version = discovery.discover_new_uri(
                 uri=uri,
-                vocab_uri_cache=allOnts,
-                data_writer=data_writer,
+                vocab_uri_cache=all_onts,
                 test_suite=test_suite,
                 source=source,
                 logger=logger,
@@ -116,10 +100,10 @@ def run_discovery(
             db.session.add(dbVersion)
             try:
                 db.session.commit()
-                allOnts.append(archivo_version.nir)
+                all_onts.append(archivo_version.nir)
             except Exception:
                 db.session.rollback()
-        elif check_ontology_based_on_log(output):
+        elif check_is_nir_based_on_log(output):
             fallout = dbModels.Fallout(
                 uri=uri,
                 source=source,
@@ -134,15 +118,14 @@ def run_discovery(
 
 
 def ontology_official_update():
-    dataPath = archivo_config.localPath
-    allOntologiesInfo = query_databus.nir_to_latest_version_files()
-    if allOntologiesInfo is None:
+    all_ontologies_info = query_databus.nir_to_latest_version_files()
+    if all_ontologies_info is None:
         diff_logger.warning(
             "There seems to be an error with the databus, no official diff possible"
         )
         return
     diff_logger.info("Started diff at " + datetime.now().strftime("%Y.%m.%d; %H:%M:%S"))
-    testSuite = TestSuite()
+    test_suite = TestSuite()
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
 
         # skip problematic ontologies
@@ -161,17 +144,15 @@ def ontology_official_update():
         group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
         databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
         try:
-            urlInfo = allOntologiesInfo[databusURL]
+            urlInfo = all_ontologies_info[databusURL]
         except KeyError:
             diff_logger.error(f"Could't find databus artifact for {ont.uri}")
             continue
         try:
             success, message, archivo_version = update_archivo.update_for_ontology_uri(
                 uri=ont.uri,
-                last_metafile_url=urlInfo["meta"],
-                last_nt_file_url=urlInfo["ntFile"],
                 last_version_timestamp=urlInfo["version"],
-                test_suite=testSuite,
+                test_suite=test_suite,
                 source=ont.source,
                 data_writer=data_writer,
                 logger=diff_logger,
@@ -274,8 +255,6 @@ def ontology_dev_update():
         try:
             success, message, archivo_version = update_archivo.update_for_ontology_uri(
                 uri=ont.official,
-                last_metafile_url=urlInfo["meta"],
-                last_nt_file_url=urlInfo["ntFile"],
                 last_version_timestamp=urlInfo["version"],
                 test_suite=testSuite,
                 source=ont.source,
