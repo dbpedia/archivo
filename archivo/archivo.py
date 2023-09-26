@@ -8,7 +8,7 @@ from models.databus_identifier import (
     DatabusFileMetadata,
     DatabusVersionIdentifier,
 )
-from models.user_interaction import ProcessStepLog, LogLevel, check_is_nir_based_on_log
+from models.user_interaction import ProcessStepLog, check_is_nir_based_on_log
 from utils import graphing
 from update import update_archivo
 import json
@@ -42,25 +42,21 @@ def check_uri_containment(uri: str, archivo_uris: List[str]) -> bool:
     return False
 
 
-
-
 # This is the discovery process
 def ontology_discovery():
     # init parameters
-    dataPath = archivo_config.localPath
-    testSuite = TestSuite()
+    test_suite: TestSuite = TestSuite()
 
-    discovery_logger.info("Started discovery of LOV URIs...")
-    run_discovery(sources.getLovUrls(), "LOV", dataPath, testSuite)
-    discovery_logger.info("Started discovery of prefix.cc URIs...")
-    run_discovery(sources.getPrefixURLs(), "prefix.cc", dataPath, testSuite)
-    discovery_logger.info("Started discovery of VOID URIs...")
-    run_discovery(
-        query_databus.get_distinct_void_uris(), "VOID mod", dataPath, testSuite
-    )
+    for source, access_function in sources.SOURCES_GETFUN_MAPPING.items():
+        discovery_logger.info(f"Started discovery of {source} URIs...")
+        run_discovery(
+            lst=access_function(),
+            source=source,
+            test_suite=test_suite,
+        )
     discovery_logger.info("Started discovery of Databus SPOs...")
     for uri_list in query_databus.get_SPOs(logger=discovery_logger):
-        run_discovery(uri_list, "SPOs", dataPath, testSuite)
+        run_discovery(lst=uri_list, source="SPOs", test_suite=test_suite)
 
 
 def run_discovery(
@@ -69,11 +65,12 @@ def run_discovery(
     if lst is None:
         return
     all_onts = [ont.uri for ont in db.session.query(dbModels.Ontology.uri).all()]
+    logger.info(f"Starting the discovery of URIs from {source}")
     for uri in lst:
         if check_uri_containment(uri, all_onts):
             continue
-        output : List[ProcessStepLog] = []
-
+        output: List[ProcessStepLog] = []
+        logger.info(f"Crawling the URI {uri}")
         try:
             archivo_version = discovery.discover_new_uri(
                 uri=uri,
@@ -89,6 +86,7 @@ def run_discovery(
             )
             continue
         if archivo_version:
+            logger.info(f"Successfully crawled the URI {uri}: {output[-1].message}")
             dev_version = archivo_version.handle_dev_version()
             dbOnt, dbVersion = database_utils.get_database_entries(archivo_version)
             if dev_version:
@@ -104,6 +102,7 @@ def run_discovery(
             except Exception:
                 db.session.rollback()
         elif check_is_nir_based_on_log(output):
+            logger.info(f"No feasible result for URI {uri}: {output[-1].message}")
             fallout = dbModels.Fallout(
                 uri=uri,
                 source=source,
@@ -138,6 +137,7 @@ def ontology_official_update():
         data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
             target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+            logger=diff_logger,
         )
 
         diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
@@ -186,10 +186,10 @@ def ontology_official_update():
                 db.session.add(dbFallout)
 
             # check for new trackThis URI
-            succ, dev_version = archivo_version.handle_dev_version()
+            dev_version = archivo_version.handle_dev_version()
             _, dbVersion = database_utils.get_database_entries(archivo_version)
             db.session.add(dbVersion)
-            if succ:
+            if dev_version:
                 dev_ont, dev_version = database_utils.get_database_entries(dev_version)
                 # update with new trackThis URI
                 if ont.devel is not None and ont.devel != dev_ont.uri:
@@ -250,6 +250,7 @@ def ontology_dev_update():
         data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
             target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+            logger=dev_diff_logger,
         )
 
         try:
@@ -300,7 +301,7 @@ def update_star_graph():
     )
 
 
-def updateOntologyIndex():
+def update_ontology_index():
     old_officials = query_databus.get_last_official_index()
     old_official_uris = [uri for uri, src, date in old_officials]
     new_officials = db.session.query(dbModels.OfficialOntology).all()
@@ -334,6 +335,7 @@ def deploy_index():
     data_writer = models.data_writer.FileWriter(
         path_base=archivo_config.localPath,
         target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+        logger=diff_logger,
     )
 
     indices = {
@@ -413,7 +415,7 @@ elif __name__ == "archivo":
     cron = BackgroundScheduler(daemon=True)
     # add the archivo cronjobs:
     cron.add_job(
-        updateOntologyIndex,
+        update_ontology_index,
         "cron",
         id="index-backup-deploy",
         hour="22",

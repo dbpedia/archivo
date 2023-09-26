@@ -255,7 +255,7 @@ def get_SPOs(date: datetime = None, logger: Logger = None) -> Iterator[str]:
         except Exception:
             continue
         csv_IO = StringIO(csv_doc)
-        distinct_spo_uris = []
+        distinct_spo_uris: List[str] = []
         for tp in csv.reader(csv_IO, delimiter=";"):
             try:
                 uri = tp[0]

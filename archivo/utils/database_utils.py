@@ -130,6 +130,7 @@ def update_database():
     for i, tp in enumerate(missing_ontologies):
 
         uri, source, date = tp
+        print(f"Handling ontology: {uri}")
         try:
             # if uri in urisInDatabase:
             # print(f"Already listed: {uri}")
@@ -141,7 +142,6 @@ def update_database():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             # print("Handling URI " + uri)
-            group, artifact = string_tools.generate_databus_identifier_from_uri(uri)
             ontology, versions = db_objects_from_databus(uri, source, timestamp)
             db.session.add(ontology)
             for v in versions:
@@ -251,7 +251,7 @@ def get_database_entries(archivo_version: ArchivoVersion) -> Tuple[Ontology, Ver
     dbVersion = Version(
         version=archivo_version.access_date,
         semanticVersion=archivo_version.semantic_version,
-        stars=archivo_version.metadata_dict["ontology_info"]["stars"],
+        stars=archivo_version.metadata_dict["ontology-info"]["stars"],
         triples=archivo_version.parsing_result.parsing_info.triple_number,
         parsing=True
         if len(archivo_version.parsing_result.parsing_info.errors) == 0

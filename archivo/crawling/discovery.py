@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional, Tuple
+from typing import Tuple
 
 import requests
 import traceback
@@ -540,7 +540,6 @@ def perform_robot_check(
     vocab_uri: str, user_output: List[ProcessStepLog], logger: Logger
 ) -> bool:
     allowed, message = check_robot(vocab_uri)
-    logger.info(f"Robot allowed: {allowed}")
     if not allowed:
         logger.warning(f"{archivo_config.archivo_agent} not allowed")
         user_output.append(
@@ -696,7 +695,7 @@ def discover_new_uri(
         )
         return None
 
-    if not perform_robot_check(uri, process_log, logger):
+    if not perform_robot_check(vocab_uri=uri, user_output=process_log, logger=logger):
         return None
 
     crawling_result = determine_best_content_type(uri, user_output=process_log)
@@ -792,6 +791,7 @@ def discover_new_uri(
     data_writer = FileWriter(
         path_base=archivo_config.LOCAL_PATH,
         target_url_base=archivo_config.PUBLIC_URL_BASE,
+        logger=logger,
     )
     archivo_version = ArchivoVersion(
         confirmed_ontology_id=ontology_id_uri,
@@ -810,6 +810,7 @@ def discover_new_uri(
             archivo_version.build_databus_jsonld(group_info=group_info), indent=4
         )
     )
+    return archivo_version
     # try:
     #     archivo_version.deploy(generate_files=True, group_info=group_info)
     #     logger.info(f"Successfully deployed the new update of ontology {uri}")
@@ -911,27 +912,29 @@ def handle_track_this_uri(
         dev_uri=dev_version_location,
     )
 
-    try:
-        archivo_version.deploy(generate_files=True)
-        logger.info(
-            f"Successfully deployed the new update of DEV ontology for {original_nir}"
-        )
-        process_log.append(
-            ProcessStepLog(
-                status=LogLevel.INFO,
-                stepname="Deployment to Databus",
-                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
-            )
-        )
-        return archivo_version
-    except Exception as e:
-        logger.error("There was an Error deploying to the databus")
-        logger.error(str(e))
-        process_log.append(
-            ProcessStepLog(
-                status=LogLevel.ERROR,
-                stepname="Deployment to Databus",
-                message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
-            )
-        )
-        return None
+    archivo_version.generate_files()
+
+    # try:
+    #     archivo_version.deploy(generate_files=True)
+    #     logger.info(
+    #         f"Successfully deployed the new update of DEV ontology for {original_nir}"
+    #     )
+    #     process_log.append(
+    #         ProcessStepLog(
+    #             status=LogLevel.INFO,
+    #             stepname="Deployment to Databus",
+    #             message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+    #         )
+    #     )
+    #     return archivo_version
+    # except Exception as e:
+    #     logger.error("There was an Error deploying to the databus")
+    #     logger.error(str(e))
+    #     process_log.append(
+    #         ProcessStepLog(
+    #             status=LogLevel.ERROR,
+    #             stepname="Deployment to Databus",
+    #             message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
+    #         )
+    #     )
+    #     return None

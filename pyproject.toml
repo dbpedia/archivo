@@ -32,6 +32,8 @@ flake8 = "^5.0.4"
 autopep8 = "^1.7.0"
 black = "^22.8.0"
 mypy = "^1.5.1"
+types-flask-sqlalchemy = "^2.5.9.4"
+types-flask-cors = "^4.0.0.1"
 
 [build-system]
 requires = ["poetry-core"]

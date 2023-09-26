@@ -95,9 +95,17 @@ def determine_best_content_type(
         else:
             results.append(crawling_result)
             # determine log lavel based on the result
-            if crawling_result.parsing_info.triple_number > 0 and len(crawling_result.parsing_info.errors) == 0 and len(crawling_result.parsing_info.warnings) == 0:
+            if (
+                crawling_result.parsing_info.triple_number > 0
+                and len(crawling_result.parsing_info.errors) == 0
+                and len(crawling_result.parsing_info.warnings) == 0
+            ):
                 log_level = LogLevel.INFO
-            elif crawling_result.parsing_info.triple_number > 0 and len(crawling_result.parsing_info.errors) == 0 and len(crawling_result.parsing_info.warnings) > 0:
+            elif (
+                crawling_result.parsing_info.triple_number > 0
+                and len(crawling_result.parsing_info.errors) == 0
+                and len(crawling_result.parsing_info.warnings) > 0
+            ):
                 log_level = LogLevel.WARNING
             else:
                 log_level = LogLevel.ERROR
@@ -125,7 +133,21 @@ def determine_best_content_type(
     parseable_results = [r for r in results if r.parsing_info.triple_number > 0]
 
     if len(parseable_results) == 0:
+        user_output.append(
+            ProcessStepLog(
+                status=LogLevel.ERROR,
+                stepname=f"Accessing RDF content",
+                message="No RDF content accessible or parseable",
+            )
+        )
         return None
     else:
         parseable_results.sort(key=lambda x: x.parsing_info.triple_number, reverse=True)
+        user_output.append(
+            ProcessStepLog(
+                status=LogLevel.INFO,
+                stepname=f"Accessing RDF content",
+                message=f"RDF content is accessible in {len(parseable_results)} formats",
+            )
+        )
         return parseable_results[0]

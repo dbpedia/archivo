@@ -59,7 +59,7 @@ class TestSuite:
             shacl_graph=testgraph,
             ont_graph=None,
             inference="none",
-            abort_on_error=False,
+            abort_on_first=False,
             meta_shacl=False,
             debug=False,
             advanced=True,
@@ -143,25 +143,6 @@ class TestSuite:
             return "Error - pellet timed out", stderr + "\n\n" + stdout
         else:
             return "Error - Exit " + str(returncode), stderr + "\n\n" + stdout
-
-    def getAxiomsOfOntology(self, ontologyPath):
-        process = subprocess.Popen(
-            ["java", "-jar", self.displayAxiomsPath, ontologyPath],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        stdout, stderr = process.communicate()
-
-        axiomSet = stdout.decode("utf-8").split("\n")
-        if process.returncode == 0:
-            success = True
-            return success, set(
-                [axiom.strip() for axiom in axiomSet if axiom.strip() != ""]
-            )
-        else:
-            success = False
-            return success, stderr.decode("utf-8").split("\n")
 
     def get_axioms_of_rdf_ontology(self, ontology_content: str) -> Set[str]:
         process = subprocess.run(

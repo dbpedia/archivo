@@ -13,6 +13,8 @@ from datetime import datetime
 import os
 import json
 import re
+
+from models.user_interaction import ProcessStepLog
 from utils import (
     string_tools,
     archivo_config,
@@ -68,8 +70,8 @@ def diff_content(old_triples: List[str], new_triples: List[str]) -> DiffResult:
     new_triples = new_set_filtered - old_set_filtered
     old_triples = old_set_filtered - new_set_filtered
 
-    is_diff = not set(filter(no_ignored_props_in_line, old_triples)) and not set(
-        filter(no_ignored_props_in_line, new_triples)
+    is_diff = bool(set(filter(no_ignored_props_in_line, old_triples))) or bool(
+        set(filter(no_ignored_props_in_line, new_triples))
     )
 
     return DiffResult(
@@ -206,18 +208,14 @@ def diff_check_new_file(
         # if there are no possible further values, we are done
         return None, None, None
 
-    output = []
+    output: List[ProcessStepLog] = []
 
     crawling_response = discovery.determine_best_content_type(
         locURI, user_output=output
     )
 
     if crawling_response is None:
-        error_str = "\n".join(
-            [d.get("step", "None") + "  " + d.get("message", "None") for d in output]
-        )
-        logger.warning(f"{locURI} Couldn't parse new version")
-        logger.warning(error_str)
+        error_str = f"Error in step {output[-1].stepname}: {output[-1].message}"
         raise UnavailableContentException(error_str)
 
     parsing_result = parsing.parse_rdf_from_string(
@@ -321,11 +319,20 @@ def update_for_ontology_uri(
             old_version_id=old_version_id,
         )
     except Exception as e:
+        logger.warning(str(e))
         return False, str(e), None
 
-    if not diff_result.is_diff:
+    if not diff_result or not diff_result.is_diff:
+        if diff_result:
+            logger.info(f"No difference in the triples, no new version")
+        else:
+            logger.info(f"No difference in the header files, no crawling happening")
         return False, f"No different version for {uri}", None
     # New version!
+
+    logger.info(
+        f"New, different version for ontology {uri}: {len(diff_result.old_triples)} old triples, {len(diff_result.new_triples)} new triples"
+    )
 
     new_version_identifier = DatabusVersionIdentifier(
         archivo_config.DATABUS_USER,
@@ -365,18 +372,20 @@ def update_for_ontology_uri(
 
     logger.info("Deploying the data to the databus...")
 
-    try:
-        new_version.deploy(True)
-        logger.info(f"Successfully deployed the new update of ontology {uri}")
-        return (
-            True,
-            f"Successfully deployed the new update of ontology {uri}",
-            new_version,
-        )
-    except Exception as e:
-        logger.error("There was an Error deploying to the databus")
-        logger.error(str(e))
-        return False, "ERROR: Couldn't deploy to databus!", new_version
+    new_version.generate_files()
+    return True, "Updated ontology", new_version
+    # try:
+    #     new_version.deploy(True)
+    #     logger.info(f"Successfully deployed the new update of ontology {uri}")
+    #     return (
+    #         True,
+    #         f"Successfully deployed the new update of ontology {uri}",
+    #         new_version,
+    #     )
+    # except Exception as e:
+    #     logger.error("There was an Error deploying to the databus")
+    #     logger.error(str(e))
+    #     return False, "ERROR: Couldn't deploy to databus!", new_version
 
 
 def prepare_diff_for_ontology(
