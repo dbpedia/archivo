@@ -1,15 +1,19 @@
-import requests
-# since pylode is not compatible with rdflib 6.0.2 it will be removed
-# import pylode
+from logging import Logger
+from typing import Optional, Tuple
 
-# url for the lodo docu service
+import rdflib
+import requests
+# since pylode is not compatible with rdflib 6.2.0 it will be removed
+import pylode
+
+# url for the lode docu service
 lodeServiceUrl = "https://w3id.org/lode/owlapi/"
 
 # url for the oops rest service
 oopsServiceUrl = " http://oops.linkeddata.es/rest"
 
 
-def getLodeDocuFile(vocab_uri, logger):
+def getLodeDocuFile(vocab_uri: str, logger: Logger) -> Tuple[Optional[str], Optional[str]]:
     try:
         response = requests.get(lodeServiceUrl + vocab_uri)
         if response.status_code < 400:
@@ -51,13 +55,9 @@ def getOOPSReport(parsedRdfString, logger):
         return None, str(e)
 
 
-def get_pyLODE_doc_string(input_file_path, logger):
-    try:
-        html = pylode.MakeDocco(
-            input_data_file=input_file_path, outputformat="html", profile="ontdoc"
-        ).document()
-    except Exception:
-        logger.exception("Problem during creation of pylode documentation")
-        return None
+def get_pylode_doc_string(ont_graph: rdflib.Graph) -> str:
+    """Generates Pylode HTML documentation"""
 
-    return html
+    ont_doc = pylode.OntDoc(ont_graph)
+    html_docu = ont_doc.make_html()
+    return html_docu

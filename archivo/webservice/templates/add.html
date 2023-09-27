@@ -74,7 +74,7 @@
   <h3>{{report_heading}}</h3>
   <p>{{ main_comment | safe}}</p>
   <p>
-    Note that orange/red panels are not necessarily critical but we suggest fixing them in the future.
+    Note that orange/red panels are not necessarily critical, but we suggest fixing them in the future.
   </p>
   <h4>Processing log:</h4>
   <div class="accordion" id="suggestion-report">
@@ -83,15 +83,15 @@
       <h2 class="accordion-header" id="step{{loop.index}}">
         <button class="accordion-button {% if not loop.last %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapse{{loop.index}}" aria-expanded="{% if not loop.last %}false{% else %}true{% endif %}" aria-controls="collapse{{loop.index}}"
-          style="background:{% if step.status %}rgb(107, 245, 61){% else %}rgb(255, 112, 77){% endif %}; color: black;">
-          {{step.step }}
+          style="background:{% if step.status.name == 'INFO' %}rgb(107, 245, 61){% elif step.status.name == 'WARNING' %}rgb(239, 239, 23){% else %}rgb(255, 112, 77){% endif %}; color: black;">
+          {{step.stepname }}
         </button>
       </h2>
     </div>
     {% if not loop.last %}
     <div id="collapse{{loop.index}}" class="accordion-collapse collapse" aria-labelledby="step{{loop.index}}"
       data-bs-parent="#suggestion-report">
-      {% else %}
+    {% else %}
       <div id="collapse{{loop.index}}" class="accordion-collapse collapse show" aria-labelledby="step{{loop.index}}"
         data-bs-parent="#suggestion-report">
         {% endif %}

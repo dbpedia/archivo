@@ -1,3 +1,5 @@
+from __future__ import annotations
+from models.databus_responses import VersionInformation
 from webservice import db
 from datetime import datetime
 
@@ -36,6 +38,26 @@ class Version(db.Model):
 
     def __repr__(self):
         return "<Version {}>".format(self.version)
+
+    @staticmethod
+    def build_from_version_info(
+        ontology_uri: str, version_info: VersionInformation
+    ) -> Version:
+
+        return Version(
+            version=datetime.strptime(version_info.version.label, "%Y.%m.%d-%H%M%S"),
+            semanticVersion=version_info.semantic_version,
+            stars=version_info.stars,
+            triples=version_info.triples,
+            parsing=version_info.parsing.conforms,
+            licenseI=version_info.min_license.conforms,
+            licenseII=version_info.good_license.conforms,
+            consistency=True
+            if version_info.consistency.severity == "CONSISTENT"
+            else False,
+            lodeSeverity=version_info.lode_conformity.severity,
+            ontology=ontology_uri,
+        )
 
 
 class OfficialOntology(Ontology):
