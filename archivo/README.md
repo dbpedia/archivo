@@ -2,37 +2,59 @@
 
 ## Setup
 
-There are two modes available for archivo: **Develop** for working on the server and **Deploy** for deploying the service with docker+gunicorn
+There are two modes available for archivo: **Develop** for working on the server and **Deploy** for deploying the service with docker+gunicorn.
+
 
 ### Develop
-```
-# It is assumend that pip3 and python3.8 are installed on the machine
+
+Archivo uses [poetry](https://python-poetry.org/docs/), so please install it beforehand.
+
+```bash
 # Clone the repository:
 git clone https://github.com/dbpedia/archivo.git
-# Install pipenv for user:
-pip3 install pipenv --user
-# Install from Pipfile
-# Sometimes it can be possible that /home/<user>/.local/bin needs to be added to PATH:
-# Add the follwing line to .bashrc or .zshrc or similar while replacing your user name
-# export PATH=/home/<user>/.local/bin:$PATH
-pipenv install
-# Set enviroment shell
-pipenv shell
-# Change directory:
+# Go into the repo
+cd archivo
+# Install the dependencies with poetry
+poetry install
+# Change directory to the actual source code
 cd archivo
 # Run the dev server:
-# Note: comment the cronjob decorators in archivo.py to NOT run the cronjobs for development
-python archivo.py
+# Note: this only starts the webservice, cronjobs (update, discovery, etc.) are only run if it is started in deployment mode with gunicorn
+# If those services are tested just import the archivo python file in the interactive shell and execute the required functions
+poetry run python archivo.py
 ```
 ### Deploy
 It is assumed that docker is correctly installed, if not try [this](https://docs.docker.com/engine/install/).
 
 Steps for running the service with docker:
-- Clone the repository: `git clone https://github.com/dbpedia/archivo.git`
-- Edit the `../run.sh` script:
-    - create a docker volume named archivo-data: `docker volume create archivo-data`
-    - change the destined path of packaged Databus files to your desire in the line `-v /data/home/dstreitmatter/www/archivo:/home/dstreitmatter/www/archivo/ \` (left part of ":") **NOTE:** if you do this you need to also change the variables `downloadUrl` and `packDir` in `utils/archivo_config`
-- Start in the directory with the file `Dockerfile` and run:
-    - `docker build -t archivo-system .` for building the docker image
-    - `chmod +x run.sh`
-    - `./run.sh`
+#### 1. Setup
+
+Just clone the repository as it is
+```bash
+git clone https://github.com/dbpedia/archivo.git
+cd archivo
+```
+
+#### 2. Configuration
+
+You need to configure multiple points:
+
+1. Configure your local nginx (or any other similar software) to make a local directory (and all its possible subdirectories) `LOCAL_DIR` (e.g. `/home/myuser/www/archivo-data`) available to the public under a certain URL `PUBLIC_URL` (e.g. `https://mydomain.org/myuser/archivo-data`) 
+2. Now configure the two necessary files:
+   1. The [archivo config](utils/archivo_config.py), here you need to set at least the `PUBLIC_URL_BASE` constant to your `PUBLIC_URL`
+   2. The [docker run script](../run.sh), here you need to mount your local directory `LOCAL_DIR` to `/usr/local/archivo-data` (see the example given)
+   3. You can also change the preset configs in the `archivo_config.py`, but it is not necessary for the first start
+
+#### 3. Running the Docker Container
+
+First, you need to build the container with the following command:
+```commandline
+docker build -t archivo-build .
+```
+Since this downloads and builds the pellet reasoner, the first time this is executed will take quite a while. But since it is cached it won't do it again (on the same machine).
+
+Then just run the configured script:
+```commandline
+chmod -x run.sh
+./run.sh
+```

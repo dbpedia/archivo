@@ -24,7 +24,7 @@ header_rdflib_mapping = {
 }
 
 
-def get_graph_by_uri(uri: str, rdf_format: str = None) -> Graph:
+def get_graph_by_uri(uri: str, rdf_format: str | None = None) -> Graph:
     """Loads the RDF content behind URI into an RDFlib Graph instance"""
 
     if rdf_format is None:

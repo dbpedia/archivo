@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Tuple
 
 import requests
@@ -14,7 +15,7 @@ from datetime import datetime
 from logging import Logger
 from string import Template
 from typing import Dict, List, Optional
-import databusclient
+import databusclient  # type: ignore
 import rdflib
 from rdflib import URIRef, Literal
 from models.content_negotiation import (
@@ -54,10 +55,10 @@ class ArchivoVersion:
         logger: Logger,
         source: str,
         data_writer: DataWriter,
-        ontology_graph: rdflib.Graph = None,
+        ontology_graph: rdflib.Graph | None = None,
         semantic_version: str = "1.0.0",
         dev_uri: str = "",
-        user_output: List[ProcessStepLog] = None,
+        user_output: List[ProcessStepLog] | None = None,
     ):
         if user_output is None:
             user_output = list()
@@ -71,12 +72,13 @@ class ArchivoVersion:
         self.db_version_identifier = databus_version_identifier
         self.crawling_result = crawling_result
 
-        if ontology_graph is None:
-            self.ontology_graph: rdflib.Graph = graph_handling.get_graph_of_string(
+        self.ontology_graph = (
+            graph_handling.get_graph_of_string(
                 parsing_result.parsed_rdf, parsing_result.rdf_type
             )
-        else:
-            self.ontology_graph: rdflib.Graph = ontology_graph
+            if ontology_graph is None
+            else ontology_graph
+        )
 
         self.isDev = False if dev_uri == "" else True
         self.location_uri = crawling_result.response.url if dev_uri == "" else dev_uri
@@ -94,14 +96,12 @@ class ArchivoVersion:
 
         # initialize a empty dict for the metadata file
 
-        self.metadata_dict = {
+        self.metadata_dict: Dict[str, Dict] = {
             "test-results": {},
             "http-data": {},
             "ontology-info": {},
             "logs": {},
         }
-
-        self.stars_dict = {}
 
     def __write_original_file(self):
         db_file_metadata = DatabusFileMetadata.build_from_content(
@@ -378,7 +378,7 @@ class ArchivoVersion:
         return comment
 
     def __get_description(self) -> str:
-        description = (
+        description: Template = (
             Template(docTemplates.description)
             if not self.isDev
             else Template(docTemplates.description_dev)
@@ -388,7 +388,7 @@ class ArchivoVersion:
             found_description = graph_handling.get_description(self.ontology_graph)
             version_iri = graph_handling.get_owl_version_iri(self.ontology_graph)
             if found_description is not None:
-                description = (
+                return (
                     description.safe_substitute(
                         non_information_uri=self.nir,
                         snapshot_url=self.location_uri,
@@ -401,27 +401,30 @@ class ArchivoVersion:
                     + found_description
                 )
             else:
-                description = description.safe_substitute(
+                return description.safe_substitute(
                     non_information_uri=self.nir,
                     snapshot_url=self.location_uri,
                     owl_version_iri=version_iri,
                     date=str(self.access_date),
                 )
-
-        return description
+        else:
+            return str(description)
 
     def __get_license(self) -> str:
 
         found_license = graph_handling.get_license(self.ontology_graph)
-        if isinstance(found_license, URIRef):
-            found_license = str(found_license).strip("<>")
-        elif isinstance(found_license, Literal):
-            # if license is literal: error uri
-            found_license = docTemplates.license_literal_uri
 
-        return found_license
+        match found_license:
+            case None:
+                return docTemplates.default_license
+            case URIRef(_):
+                return str(found_license).strip("<>")
+            case Literal(_):
+                return docTemplates.license_literal_uri
+            case _:
+                return docTemplates.default_license
 
-    def build_databus_jsonld(self, group_info: Dict[str, str] = None) -> Dict:
+    def build_databus_jsonld(self, group_info: Dict[str, str] | None = None) -> Dict:
 
         if group_info is None:
             group_info = {}
@@ -455,7 +458,9 @@ class ArchivoVersion:
 
         return dataset
 
-    def deploy(self, generate_files: bool, group_info: Optional[Dict[str, str]] = None):
+    def deploy(
+        self, generate_files: bool, group_info: Optional[Dict[str, str]] | None = None
+    ):
 
         if generate_files:
             self.generate_files()
@@ -490,7 +495,7 @@ def check_robot(uri: str) -> Tuple[Optional[bool], Optional[str]]:
 
 # returns the NIR if fragment-equivalent, else None
 def check_ontology_id_uri(
-    uri: str, graph: rdflib.Graph, output: List[ProcessStepLog] = None
+    uri: str, graph: rdflib.Graph, output: List[ProcessStepLog] | None = None
 ) -> Tuple[bool, Optional[str]]:
     """Checks for the existence of an ontology ID and checks if it is equal to the input URI.
     Returns A Tuple of"""
@@ -561,7 +566,7 @@ def perform_robot_check(
         return True
 
 
-def parse_uri(uri: str) -> Tuple[str, str, str]:
+def parse_uri(uri: str) -> Tuple[str, Optional[str], Optional[str]]:
     """Takes an URI and returns the defragmented URI, a"""
 
     defrag_uri = urldefrag(uri)[0]
@@ -655,6 +660,8 @@ def searching_for_linked_ontologies(
                 )
                 return None
 
+    return None
+
 
 def discover_new_uri(
     uri: str,
@@ -662,7 +669,7 @@ def discover_new_uri(
     test_suite: TestSuite,
     source: str,
     logger: Logger,
-    process_log: List[ProcessStepLog] = None,
+    process_log: List[ProcessStepLog] | None = None,
     recursion_depth: int = 1,
 ) -> Optional[ArchivoVersion]:
 
@@ -743,6 +750,7 @@ def discover_new_uri(
             source=source,
             test_suite=test_suite,
         )
+    assert ontology_id_uri is not None
 
     # Now from here on it is a confirmed ontology
 
@@ -789,7 +797,7 @@ def discover_new_uri(
 
     # generate new version
     data_writer = FileWriter(
-        path_base=archivo_config.LOCAL_PATH,
+        path_base=Path(archivo_config.LOCAL_PATH),
         target_url_base=archivo_config.PUBLIC_URL_BASE,
         logger=logger,
     )
@@ -804,35 +812,29 @@ def discover_new_uri(
         source=source,
         test_suite=test_suite,
     )
-    archivo_version.generate_files()
-    print(
-        json.dumps(
-            archivo_version.build_databus_jsonld(group_info=group_info), indent=4
+
+    try:
+        archivo_version.deploy(generate_files=True, group_info=group_info)
+        logger.info(f"Successfully deployed the new update of ontology {uri}")
+        process_log.append(
+            ProcessStepLog(
+                status=LogLevel.INFO,
+                stepname="Deployment to Databus",
+                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+            )
         )
-    )
-    return archivo_version
-    # try:
-    #     archivo_version.deploy(generate_files=True, group_info=group_info)
-    #     logger.info(f"Successfully deployed the new update of ontology {uri}")
-    #     process_log.append(
-    #         ProcessStepLog(
-    #             status=LogLevel.INFO,
-    #             stepname="Deployment to Databus",
-    #             message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
-    #         )
-    #     )
-    #     return archivo_version
-    # except Exception as e:
-    #     logger.error("There was an Error deploying to the databus")
-    #     logger.error(str(e))
-    #     process_log.append(
-    #         ProcessStepLog(
-    #             status=LogLevel.ERROR,
-    #             stepname="Deployment to Databus",
-    #             message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
-    #         )
-    #     )
-    #     return None
+        return archivo_version
+    except Exception as e:
+        logger.error("There was an Error deploying to the databus")
+        logger.error(str(e))
+        process_log.append(
+            ProcessStepLog(
+                status=LogLevel.ERROR,
+                stepname="Deployment to Databus",
+                message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
+            )
+        )
+        return None
 
 
 def handle_track_this_uri(
@@ -841,7 +843,7 @@ def handle_track_this_uri(
     data_writer: DataWriter,
     test_suite: TestSuite,
     logger: Logger,
-    process_log: List[ProcessStepLog] = None,
+    process_log: List[ProcessStepLog],
 ) -> Optional[ArchivoVersion]:
 
     # check robot if we are allowed to crawl
@@ -891,6 +893,8 @@ def handle_track_this_uri(
     group_id, artifact_id = string_tools.generate_databus_identifier_from_uri(
         original_nir, dev=True
     )
+    assert group_id is not None
+    assert artifact_id is not None
 
     databus_version_id = DatabusVersionIdentifier(
         user=archivo_config.DATABUS_USER,
@@ -912,29 +916,27 @@ def handle_track_this_uri(
         dev_uri=dev_version_location,
     )
 
-    archivo_version.generate_files()
-
-    # try:
-    #     archivo_version.deploy(generate_files=True)
-    #     logger.info(
-    #         f"Successfully deployed the new update of DEV ontology for {original_nir}"
-    #     )
-    #     process_log.append(
-    #         ProcessStepLog(
-    #             status=LogLevel.INFO,
-    #             stepname="Deployment to Databus",
-    #             message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
-    #         )
-    #     )
-    #     return archivo_version
-    # except Exception as e:
-    #     logger.error("There was an Error deploying to the databus")
-    #     logger.error(str(e))
-    #     process_log.append(
-    #         ProcessStepLog(
-    #             status=LogLevel.ERROR,
-    #             stepname="Deployment to Databus",
-    #             message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
-    #         )
-    #     )
-    #     return None
+    try:
+        archivo_version.deploy(generate_files=True)
+        logger.info(
+            f"Successfully deployed the new update of DEV ontology for {original_nir}"
+        )
+        process_log.append(
+            ProcessStepLog(
+                status=LogLevel.INFO,
+                stepname="Deployment to Databus",
+                message=f"Sucessfully deployed to the Databus: <a href={archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}>{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group_id}/{artifact_id}</a>",
+            )
+        )
+        return archivo_version
+    except Exception as e:
+        logger.error("There was an Error deploying to the databus")
+        logger.error(str(e))
+        process_log.append(
+            ProcessStepLog(
+                status=LogLevel.ERROR,
+                stepname="Deployment to Databus",
+                message=f"Failed to deploy to the Databus. Reason: {str(e)}.\n\nThere is probably an error on the Databus site, if this error persists please create an issue in the github repository.",
+            )
+        )
+        return None

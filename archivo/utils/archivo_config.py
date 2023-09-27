@@ -13,7 +13,7 @@ ARCHIVO_AGENT: str = "dbpedia-archivo-robot"
 # path the data should be written to NOTE: It's in the admins job to make this path public by the URL base noted
 # below. Archivo will take care of the proper structure. Per default, it is set to the correct docker path,
 # so all you have to do ist mount the correct local path and set the PUBLIC_URL_BASE
-LOCAL_PATH: str = "/usr/local/archivo-data/"
+LOCAL_PATH: str = "/usr/local/archivo-data"
 
 # The URL the LOCAL_PATH above should be available. Configure your nginx (or whatever) to make it public
 PUBLIC_URL_BASE: str = "https://akswnc7.informatik.uni-leipzig.de/dstreitmatter/archivo"

@@ -34,6 +34,7 @@ black = "^22.8.0"
 mypy = "^1.5.1"
 types-flask-sqlalchemy = "^2.5.9.4"
 types-flask-cors = "^4.0.0.1"
+types-requests = "^2.31.0.6"
 
 [build-system]
 requires = ["poetry-core"]

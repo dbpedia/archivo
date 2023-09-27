@@ -388,7 +388,7 @@ def startup_check():
             string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"
         ),
     ]
-    available_dirs = [archivo_config.localPath]
+    available_dirs = [archivo_config.LOCAL_PATH]
 
     for f in available_files:
         if not os.path.isfile(f):

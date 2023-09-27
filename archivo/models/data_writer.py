@@ -2,9 +2,9 @@ import os
 from abc import ABC, abstractmethod
 from logging import Logger
 from pathlib import Path
-from typing import Iterator, Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
-import databusclient
+import databusclient  # type: ignore
 
 from models.databus_identifier import DatabusFileMetadata
 from utils.WebDAVUtils import WebDAVHandler

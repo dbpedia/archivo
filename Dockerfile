@@ -17,7 +17,7 @@ RUN mvn clean install -f /usr/lib/pellet/pom.xml -DskipTests=true
 FROM python:3.10
 
 # Configure Poetry
-ENV POETRY_VERSION=1.2.1
+ENV POETRY_VERSION=1.6.1
 ENV POETRY_HOME=/opt/poetry
 ENV POETRY_VENV=/opt/poetry-venv
 ENV POETRY_CACHE_DIR=/opt/.cache
@@ -31,7 +31,7 @@ RUN mkdir -p /usr/local/archivo-data/
 
 # install rapper and maven
 RUN apt-get update
-RUN apt-get install -y raptor2-utils maven git zip unzip
+RUN apt-get install -y raptor2-utils git zip unzip
 
 # copy pellet to new image and make it executeable
 COPY --from=pellet-build /usr/lib/pellet/ /usr/lib/pellet/
@@ -61,7 +61,7 @@ ENV REPO_DIR /usr/local/src/webapp/archivo
 WORKDIR ${REPO_DIR}
 
 # install packages
-RUN poetry install --only main
+RUN poetry install --no-dev
 
 # set WDIR as working dir for execution
 WORKDIR ${WDIR}
