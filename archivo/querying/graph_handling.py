@@ -61,7 +61,10 @@ def get_defined_uris(nir: str, graph: rdflib.Graph) -> List[str]:
     The subject is not relevant, it considers only the objects of the properties defined in the config."""
 
     prop_string = " ".join(
-        [f"<{defines_prop}>" for defines_prop in archivo_config.defines_properties]
+        [
+            f"<{defines_prop}>"
+            for defines_prop in archivo_config.ONTOLOGY_BACKLINK_PROPERTIES
+        ]
     )
     query_string = "\n".join(
         [
@@ -200,7 +203,7 @@ def get_track_this_uri(graph: Graph) -> Optional[str]:
         "WHERE {\n"
         " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
         " ?uri a ?type .\n"
-        f" ?uri <{archivo_config.track_this_uri}> ?trackURI ."
+        f" ?uri <{archivo_config.ARCHIVO_TRACK_THIS_PROPERTY}> ?trackURI ."
         "}"
     )
     result = graph.query(queryString, initNs={"owl": OWL, "rdf": RDF, "skos": SKOS})

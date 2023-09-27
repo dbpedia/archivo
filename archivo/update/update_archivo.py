@@ -51,7 +51,7 @@ class DiffResult:
 
 
 def no_ignored_props_in_line(line: str):
-    for prop in archivo_config.ignore_props:
+    for prop in archivo_config.DIFF_IGNORE_PROPERTIES:
         if prop in line:
             return False
     return True

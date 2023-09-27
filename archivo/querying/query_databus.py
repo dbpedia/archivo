@@ -28,7 +28,7 @@ def get_value_of_key_fun(key: str) -> Callable:
     return lambda binding: binding[key]["value"]
 
 
-def get_info_for_artifact(group: str, artifact: str) -> Optional[ArtifactInformation]:
+def get_info_for_artifact(group: str, artifact: str) -> ArtifactInformation:
     """Returns the info for a given group and artifact"""
 
     artifact_url = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"

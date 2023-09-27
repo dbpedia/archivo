@@ -128,7 +128,7 @@ def ontology_official_update():
     for i, ont in enumerate(db.session.query(dbModels.OfficialOntology).all()):
 
         # skip problematic ontologies
-        if ont.uri in archivo_config.diff_skip_onts:
+        if ont.uri in archivo_config.DIFF_SKIP_ONTOLOGY_URLS:
             diff_logger.info(
                 f"{str(i + 1)}: Skipped ontology {ont.uri} due to earlier problems..."
             )
@@ -136,7 +136,7 @@ def ontology_official_update():
 
         data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
-            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+            target_url_base=archivo_config.PUBLIC_URL_BASE,
             logger=diff_logger,
         )
 
@@ -249,7 +249,7 @@ def ontology_dev_update():
 
         data_writer = models.data_writer.FileWriter(
             path_base=archivo_config.localPath,
-            target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+            target_url_base=archivo_config.PUBLIC_URL_BASE,
             logger=dev_diff_logger,
         )
 
@@ -334,7 +334,7 @@ def deploy_index():
 
     data_writer = models.data_writer.FileWriter(
         path_base=archivo_config.localPath,
-        target_url_base=archivo_config.DOWNLOAD_URL_BASE,
+        target_url_base=archivo_config.PUBLIC_URL_BASE,
         logger=diff_logger,
     )
 
@@ -383,7 +383,7 @@ def deploy_index():
 # checks if everything is configured correctly
 def startup_check():
     available_files = [
-        archivo_config.pelletPath,
+        archivo_config.PELLET_BINARY_PATH,
         os.path.join(
             string_tools.get_local_directory(), "helpingBinaries", "DisplayAxioms.jar"
         ),

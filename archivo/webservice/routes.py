@@ -194,6 +194,7 @@ def vocabInfo():
         )
         try:
             artifact_info = query_databus.get_info_for_artifact(group, artifact)
+            print(artifact_info)
         except HTTPError as e:
             general_info[
                 "message"
@@ -204,35 +205,49 @@ def vocabInfo():
                 form=form,
                 title=f"Archivo - Info about {foundUri}",
             )
-        if isDev:
-            ont = ont.devel
-            general_info["sourceURI"] = ont.uri
+        except IndexError:
+            general_info["message"] = (
+                f"It seems there is no Databus artifact for {foundUri}! Please report "
+                f"this issue at the github page!"
+            )
+            return render_template(
+                "info.html",
+                general_info=general_info,
+                form=form,
+                title=f"Archivo - Info about {foundUri}",
+            )
+        else:
+            if isDev:
+                ont = ont.devel
+                general_info["sourceURI"] = ont.uri
+            general_info["source"] = ont.source
+            general_info["isDev"] = isDev
+            general_info["achievement"] = ont.accessDate
+            general_info["title"] = artifact_info.title
+            general_info["comment"] = artifact_info.description
+            general_info[
+                "databusArtifact"
+            ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+            general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
+            # check latest crawling status
+            general_info["access"] = build_correct_access_info(
+                ont.uri, ont.crawling_status
+            )
 
-        general_info["source"] = ont.source
-        general_info["isDev"] = isDev
-        general_info["achievement"] = ont.accessDate
-        general_info["title"] = artifact_info.title
-        general_info["comment"] = artifact_info.description
-        general_info[
-            "databusArtifact"
-        ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
-        general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
-        # check latest crawling status
-        general_info["access"] = build_correct_access_info(ont.uri, ont.crawling_status)
-
-        # there is a type error but it is ok since its only gets displayed
-        for v_info in artifact_info.version_infos:
-            v_info.stars = string_tools.generate_star_string(v_info.stars)
-        artifact_info.version_infos = sorted(
-            artifact_info.version_infos, key=lambda v: v.version.label, reverse=True
-        )
-        return render_template(
-            "info.html",
-            artifact_info=artifact_info,
-            general_info=general_info,
-            form=form,
-            title=f"Archivo - Info about {artifact_info.title}",
-        )
+            # there is a type error, but it is ok since its only gets displayed
+            for v_info in artifact_info.version_infos:
+                # i know this breaks typing but it is only for the prettier star representation on the webpage
+                v_info.stars = string_tools.generate_star_string(v_info.stars)
+            artifact_info.version_infos = sorted(
+                artifact_info.version_infos, key=lambda v: v.version.label, reverse=True
+            )
+            return render_template(
+                "info.html",
+                artifact_info=artifact_info,
+                general_info=general_info,
+                form=form,
+                title=f"Archivo - Info about {artifact_info.title}",
+            )
 
 
 @vocabInfo.support("text/turtle")

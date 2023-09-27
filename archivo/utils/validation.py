@@ -24,11 +24,14 @@ def load_shacl_graph(filepath: str, pub_id: Optional[str] = None) -> rdflib.Grap
 
 
 class TestSuite:
-    pelletPath = archivo_config.pelletPath
-    profileCheckerJar = archivo_config.profileCheckerJar
+    pellet_jar_path = archivo_config.PELLET_BINARY_PATH
 
     def __init__(self):
         archivo_path = string_tools.get_local_directory()
+
+        self.profile_checker_jar_path = os.path.join(
+            archivo_path, "helpingBinaries", "profilechecker-1.1.0.jar"
+        )
 
         self.licenseViolationGraph = load_shacl_graph(
             os.path.join(archivo_path, "shacl", "license-I.ttl"),
@@ -81,7 +84,7 @@ class TestSuite:
 
     def getProfileCheck(self, ontofile):
         process = subprocess.run(
-            ["java", "-jar", self.profileCheckerJar, ontofile, "--all"],
+            ["java", "-jar", self.profile_checker_jar_path, ontofile, "--all"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -92,7 +95,7 @@ class TestSuite:
     ):
         if parameters is None:
             parameters = []
-        pelletCommand = [self.pelletPath, command]
+        pelletCommand = [self.pellet_jar_path, command]
         for parameter in parameters:
             pelletCommand.append(parameter)
         pelletCommand.append(ontology_url)
