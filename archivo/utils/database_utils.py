@@ -49,7 +49,7 @@ def db_objects_from_databus(
     return ontology, versions
 
 
-def rebuildDatabase():
+def rebuild_database():
     db.create_all()
     # urisInDatabase = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     oldIndex = query_databus.get_last_official_index()
@@ -93,9 +93,6 @@ def rebuildDatabase():
             except ValueError:
                 timestamp = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-            group, artifact = string_tools.generate_databus_identifier_from_uri(
-                official_uri, dev=True
-            )
             ontology, versions = db_objects_from_databus(
                 official_uri, source, timestamp, dev=dev_uri
             )
@@ -110,6 +107,33 @@ def rebuildDatabase():
         except Exception as e:
             print(f"Error in handling {dev_uri}", e)
             continue
+
+
+def safely_remove_ontology_from_db(ontology_uri: str) -> None:
+
+    db_ont = db.session.query(Ontology).filter_by(uri=ontology_uri).first()
+
+    db_versions = db_ont.versions.all()
+
+    print(f"Found database object: {db_ont.uri} with {len(db_versions)} Versions")
+
+    for v in db_versions:
+        db.session.delete(v)
+
+    db.session.delete(db_ont)
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()
+    new_result = db.session.query(Ontology).filter_by(uri=ontology_uri).first()
+    if new_result is None:
+        print(f"Database object safely deletet!")
+    else:
+        print(
+            f"There was an error, there is still something in the database: {new_result}"
+        )
 
 
 def update_database():
@@ -187,7 +211,6 @@ def get_dev_index_as_csv() -> str:
 
 def update_info_for_ontology(ontology: OfficialOntology):
 
-    group, artifact = string_tools.generate_databus_identifier_from_uri(ontology.uri)
     _, versions = db_objects_from_databus(
         ontology.uri, ontology.source, ontology.accessDate
     )
