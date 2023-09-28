@@ -25,8 +25,8 @@ def get_prefix_cc_urls() -> Iterable[str]:
 
 
 def get_bioregistry_urls() -> Iterable[str]:
-
-    resp_json = requests.get("https://bioregistry.io/api/registry?format=json").json()
+    url = "https://raw.githubusercontent.com/biopragmatics/bioregistry/main/exports/registry/registry.json"
+    resp_json = requests.get(url).json()
 
     relevant_keys = ["download_rdf", "download_owl"]
 
