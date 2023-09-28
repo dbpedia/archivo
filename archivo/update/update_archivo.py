@@ -57,7 +57,7 @@ def no_ignored_props_in_line(line: str):
     return True
 
 
-def diff_content(old_triples: List[str], new_triples: List[str]) -> DiffResult:
+def diff_content(old_triples: List[str], new_triples: List[str], logger: Logger = diff_logger) -> DiffResult:
     """Checks the diff with python builtins. Also handles deduplication and empty lines. Returns a DiffResult"""
 
     def filterfun(x: str):
@@ -189,7 +189,6 @@ def diff_check_new_file(
 ) -> Tuple[
     Optional[DiffResult], Optional[CrawlingResponse], Optional[RapperParsingResult]
 ]:
-
     if dev_uri is None:
         locURI = uri
     else:
@@ -213,6 +212,7 @@ def diff_check_new_file(
     crawling_response = discovery.determine_best_content_type(
         locURI, user_output=output
     )
+    crawling_response.response.encoding = "utf-8"
 
     if crawling_response is None:
         error_str = f"Error in step {output[-1].stepname}: {output[-1].message}"
@@ -239,9 +239,8 @@ def diff_check_new_file(
     )
 
     old_file_nt_content = content_access.get_databus_file(old_nt_file_metadata)
-
-    old_content_triples = "\n".split(old_file_nt_content)
-    new_content_triples = "\n".split(parsing_result.parsed_rdf)
+    old_content_triples = old_file_nt_content.split("\n")
+    new_content_triples = parsing_result.parsed_rdf.split("\n")
 
     diff_result = diff_content(old_content_triples, new_content_triples)
 

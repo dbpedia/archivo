@@ -16,12 +16,14 @@ def get_databus_file(file_metadata: DatabusFileMetadata) -> str:
         with open(local_file_path) as old_nt_file:
             return old_nt_file.read()
     else:
-        old_file_resp = requests.get(f"{archivo_config.DATABUS_BASE}/{file_metadata}")
-
-        if old_file_resp.status_code >= 400:
-            raise UnavailableContentException(old_file_resp)
+        resp = requests.get(f"{archivo_config.DATABUS_BASE}/{file_metadata}")
+        # this hardcodes the encoding since the old archivo also did that
+        # it may be replaced with resp.apparent_encoding
+        resp.encoding = "utf-8"
+        if resp.status_code >= 400:
+            raise UnavailableContentException(resp)
         else:
-            return old_file_resp.text
+            return resp.text
 
 
 def get_location_url(file_metadata: DatabusFileMetadata) -> str:
