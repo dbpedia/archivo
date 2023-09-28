@@ -32,4 +32,4 @@ def get_location_url(file_metadata: DatabusFileMetadata) -> str:
     if archivo_config.LOCAL_PATH and local_file_path.is_file():
         return str(local_file_path)
     else:
-        return f"{archivo_config.DOWNLOAD_URL_BASE}/{file_metadata}"
+        return f"{archivo_config.PUBLIC_URL_BASE}/{file_metadata}"
