@@ -225,7 +225,9 @@ def get_last_dev_index() -> Optional[List[List[str]]]:
     return [tp for tp in csv.reader(csvIO, delimiter=",")]
 
 
-def get_SPOs(date: datetime = None, logger: Logger = None) -> Iterator[str]:
+def get_identifier_on_databus(
+    date: datetime = None, logger: Logger = None
+) -> Iterator[str]:
     # returns spos in a generator which are not older than two weeks
     today = datetime.today()
     if date is None:
@@ -234,7 +236,9 @@ def get_SPOs(date: datetime = None, logger: Logger = None) -> Iterator[str]:
     else:
         deadline_str = date.strftime("%Y.%m.%d-%H%M%S")
 
-    query = query_templates.get_spo_file_template.safe_substitute(version=date)
+    query = query_templates.get_spo_file_template.safe_substitute(
+        DATE=deadline_str, DATABUSEP=__DATABUS_REPO_URL
+    )
     sparql = SPARQLWrapper(__MOD_ENDPOINT)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)

@@ -115,11 +115,11 @@ SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {
 get_spo_file_template = Template(
     general_purpose_prefixes
     + """SELECT DISTINCT ?used ?generated {
-      SERVICE <https://databus.dbpedia.org/repo/sparql> {
-            ?dataset dct:publisher <https://yum-yab.github.io/webid.ttl#onto> .
-            ?dataset dcat:distribution/dataid:file ?used .
+      SERVICE <$DATABUSEP> {
+            ?dataset databus:account db:ontologies .
+            ?dataset dcat:distribution/databus:file ?used .
                 ?dataset dct:hasVersion ?vers .
-                FILTER(str(?vers) > "$date")
+                FILTER(str(?vers) > "$DATE")
       }
       ?mod prov:generated ?generated .
          ?mod a  <https://mods.tools.dbpedia.org/ns/rdf#SpoMod> .

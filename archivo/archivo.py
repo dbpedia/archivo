@@ -1,4 +1,5 @@
 import atexit
+from pathlib import Path
 from typing import List, Iterable
 
 import databusclient
@@ -55,7 +56,7 @@ def ontology_discovery():
             test_suite=test_suite,
         )
     discovery_logger.info("Started discovery of Databus SPOs...")
-    for uri_list in query_databus.get_SPOs(logger=discovery_logger):
+    for uri_list in query_databus.get_identifier_on_databus(logger=discovery_logger):
         run_discovery(lst=uri_list, source="SPOs", test_suite=test_suite)
 
 
@@ -135,7 +136,7 @@ def ontology_official_update():
             continue
 
         data_writer = models.data_writer.FileWriter(
-            path_base=archivo_config.localPath,
+            path_base=Path(archivo_config.LOCAL_PATH),
             target_url_base=archivo_config.PUBLIC_URL_BASE,
             logger=diff_logger,
         )
@@ -248,7 +249,7 @@ def ontology_dev_update():
             continue
 
         data_writer = models.data_writer.FileWriter(
-            path_base=archivo_config.localPath,
+            path_base=Path(archivo_config.LOCAL_PATH),
             target_url_base=archivo_config.PUBLIC_URL_BASE,
             logger=dev_diff_logger,
         )
@@ -333,7 +334,7 @@ def deploy_index():
     )
 
     data_writer = models.data_writer.FileWriter(
-        path_base=archivo_config.localPath,
+        path_base=Path(archivo_config.LOCAL_PATH),
         target_url_base=archivo_config.PUBLIC_URL_BASE,
         logger=diff_logger,
     )

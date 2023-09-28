@@ -46,6 +46,6 @@ def get_bioregistry_urls() -> Iterable[str]:
 SOURCES_GETFUN_MAPPING: Dict[str, Callable] = {
     "LOV": get_lov_urls,
     "prefix.cc": get_prefix_cc_urls,
-    "VOID mod": query_databus.get_distinct_void_uris,
+    # "VOID mod": query_databus.get_distinct_void_uris,
     "bioregistry.io": get_bioregistry_urls,
 }

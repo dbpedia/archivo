@@ -166,13 +166,13 @@ def build_correct_access_info(
 @app.route("/info/", methods=["GET", "POST"])
 @app.route("/info", methods=["GET", "POST"])
 @accept("text/html")
-def vocabInfo():
+def ontology_info_page():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
     ontoUri = unquote(ontoUri)
     isDev = True if "dev" in args else False
     form = InfoForm()
-    allOntos = [ont.uri for ont in db.session.query(OfficialOntology).all()]
+    all_ontologies = [ont.uri for ont in db.session.query(OfficialOntology).all()]
     if form.validate_on_submit():
         uri = form.uris.data.strip()
         return redirect(f"/info?o={uri}")
@@ -184,7 +184,7 @@ def vocabInfo():
             title="Archivo - Ontology Info",
         )
     else:
-        foundUri = string_tools.get_uri_from_index(ontoUri, allOntos)
+        foundUri = string_tools.get_uri_from_index(ontoUri, all_ontologies)
         if foundUri is None:
             abort(code=404)
         ont = db.session.query(OfficialOntology).filter_by(uri=foundUri).first()
@@ -250,7 +250,7 @@ def vocabInfo():
             )
 
 
-@vocabInfo.support("text/turtle")
+@ontology_info_page.support("text/turtle")
 def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
@@ -262,7 +262,7 @@ def turtleInfo():
     return redirect(get_info_as_rdf(ontoUri, "text/turtle"), code=307)
 
 
-@vocabInfo.support("application/rdf+xml")
+@ontology_info_page.support("application/rdf+xml")
 def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
@@ -274,7 +274,7 @@ def rdfxmlInfo():
     return redirect(get_info_as_rdf(ontoUri, "application/rdf+xml"), code=307)
 
 
-@vocabInfo.support("application/n-triples")
+@ontology_info_page.support("application/n-triples")
 def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""

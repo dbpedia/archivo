@@ -10,9 +10,9 @@ from utils.archivo_exceptions import UnavailableContentException
 def get_databus_file(file_metadata: DatabusFileMetadata) -> str:
     """Checks first if the file can be loaded (faster) from disk before performing an HTTP request"""
     # check if the old file can be loaded from disk
-    local_file_path = Path(f"{archivo_config.localPath}/{file_metadata}")
+    local_file_path = Path(f"{archivo_config.LOCAL_PATH}/{file_metadata}")
 
-    if archivo_config.localPath and local_file_path.is_file():
+    if archivo_config.LOCAL_PATH and local_file_path.is_file():
         with open(local_file_path) as old_nt_file:
             return old_nt_file.read()
     else:
@@ -27,9 +27,9 @@ def get_databus_file(file_metadata: DatabusFileMetadata) -> str:
 def get_location_url(file_metadata: DatabusFileMetadata) -> str:
     """Returns the URL of a file, either a file path oder a http URL, based on availability. Files are preferred"""
 
-    local_file_path = Path(f"{archivo_config.localPath}/{file_metadata}")
+    local_file_path = Path(f"{archivo_config.LOCAL_PATH}/{file_metadata}")
 
-    if archivo_config.localPath and local_file_path.is_file():
+    if archivo_config.LOCAL_PATH and local_file_path.is_file():
         return str(local_file_path)
     else:
         return f"{archivo_config.DOWNLOAD_URL_BASE}/{file_metadata}"
