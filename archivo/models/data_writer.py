@@ -72,10 +72,7 @@ class FileWriter(DataWriter):
 
     def write_data(self, content: str, db_file_metadata: DatabusFileMetadata) -> None:
         version_dir = os.path.join(
-            self.path_base,
-            db_file_metadata.version_identifier.group,
-            db_file_metadata.version_identifier.artifact,
-            db_file_metadata.version_identifier.version,
+            self.path_base, str(db_file_metadata.version_identifier)
         )
 
         filepath = os.path.join(version_dir, db_file_metadata.get_file_name())
