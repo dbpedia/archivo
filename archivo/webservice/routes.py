@@ -336,6 +336,7 @@ def download_ontology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "owl")
     version = args.get("v", None)
+    versionMatching = args.get('vM', 'snapshotVersionString')
     ontoUri = unquote(ontoUri)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
@@ -345,6 +346,7 @@ def download_ontology():
         version=version,
         rdf_format=rdfFormat,
         source_schema=scheme,
+        versionMatching=versionMatching
     )
 
 
@@ -407,7 +409,7 @@ def getCorrectScheme(scheme):
 
 
 def download_handling(
-    uri, is_dev=False, version="", rdf_format="owl", source_schema="http"
+    uri, is_dev=False, version="", rdf_format="owl", source_schema="http", versionMatching='snapshotVersionString'
 ):
     ontoUri = unquote(uri)
     foundURI = string_tools.get_uri_from_index(
@@ -420,7 +422,7 @@ def download_handling(
     )
     try:
         downloadLink = query_databus.get_download_url(
-            group, artifact, file_extension=rdf_format, version=version
+            group, artifact, file_extension=rdf_format, version=version, versionMatching=versionMatching
         )
     except URLError as e:
         abort(

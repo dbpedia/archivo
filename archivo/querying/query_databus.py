@@ -116,7 +116,7 @@ def get_info_for_artifact(group: str, artifact: str) -> ArtifactInformation:
 
 
 def get_download_url(
-    group: str, artifact: str, file_extension: str = "owl", version: str = None
+    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'closest'
 ) -> Optional[str]:
 
     artifact_id = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
@@ -144,7 +144,39 @@ def get_download_url(
             ]
         )
     else:
-        queryString.append("   ?dataset dct:hasVersion '%s'." % version)
+        if versionMatching == 'default':
+            queryString.extend("   ?dataset dct:hasVersion '%s'." % version)
+        elif versionMatching == 'before':
+            queryString.extend(
+                [
+                    "   ?dataset dct:hasVersion ?versionSelected .",
+                    "{",
+                    "   SELECT DISTINCT ?art (MAX(?v) as ?finalVersion) WHERE {",
+                    "    ?dataset databus:artifact ?art .",
+                    "    ?dataset dct:hasVersion ?v .",
+                    "    FILTER(xsd:dateTime(?v) < xsd:dateTime('%s')) ." % version,
+                    "}",
+                    "} UNION {",
+                    "   SELECT ?art (MIN(?v) AS ?closestVersion) WHERE {",
+                    "       ?dataset databus:artifact ?art .",
+                    "       ?dataset dct:hasVersion ?v .",
+                    "   } ORDER BY ASC(ABS(xsd:dateTime(?v) - xsd:dateTime('%s')))" % version,
+                    "   LIMIT 1",
+                    "}",
+                    "FILTER(?versionSelected = COALESCE(?finalVersion, ?closestVersion))",
+                ]
+            )
+        elif versionMatching == 'closest':
+            queryString.extend([
+                "   ?dataset dct:hasVersion ?closestVersion .",
+                "{",
+                "   SELECT ?art (?v AS ?closestVersion) WHERE {",
+                "       ?dataset databus:artifact ?art .",
+                "       ?dataset dct:hasVersion ?v .",
+                "   } ORDER BY ASC(ABS(xsd:datetime(?v) - xsd:datetime('%s')))" % version,
+                "   LIMIT 1",
+                "}",
+            ])
     queryString.append("}")
 
     print("\n".join(queryString))
@@ -152,6 +184,7 @@ def get_download_url(
     sparql.setQuery("\n".join(queryString))
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
+    print(results)
     try:
         return results["results"]["bindings"][0]["file"]["value"]
     except KeyError:
