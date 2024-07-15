@@ -115,6 +115,39 @@ def get_info_for_artifact(group: str, artifact: str) -> ArtifactInformation:
     )
 
 
+def find_previous_version(versions, target_file, target_version):
+    target_datetime = datetime.strptime(target_version, '%Y.%m.%d-%H%M%S')
+    previous_version = None
+    
+    for version_dict in versions:
+        if target_file in version_dict['file']['value']:
+            version_str = version_dict['version']['value']
+            version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
+            if version_datetime < target_datetime:
+                if previous_version is None or version_datetime > datetime.strptime(previous_version, '%Y.%m.%d-%H%M%S'):
+                    previous_version = version_str
+
+    return previous_version
+
+
+def find_closest_version(versions, target_file, target_version):
+    target_datetime = datetime.strptime(target_version, '%Y.%m.%d-%H%M%S')
+    closest_version = None
+    min_diff = float('inf')  # Initialize to infinity
+    
+    for version_dict in versions:
+        if target_file in version_dict['file']['value']:
+            version_str = version_dict['version']['value']
+            version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
+            diff = abs((version_datetime - target_datetime).total_seconds())
+            
+            if diff < min_diff:
+                min_diff = diff
+                closest_version = version_str
+
+    return closest_version
+
+
 def get_download_url(
     group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'closest'
 ) -> Optional[str]:
@@ -145,38 +178,42 @@ def get_download_url(
         )
     else:
         if versionMatching == 'default':
-            queryString.extend("   ?dataset dct:hasVersion '%s'." % version)
-        elif versionMatching == 'before':
-            queryString.extend(
-                [
-                    "   ?dataset dct:hasVersion ?versionSelected .",
-                    "{",
-                    "   SELECT DISTINCT ?art (MAX(?v) as ?finalVersion) WHERE {",
-                    "    ?dataset databus:artifact ?art .",
-                    "    ?dataset dct:hasVersion ?v .",
-                    "    FILTER(xsd:dateTime(?v) < xsd:dateTime('%s')) ." % version,
-                    "}",
-                    "} UNION {",
-                    "   SELECT ?art (MIN(?v) AS ?closestVersion) WHERE {",
-                    "       ?dataset databus:artifact ?art .",
-                    "       ?dataset dct:hasVersion ?v .",
-                    "   } ORDER BY ASC(ABS(xsd:dateTime(?v) - xsd:dateTime('%s')))" % version,
-                    "   LIMIT 1",
-                    "}",
-                    "FILTER(?versionSelected = COALESCE(?finalVersion, ?closestVersion))",
-                ]
-            )
-        elif versionMatching == 'closest':
-            queryString.extend([
-                "   ?dataset dct:hasVersion ?closestVersion .",
-                "{",
-                "   SELECT ?art (?v AS ?closestVersion) WHERE {",
-                "       ?dataset databus:artifact ?art .",
-                "       ?dataset dct:hasVersion ?v .",
-                "   } ORDER BY ASC(ABS(xsd:datetime(?v) - xsd:datetime('%s')))" % version,
-                "   LIMIT 1",
-                "}",
-            ])
+            queryString.extend(["   ?dataset dct:hasVersion '%s'." % version])
+        else:
+            queryAvailableVersions = [
+                query_templates.general_purpose_prefixes,
+                "",
+                "SELECT DISTINCT ?file ?version WHERE {",
+                "VALUES ?art { <%s> } ." % artifact_id,
+                "   ?dataset databus:artifact ?art .",
+                "   ?dataset dcat:distribution ?distribution .",
+                "   ?distribution dataid-cv:type 'parsed' .",
+                "   ?distribution databus:formatExtension '%s' ." % file_extension,
+                "   ?distribution databus:file ?file .",
+                "   ?dataset dct:hasVersion ?version .",
+                "}"
+            ]
+            sparql_versions = SPARQLWrapper(__DATABUS_REPO_URL)
+            sparql_versions.setQuery("\n".join(queryAvailableVersions))
+            sparql_versions.setReturnFormat(JSON)
+            #print("\n".join(queryAvailableVersions))
+            results = sparql_versions.query().convert()
+            
+
+            versions = results["results"]["bindings"]
+
+            if versionMatching == 'before':
+                previous_version = find_previous_version(versions, group, version)
+
+                if previous_version:
+                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+                else:
+                    versionMatching = 'closest'
+
+            if versionMatching == 'closest':
+                    closest_version = find_closest_version(versions, group, version)
+                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % closest_version])
+
     queryString.append("}")
 
     print("\n".join(queryString))
@@ -184,7 +221,7 @@ def get_download_url(
     sparql.setQuery("\n".join(queryString))
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-    print(results)
+
     try:
         return results["results"]["bindings"][0]["file"]["value"]
     except KeyError:

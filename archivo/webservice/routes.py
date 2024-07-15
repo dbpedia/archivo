@@ -336,7 +336,7 @@ def download_ontology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "owl")
     version = args.get("v", None)
-    versionMatching = args.get('vM', 'snapshotVersionString')
+    versionMatching = args.get("vM", "default")
     ontoUri = unquote(ontoUri)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
@@ -346,7 +346,7 @@ def download_ontology():
         version=version,
         rdf_format=rdfFormat,
         source_schema=scheme,
-        versionMatching=versionMatching
+        versionMatching=versionMatching,
     )
 
 
@@ -358,12 +358,14 @@ def turtle_ont_download():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
+    versionMatching = args.get("vM", "default")
     return download_handling(
         uri=ontoUri,
         is_dev=isDev,
         version=version,
         rdf_format=rdfFormat,
         source_schema=scheme,
+        versionMatching=versionMatching,
     )
 
 
@@ -375,12 +377,14 @@ def rdfxml_ont_download():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
+    versionMatching = args.get("vM", "default")
     return download_handling(
         uri=ontoUri,
         is_dev=isDev,
         version=version,
         rdf_format=rdfFormat,
         source_schema=scheme,
+        versionMatching=versionMatching,
     )
 
 
@@ -390,6 +394,7 @@ def ntriples_ont_download():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "nt")
     version = args.get("v", None)
+    versionMatching = args.get("vM", "default")
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
     return download_handling(
@@ -398,6 +403,7 @@ def ntriples_ont_download():
         version=version,
         rdf_format=rdfFormat,
         source_schema=scheme,
+        versionMatching=versionMatching,
     )
 
 
@@ -409,7 +415,7 @@ def getCorrectScheme(scheme):
 
 
 def download_handling(
-    uri, is_dev=False, version="", rdf_format="owl", source_schema="http", versionMatching='snapshotVersionString'
+    uri, is_dev=False, version="", rdf_format="owl", source_schema="http", versionMatching='default'
 ):
     ontoUri = unquote(uri)
     foundURI = string_tools.get_uri_from_index(
