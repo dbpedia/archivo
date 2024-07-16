@@ -133,7 +133,7 @@ def find_previous_version(versions, target_file, target_version):
 def find_closest_version(versions, target_file, target_version):
     target_datetime = datetime.strptime(target_version, '%Y.%m.%d-%H%M%S')
     closest_version = None
-    min_diff = float('inf')  # Initialize to infinity
+    min_diff = float('inf')
     
     for version_dict in versions:
         if target_file in version_dict['file']['value']:
