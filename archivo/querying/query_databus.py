@@ -149,7 +149,7 @@ def find_closest_version(versions, target_file, target_version):
 
 
 def get_download_url(
-    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'closest'
+    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'default'
 ) -> Optional[str]:
 
     artifact_id = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
@@ -180,6 +180,8 @@ def get_download_url(
         if versionMatching == 'default':
             queryString.extend(["   ?dataset dct:hasVersion '%s'." % version])
         else:
+            # Fetching all the version because timestamp comparison 
+            # with SPARQL was not working as expected
             queryAvailableVersions = [
                 query_templates.general_purpose_prefixes,
                 "",
@@ -204,15 +206,17 @@ def get_download_url(
 
             if versionMatching == 'before':
                 previous_version = find_previous_version(versions, group, version)
+                queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
 
-                if previous_version:
-                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
-                else:
-                    versionMatching = 'closest'
+                # In case there is no version before, fall back to the the closest version
+                # if previous_version:
+                #     queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+                # else:
+                #     versionMatching = 'closest'
 
             if versionMatching == 'closest':
-                    closest_version = find_closest_version(versions, group, version)
-                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % closest_version])
+                closest_version = find_closest_version(versions, group, version)
+                queryString.extend(["   ?dataset dct:hasVersion '%s'." % closest_version])
 
     queryString.append("}")
 

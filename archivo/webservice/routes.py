@@ -394,7 +394,7 @@ def ntriples_ont_download():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "nt")
     version = args.get("v", None)
-    versionMatching = args.get("vM", "closest")
+    versionMatching = args.get("vM", "default")
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
     return download_handling(
@@ -415,7 +415,7 @@ def getCorrectScheme(scheme):
 
 
 def download_handling(
-    uri, is_dev=False, version="", rdf_format="owl", source_schema="http", versionMatching='closest'
+    uri, is_dev=False, version="", rdf_format="owl", source_schema="http", versionMatching="default"
 ):
     ontoUri = unquote(uri)
     foundURI = string_tools.get_uri_from_index(
