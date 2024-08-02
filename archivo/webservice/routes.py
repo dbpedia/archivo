@@ -336,7 +336,7 @@ def download_ontology():
     ontoUri = args.get("o", "")
     rdfFormat = args.get("f", "owl")
     version = args.get("v", None)
-    versionMatching = args.get("vM", "closest")
+    versionMatching = args.get("vM", "default")
     ontoUri = unquote(ontoUri)
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     isDev = True if "dev" in args else False
@@ -358,7 +358,7 @@ def turtle_ont_download():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
-    versionMatching = args.get("vM", "closest")
+    versionMatching = args.get("vM", "default")
     return download_handling(
         uri=ontoUri,
         is_dev=isDev,
@@ -377,7 +377,7 @@ def rdfxml_ont_download():
     isDev = True if "dev" in args else False
     scheme = getCorrectScheme(request.headers.get("X-Forwarded-Proto"))
     version = args.get("v", None)
-    versionMatching = args.get("vM", "closest")
+    versionMatching = args.get("vM", "default")
     return download_handling(
         uri=ontoUri,
         is_dev=isDev,
