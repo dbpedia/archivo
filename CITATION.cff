@@ -1,0 +1,32 @@
+{
+  "title": "DBpedia Archivo: A Web-Scale Interface for Ontology Archiving Under Consumer-Oriented Aspects",
+  "author": [
+    {
+      "name": "J. Frey"
+    },
+    {
+      "name": "D. Streitmatter"
+    },
+    {
+      "name": "F. Götz"
+    },
+    {
+      "name": "S. Hellmann"
+    },
+    {
+      "name": "N. Arndt"
+    }
+  ],
+  "publication_date": "2020",
+  "description": "In: Blomqvist, E., et al. Semantic Systems. In the Era of Knowledge Graphs. SEMANTICS 2020. Lecture Notes in Computer Science(), vol 12378. Springer, Cham.",
+  "doi": "10.1007/978-3-030-59833-4_2",
+  "url": "https://doi.org/10.1007/978-3-030-59833-4_2",
+  "conference": {
+    "name": "SEMANTICS 2020"
+  },
+  "journal": {
+    "name": "Lecture Notes in Computer Science",
+    "volume": "12378"
+  },
+  "publisher": "Springer, Cham"
+}
