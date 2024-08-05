@@ -1,6 +1,5 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite the following publication:"
-type: conference-paper
 authors:
   - family-names: Frey
     given-names: Johannes
@@ -40,7 +39,7 @@ conference:
   date-start: 2020-09-07
   date-end: 2020-09-10
 date-released: 2020-09-10
-series: 
+series:
   name: "Lecture Notes in Computer Science"
   volume: "12378"
 publisher: Springer
@@ -49,3 +48,53 @@ url: https://doi.org/10.1007/978-3-030-59833-4_2
 identifiers:
   - type: doi
     value: 10.1007/978-3-030-59833-4_2
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: Frey
+      given-names: Johannes
+    - family-names: Streitmatter
+      given-names: Denis
+    - family-names: Götz
+      given-names: Fabian
+    - family-names: Hellmann
+      given-names: Sebastian
+    - family-names: Arndt
+      given-names: Natanael
+  title: "DBpedia Archivo: A Web-Scale Interface for Ontology Archiving Under Consumer-Oriented Aspects"
+  editors:
+    - family-names: Blomqvist
+      given-names: Eva
+    - family-names: Groth
+      given-names: Paul
+    - family-names: de Boer
+      given-names: Victor
+    - family-names: Pellegrini
+      given-names: Tassilo
+    - family-names: Alam
+      given-names: Mehwish
+    - family-names: Käfer
+      given-names: Tobias
+    - family-names: Kieseberg
+      given-names: Peter
+    - family-names: Kirrane
+      given-names: Sabrina
+    - family-names: Meroño-Peñuela
+      given-names: Albert
+    - family-names: Pandit
+      given-names: Harshvardhan J.
+  conference:
+    name: "16th International Conference on Semantic Systems, SEMANTiCS 2020"
+    place: "Amsterdam, The Netherlands"
+    date-start: 2020-09-07
+    date-end: 2020-09-10
+  date-released: 2020-09-10
+  series:
+    name: "Lecture Notes in Computer Science"
+    volume: "12378"
+  publisher: Springer
+  doi: 10.1007/978-3-030-59833-4_2
+  url: https://doi.org/10.1007/978-3-030-59833-4_2
+  identifiers:
+    - type: doi
+      value: 10.1007/978-3-030-59833-4_2
