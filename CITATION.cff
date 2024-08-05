@@ -38,6 +38,7 @@ conference:
   place: "Amsterdam, The Netherlands"
   date-start: 2020-09-07
   date-end: 2020-09-10
+book-title: "Semantic Systems. In the Era of Knowledge Graphs - 16th International Conference on Semantic Systems, SEMANTiCS 2020, Amsterdam, The Netherlands, September 7-10, 2020, Proceedings"
 date-released: 2020-09-10
 series:
   name: "Lecture Notes in Computer Science"
@@ -88,6 +89,7 @@ preferred-citation:
     place: "Amsterdam, The Netherlands"
     date-start: 2020-09-07
     date-end: 2020-09-10
+  book-title: "Semantic Systems. In the Era of Knowledge Graphs - 16th International Conference on Semantic Systems, SEMANTiCS 2020, Amsterdam, The Netherlands, September 7-10, 2020, Proceedings"
   date-released: 2020-09-10
   series:
     name: "Lecture Notes in Computer Science"
