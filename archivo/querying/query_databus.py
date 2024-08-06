@@ -208,11 +208,13 @@ def get_download_url(
                 previous_version = find_previous_version(versions, group, version)
                 queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
 
+            if versionMatching == 'beforeOrClosest':
+                previous_version = find_previous_version(versions, group, version)
                 # In case there is no version before, fall back to the the closest version
-                # if previous_version:
-                #     queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
-                # else:
-                #     versionMatching = 'closest'
+                if previous_version:
+                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+                else:
+                    versionMatching = 'closest'
 
             if versionMatching == 'closest':
                 closest_version = find_closest_version(versions, group, version)
