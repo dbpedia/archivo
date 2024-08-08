@@ -115,8 +115,41 @@ def get_info_for_artifact(group: str, artifact: str) -> ArtifactInformation:
     )
 
 
+def find_previous_version(versions, target_file, target_version):
+    target_datetime = datetime.strptime(target_version, '%Y.%m.%d-%H%M%S')
+    previous_version = None
+    
+    for version_dict in versions:
+        if target_file in version_dict['file']['value']:
+            version_str = version_dict['version']['value']
+            version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
+            if version_datetime < target_datetime:
+                if previous_version is None or version_datetime > datetime.strptime(previous_version, '%Y.%m.%d-%H%M%S'):
+                    previous_version = version_str
+
+    return previous_version
+
+
+def find_closest_version(versions, target_file, target_version):
+    target_datetime = datetime.strptime(target_version, '%Y.%m.%d-%H%M%S')
+    closest_version = None
+    min_diff = float('inf')
+    
+    for version_dict in versions:
+        if target_file in version_dict['file']['value']:
+            version_str = version_dict['version']['value']
+            version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
+            diff = abs((version_datetime - target_datetime).total_seconds())
+            
+            if diff < min_diff:
+                min_diff = diff
+                closest_version = version_str
+
+    return closest_version
+
+
 def get_download_url(
-    group: str, artifact: str, file_extension: str = "owl", version: str = None
+    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'exact'
 ) -> Optional[str]:
 
     artifact_id = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
@@ -144,7 +177,49 @@ def get_download_url(
             ]
         )
     else:
-        queryString.append("   ?dataset dct:hasVersion '%s'." % version)
+        if versionMatching == 'exact':
+            queryString.extend(["   ?dataset dct:hasVersion '%s'." % version])
+        else:
+            # Fetching all the version because timestamp comparison 
+            # with SPARQL was not working as expected
+            queryAvailableVersions = [
+                query_templates.general_purpose_prefixes,
+                "",
+                "SELECT DISTINCT ?file ?version WHERE {",
+                "VALUES ?art { <%s> } ." % artifact_id,
+                "   ?dataset databus:artifact ?art .",
+                "   ?dataset dcat:distribution ?distribution .",
+                "   ?distribution dataid-cv:type 'parsed' .",
+                "   ?distribution databus:formatExtension '%s' ." % file_extension,
+                "   ?distribution databus:file ?file .",
+                "   ?dataset dct:hasVersion ?version .",
+                "}"
+            ]
+            sparql_versions = SPARQLWrapper(__DATABUS_REPO_URL)
+            sparql_versions.setQuery("\n".join(queryAvailableVersions))
+            sparql_versions.setReturnFormat(JSON)
+            #print("\n".join(queryAvailableVersions))
+            results = sparql_versions.query().convert()
+            
+
+            versions = results["results"]["bindings"]
+
+            if versionMatching == 'before':
+                previous_version = find_previous_version(versions, group, version)
+                queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+
+            if versionMatching == 'beforeOrClosest':
+                previous_version = find_previous_version(versions, group, version)
+                # In case there is no version before, fall back to the the closest version
+                if previous_version:
+                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+                else:
+                    versionMatching = 'closest'
+
+            if versionMatching == 'closest':
+                closest_version = find_closest_version(versions, group, version)
+                queryString.extend(["   ?dataset dct:hasVersion '%s'." % closest_version])
+
     queryString.append("}")
 
     print("\n".join(queryString))
@@ -152,6 +227,7 @@ def get_download_url(
     sparql.setQuery("\n".join(queryString))
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
+
     try:
         return results["results"]["bindings"][0]["file"]["value"]
     except KeyError:
