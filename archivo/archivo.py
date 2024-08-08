@@ -143,7 +143,7 @@ def ontology_official_update():
 
         diff_logger.info(f"{str(i + 1)}: Handling ontology: {ont.uri}")
         group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
-        databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        databusURL = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
         try:
             urlInfo = all_ontologies_info[databusURL]
         except KeyError:
@@ -241,7 +241,7 @@ def ontology_dev_update():
         group, artifact = string_tools.generate_databus_identifier_from_uri(
             ont.official, dev=True
         )
-        databusURL = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        databusURL = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
         try:
             urlInfo = allOntologiesInfo[databusURL]
         except KeyError:
@@ -324,6 +324,7 @@ def update_ontology_index():
 
 
 def deploy_index():
+    discovery_logger.info("Routine to deploy new version of Archivo ontology index has been triggered...")
     new_version_timestamp = datetime.now().strftime("%Y.%m.%d-%H%M%S")
 
     version_id = DatabusVersionIdentifier(
@@ -376,9 +377,9 @@ def deploy_index():
 
     try:
         databusclient.deploy(dataset, archivo_config.DATABUS_API_KEY)
-        discovery_logger.info("Deployed new index to databus")
+        discovery_logger.info("Deployed new version of Archivo Ontology index to Databus")
     except Exception as e:
-        discovery_logger.error(f"Failed deploying to databus: {e}")
+        discovery_logger.error(f"Failed deploying Archivo ontology index to Databus: {e}")
 
 
 # checks if everything is configured correctly

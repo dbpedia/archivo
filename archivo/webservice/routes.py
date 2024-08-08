@@ -227,7 +227,7 @@ def ontology_info_page():
             general_info["comment"] = artifact_info.description
             general_info[
                 "databusArtifact"
-            ] = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+            ] = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
             general_info["nir"] = {"regular": foundUri, "encoded": quote(foundUri)}
             # check latest crawling status
             general_info["access"] = build_correct_access_info(
@@ -315,12 +315,12 @@ def onto_list():
 
 def get_info_as_rdf(ontology_url: str, mime_type: str):
     group, artifact = string_tools.generate_databus_identifier_from_uri(ontology_url)
-    databus_artifact = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+    databus_artifact = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
     query_string = query_templates.constrict_info_graph_template.safe_substitute(
         ARTIFACT=databus_artifact
     )
     encodedString = quote(query_string, safe="&=")
-    return f"https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query={encodedString}&format={mime_type}&timeout=0&debug=on"
+    return f"{archivo_config.DATABUS_BASE}/sparql?default-graph-uri=&query={encodedString}&format={mime_type}&timeout=0&debug=on"
 
 
 @app.route("/sys/licenses")
@@ -564,7 +564,7 @@ def retrieve_list_from_database(onto_type: type[Ontology]):
     for ont, version in query_result:
 
         group, artifact = string_tools.generate_databus_identifier_from_uri(ont.uri)
-        databus_uri = f"https://databus.dbpedia.org/ontologies/{group}/{artifact}"
+        databus_uri = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
         infoURL = f"/info?o={ont.official}&dev" if isDev else f"/info?o={ont.uri}"
 
         # set the crawl error none means no crawl yet

@@ -1,4 +1,5 @@
 from string import Template
+from utils import archivo_config
 
 general_purpose_prefixes = """PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
@@ -95,20 +96,20 @@ SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {
 )
 
 get_last_index_template = Template(
-    general_purpose_prefixes
-    + """SELECT DISTINCT ?downloadURL WHERE {
-VALUES ?art { <https://databus.dbpedia.org/ontologies/archivo-indices/ontologies> }
+  general_purpose_prefixes
+  + f"""SELECT DISTINCT ?downloadURL WHERE {{
+VALUES ?art {{ <{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/archivo-indices/ontologies> }}
 ?dataset databus:artifact ?art .
 ?dataset dct:hasVersion ?latestVersion .
 ?dataset dcat:distribution ?dst .
 ?dst dataid-cv:type '$INDEXTYPE' .
-?dst dcat:downloadURL ?downloadURL .{
-SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {
+?dst dcat:downloadURL ?downloadURL .{{
+SELECT DISTINCT ?art (MAX(?v) as ?latestVersion) WHERE {{
 ?dataset databus:artifact ?art .
 ?dataset dct:hasVersion ?v .
-}
-}
-}"""
+}}
+}}
+}}"""
 )
 
 
@@ -154,6 +155,6 @@ constrict_info_graph_template = Template(
     general_purpose_prefixes
     + """
 CONSTRUCT {?s ?p ?o . ?dist ?p2 ?o2 . }
-{?s dataid:artifact <$ARTIFACT>.
+{?s databus:artifact <$ARTIFACT>.
 ?s ?p ?o . ?s dcat:distribution ?dist . ?dist ?p2 ?o2 . }"""
 )
