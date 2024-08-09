@@ -14,7 +14,7 @@ RUN git clone https://github.com/stardog-union/pellet.git /usr/lib/pellet/
 RUN mvn clean install -f /usr/lib/pellet/pom.xml -DskipTests=true
 
 # here we go with python 3.10
-FROM python:3.10
+FROM python:3.10-slim-bullseye
 
 # Configure Poetry
 ENV POETRY_VERSION=1.6.1
@@ -29,8 +29,14 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN mkdir -p /home/dstreitmatter/www/archivo/
 RUN mkdir -p /usr/local/archivo-data/
 
-# install rapper and maven
+# install rapper and java
+## Install required packages for downloading and adding bellsoft repository
+RUN apt-get update && apt-get install -y wget gnupg2 ca-certificates
+## Add the BellSoft GPG key and repository for java-8/11 etc
+RUN wget -qO - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add - \
+    && echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" > /etc/apt/sources.list.d/bellsoft.list
 RUN apt-get update
+RUN apt-get install -y bellsoft-java11
 RUN apt-get install -y raptor2-utils git zip unzip
 
 # copy pellet to new image and make it executeable
