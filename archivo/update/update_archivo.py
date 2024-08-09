@@ -428,8 +428,10 @@ def build_new_semantic_version(
     old = old_axiom_set - new_axiom_set
     new = new_axiom_set - old_axiom_set
 
-    logger.info("Old Axioms:\n" + "\n".join(old))
-    logger.info("New Axioms:\n" + "\n".join(new))
+    logger.info("Old Axioms Count: " + str(len(old)))
+    logger.info("New Axioms Count: " + str(len(new)))
+    # logger.info("Old Axioms:\n" + "\n".join(old)) # this can be a lot of data and should not be logged for performance and storage reasons
+    # logger.info("New Axioms:\n" + "\n".join(new))
 
     match = __SEMANTIC_VERSION_REGEX.match(old_semantic_version)
     if match is None:
