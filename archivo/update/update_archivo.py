@@ -372,19 +372,20 @@ def update_for_ontology_uri(
     logger.info("Deploying the data to the databus...")
 
     new_version.generate_files()
-    return True, "Updated ontology", new_version
-    # try:
-    #     new_version.deploy(True)
-    #     logger.info(f"Successfully deployed the new update of ontology {uri}")
-    #     return (
-    #         True,
-    #         f"Successfully deployed the new update of ontology {uri}",
-    #         new_version,
-    #     )
-    # except Exception as e:
-    #     logger.error("There was an Error deploying to the databus")
-    #     logger.error(str(e))
-    #     return False, "ERROR: Couldn't deploy to databus!", new_version
+    # return True, "Updated ontology", new_version #  this is for probably just for testing
+    try:
+        new_version.deploy(True)
+        logger.info(f"Successfully deployed the new update of ontology to {new_version.databus_version_identifier}")
+        return (
+            True,
+            None, # message seems supposed to be none on success otherwise will go to fallout with a failed crawling state for the ontology
+            # f"Successfully deployed the new update of ontology {uri}", 
+            new_version,
+        )
+    except Exception as e:
+        logger.error(f"There was an Error deploying updated ontology version to the databus: {new_version.databus_version_identifier}")
+        logger.error(str(e))
+        return False, "ERROR: Couldn't deploy to databus!", new_version
 
 
 def prepare_diff_for_ontology(

@@ -173,9 +173,9 @@ def ontology_official_update():
             ont.crawling_status = False
             db.session.add(dbFallout)
         elif success:
-            if message is None:
+            if message is None: # need to take care in deployment routine that no message means crawling was successful
                 ont.crawling_status = True
-            else:
+            else: # in which case(s) of a sucess is a message thrown??? given that no message is supposed to be thrown on success???
                 dbFallout = dbModels.Fallout(
                     uri=ont.uri,
                     source=ont.source,
