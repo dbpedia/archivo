@@ -251,6 +251,7 @@ def ontology_info_page():
 
 
 @ontology_info_page.support("text/turtle")
+@cross_origin()
 def turtleInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
@@ -263,6 +264,7 @@ def turtleInfo():
 
 
 @ontology_info_page.support("application/rdf+xml")
+@cross_origin()
 def rdfxmlInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
@@ -275,6 +277,7 @@ def rdfxmlInfo():
 
 
 @ontology_info_page.support("application/n-triples")
+@cross_origin()
 def ntriplesInfo():
     args = request.args
     ontoUri = args["o"] if "o" in args else ""
@@ -351,6 +354,7 @@ def download_ontology():
 
 
 @download_ontology.support("text/turtle")
+@cross_origin()
 def turtle_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
@@ -370,6 +374,7 @@ def turtle_ont_download():
 
 
 @download_ontology.support("application/rdf+xml")
+@cross_origin()
 def rdfxml_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
@@ -389,6 +394,7 @@ def rdfxml_ont_download():
 
 
 @download_ontology.support("application/n-triples")
+@cross_origin()
 def ntriples_ont_download():
     args = request.args
     ontoUri = args.get("o", "")
@@ -498,6 +504,7 @@ def rating():
 
 
 @app.route("/onto")
+@cross_origin()
 def deliver_vocab():
     # get the mimetype, defaults to html
     mime = request.headers.get("Accept", "text/html")
