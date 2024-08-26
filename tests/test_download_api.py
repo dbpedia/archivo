@@ -25,7 +25,7 @@ class TestServerResponses(unittest.TestCase):
 
 
     def test_response_second_url(self):
-        url = "http://localhost:5000/download?o=http%3A//comicmeta.org/cbo/&f=owl&v=2023.03.18-185709&vM=default"
+        url = "http://localhost:5000/download?o=http%3A//comicmeta.org/cbo/&f=owl&v=2023.03.18-185709&vM=closest"
         response = requests.get(url)
         
         # Calculate the MD5 checksum of the content
@@ -35,7 +35,7 @@ class TestServerResponses(unittest.TestCase):
 
 
     def test_response_first_url(self):
-        url = "http://localhost:5000/download?o=http%3A//comicmeta.org/cbo/&f=owl&v=2024.05.29-031359&vM=default"
+        url = "http://localhost:5000/download?o=http%3A//comicmeta.org/cbo/&f=owl&v=2024.05.29-031359&vM=closest"
         response = requests.get(url)
         
         # Calculate the MD5 checksum of the content
