@@ -151,7 +151,7 @@ def find_closest_version(versions, target_file, target_version):
 
 
 def get_download_url(
-    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'default'
+    group: str, artifact: str, file_extension: str = "owl", version: str = None, versionMatching: str = 'exact'
 ) -> Optional[str]:
 
     artifact_id = f"{archivo_config.DATABUS_BASE}/{archivo_config.DATABUS_USER}/{group}/{artifact}"
@@ -179,7 +179,7 @@ def get_download_url(
             ]
         )
     else:
-        if versionMatching == 'default':
+        if versionMatching == 'exact':
             queryString.extend(["   ?dataset dct:hasVersion '%s'." % version])
         else:
             # Fetching all the version because timestamp comparison 
@@ -210,11 +210,13 @@ def get_download_url(
                 previous_version = find_previous_version(versions, group, version)
                 queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
 
+            if versionMatching == 'beforeOrClosest':
+                previous_version = find_previous_version(versions, group, version)
                 # In case there is no version before, fall back to the the closest version
-                # if previous_version:
-                #     queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
-                # else:
-                #     versionMatching = 'closest'
+                if previous_version:
+                    queryString.extend(["   ?dataset dct:hasVersion '%s'." % previous_version])
+                else:
+                    versionMatching = 'closest'
 
             if versionMatching == 'closest':
                 closest_version = find_closest_version(versions, group, version)
