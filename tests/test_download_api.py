@@ -38,7 +38,6 @@ class TestServerResponses(unittest.TestCase):
         url = "http://localhost:5000/download?o=http%3A//comicmeta.org/cbo/&f=owl&v=2024.05.29-031359&vM=default"
         response = requests.get(url)
         
-        print(response.content)
         # Calculate the MD5 checksum of the content
         md5_hash = hashlib.md5(response.content).hexdigest()
         expected_md5 = "4196656da08e5b248dc1a9eaca3c888c"
