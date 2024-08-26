@@ -136,14 +136,16 @@ def find_closest_version(versions, target_file, target_version):
     min_diff = float('inf')
     
     for version_dict in versions:
-        if target_file in version_dict['file']['value']:
-            version_str = version_dict['version']['value']
-            version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
-            diff = abs((version_datetime - target_datetime).total_seconds())
-            
-            if diff < min_diff:
-                min_diff = diff
-                closest_version = version_str
+        version_str = version_dict['version']['value']
+        version_datetime = datetime.strptime(version_str, '%Y.%m.%d-%H%M%S')
+        diff = abs((version_datetime - target_datetime).total_seconds())
+
+        if diff == 0.0:
+            return version_str
+
+        if diff <= min_diff:
+            min_diff = diff
+            closest_version = version_str
 
     return closest_version
 
