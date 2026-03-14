@@ -333,11 +333,19 @@ def update_for_ontology_uri(
         f"New, different version for ontology {uri}: {len(diff_result.old_triples)} old triples, {len(diff_result.new_triples)} new triples"
     )
 
+    new_graph = graph_handling.get_graph_of_string(
+        parsing_result.parsed_rdf, parsing_result.rdf_type
+    )
+    ontology_version = graph_handling.get_version(new_graph)
+    version_id = datetime.now().strftime("%Y.%m.%d-%H%M%S")
+    if ontology_version:
+        version_id = f"{string_tools.normalize_version_string(ontology_version)}_{version_id}"
+
     new_version_identifier = DatabusVersionIdentifier(
         archivo_config.DATABUS_USER,
         old_version_id.group,
         old_version_id.artifact,
-        datetime.now().strftime("%Y.%m.%d-%H%M%S"),
+        version_id,
     )
 
     old_ont_axioms = test_suite.get_axioms_of_rdf_ontology(diff_result.old_content)

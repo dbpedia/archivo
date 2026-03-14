@@ -79,6 +79,16 @@ def generate_databus_identifier_from_uri(
     return group, artifact
 
 
+def normalize_version_string(version: str) -> str:
+    # Replace non-alphanumeric characters (except ._- ) with -
+    normalized = re.sub(r"[^a-zA-Z0-9\._-]", "-", version)
+    # remove leading/trailing non-alphanumeric
+    normalized = normalized.strip("-._")
+    if normalized == "":
+        return "defaultVersion"
+    return normalized
+
+
 def get_first_line(text: str) -> str:
     label = None
     for line in text.split("\n"):
