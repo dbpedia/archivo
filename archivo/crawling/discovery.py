@@ -724,6 +724,10 @@ def discover_new_uri(
         onto_graph = graph_handling.get_graph_of_string(
             parsing_result_turtle.parsed_rdf, RDF_Type.TURTLE
         )
+        # Use known version properties if available for ontology versioning
+        ontology_version = graph_handling.get_version(onto_graph)
+        if ontology_version:
+            version_id = f"{string_tools.normalize_version_string(ontology_version)}_{version_id}"
     except Exception:
         logger.error(f"Exception in rdflib parsing of URI {uri}", exc_info=True)
         process_log.append(
@@ -874,6 +878,10 @@ def handle_track_this_uri(
         onto_graph = graph_handling.get_graph_of_string(
             parsing_result_turtle.parsed_rdf, RDF_Type.TURTLE
         )
+        # Use known version properties if available for ontology versioning
+        ontology_version = graph_handling.get_version(onto_graph)
+        if ontology_version:
+            version_id = f"{string_tools.normalize_version_string(ontology_version)}_{version_id}"
     except Exception:
         logger.error(
             f"Exception in rdflib parsing of URI {dev_version_location}", exc_info=True

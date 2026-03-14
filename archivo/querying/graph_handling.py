@@ -244,6 +244,38 @@ def get_comment(graph: Graph) -> Optional[str]:
         return None
 
 
+# returns the version of the ontology if there is any
+def get_version(graph: Graph) -> Optional[str]:
+    """tries finding the version of the ontology using multiple properties"""
+
+    queryString = (
+        "SELECT DISTINCT ?version \n"
+        "WHERE {\n"
+        " VALUES ?versionProp { owl:versionInfo schema:version pav:version dcterms:hasVersion void:version dc:version }\n"
+        " VALUES ?type { owl:Ontology skos:ConceptScheme }\n"
+        " ?uri a ?type .\n"
+        " ?uri ?versionProp ?version .\n"
+        "} LIMIT 1"
+    )
+    result = graph.query(
+        queryString,
+        initNs={
+            "skos": SKOS,
+            "owl": OWL,
+            "dcterms": DCTERMS,
+            "dc": DC,
+            "schema": URIRef("http://schema.org/"),
+            "pav": URIRef("http://purl.org/pav/"),
+            "void": URIRef("http://rdfs.org/ns/void#"),
+        },
+    )
+    if result is not None and len(result) > 0:
+        for row in result:
+            return str(row[0])
+    else:
+        return None
+
+
 # returns the license if there is any
 def get_license(graph: Graph) -> Optional[str]:
     """tries finding the license of the ontology using multiple properties"""
