@@ -198,7 +198,7 @@ class ArchivoVersion:
                 )
 
                 consistency, output = self.test_suite.get_consistency(
-                    ontology_url=url, ignore_imports=False
+                    ontology_url=url, ignore_imports=ignore_imports
                 )
                 self.metadata_dict["test-results"][metadata_key] = consistency
 
@@ -234,7 +234,7 @@ class ArchivoVersion:
                 imports_cv = "NONE" if ignore_imports else "FULL"
 
                 output = self.test_suite.get_pellet_info(
-                    ontology_url=url, ignore_imports=False
+                    ontology_url=url, ignore_imports=ignore_imports
                 )
 
                 file_metadata = DatabusFileMetadata.build_from_content(
